@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.capinfo.omp.utils.Page;
+import com.capinfo.serviceprovider.model.ServiceProviders;
 
 public interface ServiceProviderService{
 
@@ -23,5 +24,7 @@ public interface ServiceProviderService{
 
 	Map<String, Object> getServerInfoWithID(String ID);
 	
-	List importService();
+	public int importService(List<List<Object>> listob);
+
+	public void deleteService(String id);
 }

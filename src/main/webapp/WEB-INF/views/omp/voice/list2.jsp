@@ -56,6 +56,9 @@
 							 <c:if test="${old.execute_flag== 0}">
 							<td style="color: red;">  执行失败  </td>
 							</c:if>
+							 <c:if test="${old.execute_flag== null}">
+							<td style="color: red;">  未返回  </td>
+							</c:if>
 							<%-- 							<td>${old.address}</td> --%>
 							<%-- 							<td>${old.workername}</td> --%>
 
@@ -69,7 +72,7 @@
 									</button>
 									<ul class="dropdown-menu" role="menu">
 									  <%-- <li><a onclick="toupd(${old.id})">发送</a></li> --%>
-										<c:if test="${old.logonName ne 'admin'}">
+									<c:if test="${sys == 'admin'}">
 											<li><a href="###" onclick="deleteUser(${old.id},this);">删除</a></li>
 										</c:if>
 									</ul>

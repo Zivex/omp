@@ -42,6 +42,12 @@
 									</div>
 								</div>
 								<div class="form-group">
+									<label for="entity.num" class="col-md-2 control-label">语音次数充值: </label>
+									<div class="col-md-4">
+									<form:input path="entity.num" class="form-control" data-rule-required="true" data-rule-maxlength="100"  />
+									</div>
+								</div>
+										<div class="form-group">
 									<label for="entity.logonName" class="col-md-2 control-label">登&ensp;录&ensp;名: </label>
 									<div class="col-md-4">
 										<p class="form-control-static">${command.entity.logonName}</p>

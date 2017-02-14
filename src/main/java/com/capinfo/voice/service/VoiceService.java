@@ -82,4 +82,8 @@ public interface VoiceService {
 	//删除声音
 	void deleteVoidByid(String vid);
 	void deleteVoidsByid(String vid);
+	//查询用户语音发送次数
+	Boolean queryCount(String ids);
+
+	void numRest(String id);
 }

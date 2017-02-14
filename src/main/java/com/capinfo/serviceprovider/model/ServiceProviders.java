@@ -1,20 +1,15 @@
 package com.capinfo.serviceprovider.model;
 
 import java.io.Serializable;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 @Entity
-@Table(name = "SERVICE_PROVIDER")
+@Table(name = "service_providers_navigation")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 // @SequenceGenerator(name = "OldMatch", sequenceName = "SEQ_OMP_OLD_MATCH",
 // allocationSize = 1)
@@ -26,16 +21,18 @@ public class ServiceProviders implements Serializable {
 
 	private String server_id;
 
+	//服务商名称
 	private String server_name;
+	//YL
+	private Long service_providers_identify;
 
-	private String service_providers_identify;
-
+	//街道
 	private String scope_delivery;
-
+	//服务类型
 	private String server_type;
-
+	//服务电话
 	private String server_tel;
-
+	//是否有效
 	private String is_valid;
 
 	@Id
@@ -68,12 +65,12 @@ public class ServiceProviders implements Serializable {
 		this.server_name = server_name;
 	}
 
-	@Column(name = "SERVICE_PROVIDERS_IDENTIFY", length = 100)
-	public String getService_providers_identify() {
+	@Column(name = "SERVICE_PROVIDERS_IDENTIFY", unique = true, nullable = false)
+	public Long getService_providers_identify() {
 		return service_providers_identify;
 	}
 
-	public void setService_providers_identify(String service_providers_identify) {
+	public void setService_providers_identify(Long service_providers_identify) {
 		this.service_providers_identify = service_providers_identify;
 	}
 

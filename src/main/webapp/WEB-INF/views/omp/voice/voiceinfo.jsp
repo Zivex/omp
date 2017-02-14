@@ -144,6 +144,7 @@
 				$(".ids:checked").each(function() {
 					checkedList.push($(this).val());
 					vid=checkedList.toString();
+					
 				});
 		}}
 			

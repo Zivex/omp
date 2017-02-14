@@ -147,7 +147,8 @@ public class SystemUserController extends AuthenticationSuccessHandlerImpl {
 				messages.setMessage("登录名已存在,添加用户失败！");
 			} else {
 				String pass = parameter.getEntity().getPassword();
-				parameter.getEntity().setPassword(passwordEncoder.encode(pass));
+				//parameter.getEntity().setPassword(passwordEncoder.encode(pass));
+				parameter.getEntity().setPassword(pass);
 				boolean suc = systemUserService.saveUser(parameter.getEntity());
 				String info = suc == true ? "添加用户成功" : "添加用户失败";
 				messages.setSuccess(suc);

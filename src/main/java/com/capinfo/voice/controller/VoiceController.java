@@ -8,16 +8,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-
 import javax.servlet.http.HttpServletRequest;
-
-import net.sf.json.JSONObject;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -25,12 +21,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
-
 import com.capinfo.common.model.SystemUser;
-import com.capinfo.omp.model.OmpOldInfo;
 import com.capinfo.omp.utils.Page;
 import com.capinfo.omp.utils.PropertiesUtil;
-import com.capinfo.omp.ws.client.ClientGetDataService;
 import com.capinfo.omp.ws.client.ClientGetVoiceDataService;
 import com.capinfo.omp.ws.model.ImKey;
 import com.capinfo.voice.service.VoiceService;
@@ -114,7 +107,8 @@ public class VoiceController {
 		if (!dirFile.exists()) {
 			dirFile.mkdir();
 		}
-
+		String userName = SecurityContextHolder.getContext()
+				.getAuthentication().getName();
 		System.out.println("文件上传到" + uploadURL + filName);
 		String urls = uploadURL + filName;
 
@@ -197,7 +191,12 @@ public class VoiceController {
 	 * 
 	 * return null; }
 	 */
-
+	/**
+	 * 语音发送
+	 * @param vid
+	 * @return
+	 * @throws Exception
+	 */
 	@ResponseBody
 	public String sendOrder(String vid) throws Exception {
 		int i = 0;
@@ -264,6 +263,8 @@ public class VoiceController {
 	@RequestMapping("/voiceManage/oneUpload.shtml")
 	public String oneUpload(@RequestParam("muFile") MultipartFile muFile, HttpServletRequest request) {
 		
+		
+		
 		Random random =new Random();
 		String voicename = request.getParameter("voicename");
 		String remark = request.getParameter("remark");
@@ -277,9 +278,10 @@ public class VoiceController {
         //重命名上传后的文件名,使用时间戳作为文件名称
 		filName = System.currentTimeMillis()+String.valueOf(random.nextInt(10000))+extName;
 		String urls = uploadUrl + filName;
-		
+		String userName = SecurityContextHolder.getContext()
+				.getAuthentication().getName();
 		String url = urls.replace("\\", "/");
-		String sql = "INSERT INTO `omp_voice_info` (`voiceFIleId`, `voiceName`, `voiceFileAddress`, `remark`, `voiceTime`) VALUES ('2', '" + voicename + "', '" + url + "', '" + remark + "', '" + date + "')";
+		String sql = "INSERT INTO `omp_voice_info` (`agent_id`,`voiceFIleId`, `voiceName`, `voiceFileAddress`, `remark`, `voiceTime`) VALUES ('"+userName+"','2', '" + voicename + "', '" + url + "', '" + remark + "', '" + date + "')";
 		jdbcTemplate.update(sql);
 		File dir = new File(uploadUrl);
 		if (!dir.exists()) {
@@ -356,7 +358,7 @@ public class VoiceController {
 	}
 
 	/**
-	 * 指令发送
+	 * 语音发送
 	 * @param ids
 	 * @param request
 	 * @return
@@ -392,12 +394,16 @@ public class VoiceController {
 		// String endTime = null;
 		
 		ClientGetVoiceDataService vice = new ClientGetVoiceDataService();
+		ImKey imKey = null;
 		if (!StringUtils.isEmpty(executionTime)) {
 			String mid = voiceService.middle();// 语音ID
-
 			if (!StringUtils.isEmpty(ids)) {
+				if(!voiceService.queryCount(ids)){
+					return "如需增加发送数量，请联系***，电话***";
+				}
 				String[] split = ids.split(",");
 				for (String id : split) {
+					voiceService.numRest(id);
 					int x;// 定义两变量
 					Random ne = new Random();// 实例化一个random的对象ne
 					x = ne.nextInt(99999 - 10000 + 1) + 1000;// 为变量赋随机值10000-99999
@@ -406,13 +412,14 @@ public class VoiceController {
 					voiceService.saveviceoder(id, mid, executeType, executionTime, executionEndTime, t);
 					String result = voiceService.resultVice();
 					String json = voiceService.sendvice(result, t);
-					ImKey imKey = vice.svoice(json);
+					imKey = vice.svoice(json);
+					String number = imKey.getGenerateSerialNumber();
 					if ("1".equals(imKey.getStatusCode())) {
 						voiceService.resultVOrders(imKey, id, username);
 						i++;
 					}
 					if (i != 0) {
-						voiceService.toupdete(id);
+						voiceService.toupdete(number);
 						voiceService.upMessg(imKey, id);
 					}
 

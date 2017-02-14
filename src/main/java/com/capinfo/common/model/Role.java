@@ -51,6 +51,7 @@ public class Role implements StatusEnabled, SecureRole<Role, SystemUser, Resourc
 
 	@Id
 //	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ID", unique = true, nullable = false, precision = 12, scale = 0)
 	public Long getId() {
 		return id;

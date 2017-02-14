@@ -167,7 +167,7 @@
 				$("#table3").append("<tr><td>键位</td><td>话机类型</td><td>服务类型</td><td>服务商名称</td><td>服务商电话</td><td><input type='button' onclick='addprovider()' value='添加'/></td></tr>");
 			for(var i=0;i<data.length;i++){
 				if(data[i].sname==null){
-					data[i].sname = " ";
+					data[i].sname = "96003";
 				}
 
 				$("#table3").append("<tr><td>"+data[i].KEY+"</td><td>"+data[i].ptype+"</td><td value='"+data[i].kid+"'>"+data[i].sname+"</td><td></td><td><input type='text' style='border:0px;' id='"+data[i].KEY+"'/></td><td><input type='radio' class='addprov' name='addprov'/></td></tr>");

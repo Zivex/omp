@@ -24,7 +24,7 @@ public class ImportExcelUtil {
      * @return 
      * @throws IOException  
      */  
-    public  List<List<Object>> getBankListByExcel(InputStream in,String fileName) throws Exception{  
+    public  List<List<Object>> getBankListByExcel(InputStream in,String fileName,Integer sheetNUmber) throws Exception{  
         List<List<Object>> list = null;  
           
         //创建Excel工作薄  
@@ -38,8 +38,16 @@ public class ImportExcelUtil {
           
         list = new ArrayList<List<Object>>();  
         //遍历Excel中所有的sheet  
-        for (int i = 0; i < work.getNumberOfSheets(); i++) {  
-            sheet = work.getSheetAt(i);  
+        int num = work.getNumberOfSheets();
+        if(sheetNUmber != null){
+        	num=1;
+        }
+        for (int i = 0; i < num; i++) { 
+        	if(sheetNUmber == null){
+        		sheet =	 work.getSheetAt(i);  
+        	}else{
+        		sheet = work.getSheetAt(sheetNUmber);  
+        	}
             if(sheet==null){continue;}  
               
             //遍历当前sheet中的所有行  

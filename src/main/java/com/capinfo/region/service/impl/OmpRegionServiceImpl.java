@@ -59,7 +59,7 @@ public class OmpRegionServiceImpl implements OmpRegionService {
 	
 	@Override
 	public List<Map<String, Object>> gerRegionById(String id) {
-		String sql = "select id,name text,parentid pid,jjtype,sntype,nstype from OMP_REGION r where r.id = "+id;
+		String sql = "select id,name text,parentid pid,jjtype,sntype,nstype,jjtypename,sntypename,nstypename from OMP_REGION r where r.id = "+id;
 		List<Map<String,Object>> queryForList = JdbcTemplate.queryForList(sql);
 		return queryForList;
 	}
@@ -139,11 +139,68 @@ public class OmpRegionServiceImpl implements OmpRegionService {
 		JdbcTemplate.update(sql);
 	}
 	
+	
+	@Override
+	public void updateOrderSId1(String streetId,String zhiling) {
+		String sql = null;
+		sql = "UPDATE omp_region "
+				+ "SET JJTYPE='"+zhiling+"'" 
+				+ "WHERE parentid="+streetId+ " or id="+streetId;
+		JdbcTemplate.update(sql);
+	}
+	
+	@Override
+	public void updateOrderSId2(String streetId,String zhiling) {
+		String sql = null;
+		sql = "UPDATE omp_region "
+				+ "SET SNTYPE='"+zhiling+"'"
+				+ "WHERE parentid="+streetId+ " or id="+streetId;
+		JdbcTemplate.update(sql);
+	}
+	
+	@Override
+	public void updateOrderSId3(String streetId,String zhiling) {
+		String sql = null;
+		sql = "UPDATE omp_region "
+				+ "SET NSTYPE='"+zhiling+"'"
+				+ "WHERE parentid="+streetId+ " or id="+streetId;
+	JdbcTemplate.update(sql);
+	}
+	
+	@Override
+	public void updateOrderSIdNew1(String streetId,String zhiling,String fuwuName) {
+		String sql = null;
+		sql = "UPDATE omp_region "
+				+ "SET JJTYPE='"+zhiling+"'" 
+				+",JJTYPENAME='"+fuwuName+"'"
+				+ "WHERE parentid="+streetId+ " or id="+streetId;
+		JdbcTemplate.update(sql);
+	}
+	
+	@Override
+	public void updateOrderSIdNew2(String streetId,String zhiling,String fuwuName) {
+		String sql = null;
+		sql = "UPDATE omp_region "
+				+ "SET SNTYPE='"+zhiling+"'" 
+				+",SNTYPENAME='"+fuwuName+"'"
+				+ "WHERE parentid="+streetId+ " or id="+streetId;
+		JdbcTemplate.update(sql);
+	}
+	
+	@Override
+	public void updateOrderSIdNew3(String streetId,String zhiling,String fuwuName) {
+		String sql = null;
+		sql = "UPDATE omp_region "
+				+ "SET NSTYPE='"+zhiling+"'" 
+				+",NSTYPENAME='"+fuwuName+"'"
+				+ "WHERE parentid="+streetId+ " or id="+streetId;
+		JdbcTemplate.update(sql);
+	}
 	//根据社区ID更新键位信息
 	@Override
 	public List<Map<String, Object>> getOrderByCommunity(String id) {
 		// TODO Auto-generated method stub
-		String sql = "SELECT	c.id,p.phoneType, k.`key`,	s.serviceName,  pn.SERVER_NAME, c.serviceProviderNumber FROM	omp_key k LEFT JOIN	omp_community_order c on c.keyId = k.id LEFT JOIN	service_providers_navigation pn ON c.serviceProviderId = pn.ID LEFT JOIN omp_phone_type p ON k.pyId = p.id LEFT JOIN omp_service_type s ON k.stId = s.id WHERE c.communityID = "+id;
+		String sql = "SELECT c.id,p.phoneType, k.`key`,	s.serviceName,  pn.SERVER_NAME, c.serviceProviderNumber FROM	omp_key k LEFT JOIN	omp_community_order c on c.keyId = k.id LEFT JOIN	service_providers_navigation pn ON c.serviceProviderId = pn.ID LEFT JOIN omp_phone_type p ON k.pyId = p.id LEFT JOIN omp_service_type s ON k.stId = s.id WHERE c.communityID = "+id;
 		List<Map<String,Object>> list = JdbcTemplate.queryForList(sql);
 		
 		return list;

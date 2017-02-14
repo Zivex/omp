@@ -192,7 +192,7 @@
 				if(data[i].sname==null){
 					data[i].sname = " ";
 				}
-				$("#table3").append("<tr><td>"+data[i].KEY+"</td><td>"+data[i].ptype+"</td><td value='"+data[i].kid+"'>"+data[i].sname+"</td><td></td><td><input type='text'  value='"+data[i].LinkNbr+"' style='border:0px;' id='"+data[i].KEY+"'/></td><td><input type='radio' class='addprov' name='addprov'/></td></tr>");
+				$("#table3").append("<tr><td>"+data[i].KEY+"</td><td>"+data[i].ptype+"</td><td value='"+data[i].kid+"'>"+data[i].sname+"</td><td>"+data[i].fuwuName+"</td><td><input type='text'  value='"+data[i].LinkNbr+"' style='border:0px;' id='"+data[i].KEY+"'/></td><td><input type='radio' class='addprov' name='addprov'/></td></tr>");
 			}
 		});
 	});

@@ -41,6 +41,11 @@ public class SystemUser implements SecureUser<SystemUser, Role> {
 	private Boolean enabled = true;
 
 	private Set<Role> roles = new HashSet<Role>();
+	
+	private int num;
+	
+	
+
 
 	public SystemUser() {
 		super();
@@ -53,6 +58,7 @@ public class SystemUser implements SecureUser<SystemUser, Role> {
 
 	@Id
 //	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ID", unique = true, nullable = false, precision = 12, scale = 0)
 	public Long getId() {
 		return id;
@@ -116,6 +122,15 @@ public class SystemUser implements SecureUser<SystemUser, Role> {
 	public void setEnabled(Boolean enabled) {
 		this.enabled = enabled;
 	}
+	
+	@Column(name = "num")
+	public int getNum() {
+		return num;
+	}
+
+	public void setNum(int num) {
+		this.num = num;
+	}
 
 	// @OneToMany(targetEntity = UserRole.class, cascade = CascadeType.ALL,
 	// fetch = FetchType.LAZY)
@@ -149,6 +164,7 @@ public class SystemUser implements SecureUser<SystemUser, Role> {
 		this.setName(entity.getName());
 		this.setUserType(entity.getUserType());
 		this.setRoles(entity.getRoles());
+		this.setNum(entity.getNum());
 	}
 
 }

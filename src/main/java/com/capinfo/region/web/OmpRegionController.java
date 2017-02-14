@@ -159,14 +159,17 @@ public class OmpRegionController {
 		String jjtype="";
 		String sntype="";
 		String nstype="";
+		String jjtypename="";
+		String sntypename="";
+		String nstypename="";
 		String sname="";
 		String id="";
 		String kid="";
 		String KEY=""; 
 		String LinkNbr="96003";
+		String fuwuName="";
 		JSONObject jsonObject=new JSONObject();
-		
-		
+        JSONObject jsonObjectName=new JSONObject();
 		//服务商类型
 		String ptype = request.getParameter("ptype");
 		//社区ID
@@ -185,6 +188,16 @@ public class OmpRegionController {
 				nstype=data.get(0).get("nstype").toString();
 			}
 			
+			if(data.get(0).get("jjtypename")!=null){
+				jjtypename=data.get(0).get("jjtypename").toString();
+			}
+			if(data.get(0).get("sntypename")!=null){
+				sntypename=data.get(0).get("sntypename").toString();
+			}
+			if(data.get(0).get("nstypename")!=null){
+				nstypename=data.get(0).get("nstypename").toString();
+			}
+			
 		}
 		
 		
@@ -193,6 +206,7 @@ public class OmpRegionController {
 			List<Map<String,Object>> order = ompRegionService.getOrder(ptype);
 			if("1".equals(ptype)){
 				jsonObject=JsonUtil.getJson(jjtype);
+				jsonObjectName=JsonUtil.getJson(jjtypename);
 			}else if("2".equals(ptype)){
 				jsonObject=JsonUtil.getJson(sntype);
 			}else{
@@ -200,11 +214,13 @@ public class OmpRegionController {
 			}
 			
 			JSONArray json1=JsonUtil.getJson1(jsonObject);
+			JSONArray jsonName=JsonUtil.getJson1(jsonObjectName);
+			
 		    if(json1.size()>0){
 		       for(int i=0;i<json1.size();i++){
 		    	 Map<String, Object> map = new HashMap<String, Object>();
 		         JSONObject job = json1.getJSONObject(i);  // 遍历 jsonarray 数组，把每一个对象转成 json 对象
-		         
+		         JSONObject jobName = jsonName.getJSONObject(i);
 		         if(order!=null&&!"".equals(order)){
 		        	 id=order.get(i).get("id").toString();
 		        	 if(order.get(i).get("sname")==null){
@@ -219,7 +235,10 @@ public class OmpRegionController {
                  if(job!=null){
                 	LinkNbr= job.get("value").toString();
                  }
-
+                 if(jobName!=null){//服务商名称
+                	 fuwuName= jobName.get("value").toString();
+                  }
+                  
 		         map.put("id", id);
 		         map.put("sname", sname);
 		         map.put("kid", kid);
@@ -227,6 +246,7 @@ public class OmpRegionController {
 		         map.put("KEY", KEY);
 		         if(KEY.equals(job.get("key"))){
 		        	 map.put("LinkNbr", job.get("value").toString());
+		        	 map.put("fuwuName", fuwuName);
 		         }
 		         listItems.add(map);
 		       }
@@ -351,15 +371,19 @@ public class OmpRegionController {
 		return result;
 	}
 	
+	/**
+	 * 按照社区ID单个修改指令
+	 * @param request
+	 */
 	@RequestMapping("/saveSqOrder.shtml")
 	@ResponseBody
 	public void saveSqOrder(HttpServletRequest request) {
 		String kid = request.getParameter("kid");
-		String shequId = request.getParameter("shequId");
+		String shequId = request.getParameter("shequId");//社区
 		String ptype = request.getParameter("ptype");
 		String zhiling=request.getParameter("json");
 		
-	  //System.out.println("社区ID："+shequId+"类型："+ptype+"指令："+zhiling); 
+	    System.out.println("社区ID："+shequId+"类型："+ptype+"指令："+zhiling); 
 		
 		if("1".equals(ptype)){//居家型
 			//更新社区指令
@@ -376,6 +400,81 @@ public class OmpRegionController {
 			shownumber = "96003";
 		}
 		String communityids = request.getParameter("communityids");
+	
+	}
+	
+	/**
+	 * 按照街道ID批量修改社区指令
+	 * @param request
+	 */
+	@RequestMapping("/saveSqOrderSId.shtml")
+	@ResponseBody
+	public void saveSqOrderSId(HttpServletRequest request) {
+		String kid = request.getParameter("kid");
+		String streetId = request.getParameter("streetId");//街道的ID
+		String ptype = request.getParameter("ptype");
+		String zhiling=request.getParameter("json");
+		
+	    System.out.println("街道ID："+streetId+"类型："+ptype+"指令："+zhiling); 
+		
+		if("1".equals(ptype)){//居家型
+			//更新社区指令
+			ompRegionService.updateOrderSId1(streetId,zhiling);
+		}else if("2".equals(ptype)){//失能型
+			ompRegionService.updateOrderSId2(streetId,zhiling);
+		}else{//农商型
+			ompRegionService.updateOrderSId3(streetId,zhiling);
+		}
+		String showid = request.getParameter("showid");
+		String shownumber = request.getParameter("shownumber");
+		System.out.println("键位："+showid+"-----"+shownumber);
+		if (StringUtils.isEmpty(shownumber)) {
+			shownumber = "96003";
+		}
+		String communityids = request.getParameter("communityids");
+	
+	}
+	
+	/**
+	 * 按照街道ID批量修改社区指令
+	 * @param request
+	 */
+	@RequestMapping("/saveSqOrderSIdNew.shtml")
+	@ResponseBody
+	public void saveSqOrderSIdNew(HttpServletRequest request) {
+		String kid = request.getParameter("kid");
+		String streetId = request.getParameter("streetId");//街道的ID
+		String ptype = request.getParameter("ptype");
+		//键位对应的服务商号码
+		String zhiling=request.getParameter("json");
+		//键位对应的服务商名称
+		String fuwuName=request.getParameter("jsonName");
+		
+		String communityids=request.getParameter("communityids");
+		System.out.println("街区的IDS:"+communityids); 
+	    System.out.println("街道ID："+streetId+"类型："+ptype+"指令："+zhiling+"服务商名称:"+fuwuName); 
+		//将取得的街区ID转化为数组
+	    String[] streetIds = communityids.split(",");
+    	for (String street : streetIds) {
+			System.out.println("截取区的街道："+street);
+			streetId=street;
+			if("1".equals(ptype)){//居家型
+				//更新社区指令
+				ompRegionService.updateOrderSIdNew1(streetId,zhiling,fuwuName);
+			}else if("2".equals(ptype)){//失能型
+				ompRegionService.updateOrderSIdNew2(streetId,zhiling,fuwuName);
+			}else{//农商型
+				ompRegionService.updateOrderSIdNew3(streetId,zhiling,fuwuName);
+			}
+			
+		}
+	    
+		String showid = request.getParameter("showid");
+		String shownumber = request.getParameter("shownumber");
+		System.out.println("键位："+showid+"-----"+shownumber);
+		if (StringUtils.isEmpty(shownumber)) {
+			shownumber = "96003";
+		}
 	
 	}
 	

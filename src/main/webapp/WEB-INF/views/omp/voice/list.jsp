@@ -56,7 +56,7 @@
 									</button>
 									<ul class="dropdown-menu" role="menu">
 										<li><a onclick="toupd(${old.id})">发送</a></li>
-										<c:if test="${old.logonName ne 'admin'}">
+										<c:if test="${sys == 'admin'}">
 											<li><a href="###" onclick="deleteUser(${old.id},this);">删除</a></li>
 										</c:if>
 									</ul>

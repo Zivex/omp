@@ -36,6 +36,18 @@ public interface OmpRegionService{
 	
 	public void updateOrder3(String shequId,String zhiling);
 	
+    public void updateOrderSId1(String streetId,String zhiling);
+	
+	public void updateOrderSId2(String streetId,String zhiling);
+	
+	public void updateOrderSId3(String streetId,String zhiling);
+	
+    public void updateOrderSIdNew1(String streetId,String zhiling,String fuwuName);
+	
+	public void updateOrderSIdNew2(String streetId,String zhiling,String fuwuName);
+	
+	public void updateOrderSIdNew3(String streetId,String zhiling,String fuwuName);
+	
 	public List<Map<String, Object>> getOrderByCommunity(String id);
     
 	//取得街道的数量

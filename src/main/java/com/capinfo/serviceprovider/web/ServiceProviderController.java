@@ -9,16 +9,20 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
+
 import com.capinfo.omp.utils.Page;
 import com.capinfo.serviceprovider.model.ServiceProviders;
 import com.capinfo.serviceprovider.service.ServiceProviderService;
@@ -170,6 +174,29 @@ public class ServiceProviderController {
 		}
 		return list;
 	}
+    /**
+     * 导入
+     * @return
+     */
+	@RequestMapping("/serviceProvider/toImport.shtml")
+	public ModelAndView toImport() {
+		ModelAndView mv = new ModelAndView("/omp/serviceProvider/Import");
+		return mv;
+	}
+	
+	
+    /**
+     * 删除
+     * @return
+     */
+	@RequestMapping("deleteService.shtml")
+	public ModelAndView deleteService(String id) {
+		ModelAndView mv = new ModelAndView("redirect:/admin/omp/ServiceProvider/list.shtml");
+		ompOldMatchService.deleteService(id);
+	//	ModelAndView mv = new ModelAndView("/omp/serviceProvider/Import");
+		return mv;
+	}
+
 
 	/**
 	 * 服务商导入
@@ -178,35 +205,16 @@ public class ServiceProviderController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping("/import.shtml")
-	@ResponseBody
-	public String importService(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+	@RequestMapping("/serviceProvider/importService.shtml")
+	public ModelAndView importService(HttpServletRequest request, HttpServletResponse response,@RequestParam("excelFile") MultipartFile file) throws Exception {
+		ModelAndView mv = new ModelAndView("redirect:/admin/omp/ServiceProvider/list.shtml");
 		InputStream in = null;
 		List<List<Object>> listob = null;
-		MultipartFile file = multipartRequest.getFile("upfile");
-		if (file.isEmpty()) {
-			throw new Exception("文件不存在！");
-		}
-
 		in = file.getInputStream();
-		listob = new ImportExcelUtil().getBankListByExcel(in, file.getOriginalFilename());
-
-		// 该处可调用service相应方法进行数据保存到数据库中，现只对数据输出
-		for (int i = 1; i < listob.size(); i++) {
-			List<Object> lo = listob.get(i);
-			ServiceProviders sp = new ServiceProviders();
-			sp.setServer_id(String.valueOf(lo.get(2)));
-			System.out.println("服务商id:" + sp.getServer_id());
-		}
-
-		PrintWriter out = null;
-		response.setCharacterEncoding("utf-8"); // 防止ajax接受到的中文信息乱码
-		out = response.getWriter();
-		out.print("文件导入成功！");
-		out.flush();
-		out.close();
-		return "上传";
+		listob = new ImportExcelUtil().getBankListByExcel(in, file.getOriginalFilename(),2);
+		int i = ompOldMatchService.importService(listob);
+		mv.addObject("messageCount", i);
+		return mv;
 	}
 
 	// public void setWorkbookStyle(ModelAndView mv) throws Exception{

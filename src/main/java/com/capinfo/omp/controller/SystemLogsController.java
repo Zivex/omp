@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.capinfo.common.model.SystemUser;
+import com.capinfo.common.security.Constants;
 import com.capinfo.common.security.authentication.AuthenticationSuccessHandlerImpl;
 import com.capinfo.common.web.service.SystemUserService;
 import com.capinfo.omp.service.SystemLogs;
@@ -31,7 +32,7 @@ public class SystemLogsController extends AuthenticationSuccessHandlerImpl {
 	private SystemUserService systemUserService;
 	
 	@RequestMapping("/Systemlogs/list.shtml")
-	public ModelAndView showlist(@ModelAttribute("eccomm_admin") SystemUser user) {
+	public ModelAndView showlist(@ModelAttribute(Constants.ADMIN_ATTRIBUTE_KEY) SystemUser user) {
 		ModelAndView mv = new ModelAndView("/admin/syslog");
 		List<Map<String, Object>> showlog = systemLogs.list();
 		System.err.println(user.getLogonName());

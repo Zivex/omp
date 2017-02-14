@@ -20,6 +20,7 @@ public class SecurityFilter implements Filter {
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 
 		HttpServletRequest httpServletRequest = (HttpServletRequest) request;
+		
 		HttpServletResponse httpServletResponse = (HttpServletResponse) response;
 		// /login.shtm 登陆页
 		if (httpServletRequest.getRequestURI().indexOf("/login.shtml") != -1) {
@@ -29,7 +30,9 @@ public class SecurityFilter implements Filter {
 
 		// String ip = request.getRemoteAddr();//返回发出请求的IP地址
 		if (isAuthenticationed()) {
+			httpServletRequest.getSession().setAttribute("sys", SecurityContextHolder.getContext().getAuthentication().getName());
 			chain.doFilter(request, response);
+			
 		} else {
 			httpServletResponse.sendRedirect(httpServletRequest.getContextPath() + "/login.shtml");
 		}

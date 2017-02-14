@@ -40,12 +40,14 @@ public class ImKeyResultServiceImpl implements ImKeyResultService {
 							ikey.getExecutionTime(),
 							ikey.getGenerateSerialNumber()});
 			//jdbcTemplate.update("UPDATE omp_old_order o SET o.execute_flag = '1' where o.oldId = (SELECT n.oid from omp_order_number n where n.number = "+ikey.getGenerateSerialNumber()+")");
+			//指令
 			if ("1".equals(ikey.getReturnType())) {
 				String sql2 = "UPDATE `omp_old_order` SET `execute_flag` = "+ikey.getStatusCode()+" WHERE oldId = (select n.oid from omp_order_number n where n.number = '"+ikey.getGenerateSerialNumber()+"')";
 				jdbcTemplate.update(sql2);
 			}
+			//语音
 			if ("2".equals(ikey.getReturnType())) {
-				String sql2 =  "UPDATE `omp_voice_order` SET `execute_flag` = (SELECT n.execute_flag 'execute_flag' FROM omp_order_number n WHERE n.number = '"+ikey.getGenerateSerialNumber()+"') WHERE oldId = (select n.oid from omp_order_number n where n.number = '"+ikey.getGenerateSerialNumber()+"') AND number = '"+ikey.getGenerateSerialNumber()+"'";
+				String sql2 =  "UPDATE `omp_voice_order` SET `execute_flag` = (SELECT n.execute_flag 'execute_flag' FROM omp_order_number n WHERE n.number = '"+ikey.getGenerateSerialNumber()+"') WHERE number = '"+ikey.getGenerateSerialNumber()+"'";
 				jdbcTemplate.update(sql2);
 			}
 			result = 1;

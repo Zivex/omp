@@ -7,8 +7,11 @@
 <head>
 <%@ include file="/WEB-INF/views/layout/adm_top.jsp"%>
 <style type="text/css">
-	#backButton{font-size:20px; float: right;margin-right:2cm;}
-
+#backButton {
+	font-size: 20px;
+	float: right;
+	margin-right: 2cm;
+}
 </style>
 
 </head>
@@ -29,10 +32,9 @@
 				<div>
 					<div class="page-header">
 						<h1>
-							<i class="fa fa-user fa-fw"></i>服务商管理
-							
-							<span id="backspan" ><input type="button" id="backButton" onclick="hxBackClick()"   value="返回"/></span>
-						
+							<i class="fa fa-user fa-fw"></i>服务商管理 <span id="backspan"><input
+								type="button" id="backButton" onclick="hxBackClick()" value="返回" /></span>
+
 						</h1>
 					</div>
 					<div class="header-underline"></div>
@@ -43,51 +45,57 @@
 							<form:form id="command" role="form" class="form-inline"
 								action="${queryForm }" method="post">
 								<input id="pageNo" name="current" type="hidden" value="1">
-<!-- 								<input id="pageNo" name="currentPieceNum" type="hidden" value="1"> -->
-									<a role="button" class="btn btn-primary"
+								<!-- 								<input id="pageNo" name="currentPieceNum" type="hidden" value="1"> -->
+								<a role="button" class="btn btn-primary"
 									href='<c:url value="/admin/omp/ServiceProvider/list.shtml"/>'>服务商信息展示</a>
-									<a role="button" class="btn btn-primary"
+								<a role="button" class="btn btn-primary"
 									href='<c:url value="/admin/omp/ServiceProvider/export.shtml"/>'>服务商信息导出</a>
-					
-					
-						<table class="table" >
-										<tr>
-											<td>店铺名：</td>
-											<td><input type="text" value="${name }" id="name" name="name"/></td>
-												<td>服务电话：</td>
-											<td><input type="text" value="${phone }" id="phone" name="phone"/></td>
-											<td>服务地区：</td>
-											<td><input type="text" value="${fanwei }" id="fanwei" name="fanwei"/></td>
-												<td>服务类型：</td>
-											<td><input type="text" value="${xiangmu }" id="xiangmu" name="xiangmu"/></td>
-										<td><input type="hidden"  id="QSql" name="QSql"/><td>
-										</tr>
-										<tr>
-											
-											
-										</tr>
-										<tr>
-											<td> <input type="button"  value="查询" onclick="quety()"/></td>
-											<td><input type="reset"/></td>
-										</tr>
-									</table>
+								<a role="button" class="btn btn-primary"
+									onclick="importInformation()">服务商信息导入</a>
+
+
+								<table class="table">
+									<tr>
+										<td>店铺名：</td>
+										<td><input type="text" value="${name }" id="name"
+											name="name" /></td>
+										<td>服务电话：</td>
+										<td><input type="text" value="${phone }" id="phone"
+											name="phone" /></td>
+										<td>服务地区：</td>
+										<td><input type="text" value="${fanwei }" id="fanwei"
+											name="fanwei" /></td>
+										<td>服务类型：</td>
+										<td><input type="text" value="${xiangmu }" id="xiangmu"
+											name="xiangmu" /></td>
+										<td><input type="hidden" id="QSql" name="QSql" />
+										<td>
+									</tr>
+									<tr>
+
+
+									</tr>
+									<tr>
+										<td><input type="button" value="查询" onclick="quety()" /></td>
+										<td><input type="reset" /></td>
+									</tr>
+								</table>
 							</form:form>
 						</div>
-						
-						
-					
-						
+
+
+
+
 						<hr>
 						<div id="borad" style="display: none">
 							<div id="message" class="alert"></div>
 						</div>
 						<div id="resultDiv">
-							<%@ include
-								file="/WEB-INF/views/omp/serviceProvider/list.jsp"%>
+							<%@ include file="/WEB-INF/views/omp/serviceProvider/list.jsp"%>
 						</div>
 					</div>
-					<div id="displayDiv1"  ></div>
-				
+					<div id="displayDiv1"></div>
+
 				</div>
 			</div>
 			<!-- ./main -->
@@ -116,6 +124,16 @@
 // 			}
 // 			showDynamicModal(url);
 // 		}
+		
+		
+				/**
+		* 导入信息
+		**/
+		function importInformation(){
+			var url = '<c:url value="serviceProvider/toImport.shtml"/>';
+			showDynamicModal(url);
+		}
+		
 $(function(){
 		$("#displayDiv1").hide();
 		$("#displayDiv").show();

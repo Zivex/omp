@@ -1,16 +1,16 @@
 package com.capinfo.serviceprovider.service.impl;
 
-import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
+
 import com.capinfo.omp.utils.Page;
 import com.capinfo.serviceprovider.model.ServiceProviders;
 import com.capinfo.serviceprovider.service.ServiceProviderService;
-import com.capinfo.serviceprovider.utils.ImportExcelUtil;
 
 @Service
 public class ServiceProviderServiceImpl implements ServiceProviderService {
@@ -27,7 +27,8 @@ public class ServiceProviderServiceImpl implements ServiceProviderService {
 	}
 
 	public int getCountWithSql(String QSql) {
-		String sql = "select count(*) from SERVICE_PROVIDERS_NAVIGATION t " + QSql;
+		String sql = "select count(*) from SERVICE_PROVIDERS_NAVIGATION t "
+				+ QSql;
 		int int1 = jdbcTemplate.queryForInt(sql);
 		return int1;
 	}
@@ -35,7 +36,8 @@ public class ServiceProviderServiceImpl implements ServiceProviderService {
 	@Override
 	public List<Map<String, Object>> getList(Page page) {
 		String sql = "SELECT t.* FROM SERVICE_PROVIDERS_NAVIGATION t LIMIT "
-				+ (page.getCurrentPage() - 1) * page.getPageSize() + "," + page.getPageSize();
+				+ (page.getCurrentPage() - 1) * page.getPageSize() + ","
+				+ page.getPageSize();
 		List<Map<String, Object>> list = jdbcTemplate.queryForList(sql);
 		System.out.println(list);
 		return list;
@@ -43,8 +45,9 @@ public class ServiceProviderServiceImpl implements ServiceProviderService {
 
 	@Override
 	public List<Map<String, Object>> getListWithSql(Page page, String QSql) {
-		String sql = "SELECT t.* FROM SERVICE_PROVIDERS_NAVIGATION t " + QSql + " LIMIT "
-				+ (page.getCurrentPage() - 1) * page.getPageSize() + "," + page.getPageSize();
+		String sql = "SELECT t.* FROM SERVICE_PROVIDERS_NAVIGATION t " + QSql
+				+ " LIMIT " + (page.getCurrentPage() - 1) * page.getPageSize()
+				+ "," + page.getPageSize();
 		List<Map<String, Object>> list = jdbcTemplate.queryForList(sql);
 		System.out.println(list);
 		return list;
@@ -53,7 +56,8 @@ public class ServiceProviderServiceImpl implements ServiceProviderService {
 	// 通过服务商编号，获取服务商信息
 	@Override
 	public Map<String, Object> getServerInfoWithID(String ID) {
-		String sql = "SELECT t.* FROM SERVICE_PROVIDERS_NAVIGATION t WHERE t.ID = " + ID;
+		String sql = "SELECT t.* FROM SERVICE_PROVIDERS_NAVIGATION t WHERE t.ID = "
+				+ ID;
 		Map<String, Object> map = jdbcTemplate.queryForMap(sql);
 		return map;
 	}
@@ -87,22 +91,30 @@ public class ServiceProviderServiceImpl implements ServiceProviderService {
 		switch (tify.toString()) {
 		case "YL":
 			sql1 = "select d.*,country.name country,street.name street,city.name city from"
-					+ "(select * from OMP_P_SERVICE_PROVIDER d where d.id = " + server_id + ") d,"
+					+ "(select * from OMP_P_SERVICE_PROVIDER d where d.id = "
+					+ server_id
+					+ ") d,"
 					+ "(select r.name from OMP_P_SERVICE_PROVIDER d,Omp_Region r where d.city_id = r.id and d.id = "
-					+ server_id + " ) city,"
+					+ server_id
+					+ " ) city,"
 					+ "(select r.name from OMP_P_SERVICE_PROVIDER d,Omp_Region r where d.country_id = r.id and d.id = "
-					+ server_id + " ) country,"
+					+ server_id
+					+ " ) country,"
 					+ "(select r.name from OMP_P_SERVICE_PROVIDER d,Omp_Region r where d.street_id = r.id and d.id = "
 					+ server_id + " ) street";
 			break;
 
 		case "SN":
 			sql1 = "select d.*,country.name country,street.name street,community.name community from"
-					+ "(select * from Omp_D_Service_Provider d where d.id = " + server_id + ") d,"
+					+ "(select * from Omp_D_Service_Provider d where d.id = "
+					+ server_id
+					+ ") d,"
 					+ "(select r.name from Omp_D_Service_Provider d,Omp_Region r where d.country_id = r.id and d.id = "
-					+ server_id + " ) country,"
+					+ server_id
+					+ " ) country,"
 					+ "(select r.name from Omp_D_Service_Provider d,Omp_Region r where d.street_id = r.id and d.id = "
-					+ server_id + " ) street,"
+					+ server_id
+					+ " ) street,"
 					+ "(select r.name from Omp_D_Service_Provider d,Omp_Region r where d.community_id = r.id and d.id = "
 					+ server_id + " ) community";
 			break;
@@ -116,9 +128,30 @@ public class ServiceProviderServiceImpl implements ServiceProviderService {
 	 * 服务商导入
 	 */
 	@Override
-	public List importService() {
-		return null;
+	public int importService(List<List<Object>> listob) {
+		int count = 0;
+		for (int i = 0; i < listob.size(); i++) {
+			List<Object> lo = listob.get(i);
+			if (!StringUtils.isEmpty(String.valueOf(lo.get(1)))) {
+				String sql = "";
+				// ServiceProviders sp = new ServiceProviders();
+				sql += "insert into service_providers_navigation (SERVER_NAME,SERVICE_PROVIDERS_IDENTIFY,SCOPE_DELIVERY,SERVER_TYPE,SERVER_TEL,IS_VALID) value('"
+						+ String.valueOf(lo.get(1)) + "','YL','"
+						+ String.valueOf(lo.get(3)) + "','"
+						+ String.valueOf(lo.get(5)) + "','"
+						+ String.valueOf(lo.get(6)) + "',0)";
+				jdbcTemplate.update(sql);
+				count++;
+				//System.out.println(sql);
+			}
 
+		}
+return count;
 	}
 
+	@Override
+	public void deleteService(String id) {
+		String sql = "delete from service_providers_navigation where id="+id;
+		jdbcTemplate.update(sql);
+	}
 }
