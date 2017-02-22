@@ -45,6 +45,7 @@ public class OrderController {
 	@RequestMapping("/orderManage/initial.shtml")
 	public ModelAndView initial(String current, String name, String idCard, String zjNumber, String county, String street, String community, String send_flag, String execute_flag) {
 		ModelAndView mv = new ModelAndView("/omp/order/initial");
+
 		getList(mv, current, name, idCard, zjNumber, county, street, community, send_flag, execute_flag);
 		return mv;
 	}
@@ -52,6 +53,7 @@ public class OrderController {
 	@RequestMapping("/orderManage/list.shtml")
 	public ModelAndView listt(String current, String name, String idCard, String zjNumber, String county, String street, String community, String send_flag, String execute_flag) {
 		ModelAndView mv = new ModelAndView("/omp/order/list");
+		
 		getList(mv, current, name, idCard, zjNumber, county, street, community, send_flag, execute_flag);
 		return mv;
 	}
@@ -96,8 +98,9 @@ public class OrderController {
 			for (String id : split) {
 				String json = orderService.sendOrder(id);
 				ImKey imKey = c.sendOrder(json);
-
 				if ("1".equals(imKey.getStatusCode())) {
+//				ImKey imKey = new ImKey();
+//					if (true) {
 					orderService.resultOrder(imKey, id,username);
 					i++;
 				}

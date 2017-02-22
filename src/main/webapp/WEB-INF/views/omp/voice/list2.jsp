@@ -19,14 +19,15 @@
 			<table class="table table-hover table-middle" role="grid">
 				<thead>
 					<tr class="active">
-						<th width="10%"><input type="checkbox" onclick="check()" /></th>
-						<th width="10%">姓名</th>
-						<th width="10%">区域</th>
-						<th width="10%">街道</th>
+						<th width="5%"><input type="checkbox" onclick="check()" /></th>
+						<th width="5%">姓名</th>
+						<th width="5%">区域</th>
+						<th width="5%">街道</th>
 						<th width="10%">社区</th>
 						<th width="10%">座机号</th>
 						<th width="10%">推送状态</th>
 						<th width="10%">执行状态</th>
+						<th width="10%">执行时间</th>
 						<th width="10%">操作</th>
 						<!-- 						<th width="10%">居住地址</th> -->
 						<!-- 						<th width="10%">录入员</th> -->
@@ -36,7 +37,7 @@
 					<c:forEach var="old" items="${voiceOl}" varStatus="sta">
 						<c:set value="0" var="i"></c:set>
 						<tr>
-						    
+
 							<td><input type="checkbox" class="ids" value="${old.id}" /></td>
 							<td><a id="viewItem" href="###"
 								onclick="showDetails(${old.id});">${old.name}</a></td>
@@ -45,20 +46,21 @@
 							<td>${old.community}</td>
 							<td>${old.zjnumber}</td>
 							<c:if test="${old.send_flag==1}">
-							<td style="color: green;">已发送</td>
+								<td style="color: green;">已发送</td>
 							</c:if>
-						    <c:if test="${old.execute_flag== 3}">
-							<td style="color: blue;">   未接听  </td>
+							<c:if test="${old.execute_flag== 3}">
+								<td style="color: blue;">未接听</td>
 							</c:if>
-							 <c:if test="${old.execute_flag== 1}">
-							<td style="color: green;">  执行成功 </td>
+							<c:if test="${old.execute_flag== 1}">
+								<td style="color: green;">执行成功</td>
 							</c:if>
-							 <c:if test="${old.execute_flag== 0}">
-							<td style="color: red;">  执行失败  </td>
+							<c:if test="${old.execute_flag== 0}">
+								<td style="color: red;">执行失败</td>
 							</c:if>
-							 <c:if test="${old.execute_flag== null}">
-							<td style="color: red;">  未返回  </td>
+							<c:if test="${old.execute_flag== null}">
+								<td style="color: red;">未返回</td>
 							</c:if>
+							<td>${old.startTime}</td>
 							<%-- 							<td>${old.address}</td> --%>
 							<%-- 							<td>${old.workername}</td> --%>
 
@@ -71,8 +73,8 @@
 										操作 <span class="caret"></span>
 									</button>
 									<ul class="dropdown-menu" role="menu">
-									  <%-- <li><a onclick="toupd(${old.id})">发送</a></li> --%>
-									<c:if test="${sys == 'admin'}">
+										<li><a onclick="toupd(${old.orderId})">重新发送</a></li>
+										<c:if test="${sys == 'admin'}">
 											<li><a href="###" onclick="deleteUser(${old.id},this);">删除</a></li>
 										</c:if>
 									</ul>
@@ -127,8 +129,15 @@
 	// 		$("#listForm").submit();
 		}
 	}
-	
-	function openUpload_(){
+	//重新发送语音
+	function toupd(oid){
+		var sure=confirm("删除操作是不可逆的，确认删除该指令吗？");
+		if(sure){
+		$.post("<%=request.getContextPath() %>/voice/voiceManage/sendOrder.shtml",{oid:oid,stime:"",etime:"",sata:"repeat"},function(data){
+			alert(data);
+			location.reload();
+		});
+		}
 		
 	}
 </SCRIPT>

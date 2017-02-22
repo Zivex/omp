@@ -13,7 +13,7 @@ public interface OmpRegionService{
 
 	public List<Map<String,Object>> getOmpOldMatchSortList(String pid);
 
-	public List<Map<String,Object>> getPro(String id, String serverType);
+//	public List<Map<String,Object>> getPro(String id, String serverType);
 
 	public List<Map<String,Object>> getSortList(String id);
 
@@ -58,6 +58,9 @@ public interface OmpRegionService{
 	public String gerRegion(String id);
 
 	public int login(String user, String pass);
+
+	List<Map<String, Object>> getPro(String name, String serverType,
+			String streetids);
 
 
 

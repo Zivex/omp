@@ -18,7 +18,6 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -54,21 +53,18 @@ public class OldForController {
 
 	@Autowired
 	private OldService oldService;
+	
 
-	// @Autowired
-	// private CardPersonMessageBack CardPersonMessageBack;
+//	 @Autowired
+//	 private CardPersonMessageBack CardPersonMessageBack;
 
-	/**
-	 * 老人列表展示
-	 * 
-	 * @param current
-	 * @return
-	 */
+
+	
 	@RequestMapping("/oldMatch/list.shtml")
 	public ModelAndView list(@ModelAttribute("eccomm_admin") SystemUser user,String current, String name, String idCard,
 			String zjNumber, String county, String street, String community,
 			String isGenerationOrder, String isindividuation,
-			String creationTime) {
+			String creationTime,HttpServletRequest request) {
 		ModelAndView mv = new ModelAndView("/omp/old/initial");
 		getList(mv, current, name, idCard, zjNumber, county, street, community,
 				isGenerationOrder, isindividuation, creationTime);
@@ -76,7 +72,20 @@ public class OldForController {
 		// oldService.saveLogger("2", "老人信息表", "lixing", "1");
 		return mv;
 	}
-
+	/**
+	 * 老人列表查询
+	 * @param current
+	 * @param name
+	 * @param idCard
+	 * @param zjNumber
+	 * @param county
+	 * @param street
+	 * @param community
+	 * @param isGenerationOrder
+	 * @param isindividuation
+	 * @param creationTime
+	 * @return
+	 */
 	@RequestMapping("/oldMatch/listtoo.shtml")
 	public ModelAndView listtoo(String current, String name, String idCard,
 			String zjNumber, String county, String street, String community,
@@ -148,8 +157,10 @@ public class OldForController {
 			List<OmpOldInfo> list = (List<OmpOldInfo>) map.get("infos");
 			for (OmpOldInfo ompOldInfo : list) {
 				nb++;
+				// 通过座机号，身份证号判断是否存在老人
 				if (!oldService.checkOldIsHave(ompOldInfo.getzjNumber(),
 						ompOldInfo.getCertificatesNumber())) {
+//				if (true) {
 					// 身份证号码 (通过身份证ID查询老人信息 )
 					String cardId = ompOldInfo.getCertificatesNumber();
 					CardPersonMessageWsServiceProxy d = new CardPersonMessageWsServiceProxy();
@@ -298,6 +309,28 @@ public class OldForController {
 		mv.addObject("Region", Region);
 		return mv;
 	}
+	
+	
+	/**
+	 * 查看老人数据
+	 * 
+	 * @param id
+	 * @return
+	 */
+	@RequestMapping("/oldMatch/see.shtml")
+	@ResponseBody
+	public ModelAndView seePerson(String id,String cardId) {
+		ModelAndView mv = new ModelAndView("/omp/old/see");
+		List<Map<String, Object>> list = oldService.getOldById(id);
+		Map<String, Object> map = list.get(0);
+		List<Map<String, Object>> person = oldService.getPerson(cardId);
+		Map<String, Object> mapPreson = person.get(0);
+		Map Region = oldService.getRegionList(map);
+		mv.addObject("Region", Region);
+		mv.addObject("detaMap", map);
+		mv.addObject("mapPreson", mapPreson);
+		return mv;
+	}
 
 	/**
 	 * 去查看老人数据
@@ -400,6 +433,7 @@ public class OldForController {
 	public String uploadOldIndividuation(String id, String json) {
 		Boolean isUpdateBoolean = oldService.uploadOldIndividuation(id, json);
 		if (isUpdateBoolean) {
+			
 			return "修改成功！";
 		}
 		boolean newBl = oldService.addOmpOldOrderInfo(id, json);

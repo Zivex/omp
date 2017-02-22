@@ -146,8 +146,8 @@ public class OmpRegionController {
 
 	@RequestMapping("/allocation.shtml")
 	@ResponseBody
-	private List<Map<String, Object>> allocation(String showName,String serverType) {
-		List<Map<String, Object>> list = ompRegionService.getPro(showName,serverType);
+	private List<Map<String, Object>> allocation(String showName,String serverType,String streetids) {
+		List<Map<String, Object>> list = ompRegionService.getPro(showName,serverType,streetids);
 		return list;
 	}
 	/*

@@ -8,7 +8,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+
 import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -21,11 +23,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+
 import com.capinfo.common.model.SystemUser;
+import com.capinfo.framework.model.system.User;
 import com.capinfo.omp.utils.Page;
 import com.capinfo.omp.utils.PropertiesUtil;
 import com.capinfo.omp.ws.client.ClientGetVoiceDataService;
 import com.capinfo.omp.ws.model.ImKey;
+import com.capinfo.voice.parameter.UserInfoParameter;
 import com.capinfo.voice.service.VoiceService;
 
 @Controller
@@ -59,7 +64,7 @@ public class VoiceController {
 		}
 		int count = voiceService.getCount(name, idCard, zjNumber, county, street, community);
 		count = count == 0 ? 1 : count;
-		Page page = new Page<>(current, count, "10");
+		Page<Object> page = new Page<>(current, count, "10");
 		List<Map<String, Object>> entities = voiceService.getOldContextList(page, name, idCard, zjNumber, county, street, community);
 		List<Map<String, Object>> enList = voiceService.getshell();
 
@@ -83,7 +88,7 @@ public class VoiceController {
 		System.out.println(gn);
 		String ids = request.getParameter("userid");
 		String gg = request.getParameter("selects");
-		int voss = Integer.parseInt(gg);
+		//int voss = Integer.parseInt(gg);
 		String executionTime = request.getParameter("executionTime");
 		String endTime = request.getParameter("endTime");
 		String[] split1 = ids.split(",");
@@ -107,8 +112,6 @@ public class VoiceController {
 		if (!dirFile.exists()) {
 			dirFile.mkdir();
 		}
-		String userName = SecurityContextHolder.getContext()
-				.getAuthentication().getName();
 		System.out.println("文件上传到" + uploadURL + filName);
 		String urls = uploadURL + filName;
 
@@ -231,9 +234,12 @@ public class VoiceController {
 	}
 
 	@RequestMapping("/voiceManage/voiceQuery.shtml")
-	public ModelAndView voiceQuery(String current, String name) {
+	public ModelAndView voiceQuery(String current, String name,@ModelAttribute("eccomm_admin") SystemUser user) {
 		ModelAndView mv = new ModelAndView("/omp/voice/voice");
+		//查询用户信息
+		UserInfoParameter userInfo = voiceService.getUserInfo(user);
 		getVoList(mv, current, name);
+		mv.addObject("userINfo",userInfo);
 		return mv;
 	}
 
@@ -243,7 +249,7 @@ public class VoiceController {
 		}
 		int count = voiceService.getvoicelist(name);
 		count = count == 0 ? 1 : count;
-		Page page = new Page<>(current, count, "10");
+		Page page = new Page(current, count, "10");
 		List<Map<String, Object>> entities = voiceService.getvoicelist(page, name);
 
 		mv.addObject("entities", entities);
@@ -366,7 +372,7 @@ public class VoiceController {
 	 */
 	@RequestMapping("/voiceManage/sendOrder.shtml")
 	@ResponseBody
-	public String sendVice(String ids, Date stime, Date etime, HttpServletRequest request,@ModelAttribute("eccomm_admin") SystemUser user) throws Exception {
+	public String sendVice(String ids, Date stime, Date etime,String sata,String oid, HttpServletRequest request,@ModelAttribute("eccomm_admin") SystemUser user) throws Exception {
 		String executeType = "1";
 		String executionTime = null;
 		String executionEndTime = null;
@@ -403,20 +409,34 @@ public class VoiceController {
 				}
 				String[] split = ids.split(",");
 				for (String id : split) {
-					voiceService.numRest(id);
+					//语音发送次数-1
+					String voiceSata = voiceService.numRest(id);
 					int x;// 定义两变量
 					Random ne = new Random();// 实例化一个random的对象ne
 					x = ne.nextInt(99999 - 10000 + 1) + 1000;// 为变量赋随机值10000-99999
 					String time = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
 					String t = time + x;
+					//保存语音发送记录
 					voiceService.saveviceoder(id, mid, executeType, executionTime, executionEndTime, t);
-					String result = voiceService.resultVice();
+					//查询最大omp_voice_order.id
+					String result = "";
+					if(!("".equals(oid)||oid == null)){
+						result = oid;
+					}else{
+						result = voiceService.resultVice();
+					}
 					String json = voiceService.sendvice(result, t);
 					imKey = vice.svoice(json);
+//					imKey.setStatusCode(1+"");
 					String number = imKey.getGenerateSerialNumber();
 					if ("1".equals(imKey.getStatusCode())) {
+					//	if (false) {
+						//成功
 						voiceService.resultVOrders(imKey, id, username);
 						i++;
+					}else{
+						//失败回滚
+						voiceService.rollback(id,username,voiceSata);
 					}
 					if (i != 0) {
 						voiceService.toupdete(number);
@@ -446,6 +466,9 @@ public class VoiceController {
 		}
 		return "";
 	}
+	
+	
+	
 
 	/**
 	 * 指令预约发送

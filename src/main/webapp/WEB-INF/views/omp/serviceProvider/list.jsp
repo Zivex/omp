@@ -30,7 +30,7 @@
 						<th width="10%">服务地区</th>
 						<th width="15%">服务类型</th>
 						<th width="15%">服务电话</th>
-						<th width="10%">审核状态</th>
+						<th width="10%">是否有效</th>
 						<th width="15%">操作</th>
 					</tr>
 				</thead>
@@ -42,8 +42,8 @@
 							<td>${item.SCOPE_DELIVERY}</td>
 							<td>${item.SERVER_TYPE}</td>
 							<td>${item.SERVER_TEL}</td>
-							<c:if test="${item.IS_VALID == 1 }"><td style="color: green;">通过</td></c:if>
-							<c:if test="${item.IS_VALID == 0 }"><td style="color: red;">未通过</td></c:if>
+							<c:if test="${item.IS_VALID == 1 }"><td style="color: green;">是</td></c:if>
+							<c:if test="${item.IS_VALID == 0 }"><td style="color: red;">否</td></c:if>
 							<%-- <td><a onclick="hxtoServerInfo(${item.id})">详情</a></td> --%>
 							<td style="text-align: center;">
 								<div class="btn-group">

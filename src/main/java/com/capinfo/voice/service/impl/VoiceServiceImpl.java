@@ -5,16 +5,22 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+
 import net.sf.json.JSONObject;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+
+import com.capinfo.common.model.SystemUser;
+import com.capinfo.framework.model.system.User;
 import com.capinfo.framework.service.GeneralService;
 import com.capinfo.omp.service.OldService;
 import com.capinfo.omp.utils.Page;
 import com.capinfo.omp.ws.model.ImKey;
+import com.capinfo.voice.parameter.UserInfoParameter;
 import com.capinfo.voice.service.VoiceService;
 
 @Service
@@ -105,8 +111,6 @@ public class VoiceServiceImpl implements VoiceService {
 	@Override
 	public String sendOrder(String id) {
 		String sql = "select ov.executeType,ov.startTime,ov.endTime,oi.ZJNUMBER 'landLineNumber',oi.name 'name',oi.HOUSEHOLD_COMMUNITY_ID 'residenceCommunity',ov.voiceFIleId,ov.voiceFileAddress from omp_voice_order ov,omp_old_info oi where ov.id= ? and ov.oldId=oi.ID";
-
-		// TODO Auto-generated method stub
 		List<Map<String, Object>> map = JdbcTemplate.queryForList(sql,
 				new Object[] { id });
 		JSONObject jsonObject = JSONObject.fromObject(map.get(0));
@@ -152,18 +156,21 @@ public class VoiceServiceImpl implements VoiceService {
 		if (!"admin".equals(userName)) {
 			uName = " AND v.agent_id  =  '" + userName + "'";
 		}
-		
-		
+
 		if (!StringUtils.isEmpty(name)) {
 			name = " AND v.`voiceName` LIKE '%" + name + "%'";
 		} else {
 			name = "";
 		}
-		String sql = "select v.id 'id',v.voiceName 'n',v.voiceTime 't',v.remark 'r' from omp_voice_info v where v.stat = '1' "+uName+" order by v.id desc"
+		String sql = "select v.id 'id',v.voiceName 'n',v.voiceTime 't',v.remark 'r' from omp_voice_info v where v.stat = '1' "
+				+ uName
+				+ " order by v.id desc"
 				+ name
 				+ " LIMIT "
 				+ (page.getCurrentPage() - 1)
-				* page.getPageSize() + ", " + page.getPageSize();
+				* page.getPageSize()
+				+ ", "
+				+ page.getPageSize();
 		List<Map<String, Object>> queryForList = JdbcTemplate.queryForList(sql);
 		return queryForList;
 	}
@@ -221,6 +228,12 @@ public class VoiceServiceImpl implements VoiceService {
 	public List<Map<String, Object>> getOldList(Page page, String name,
 			String idCard, String zjNumber, String county, String street,
 			String community, String send_flag, String execute_flag) {
+		String userName = SecurityContextHolder.getContext()
+				.getAuthentication().getName();
+		String uName = "";
+		if (!"admin".equals(userName)) {
+			uName = " AND o.agent_id  =  '" + userName + "'";
+		}
 		if (!StringUtils.isEmpty(name)) {
 			name = " AND oldo.`NAME` LIKE '%" + name + "%'";
 		}
@@ -246,18 +259,17 @@ public class VoiceServiceImpl implements VoiceService {
 			execute_flag = " AND oldo.execute_flag = '" + execute_flag + "'";
 		}
 		String sql = "SELECT oldo.* FROM "
-				+ "(SELECT old.id,old.`NAME`,old.idcard,old.community,old.county,old.street,"
+				+ "(SELECT o.startTime,old.id,o.id orderId,old.`NAME`,old.idcard,old.community,old.county,old.street,"
 				+ "old.ZJNUMBER,o.send_flag,o.execute_flag FROM omp_voice_order o,"
 				+ "(SELECT i.id,i.`NAME`,i.CERTIFICATES_NUMBER idcard,r1.`NAME` community,r2.`NAME`"
 				+ " county,r3.`NAME` street,i.ZJNUMBER FROM omp_old_info i,omp_region r1,omp_region r2,"
 				+ "omp_region r3	WHERE	i.HOUSEHOLD_COMMUNITY_ID = r1.ID"
 				+ " AND i.HOUSEHOLD_COUNTY_ID = r2.ID	AND i.HOUSEHOLD_STREET_ID = r3.ID "
-				+ county
-				+ street
-				+ community
-				+ ") old"
-				+ "	WHERE	o.oldId = old.id AND o.send_flag = 1 order by o.id desc) oldo WHERE 1=1"
+				+ county + street + community + ") old"
+				+ "	WHERE	o.oldId = old.id " + uName
+				+ "AND o.send_flag = 1 ) oldo WHERE 1=1"
 				+ name + idCard + zjNumber + send_flag + execute_flag
+				+" order BY oldo.startTime deSC"
 				+ " LIMIT " + (page.getCurrentPage() - 1) * page.getPageSize()
 				+ ", " + page.getPageSize();
 		List<Map<String, Object>> list = JdbcTemplate.queryForList(sql);
@@ -325,8 +337,10 @@ public class VoiceServiceImpl implements VoiceService {
 	@Override
 	public void saveviceoder(String id, String vid, String executeType,
 			String startTime, String endTime, String t) {
+		String userName = SecurityContextHolder.getContext()
+				.getAuthentication().getName();
 
-		String sql = "INSERT into omp_voice_order(oldId,executeType,startTime,endTime,voiceFIleId,voiceFileAddress,number) VALUES ("
+		String sql = "INSERT into omp_voice_order(oldId,executeType,startTime,endTime,voiceFIleId,voiceFileAddress,number,agent_id) VALUES ("
 				+ id
 				+ ",'"
 				+ executeType
@@ -337,7 +351,7 @@ public class VoiceServiceImpl implements VoiceService {
 				+ "','"
 				+ vid
 				+ "',(select i.voiceFileAddress from omp_voice_info i where id = "
-				+ vid + "),'" + t + "')";
+				+ vid + "),'" + t + "','" + userName + "')";
 		JdbcTemplate.update(sql);
 	}
 
@@ -420,7 +434,7 @@ public class VoiceServiceImpl implements VoiceService {
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");// 设置日期格式
 		System.out.println(df.format(new Date()));// new Date()为获取当前系统时间
 		String date = df.format(new Date());
-		String sql = "insert into omp_order_number (oid,send_date,send_flag,number,returnType,operator) VALUES("
+		String sql = "insert into   (oid,send_date,send_flag,number,returnType,operator) VALUES("
 				+ id
 				+ ",'"
 				+ date
@@ -428,8 +442,10 @@ public class VoiceServiceImpl implements VoiceService {
 				+ imKey.getStatusCode()
 				+ ",'"
 				+ imKey.getGenerateSerialNumber() + "','2','" + username + "')";
+		// + "123" + "','2','" + username + "')";
 		oldService.saveLogger("5", "语音指令表", "" + username + "",
 				"" + imKey.getStatusCode() + "");
+		// "1");
 		JdbcTemplate.update(sql);
 	}
 
@@ -455,6 +471,14 @@ public class VoiceServiceImpl implements VoiceService {
 	@SuppressWarnings("deprecation")
 	@Override
 	public Boolean queryCount(String ids) {
+		String userName = SecurityContextHolder.getContext()
+				.getAuthentication().getName();
+		String uName = "";
+		if ("admin".equals(userName)) {
+			return true;
+		} else {
+			uName = " AND u.USER_NAME  =  '" + userName + "'";
+		}
 
 		String sqlRest = "";
 		String sql1 = "select sum(o.num) from omp_old_info o where o.id in ("
@@ -468,10 +492,7 @@ public class VoiceServiceImpl implements VoiceService {
 					+ ids + ") ";
 			return true;
 		} else {
-			String userName = SecurityContextHolder.getContext()
-					.getAuthentication().getName();
-			String sql3 = "select u.num from users u where u.USER_NAME = '"
-					+ userName + "'";
+			String sql3 = "select u.num from users u where 1=1  " + uName;
 			int k = JdbcTemplate.queryForInt(sql3);
 			if (i + k >= j) {
 				return true;
@@ -483,11 +504,17 @@ public class VoiceServiceImpl implements VoiceService {
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public void numRest(String id) {
-		// OmpOldInfo oldInfo = generalService.getObjectById(OmpOldInfo.class,
-		// Long.parseLong(id));
+	public String numRest(String id) {
 		String sqlRest = "";
 		String count = "";
+		String userName = SecurityContextHolder.getContext()
+				.getAuthentication().getName();
+		String uName = "";
+		if ("admin".equals(userName)) {
+			return null;
+		} else {
+			uName = " AND o.user_name  =  '" + userName + "'";
+		}
 
 		count = "select sum(o.num) from omp_old_info o where o.id = " + id;
 		int int1 = JdbcTemplate.queryForInt(count);
@@ -495,18 +522,97 @@ public class VoiceServiceImpl implements VoiceService {
 			sqlRest = "update omp_old_info o set o.num = 0 where o.id in ("
 					+ id + ") ";
 			JdbcTemplate.update(sqlRest);
+			// sata = 1;
+			// 老人
+			return "old";
 		} else {
-			String userName = SecurityContextHolder.getContext()
-					.getAuthentication().getName();
-			sqlRest = "select sum(o.num) from users o where o.USER_NAME='"
-					+ userName + "'";
+			sqlRest = "select sum(o.num) from users o where 1=1 " + uName;
 			int i = JdbcTemplate.queryForInt(sqlRest);
 			i = i - 1;
-			sqlRest = "update users o set o.num = " + i
-					+ " where o.USER_NAME='" + userName + "'";
+			sqlRest = "update users o set o.num = " + i + " where 1=1" + uName;
 			JdbcTemplate.update(sqlRest);
+			// sata = 2;
+			// 用户
+			return Integer.toBinaryString(i);
 		}
-		System.out.println("111111111111111111111");
+	}
+
+	@Override
+	public void rollback(String id, String username, String voiceSata) {
+		if (voiceSata != null) {
+			String sql = "";
+			if ("old".equals(voiceSata)) {
+				// 老人
+				sql = "update omp_old_info o set o.num = 1 where o.id in ("
+						+ id + ") ";
+			} else {
+				// 客户
+				int i = Integer.parseInt(voiceSata);
+				i = i + 1;
+				sql = "update users o set o.num = " + i
+						+ " where 1=1 and o.user_name = '" + username + "'";
+			}
+			JdbcTemplate.update(sql);
+		}
+
+	}
+
+	@SuppressWarnings("deprecation")
+	@Override
+	public UserInfoParameter getUserInfo(SystemUser user) {
+		if (user != null) {
+			// 发送成功
+			String sql1 = "select count(*) from omp_voice_order o where o.send_flag = 1 and o.agent_id = '"
+					+ user.getLogonName() + "'";
+			int sendSuccess = JdbcTemplate.queryForInt(sql1);
+			// 发送失败
+			String sql2 = "select count(*) from omp_voice_order o where o.send_flag = 2 and o.agent_id = '"
+					+ user.getLogonName() + "'";
+			int sendFail = JdbcTemplate.queryForInt(sql2);
+
+			// 执行成功
+			String sql3 = "select count(*) from omp_voice_order o where o.execute_flag = 1 and o.agent_id = '"
+					+ user.getLogonName() + "'";
+			int executeSuc = JdbcTemplate.queryForInt(sql3);
+
+			String sql4 = "select count(*) from omp_voice_order o where o.execute_flag = 0 and o.agent_id = '"
+					+ user.getLogonName() + "'";
+			int executeFail = JdbcTemplate.queryForInt(sql4);
+
+			// 未接听
+			String sql5 = "select count(*) from omp_voice_order o where o.execute_flag = 3 and o.agent_id = '"
+					+ user.getLogonName() + "'";
+			int notAnswer = JdbcTemplate.queryForInt(sql5);
+
+			// 未返回
+			String sql6 = "select count(*) from omp_voice_order o where o.execute_flag is null and o.agent_id = '"
+					+ user.getLogonName() + "'";
+			int notReturn = JdbcTemplate.queryForInt(sql6);
+
+			// 剩余语音发送次数
+			String sql7 = "select u.num from users u where u.USER_NAME = '"
+					+ user.getLogonName() + "'";
+			int voiceCount = JdbcTemplate.queryForInt(sql7);
+
+			// 语音发送总次数
+			String sql8 = "select count(*) from omp_voice_order o where o.agent_id  = '"
+					+ user.getLogonName() + "'";
+			int sumCount = JdbcTemplate.queryForInt(sql8);
+
+			UserInfoParameter userInfo = new UserInfoParameter();
+			userInfo.setExecuteFail(executeFail);
+			userInfo.setExecuteSuc(executeSuc);
+			userInfo.setNotAnswer(notAnswer);
+			userInfo.setNotReturn(notReturn);
+			userInfo.setSendFail(sendFail);
+			userInfo.setSendSuccess(sendSuccess);
+			userInfo.setVoiceCount(voiceCount);
+			userInfo.setSumCount(sumCount);
+			return userInfo;
+
+		}
+
+		return null;
 	}
 
 }

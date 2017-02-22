@@ -272,7 +272,9 @@
 	//保存社区指令
 	function save(){
 		
-	    var shequId=document.getElementById("shequId").value;    
+		
+	    var streetId=document.getElementById("shequId").value;  
+	    alert(streetId)
 		var communityids = $(".tb2").map(function(){
 			return $(this).val();
 		}).get().join();
@@ -281,7 +283,64 @@
 		var trnumber = $("#table3 tr").length;
 		$("#table3").find("tr").eq(1);
 		var json = "[{";
+		
+		
+		var jsonName="[{";
 		for(var i=1;i<trnumber;i++){
+			var key = $("#table3").find("tr").eq(i).find("td").eq(0).text();
+			
+			var kid = $("#table3").find("tr").eq(i).find("td").eq(2).attr("value");
+			//服务商名称
+			var showname = $("#table3").find("tr").eq(i).find("td").eq(3).text();
+			var showid = $("#table3").find("tr").eq(i).find("td").eq(5).find("input").val();
+			//联系方式
+			var shownumber = $("#"+key).val();
+			//去除前后空格
+			shownumber=shownumber.replace(/(^\s*)|(\s*$)/g, "");
+			//正则表达式
+			var reg = new RegExp("^[0-9]*$");
+			if(shownumber==""){
+				shownumber="96003";
+				showname="96003";
+			}
+			 if(!reg.test(shownumber)){  
+				 alert("电话号码不可含有特殊字符。"); 
+				 return false;
+			 }  
+			 //M1:对应的服务商电话
+			json = json + "\"" + key + "\"" ;
+			json = json + ":\"" + shownumber + "\"" ;
+			//M1:对应的服务商名称 
+			jsonName = jsonName + "\"" + key + "\"" ;
+			jsonName = jsonName + ":\"" + showname + "\"" ;
+			if (i+1 < 17){//
+				json = json + ",";
+				jsonName=jsonName + ",";
+			}
+			
+		};
+		json = json + "}]";
+		jsonName = jsonName + "}]";
+		
+		
+		
+		$.post("<%=request.getContextPath()%>/admin/omp/ompRegion/saveSqOrderSIdNew.shtml",
+				{streetId:streetId,kid:kid,communityids:communityids,ptype:ptype,json:json,jsonName:jsonName,showid:showid,shownumber:shownumber},
+				function(data){	           
+			});
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		/* for(var i=1;i<trnumber;i++){
 			var key = $("#table3").find("tr").eq(i).find("td").eq(0).text();
 			
 			var kid = $("#table3").find("tr").eq(i).find("td").eq(2).attr("value");
@@ -308,7 +367,7 @@
 			}
 			
 		};
-		json = json + "}]";
+		json = json + "}]"; */
 		$.post("<%=request.getContextPath()%>/admin/omp/ompRegion/saveSqOrder.shtml",
 				{shequId:shequId,kid:kid,communityids:communityids,ptype:ptype,json:json,showid:showid,shownumber:shownumber},
 				function(data){

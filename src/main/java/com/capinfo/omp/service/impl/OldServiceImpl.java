@@ -1,5 +1,6 @@
 package com.capinfo.omp.service.impl;
 
+import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -15,22 +16,32 @@ import net.sf.json.JSONObject;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.xml.resolver.apps.resolver;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.capinfo.assistant.platform.ws.card.model.CardPersonMessageBack;
 import com.capinfo.assistant.platform.ws.card.service.CardPersonMessageWsServiceProxy;
+import com.capinfo.framework.web.service.impl.CommonsDataOperationServiceImpl;
+import com.capinfo.omp.model.CardPerson;
+import com.capinfo.omp.model.CardPerson1;
 import com.capinfo.omp.model.OmpOldInfo;
+import com.capinfo.omp.model.Omp_Old_Info;
+import com.capinfo.omp.parameter.OrderParameter;
 import com.capinfo.omp.service.OldService;
 import com.capinfo.omp.utils.Page;
 
+@SuppressWarnings("rawtypes")
 @Service
-public class OldServiceImpl implements OldService {
+public class OldServiceImpl extends CommonsDataOperationServiceImpl implements
+		OldService {
 
 	@Autowired
 	private JdbcTemplate JdbcTemplate;
@@ -39,15 +50,17 @@ public class OldServiceImpl implements OldService {
 	public List<Map<String, Object>> getOldContextList(Page page, String name,
 			String idCard, String zjNumber, String county, String street,
 			String community, String isGenerationOrder, String isindividuation) {
-		String userName = SecurityContextHolder.getContext().getAuthentication()
-				.getName();
+		String userName = SecurityContextHolder.getContext()
+				.getAuthentication().getName();
 		String uName = "";
-		if(!"admin".equals(userName)){
-			uName = " AND I.agent_id  =  '"+userName+"'";
+		if (!"admin".equals(userName)) {
+			uName = " AND I.agent_id  =  '" + userName + "'";
 		}
-		
+
 		if (name != null && !StringUtils.isEmpty(name)) {
 			name = " AND I.NAME  LIKE  '%" + name + "%'";
+		} else {
+			name = "";
 		}
 		if (idCard != null && !StringUtils.isEmpty(idCard)) {
 			idCard = " AND I.CERTIFICATES_NUMBER = '" + idCard + "'";
@@ -78,7 +91,7 @@ public class OldServiceImpl implements OldService {
 		 * if (!StringUtils.isEmpty(creationTime)) { creationTime =
 		 * " AND I.creationTime like '%"+creationTime+"%'"; }
 		 */
-		String sql = "select i.id,i.`NAME`,i.ZJNUMBER,i.PHONE,i.TELTYPE,r2.`NAME` q,r3.`NAME` j,r1.`NAME` s,r5.id typeid,i.address,i.CERTIFICATES_NUMBER,i.isindividuation from omp_region r1,omp_region r2,omp_region r3,omp_phone_type r5,omp_old_info i "
+		String sql = "select i.agent_id, i.id,i.`NAME`,i.ZJNUMBER,i.PHONE,i.TELTYPE,r2.`NAME` q,r3.`NAME` j,r1.`NAME` s,r5.id typeid,i.address,i.CERTIFICATES_NUMBER,i.isindividuation from omp_region r1,omp_region r2,omp_region r3,omp_phone_type r5,omp_old_info i "
 				+ "where STATE = 1 "
 				+ name
 				+ idCard
@@ -239,9 +252,9 @@ public class OldServiceImpl implements OldService {
 	@Override
 	public int delOldById(String old) {
 		// TODO Auto-generated method stub
-		//String sql = "UPDATE OMP_OLD_INFO SET STATE = '0' WHERE ID = " + old;
+		// String sql = "UPDATE OMP_OLD_INFO SET STATE = '0' WHERE ID = " + old;
 		String sql = "delete from OMP_OLD_INFO  WHERE ID = " + old;
-		
+
 		int i = JdbcTemplate.update(sql);
 		return i;
 	}
@@ -258,6 +271,8 @@ public class OldServiceImpl implements OldService {
 		}
 		if (name != null && !StringUtils.isEmpty(name)) {
 			name = " AND I.NAME  LIKE  '%" + name + "%'";
+		} else {
+			name = "";
 		}
 		if (idCard != null && !StringUtils.isEmpty(idCard)) {
 			idCard = " AND I.CERTIFICATES_NUMBER = '" + idCard + "'";
@@ -295,8 +310,7 @@ public class OldServiceImpl implements OldService {
 				+ zjNumber
 				+ county
 				+ street
-				+ community
-				+ isGenerationOrder + isindividuation;
+				+ community + isGenerationOrder + isindividuation;
 		int maxRows = JdbcTemplate.queryForInt(sql);
 		return maxRows;
 	}
@@ -430,6 +444,7 @@ public class OldServiceImpl implements OldService {
 		String sql = "update omp_old_order set keyPointMessage = '" + json
 				+ "', send_flag = 2 ,execute_flag = 3  where oldId = " + id;
 		int update = JdbcTemplate.update(sql);
+		System.out.println("指令修改");
 		if (update > 0) {
 			setOldisIndividuation(id, 1);
 		}
@@ -503,23 +518,256 @@ public class OldServiceImpl implements OldService {
 			for (int i = 0, len = strs.length; i < len; i++) {
 				String cid = strs[i].toString();
 				CardPersonMessageBack m = d.getCardPersonMessageByIDNumber(cid);
-				String housCounty_id = HOUSEHOLD_COUNTY_ID(m
-						.getHouseholdCounty());
-				String housStreet_id = HOUSEHOLD_STREET_ID(m
-						.getHouseholdStreet());
-				String housCommun_id = HOUSEHOLD_COMMUNITY_ID(m
-						.getHouseholdCommunity());
-				String sql = "UPDATE omp_old_info i SET i.HOUSEHOLD_COUNTY_ID = '"
-						+ housCounty_id
-						+ "',i.HOUSEHOLD_STREET_ID = '"
-						+ housStreet_id
-						+ "',i.HOUSEHOLD_COMMUNITY_ID = '"
-						+ housCommun_id
-						+ "',i.ADDRESS = '"
-						+ m.getHouseholdAddress()
-						+ "',i.sync = '1' WHERE i.CERTIFICATES_NUMBER = '"
-						+ cid + "'";
-				JdbcTemplate.update(sql);
+				String auditStatus = m.getAuditStatus();
+				if ("".equals(auditStatus) || auditStatus == null) {
+					auditStatus = "";
+				}
+				String bankCard = m.getBankCard();
+				if ("".equals(bankCard) || bankCard == null) {
+					bankCard = "";
+				}
+				String biotope = m.getBiotope();
+				if ("".equals(biotope) || biotope == null) {
+					biotope = "";
+				}
+				String birthdate = m.getBirthdate();
+				if ("".equals(birthdate) || birthdate == null) {
+					birthdate = "";
+				}
+				String bookId = m.getBookId();
+				if ("".equals(bookId) || bookId == null) {
+					bookId = "";
+				}
+				String cardType = m.getCardType();
+				if ("".equals(cardType) || cardType == null) {
+					cardType = "";
+				}
+				String certificatesNumber = m.getCertificatesNumber();
+				if ("".equals(certificatesNumber) || certificatesNumber == null) {
+					certificatesNumber = "";
+				}
+				String certificatesType = m.getCertificatesType();
+				if ("".equals(certificatesType) || certificatesType == null) {
+					certificatesType = "";
+				}
+				String cityPushed = m.getCityPushed();
+				if ("".equals(cityPushed) || cityPushed == null) {
+					cityPushed = "";
+				}
+				String cityPushedDate = m.getCityPushedDate();
+				if ("".equals(cityPushedDate) || cityPushedDate == null) {
+					cityPushedDate = "";
+				}
+				String contacter = m.getContacter();
+				if ("".equals(contacter) || contacter == null) {
+					contacter = "";
+				}
+				String contacterIdcardNumber = m.getContacterIdcardNumber();
+				if ("".equals(contacterIdcardNumber)
+						|| contacterIdcardNumber == null) {
+					contacterIdcardNumber = "";
+				}
+				String contacterIdcardType = m.getContacterIdcardType();
+				if ("".equals(contacterIdcardType)
+						|| contacterIdcardType == null) {
+					contacterIdcardType = "";
+				}
+				String contacterMobile = m.getContacterMobile();
+				if ("".equals(contacterMobile) || contacterMobile == null) {
+					contacterMobile = "";
+				}
+				String contacterRelation = m.getContacterRelation();
+				if ("".equals(contacterRelation) || contacterRelation == null) {
+					contacterRelation = "";
+				}
+				String creatCardDate = m.getCreatCardDate();
+				if ("".equals(creatCardDate) || creatCardDate == null) {
+					creatCardDate = "";
+				}
+				String creatCardPushDate = m.getCreatCardPushDate();
+				if ("".equals(creatCardPushDate) || creatCardPushDate == null) {
+					creatCardPushDate = "";
+				}
+				String creatCardStatus = m.getCreatCardStatus();
+				if ("".equals(creatCardStatus) || creatCardStatus == null) {
+					creatCardStatus = "";
+				}
+				String createCardFailInfo = m.getCreateCardFailInfo();
+				if ("".equals(createCardFailInfo) || createCardFailInfo == null) {
+					createCardFailInfo = "";
+				}
+				String createCardInDate = m.getCreateCardInDate();
+				if ("".equals(createCardInDate) || createCardInDate == null) {
+					createCardInDate = "";
+				}
+				String createCardSuccess = m.getCreateCardSuccess();
+				if ("".equals(createCardSuccess) || createCardSuccess == null) {
+					createCardSuccess = "";
+				}
+				String degreeType = m.getDegreeType();
+				if ("".equals(degreeType) || degreeType == null) {
+					degreeType = "";
+				}
+				String disabilityCardDate = m.getDisabilityCardDate();
+				if ("".equals(disabilityCardDate) || disabilityCardDate == null) {
+					disabilityCardDate = "";
+				}
+				String gatherStatus = m.getGatherStatus();
+				if ("".equals(gatherStatus) || gatherStatus == null) {
+					gatherStatus = "";
+				}
+				String hcFailInfo = m.getHcFailInfo();
+				if ("".equals(hcFailInfo) || hcFailInfo == null) {
+					hcFailInfo = "";
+				}
+				String hcInTime = m.getHcInTime();
+				if ("".equals(hcInTime) || hcInTime == null) {
+					hcInTime = "";
+				}
+				String hcPushedDate = m.getHcPushedDate();
+				if ("".equals(hcPushedDate) || hcPushedDate == null) {
+					hcPushedDate = "";
+				}
+				String hcSuccess = m.getHcSuccess();
+				if ("".equals(hcSuccess) || hcSuccess == null) {
+					hcSuccess = "";
+				}
+				String healthCareType = m.getHealthCareType();
+				if ("".equals(healthCareType) || healthCareType == null) {
+					healthCareType = "";
+				}
+				String householdAddress = m.getHouseholdAddress();
+				if ("".equals(householdAddress) || householdAddress == null) {
+					householdAddress = "";
+				}
+				String householdCommunity = m.getHouseholdCommunity();
+				if ("".equals(householdCommunity) || householdCommunity == null) {
+					householdCommunity = "";
+				}
+				String householdCounty = m.getHouseholdCounty();
+				if ("".equals(householdCounty) || householdCounty == null) {
+					householdCounty = "";
+				}
+				String householdStreet = m.getHouseholdStreet();
+				if ("".equals(householdStreet) || householdStreet == null) {
+					householdStreet = "";
+				}
+				String idcradDept = m.getIdcradDept();
+				if ("".equals(idcradDept) || idcradDept == null) {
+					idcradDept = "";
+				}
+				String mainSourceIncomeType = m.getMainSourceIncomeType();
+				if ("".equals(mainSourceIncomeType)
+						|| mainSourceIncomeType == null) {
+					mainSourceIncomeType = "";
+				}
+				String marryStateType = m.getMarryStateType();
+				if ("".equals(marryStateType) || marryStateType == null) {
+					marryStateType = "";
+				}
+				String name = m.getName();
+				if ("".equals(name) || name == null) {
+					name = "";
+				}
+				String nation = m.getNation();
+				if ("".equals(nation) || nation == null) {
+					nation = "";
+				}
+				String newspaperGetWayType = m.getNewspaperGetWayType();
+				if ("".equals(newspaperGetWayType)
+						|| newspaperGetWayType == null) {
+					newspaperGetWayType = "";
+				}
+				String personType = m.getPersonType();
+				if ("".equals(personType) || personType == null) {
+					personType = "";
+				}
+				String postalCode = m.getPostalCode();
+				if ("".equals(postalCode) || postalCode == null) {
+					postalCode = "";
+				}
+				String residenceAddress = m.getResidenceAddress();
+				if ("".equals(residenceAddress) || residenceAddress == null) {
+					residenceAddress = "";
+				}
+				String residenceCommunity = m.getResidenceCommunity();
+				if ("".equals(residenceCommunity) || residenceCommunity == null) {
+					residenceCommunity = "";
+				}
+				String residenceCounty = m.getResidenceCounty();
+				if ("".equals(residenceCounty) || residenceCounty == null) {
+					residenceCounty = "";
+				}
+				String residenceStreet = m.getResidenceStreet();
+				if ("".equals(residenceStreet) || residenceStreet == null) {
+					residenceStreet = "";
+				}
+				String resideType = m.getResideType();
+				if ("".equals(resideType) || resideType == null) {
+					resideType = "";
+				}
+				String revenueType = m.getRevenueType();
+				if ("".equals(revenueType) || revenueType == null) {
+					revenueType = "";
+				}
+				String selfCareAbilityType = m.getSelfCareAbilityType();
+				if ("".equals(selfCareAbilityType)
+						|| selfCareAbilityType == null) {
+					selfCareAbilityType = "";
+				}
+				String sex = m.getSex();
+				if ("".equals(sex) || sex == null) {
+					sex = "";
+				}
+				String treatmentOney = m.getTreatmentOney();
+				if ("".equals(treatmentOney) || treatmentOney == null) {
+					treatmentOney = "";
+				}
+				String yktNumber = m.getYktNumber();
+				if ("".equals(yktNumber) || yktNumber == null) {
+					yktNumber = "";
+				}
+				String bjtNumber = m.getBjtNumber();
+				if ("".equals(bjtNumber) || bjtNumber == null) {
+					bjtNumber = "";
+				}
+
+				// Serializable save = se.save(cardPerson1);
+				// System.out.println(save);
+				String sql = "INSERT INTO `card_person` VALUES ('"
+						+ auditStatus + "', '" + bankCard + "', '" + biotope
+						+ "', '" + birthdate + "', '" + bjtNumber + "', '"
+						+ bookId + "', '" + cardType + "', '"
+						+ certificatesNumber + "', '" + certificatesType
+						+ "', '" + cityPushed + "', '" + cityPushedDate
+						+ "', '" + contacter + "', '" +contacterIdcardNumber +"', '" + contacterIdcardType+"', '"
+						+ contacterMobile+"', '" + contacterRelation+"', '" +creatCardDate +"', '" +creatCardPushDate +"', '" +creatCardStatus +"', '"
+						+ createCardFailInfo+"', '" + createCardInDate+"', '" + createCardSuccess+"', '" +degreeType +"', '" + disabilityCardDate+"', '"
+						+ gatherStatus+"', '" +hcFailInfo +"', '" +hcInTime +"', '" +hcPushedDate +"', '" +hcSuccess +"', '"
+						+healthCareType +"', '" + householdAddress+"', '" +householdCommunity +"', '" +householdCounty +"', '" + householdStreet+"', '"
+						+idcradDept +"', '" + mainSourceIncomeType+"', '" +marryStateType +"', '" + name+"', '" +nation +"', '"
+						+newspaperGetWayType +"', '" +personType +"', '" + postalCode+"', '" +resideType +"', '" +residenceAddress +"', '"
+						+residenceCommunity +"', '" +residenceCounty +"', '" +residenceStreet +"', '" +revenueType +"', '" +selfCareAbilityType +"', '"
+						+ sex+"', '" + treatmentOney+"', '"+yktNumber+"')";
+
+				/*
+				 * String housCounty_id = HOUSEHOLD_COUNTY_ID(m
+				 * .getHouseholdCounty()); String housStreet_id =
+				 * HOUSEHOLD_STREET_ID(m .getHouseholdStreet()); String
+				 * housCommun_id = HOUSEHOLD_COMMUNITY_ID(m
+				 * .getHouseholdCommunity()); String sql =
+				 * "UPDATE omp_old_info i SET i.HOUSEHOLD_COUNTY_ID = '" +
+				 * housCounty_id + "',i.HOUSEHOLD_STREET_ID = '" + housStreet_id
+				 * + "',i.HOUSEHOLD_COMMUNITY_ID = '" + housCommun_id +
+				 * "',i.ADDRESS = '" + m.getHouseholdAddress() +
+				 * "',i.sync = '1' WHERE i.CERTIFICATES_NUMBER = '" + cid + "'";
+				 */
+				System.out.println(sql);
+				int update = JdbcTemplate.update(sql);
+				if(update>0){
+					String syncsql = "UPDATE omp_old_info i SET i.sync = '1'WHERE i.CERTIFICATES_NUMBER = '" + cid + "'";
+					JdbcTemplate.update(syncsql);
+				}
 			}
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
@@ -564,6 +812,14 @@ public class OldServiceImpl implements OldService {
 				+ add + "' limit 1";
 		Map<String, Object> map = JdbcTemplate.queryForMap(sql);
 		return map.get("id").toString();
+	}
+
+	@Override
+	public List<Map<String, Object>> getPerson(String cardIds) {
+	String sql = "SELECT * from card_person o WHERE o.certificatesNumber = "
+				+ cardIds;
+		List<Map<String, Object>> list = JdbcTemplate.queryForList(sql);
+		return list;
 	}
 
 }

@@ -7,8 +7,11 @@
 <head>
 <%@ include file="/WEB-INF/views/layout/adm_top.jsp"%>
 <style type="text/css">
-	#backButton{font-size:20px; float: right;margin-right:2cm;}
-
+#backButton {
+	font-size: 20px;
+	float: right;
+	margin-right: 2cm;
+}
 </style>
 
 </head>
@@ -24,88 +27,85 @@
 			<%@ include file="/WEB-INF/views/menu/menu_adm.jsp"%>
 			<!-- ./menu -->
 			<!-- main -->
-			<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main" role="main">
+			<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main"
+				role="main">
 				<div>
 					<div class="page-header">
 						<h1>
-							<i class="fa fa-user fa-fw"></i>老人管理
-							<span id="backspan" ><input type="button" id="backButton" onclick="hxBackClick()"   value="返回"/></span>
+							<i class="fa fa-user fa-fw"></i>老人管理 <span id="backspan"><input
+								type="button" id="backButton" onclick="hxBackClick()" value="返回" /></span>
 						</h1>
 					</div>
 					<div class="header-underline"></div>
 					<div id="displayDiv">
 						<div class="operatorDiv">
 							<c:url var="queryForm" value="/old/oldMatch/listtoo.shtml" />
-							<form:form id="command" role="form" class="form-inline" action="${queryForm}" method="post">
-							<input id="pageNo" name="current" type="hidden" value="1">
-<!-- 								&nbsp; -->
-<!-- 									<a role="button" class="btn btn-primary" onclick="DeAuditInformation()">未生成指令</a> -->
-<!-- 								&nbsp; -->
-<!-- 								&nbsp; -->
-<!-- 									<a role="button" class="btn btn-primary" onclick="DeAuditInformation()">*已生成指令*</a> -->
-<!-- 								&nbsp; -->
-<!-- 								&nbsp; -->
-<!-- 									<a role="button" class="btn btn-primary" onclick="importInformation()">导入信息</a> -->
-<!-- 								&nbsp; -->
-<!-- 								&nbsp; -->
-<!-- 									<a role="button" class="btn btn-primary" onclick="oldInformationDisplay()">老人信息展示</a> -->
-<!-- 								&nbsp; -->
-									<table class="table" >
-										<tr>
-											<td>姓名：</td>
-											<td><input type="text" value="${name }" id="name" name="name"/></td>
-											<td>身份证号码：</td>
-											<td><input type="text" value="${idCard }" id="idCard" name="idCard"/></td>
-											<td>座机号：</td>
-											<td><input type="text" value="${zjNumber }" id="zjNumber" name="zjNumber"/></td>
-											<td>是否生成指令</td>
-											<td>
-												<select id="isGenerationOrder" name="isGenerationOrder">
-													<option value="${isGenerationOrder }">--请选择--</option>		
-													<option value="0">未生成指令</option>
-													<option value="1">已生成指令</option>
-												</select>
-											</td>
-										</tr>
-										<tr>
-											<!-- <td>申请时间：</td>
+							<form:form id="command" role="form" class="form-inline"
+								action="${queryForm}" method="post">
+								<input id="pageNo" name="current" type="hidden" value="1">
+								<!-- 								&nbsp; -->
+								<!-- 									<a role="button" class="btn btn-primary" onclick="DeAuditInformation()">未生成指令</a> -->
+								<!-- 								&nbsp; -->
+								<!-- 								&nbsp; -->
+								<!-- 									<a role="button" class="btn btn-primary" onclick="DeAuditInformation()">*已生成指令*</a> -->
+								<!-- 								&nbsp; -->
+								<!-- 								&nbsp; -->
+								<!-- 									<a role="button" class="btn btn-primary" onclick="importInformation()">导入信息</a> -->
+								<!-- 								&nbsp; -->
+								<!-- 								&nbsp; -->
+								<!-- 									<a role="button" class="btn btn-primary" onclick="oldInformationDisplay()">老人信息展示</a> -->
+								<!-- 								&nbsp; -->
+								<table class="table">
+									<tr>
+										<td>姓名：</td>
+										<td><input type="text" id="name" name="name" /></td>
+										<%-- <td><form:input path="entity.name"  id="name" /></td> --%>
+										<td>身份证号码：</td>
+										<td><input type="text" value="${idCard }" id="idCard"
+											name="idCard" /></td>
+										<td>座机号：</td>
+										<td><input type="text" value="${zjNumber }" id="zjNumber"
+											name="zjNumber" /></td>
+										<td>是否生成指令</td>
+										<td><select id="isGenerationOrder"
+											name="isGenerationOrder">
+												<option value="${isGenerationOrder }">--请选择--</option>
+												<option value="0">未生成指令</option>
+												<option value="1">已生成指令</option>
+										</select></td>
+									</tr>
+									<tr>
+										<!-- <td>申请时间：</td>
 											<td><input type="text" id="creationTime" name="creationTime" value="" /></td> -->
-											<td>个性类型：</td>
-											<td>
-												<select id="isindividuation" name="isindividuation">
-													<option value="${isindividuation }">--请选择--</option>		
-													<option value="0">非个性化</option>
-													<option value="1">已个性化</option>
-												</select>
-											</td>
-											
-											<td>区域：</td>
-											<td>
-												<select id="county" name="county">
-													<option value="${county }">--请选择--</option>		
-												</select>
-											</td>
-											<td>街道：</td>
-											<td>
-												<select id="street" name="street">
-													<option value="${street }">--请选择--</option>		
-												</select>
-											</td>
-											<td>社区：</td>
-											<td>
-												<select id="community" name="community">
-													<option value="${community }">--请选择--</option>		
-												</select>
-											</td>
-										</tr>
-										<tr>
-											<td><button onclick="quety()">查询</button></td>
-											<td><input type="reset"/></td>
-											<td><button onclick="importInformation()">导入</button></td>
-<!-- 											<td><button>导出</button></td> -->
+										<td>个性类型：</td>
+										<td><select id="isindividuation" name="isindividuation">
+												<option value="${isindividuation }">--请选择--</option>
+												<option value="0">非个性化</option>
+												<option value="1">已个性化</option>
+										</select></td>
+
+										<td>区域：</td>
+										<td><select id="county" name="county">
+												<option value="${county }">--请选择--</option>
+										</select></td>
+										<td>街道：</td>
+										<td><select id="street" name="street">
+												<option value="${street }">--请选择--</option>
+										</select></td>
+										<td>社区：</td>
+										<td><select id="community" name="community">
+												<option value="${community }">--请选择--</option>
+										</select></td>
+									</tr>
+									<tr>
+<!-- 										<td><input type="button" onclick="quety()" value="查询"/></td> -->
+										<td><button>查询</button>
+										<td><input type="reset" /></td>
+										<td><button onclick="importInformation()">导入</button></td>
+										<!-- 											<td><button>导出</button></td> -->
 										<!-- 	<td><button onclick="createOrder()">批量生成指令</button></td> -->
-										</tr>
-									</table>
+									</tr>
+								</table>
 							</form:form>
 						</div>
 						<hr>
@@ -116,7 +116,7 @@
 							<%@ include file="/WEB-INF/views/omp/old/list.jsp"%>
 						</div>
 					</div>
-					<div id="displayDiv1"  ></div>
+					<div id="displayDiv1"></div>
 				</div>
 			</div>
 			<!-- ./main -->
@@ -207,6 +207,13 @@
 		function toupd(id){
 			$.post("${pageContext.request.contextPath}/old/oldMatch/upd.shtml",
 					{id:id},
+					function(data){
+				$("#resultDiv").html(data);
+			});
+		}
+		function see(cardId,id){
+			$.post("${pageContext.request.contextPath}/old/oldMatch/see.shtml",
+					{cardId:cardId,id:id},
 					function(data){
 				$("#resultDiv").html(data);
 			});

@@ -5,6 +5,9 @@ import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
+import com.capinfo.framework.web.service.CommonsDataOperationService;
+import com.capinfo.omp.model.Omp_Old_Info;
+import com.capinfo.omp.parameter.OrderParameter;
 import com.capinfo.omp.utils.Page;
 import com.capinfo.omp.ws.model.ImKey;
 
@@ -38,6 +41,7 @@ public interface OrderService {
     void resultOrder(ImKey imKey,String id,String username);
     
     String RequestZJ(String zj);
+    
     
     
 }

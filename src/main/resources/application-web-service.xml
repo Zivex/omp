@@ -55,5 +55,11 @@
 	<!-- <bean id="ompRegionService" parent="commonsDataOperationService"
 		class="com.capinfo.region.service.impl.OmpRegionServiceImpl">
 	</bean>	 -->
+	
+	
+	<!-- 老人管理 -->
+<!-- 	<bean id="oldServiceImpl" parent="commonsDataOperationService" -->
+<!-- 		class="com.capinfo.omp.service.impl.OldServiceImpl"> -->
+<!-- 	</bean> -->
 
 </beans>

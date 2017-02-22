@@ -8,7 +8,7 @@
 	<div class="row">
 		<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2">
 			<ul class="footer-links">
-				<li>北京市|老人机管理系统</li>
+				<li>北京市|入户信息机管理系统</li>
 				<li></li>
 			</ul>
 		</div>

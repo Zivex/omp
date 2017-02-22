@@ -10,10 +10,12 @@
 <script type="text/javascript" src="${pageContext.request.contextPath}/resources/easyUIjs/sys.js" rel="stylesheet"></script>
 
 <script type="text/javascript">
+		var streeids;
 	$(document).ready(function() {
 		$('#tree').tree({
 			onDblClick : function(node) {
 				var id = node.id;
+				streeids = id;
 				$.post("${pageContext.request.contextPath}/admin/omp/ompRegion/get.shtml",
 					{id:id},
 					function(data){
@@ -156,6 +158,7 @@
 <script type="text/javascript">
 
 	function del() {
+		
 		$(".ids:checkbox:checked").map(function() {
 			$(this).parent().parent().remove();
 		});
@@ -198,7 +201,7 @@
 		var showName = $("#showName").val();
 		var serverType = $("#select").val();
 		$.post("<%=request.getContextPath()%>/admin/omp/ompRegion/allocation.shtml",
-				{showName:showName,serverType:serverType},
+				{showName:showName,serverType:serverType,streetids:streeids},
 				function(data){
 				$("#table4").empty();
 				$("#table4").append("<tr><td><input type='radio'/></td><td>服务商名称</td><td>服务类型</td><td>服务商电话</td></tr>");

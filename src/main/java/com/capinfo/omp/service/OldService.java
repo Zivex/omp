@@ -4,12 +4,15 @@ import java.util.List;
 import java.util.Map;
 
 import com.capinfo.assistant.platform.ws.card.model.CardPersonMessageBack;
+import com.capinfo.framework.web.service.CommonsDataOperationService;
 import com.capinfo.omp.model.OmpOldInfo;
 import com.capinfo.omp.model.OmpOldMatch;
+import com.capinfo.omp.model.Omp_Old_Info;
+import com.capinfo.omp.parameter.OrderParameter;
 import com.capinfo.omp.utils.Page;
 
 
-public interface OldService {
+public interface OldService  {
 
 	/**
 	 * 查询
@@ -97,6 +100,8 @@ public interface OldService {
 	String HOUSEHOLD_STREET_ID(String add);
 	
 	String HOUSEHOLD_COMMUNITY_ID(String add);
+
+	List<Map<String, Object>> getPerson(String cardIds);
 
 
 }

@@ -29,6 +29,7 @@
 						<th width="10%">座机号</th>
 						<th width="10%">推送状态</th>
 						<th width="10%">执行状态</th>
+						
 						<th width="10%">操作</th>
 <!-- 					<th width="10%">居住地址</th> -->
 <!-- 					<th width="10%">录入员</th> -->
@@ -58,6 +59,7 @@
 								<c:if test="${old.execute_flag==0}"><font color="red">失败</font></c:if>
 								<c:if test="${old.execute_flag==3}"><font color="blue">未执行</font></c:if>
 							</td>
+						
 <%-- 							<td>${old.address}</td> --%>
 <%-- 							<td>${old.workername}</td> --%>
 							<td>

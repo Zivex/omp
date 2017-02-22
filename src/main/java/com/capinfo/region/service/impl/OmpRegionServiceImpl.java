@@ -25,7 +25,16 @@ public class OmpRegionServiceImpl implements OmpRegionService {
 	}
     
 	@Override
-	public List<Map<String,Object>> getPro(String name, String serverType) {
+	public List<Map<String,Object>> getPro(String name, String serverType,String streetids) {
+		String regionSql = "";
+		if(!StringUtils.isEmpty(streetids)){
+			String sqlStreet = "select name from omp_region where id = '"+streetids+"'";
+			List<Map<String, Object>> region = JdbcTemplate.queryForList(sqlStreet);
+			String omp_region = (String) region.get(0).get("name");
+			if(omp_region != null){
+				regionSql = "and  SCOPE_DELIVERY = '"+omp_region+"'";
+			}
+		}
 		if (!StringUtils.isEmpty(name)) {
 			name = name.replace(" ","");
 			name = "and r.server_name like '%"+name+"%'";
@@ -34,7 +43,7 @@ public class OmpRegionServiceImpl implements OmpRegionService {
 			serverType = serverType.replace(" ","");
 			serverType = "and r.SERVER_TYPE like '%"+serverType+"%'";
 		}
-		String sql = "select ID,SERVER_NAME,SERVER_TYPE,SERVER_TEL from SERVICE_PROVIDERS_NAVIGATION r where 1=1 "+name+serverType;
+		String sql = "select ID,SERVER_NAME,SERVER_TYPE,SERVER_TEL from SERVICE_PROVIDERS_NAVIGATION r where 1=1 "+name+serverType+regionSql;
 		System.out.println(sql);
 		List<Map<String,Object>> List = JdbcTemplate.queryForList(sql);
 		return List;
@@ -49,7 +58,7 @@ public class OmpRegionServiceImpl implements OmpRegionService {
 
 	@Override
 	public List<Map<String, Object>> getOrder(String ptype) {
-		String sql = "SELECT k.id,s.serviceName sname,k.id kid,p.phoneType ptype,k.KEY "
+		String sql = "SELECT k.id,s.serviceName sname,k.id kid,p.phoneType ptype,k.`KEY` "
 				+ "FROM omp_key k LEFT JOIN omp_service_type s ON k.stId = s.id "
 				+ "LEFT JOIN omp_phone_type p ON k.pyId = p.id where k.pyId = "+ptype;
 		List<Map<String,Object>> queryForList = JdbcTemplate.queryForList(sql);

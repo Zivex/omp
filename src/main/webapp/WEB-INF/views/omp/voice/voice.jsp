@@ -6,8 +6,7 @@
 <html>
 <head>
 
-<script
-	src="<c:url value="/resources/js/jquery/jquery-1.11.1.min.js"/>"></script>
+<script src="<c:url value="/resources/js/jquery/jquery-1.11.1.min.js"/>"></script>
 
 <%@ include file="/WEB-INF/views/layout/adm_top.jsp"%>
 <style type="text/css">
@@ -22,18 +21,69 @@
 			<%@ include file="/WEB-INF/views/menu/menu_adm.jsp"%>
 			<!-- ./menu -->
 			<!-- main -->
-			<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main" role="main">
+			<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main"
+				role="main">
 				<div>
 					<div class="page-header">
 						<h1>
 							<i class="fa fa-user fa-fw"></i>语音信息管理
 						</h1>
+						<a class="btn btn-primary btn-lg" data-toggle="modal"
+							data-target="#myvoice" style="font-size: 12px; padding: 4px;">
+							用户信息 ${userInfo.sendSuccess }</a>
+						<!-- 模态框（Modal） -->
+						<div class="modal fade" id="myvoice" tabindex="-1" role="dialog"
+							aria-labelledby="myModalLabel" aria-hidden="false">
+							<div class="modal-dialog" style="diplay: none;">
+								<div class="modal-content">
+									<div class="modal-header">
+										<button type="button" class="close" data-dismiss="modal"
+											aria-hidden="true">×</button>
+										<h4 class="modal-title" id="myModalLabel">用户详细信息</h4>
+									</div>
+									<div class="modal-body">
+										<table class="table table-bordered">
+											<tr>
+												<td width="20%">剩余语音发送次数</td>
+												<td width="20%">${userINfo.voiceCount }</td>
+											</tr>
+											<tr>
+												<td width="20%">语音发送次数</td>
+												<td width="20%">${userINfo.sumCount }</td>
+											</tr>
+											<tr>
+												<td width="20%">发送成功</td>
+												<td width="20%">${userINfo.executeSuc }</td>
+											</tr>
+											<tr>
+												<td width="20%">发送失败</td>
+												<td width="20%">${userINfo.executeFail }</td>
+											</tr>
+											<tr>
+												<td width="20%">未接听</td>
+												<td width="20%">${userINfo.notAnswer }</td>
+											</tr>
+											<tr>
+												<td width="20%">未返回</td>
+												<td width="20%">${userINfo.notReturn }</td>
+											</tr>
+										</table>
+									</div>
+									<div class="modal-footer">
+										<button type="button" class="btn btn-default"
+											data-dismiss="modal">关闭</button>
+									</div>
+								</div>
+								<!-- /.modal-content -->
+							</div>
+							<!-- /.modal-dialog -->
+						</div>
+						<!-- /.modal -->
 					</div>
 					<div class="header-underline"></div>
 					<div id="displayDiv">
 						<div class="operatorDiv">
-							<c:url var="queryForm"
-								value="/voice/voiceManage/listVoice.shtml" />
+							<c:url var="queryForm" value="/voice/voiceManage/listVoice.shtml" />
 							<form:form id="command" role="form" class="form-inline"
 								action="${queryForm}" method="post">
 								<input id="pageNo" name="current" type="hidden" value="1">
@@ -58,7 +108,7 @@
 								<input type="hidden" id="userid" name="userid" value="" /><input
 									type="button" onclick="openUpload();" value="上传" />
 							</form> --%>
-							
+
 							<button class="btn btn-primary btn-sm" data-toggle="modal"
 								data-target="#myModal">上传语音</button>
 							<div class="modal fade" id="myModal" tabindex="-1" role="dialog"
@@ -71,14 +121,18 @@
 											<h4 class="modal-title" id="myModalLabel">语音信息添加</h4>
 										</div>
 										<div class="modal-body">
-											<form role="form" id="formf" action="<%=request.getContextPath() %>/voice/voiceManage/oneUpload.shtml" method="post" enctype="multipart/form-data">
+											<form role="form" id="formf"
+												action="<%=request.getContextPath() %>/voice/voiceManage/oneUpload.shtml"
+												method="post" enctype="multipart/form-data">
 												<div class="form-group">
 													<label for="name">语音名称</label> <input type="text"
-														class="form-control" id="voicename" name="voicename"  placeholder="请输入语音名称">
+														class="form-control" id="voicename" name="voicename"
+														placeholder="请输入语音名称">
 												</div>
 												<div class="form-group">
 													<label for="name">语音备注</label> <input type="text"
-														class="form-control" id="remark" name="remark" placeholder="请输入备注">
+														class="form-control" id="remark" name="remark"
+														placeholder="请输入备注">
 												</div>
 
 												<div class="form-group">
@@ -89,7 +143,8 @@
 										<div class="modal-footer">
 											<button type="button" class="btn btn-default"
 												data-dismiss="modal">关闭</button>
-											<button type="button" onclick="openUpload();" class="btn btn-primary">提交更改</button>
+											<button type="button" onclick="openUpload();"
+												class="btn btn-primary">提交更改</button>
 										</div>
 										</form>
 									</div>
@@ -100,16 +155,16 @@
 
 						</div>
 						<hr>
-						<div id="borad" >
+						<div id="borad">
 							<div id="message" class="alert"></div>
 						</div>
 						<div id="resultDiv">
 							<%@ include file="/WEB-INF/views/omp/voice/voiceinfo.jsp"%>
 						</div>
 					</div>
-					
-				
-					
+
+
+
 				</div>
 			</div>
 			<!-- ./main -->

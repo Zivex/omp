@@ -40,7 +40,7 @@
 										操作 <span class="caret"></span>
 									</button>
 									<ul class="dropdown-menu" role="menu">
-										<li><a onclick="toupd(${old.id})">发送</a></li>
+<%-- 										<li><a onclick="toupd(${old.id})">发送</a></li> --%>
 										<c:if test="${old.logonName ne 'admin'}">
 											<li><a href="###" onclick="deleteUser(${old.id},this);">删除</a></li>
 										</c:if>

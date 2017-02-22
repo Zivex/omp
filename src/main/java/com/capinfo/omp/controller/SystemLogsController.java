@@ -62,6 +62,12 @@ public class SystemLogsController extends AuthenticationSuccessHandlerImpl {
 		listget(mv, county, street, community, otype, stime, etime);;
 		return mv;
 	}
+	@RequestMapping("/Report/sendVoice.shtml")
+	public ModelAndView  sendVoice(String county, String street, String community,String otype,Date stime,Date etime){
+		ModelAndView mv = new ModelAndView("/admin/initial");
+		systemLogs.getsendService(street,community,otype,stime,etime);
+		return mv;
+	}
 	
 	public void listget(ModelAndView mv,String county, String street, String community,String otype,Date stime,Date etime) {
 		SimpleDateFormat fromg = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");// 设置日期格式

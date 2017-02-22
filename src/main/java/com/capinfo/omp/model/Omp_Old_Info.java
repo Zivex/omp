@@ -1,4 +1,4 @@
-package com.capinfo.order.modle;
+package com.capinfo.omp.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -8,6 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import com.capinfo.framework.model.BaseEntity;
+import com.capinfo.framework.model.StatusEnabled;
 /**
  * 用户信息
  * @author lenovo
@@ -15,7 +16,7 @@ import com.capinfo.framework.model.BaseEntity;
  */
 @Entity
 @Table(name = "Omp_Old_Info")
-public class Omp_Old_Info implements BaseEntity {
+public class Omp_Old_Info implements BaseEntity,StatusEnabled {
 
 	private long id;
 	private String household_county_id;
@@ -36,13 +37,13 @@ public class Omp_Old_Info implements BaseEntity {
 	private String state;
 	private String ispersonalized;
 	private String updNumber;
-	private int isGenerationOrder;
+	private Integer isGenerationOrder;
 	private String creationTime;
 	private String updateTime;
-	private int isindividuation;
+	private Integer isindividuation;
 	private String sync;
 	private String agent_id;
-	private int num;
+	private Integer num;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -202,11 +203,11 @@ public class Omp_Old_Info implements BaseEntity {
 		this.updNumber = updNumber;
 	}
 	@Column(name = "isGenerationOrder", length = 256)
-	public String getIsGenerationOrder() {
+	public Integer getIsGenerationOrder() {
 		return isGenerationOrder;
 	}
 
-	public void setIsGenerationOrder(String isGenerationOrder) {
+	public void setIsGenerationOrder(Integer isGenerationOrder) {
 		this.isGenerationOrder = isGenerationOrder;
 	}
 	@Column(name = "creationTime", length = 256)
@@ -226,11 +227,11 @@ public class Omp_Old_Info implements BaseEntity {
 		this.updateTime = updateTime;
 	}
 	@Column(name = "isindividuation", length = 256)
-	public String getIsindividuation() {
+	public Integer getIsindividuation() {
 		return isindividuation;
 	}
 
-	public void setIsindividuation(String isindividuation) {
+	public void setIsindividuation(Integer isindividuation) {
 		this.isindividuation = isindividuation;
 	}
 	@Column(name = "sync", length = 256)
@@ -250,12 +251,22 @@ public class Omp_Old_Info implements BaseEntity {
 		this.agent_id = agent_id;
 	}
 	@Column(name = "num", length = 256)
-	public String getNum() {
+	public Integer getNum() {
 		return num;
 	}
 
-	public void setNum(String num) {
+	public void setNum(Integer num) {
 		this.num = num;
+	}
+	@Override
+	public Boolean getEnabled() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public void setEnabled(Boolean arg0) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

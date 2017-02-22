@@ -12,4 +12,6 @@ public interface SystemLogs {
 	List<Map<String, Object>> list ();
 	
 	List<Map<String, Object>> getlistCount(String county, String street, String community,String otype,String stimes,String etimes);
+
+	void getsendService(String street, String community,String otype,Date stime,Date etime);
 }

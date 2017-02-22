@@ -5,8 +5,11 @@ import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
+import com.capinfo.common.model.SystemUser;
+import com.capinfo.framework.model.system.User;
 import com.capinfo.omp.utils.Page;
 import com.capinfo.omp.ws.model.ImKey;
+import com.capinfo.voice.parameter.UserInfoParameter;
 
 @Service
 public interface VoiceService {
@@ -85,5 +88,9 @@ public interface VoiceService {
 	//查询用户语音发送次数
 	Boolean queryCount(String ids);
 
-	void numRest(String id);
+	String numRest(String id);
+	//语音次数回滚
+	void rollback(String id, String username, String voiceSata);
+
+	UserInfoParameter getUserInfo(SystemUser user);
 }
