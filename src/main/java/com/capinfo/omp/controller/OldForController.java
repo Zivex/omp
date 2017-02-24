@@ -53,18 +53,16 @@ public class OldForController {
 
 	@Autowired
 	private OldService oldService;
-	
 
-//	 @Autowired
-//	 private CardPersonMessageBack CardPersonMessageBack;
+	// @Autowired
+	// private CardPersonMessageBack CardPersonMessageBack;
 
-
-	
 	@RequestMapping("/oldMatch/list.shtml")
-	public ModelAndView list(@ModelAttribute("eccomm_admin") SystemUser user,String current, String name, String idCard,
-			String zjNumber, String county, String street, String community,
+	public ModelAndView list(@ModelAttribute("eccomm_admin") SystemUser user,
+			String current, String name, String idCard, String zjNumber,
+			String county, String street, String community,
 			String isGenerationOrder, String isindividuation,
-			String creationTime,HttpServletRequest request) {
+			String creationTime, HttpServletRequest request) {
 		ModelAndView mv = new ModelAndView("/omp/old/initial");
 		getList(mv, current, name, idCard, zjNumber, county, street, community,
 				isGenerationOrder, isindividuation, creationTime);
@@ -72,8 +70,10 @@ public class OldForController {
 		// oldService.saveLogger("2", "老人信息表", "lixing", "1");
 		return mv;
 	}
+
 	/**
 	 * 老人列表查询
+	 * 
 	 * @param current
 	 * @param name
 	 * @param idCard
@@ -102,7 +102,7 @@ public class OldForController {
 			String idCard, String zjNumber, String county, String street,
 			String community, String isGenerationOrder, String isindividuation,
 			String creationTime) {
-	
+
 		if (StringUtils.isEmpty(current)) {
 			current = "1";
 		}
@@ -112,7 +112,7 @@ public class OldForController {
 
 		int count = oldService.getCount(name, idCard, zjNumber, county, street,
 				community, isGenerationOrder, isindividuation);
-		 count = count == 0?1:count;
+		count = count == 0 ? 1 : count;
 		Page page = new Page<>(current, count, "10");
 		List<Map<String, Object>> entities = oldService.getOldContextList(page,
 				name, idCard, zjNumber, county, street, community,
@@ -152,36 +152,45 @@ public class OldForController {
 			String format = df.format(new Date());// new Date()为获取当前系统时间
 			String errorstr = "错误行数为:";
 			String zjNumber = "{'landLineNumber':'";// 导入成功后将座机号码同步到中航
-			int nb = 1;
+			int nb = 10;
 			int enb = 0;
 			List<OmpOldInfo> list = (List<OmpOldInfo>) map.get("infos");
 			for (OmpOldInfo ompOldInfo : list) {
+				// 判断是否以010开头
+				String match = ompOldInfo.getzjNumber().substring(0, 3);
+				String linkNbr = "";
+				if (match.equals("010")) {
+					linkNbr = ompOldInfo.getzjNumber().substring(3);
+				} else {
+					linkNbr = ompOldInfo.getzjNumber();
+				}
+
+				zjNumber = zjNumber + linkNbr + ",";
+				// 去掉010
+				ompOldInfo.setzjNumber(linkNbr);
 				nb++;
-				// 通过座机号，身份证号判断是否存在老人
-				if (!oldService.checkOldIsHave(ompOldInfo.getzjNumber(),
-						ompOldInfo.getCertificatesNumber())) {
-//				if (true) {
+				// 通过座机号，身份证号判断是否存在老人 1打座机号已存在 2身份证号已存在 0不存在
+				int t = oldService.checkOldIsHave(ompOldInfo.getzjNumber(),
+						ompOldInfo.getCertificatesNumber());
+				if (t == 0) {
+					// if (true) {
 					// 身份证号码 (通过身份证ID查询老人信息 )
 					String cardId = ompOldInfo.getCertificatesNumber();
-					CardPersonMessageWsServiceProxy d = new CardPersonMessageWsServiceProxy();
-					CardPersonMessageBack m = d
-							.getCardPersonMessageByIDNumber(cardId);
-					System.out.println("老人信息属性:" + m.getBankCard());
-					// 判断是否以010开头
-					String match = ompOldInfo.getzjNumber().substring(0, 3);
-					String linkNbr = "";
-					if (match.equals("010")) {
-						linkNbr = ompOldInfo.getzjNumber().substring(3);
-					} else {
-						linkNbr = ompOldInfo.getzjNumber();
-					}
+					// CardPersonMessageWsServiceProxy d = new
+					// CardPersonMessageWsServiceProxy();
+					// CardPersonMessageBack m = d
+					// .getCardPersonMessageByIDNumber(cardId);
+					// System.out.println("老人信息属性:" + m.getBankCard());
 
-					zjNumber = zjNumber + linkNbr + ",";
-					// 去掉010
-					ompOldInfo.setzjNumber(linkNbr);
 					oldService.addOld(ompOldInfo, format);
+				} else if (t == 1) {
+					errorstr = errorstr + "'" + nb + "',大座机号重复 '<br/>'&lt;br&gt;";
+					enb++;
+				} else if (t == 2) {
+					errorstr = errorstr + "'" + nb + "',身份证号重复&lt;br&gt;";
+					enb++;
 				} else {
-					errorstr = errorstr + "'" + nb + "',";
+					errorstr = errorstr + "'" + nb + "',身份证号和大座机号重复 \n";
 					enb++;
 				}
 			}
@@ -195,6 +204,7 @@ public class OldForController {
 
 			fis.close();
 			mv.addObject("failure", map.get("failure"));
+			System.out.println(errorstr);
 			mv.addObject("errorstr", errorstr);
 		}
 
@@ -246,14 +256,14 @@ public class OldForController {
 					getCellValue(row.getCell(2)), getCellValue(row.getCell(3)),
 					getCellValue(row.getCell(4)), getCellValue(row.getCell(5)),
 					getCellValue(row.getCell(6)), getCellValue(row.getCell(7)),
-					getCellValue(row.getCell(8)));
+					getCellValue(row.getCell(8)), getCellValue(row.getCell(9)));
 			// 去数据库查询身份证号码是否重复，重复返回false,不重复返回true
-			if (oldService.checkRe(getCellValue(row.getCell(2)),
-					getCellValue(row.getCell(3)))) {
-				infos.add(omp);
-			} else {
-				failure.add(omp);
-			}
+			// if (oldService.checkRe(getCellValue(row.getCell(2)),
+			// getCellValue(row.getCell(3)))) {
+			infos.add(omp);
+			// } else {
+			// failure.add(omp);
+			// }
 
 		}
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -309,8 +319,7 @@ public class OldForController {
 		mv.addObject("Region", Region);
 		return mv;
 	}
-	
-	
+
 	/**
 	 * 查看老人数据
 	 * 
@@ -319,7 +328,7 @@ public class OldForController {
 	 */
 	@RequestMapping("/oldMatch/see.shtml")
 	@ResponseBody
-	public ModelAndView seePerson(String id,String cardId) {
+	public ModelAndView seePerson(String id, String cardId) {
 		ModelAndView mv = new ModelAndView("/omp/old/see");
 		List<Map<String, Object>> list = oldService.getOldById(id);
 		Map<String, Object> map = list.get(0);
@@ -433,7 +442,7 @@ public class OldForController {
 	public String uploadOldIndividuation(String id, String json) {
 		Boolean isUpdateBoolean = oldService.uploadOldIndividuation(id, json);
 		if (isUpdateBoolean) {
-			
+
 			return "修改成功！";
 		}
 		boolean newBl = oldService.addOmpOldOrderInfo(id, json);
@@ -591,8 +600,8 @@ public class OldForController {
 
 	@RequestMapping("/oldMatch/batchSendInstructions.shtml")
 	public void batchSendInstructions() throws Exception {
-		System.out.println("batchSendInstructions:定时器自动执行发送指令程序，间隔时间1分钟");
 		if (oldService.getcountid()) {
+			System.out.println("batchSendInstructions:定时器自动执行发送指令程序，间隔时间1分钟");
 			String id = oldService.checkDeBatchSendInstructions();
 			oldService.saveolInfo(id);
 		}

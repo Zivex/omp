@@ -405,7 +405,7 @@ public class VoiceController {
 			String mid = voiceService.middle();// 语音ID
 			if (!StringUtils.isEmpty(ids)) {
 				if(!voiceService.queryCount(ids)){
-					return "如需增加发送数量，请联系***，电话***";
+					return "您发送的语音条数已超出，请充值后再行发送，充值电话：褚-84933228";
 				}
 				String[] split = ids.split(",");
 				for (String id : split) {
@@ -419,15 +419,13 @@ public class VoiceController {
 					//保存语音发送记录
 					voiceService.saveviceoder(id, mid, executeType, executionTime, executionEndTime, t);
 					//查询最大omp_voice_order.id
-					String result = "";
-					if(!("".equals(oid)||oid == null)){
-						result = oid;
-					}else{
-						result = voiceService.resultVice();
-					}
+					//String result = "";
+					String result = voiceService.resultVice();
 					String json = voiceService.sendvice(result, t);
 					imKey = vice.svoice(json);
-//					imKey.setStatusCode(1+"");
+					System.out.println("语音发送返回数据"+imKey.getStatusCode()+","+imKey.getGenerateSerialNumber()+","+imKey.getExecutionTime()+","+imKey.getReturnType()+","+imKey.getErrorMessage());
+//					1,2017022409444964915,2017-02-24 09:44:49,2,
+					//imKey.setStatusCode(1+"");
 					String number = imKey.getGenerateSerialNumber();
 					if ("1".equals(imKey.getStatusCode())) {
 					//	if (false) {
@@ -466,7 +464,6 @@ public class VoiceController {
 		}
 		return "";
 	}
-	
 	
 	
 

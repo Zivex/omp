@@ -7,9 +7,7 @@
 <div class="panel-footer">
 
 	<div align="center">
-		<c:if test="${message > 0 }">
-			<c:out value="$message"></c:out>
-		</c:if>
+			<c:out value="${errorstr }"></c:out>
 		<div align="center">
 			<input id="autoBack" type="button"
 				onclick="location='${pageContext.request.contextPath}/old/oldMatch/list.shtml?name=&idCard=&zjNumber=&county=&street=&community=&isGenerationOrder=&creationTime='"

@@ -434,7 +434,7 @@ public class VoiceServiceImpl implements VoiceService {
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");// 设置日期格式
 		System.out.println(df.format(new Date()));// new Date()为获取当前系统时间
 		String date = df.format(new Date());
-		String sql = "insert into   (oid,send_date,send_flag,number,returnType,operator) VALUES("
+		String sql = "insert into omp_order_number (oid,send_date,send_flag,number,returnType,operator) VALUES("
 				+ id
 				+ ",'"
 				+ date

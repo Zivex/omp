@@ -46,6 +46,19 @@ public class OmpOldInfo implements BaseEntity {
 	private String teltype;
 	
 	private String creationTime;
+	
+	private String call_id;
+	
+	
+	
+
+	public String getCall_id() {
+		return call_id;
+	}
+
+	public void setCall_id(String call_id) {
+		this.call_id = call_id;
+	}
 
 	public OmpOldInfo() {
 		super();
@@ -70,7 +83,7 @@ public class OmpOldInfo implements BaseEntity {
 	public OmpOldInfo(String householdCountyId, String householdStreetId, String householdCommunityId,
 			String workername, String workertel, String name, String certificatesNumber, String zjNumber, String phone,
 			 String emergencycontact, String emergencycontacttle, String teltype,
-			String address) {
+			String address,String call_id) {
 		super();
 		this.householdCountyId = householdCountyId;
 		this.householdStreetId = householdStreetId;
@@ -85,6 +98,7 @@ public class OmpOldInfo implements BaseEntity {
 		this.emergencycontacttle = emergencycontacttle;
 		this.teltype = teltype;
 		this.address = address;
+		this.call_id = call_id;
 	}
 
 	public Long getId() {

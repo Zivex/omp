@@ -25,16 +25,17 @@
 					<tr class="active">
 						<th width="5%"><input type="checkbox" onclick="check()" /></th>
 						<th width="6%">姓名</th>
-						<th width="10%" style="text-align: center;">区域</th>
+						<th width="6%" style="text-align: center;">区域</th>
 						<th width="10%" style="text-align: center;">街道</th>
 						<th width="12%" style="text-align: center;">社区</th>
 						<th width="10%" style="text-align: center;">座机号</th>
 						<th width="10%" style="text-align: center;">身份证号</th>
-						<th width="10%" style="text-align: center;">联系电话</th>
+						<!-- 						<th width="10%" style="text-align: center;">联系电话</th> -->
 						<th width="10%" style="text-align: center;">话机类型</th>
 						<c:if test="${sys == 'admin'}">
 							<th width="10%">所属客户</th>
 						</c:if>
+						<th width="10%" style="text-align: center;">是否有来显</th>
 						<th width="8%" style="text-align: center;">个性类型</th>
 						<th width="10%" style="text-align: center;">操作</th>
 					</tr>
@@ -49,11 +50,19 @@
 							<td style="text-align: center;">${old.s}</td>
 							<td style="text-align: center;">${old.zjnumber}</td>
 							<td style="text-align: center;">${old.CERTIFICATES_NUMBER}</td>
-							<td style="text-align: center;">${old.phone}</td>
+							<%-- 							<td style="text-align: center;">${old.phone}</td> --%>
 							<td style="text-align: center;">${old.teltype}</td>
 							<c:if test="${sys == 'admin'}">
 								<td style="text-align: center;">${old.agent_id}</td>
 							</c:if>
+
+							<c:if test="${old.call_id == 1}">
+								<td style="text-align: center; color: green">是</td>
+							</c:if>
+							<c:if test="${old.call_id == 0}">
+								<td style="text-align: center; color: red">否</td>
+							</c:if>
+
 							<td style="text-align: center;"><c:if
 									test="${old.isindividuation==1}">
 									<span style="color: green">是</span>
@@ -71,7 +80,8 @@
 									</button>
 									<ul class="dropdown-menu" role="menu">
 										<li><a onclick="toupd(${old.id})">修改</a></li>
-										<li><a onclick="see(${old.CERTIFICATES_NUMBER},${old.id})">查看</a></li>
+										<li><a
+											onclick="see(${old.CERTIFICATES_NUMBER},${old.id})">查看</a></li>
 										<li><a href="###" onclick="deleteUser(${old.id},this);">删除</a></li>
 										<c:if test="${sys ==  'admin'}">
 											<li><a onclick="ompKeyModify(${old.id},${old.typeid} )">指令个性化</a></li>

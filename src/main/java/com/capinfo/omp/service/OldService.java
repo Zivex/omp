@@ -83,7 +83,7 @@ public interface OldService  {
 
 	Boolean addOmpOldOrderInfo(String id, String json);
 
-	boolean checkOldIsHave(String phoneid, String cardID);
+	Integer checkOldIsHave(String phoneid, String cardID);
 
 	List<Map<String, Object>> getOldKeyInfoById(String id);
 	

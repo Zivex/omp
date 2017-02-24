@@ -63,10 +63,6 @@
 												<td width="20%">未接听</td>
 												<td width="20%">${userINfo.notAnswer }</td>
 											</tr>
-											<tr>
-												<td width="20%">未返回</td>
-												<td width="20%">${userINfo.notReturn }</td>
-											</tr>
 										</table>
 									</div>
 									<div class="modal-footer">

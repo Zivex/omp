@@ -55,7 +55,7 @@ public class POI {
 			OmpOldInfo omp = new OmpOldInfo(CountyId, StreetId, CommunityId, workername, workertel,
 					getCellValue(row.getCell(1)), getCellValue(row.getCell(2)), getCellValue(row.getCell(3)),
 					getCellValue(row.getCell(4)), getCellValue(row.getCell(5)), getCellValue(row.getCell(6)),
-					getCellValue(row.getCell(7)), getCellValue(row.getCell(8)));
+					getCellValue(row.getCell(7)), getCellValue(row.getCell(8)),getCellValue(row.getCell(9)));
 			infos.add(omp);
 		}
         

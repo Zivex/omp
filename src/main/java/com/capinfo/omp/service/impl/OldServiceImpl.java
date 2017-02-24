@@ -91,7 +91,7 @@ public class OldServiceImpl extends CommonsDataOperationServiceImpl implements
 		 * if (!StringUtils.isEmpty(creationTime)) { creationTime =
 		 * " AND I.creationTime like '%"+creationTime+"%'"; }
 		 */
-		String sql = "select i.agent_id, i.id,i.`NAME`,i.ZJNUMBER,i.PHONE,i.TELTYPE,r2.`NAME` q,r3.`NAME` j,r1.`NAME` s,r5.id typeid,i.address,i.CERTIFICATES_NUMBER,i.isindividuation from omp_region r1,omp_region r2,omp_region r3,omp_phone_type r5,omp_old_info i "
+		String sql = "select i.agent_id,i.call_id, i.id,i.`NAME`,i.ZJNUMBER,i.PHONE,i.TELTYPE,r2.`NAME` q,r3.`NAME` j,r1.`NAME` s,r5.id typeid,i.address,i.CERTIFICATES_NUMBER,i.isindividuation from omp_region r1,omp_region r2,omp_region r3,omp_phone_type r5,omp_old_info i "
 				+ "where STATE = 1 "
 				+ name
 				+ idCard
@@ -116,11 +116,16 @@ public class OldServiceImpl extends CommonsDataOperationServiceImpl implements
 		// 获取用户名
 		String name = SecurityContextHolder.getContext().getAuthentication()
 				.getName();
+		String call_id = ompOldInfo.getCall_id();
+		int callId = 0;
+		if ("是".equals(call_id)) {
+			callId = 1;
+		}
 		System.out.println("====================" + name);
 		final String sql = "insert into omp_old_info"
 				+ "(household_county_id,household_street_id,household_community_id,workername,workertel,"
 				+ "name,certificates_number,zjnumber,phone,address,emergencycontact,emergencycontacttle,"
-				+ "teltype,state,Ispersonalized,creationTime,agent_id,num)values('"
+				+ "teltype,state,Ispersonalized,creationTime,agent_id,num,call_id)values('"
 				+ ompOldInfo.getHouseholdCountyId()
 				+ "','"
 				+ ompOldInfo.getHouseholdStreetId()
@@ -150,7 +155,7 @@ public class OldServiceImpl extends CommonsDataOperationServiceImpl implements
 				+ format
 				+ "','"
 				+ name
-				+ "',1)";
+				+ "',1," + callId + ")";
 
 		System.out.println(sql);
 
@@ -222,14 +227,23 @@ public class OldServiceImpl extends CommonsDataOperationServiceImpl implements
 
 	// 通过座机号，身份证号判断是否存在老人
 	@Override
-	public boolean checkOldIsHave(String phoneid, String cardID) {
+	public Integer checkOldIsHave(String phoneid, String cardID) {
 		String sql = "SELECT COUNT(*) FROM  (SELECT * FROM omp_old_info t WHERE  t.ZJNUMBER = "
 				+ phoneid + ") a ";
 		String sql1 = "SELECT COUNT(*) FROM  (SELECT * FROM omp_old_info t WHERE  t.CERTIFICATES_NUMBER ='"
 				+ cardID + "') a1 ";
 		int count = JdbcTemplate.queryForInt(sql);// 用queryForInt方法！！！
 		int count1 = JdbcTemplate.queryForInt(sql1);// 用queryForInt方法！！！
-		return (count + count1) > 0;
+		if (count * count1 > 0) {
+			return 3;
+		}
+		if (count > 0) {
+			return 1;// 大座机号已存在
+		}
+		if (count1 > 0) {
+			return 2;// 老人身份证号已存在
+		}
+		return 0;
 	}
 
 	@Override
@@ -544,7 +558,8 @@ public class OldServiceImpl extends CommonsDataOperationServiceImpl implements
 				}
 				String certificatesNumber = m.getCertificatesNumber();
 				if ("".equals(certificatesNumber) || certificatesNumber == null) {
-					certificatesNumber = "";
+					// certificatesNumber = "";
+					return;
 				}
 				String certificatesType = m.getCertificatesType();
 				if ("".equals(certificatesType) || certificatesType == null) {
@@ -740,15 +755,28 @@ public class OldServiceImpl extends CommonsDataOperationServiceImpl implements
 						+ bookId + "', '" + cardType + "', '"
 						+ certificatesNumber + "', '" + certificatesType
 						+ "', '" + cityPushed + "', '" + cityPushedDate
-						+ "', '" + contacter + "', '" +contacterIdcardNumber +"', '" + contacterIdcardType+"', '"
-						+ contacterMobile+"', '" + contacterRelation+"', '" +creatCardDate +"', '" +creatCardPushDate +"', '" +creatCardStatus +"', '"
-						+ createCardFailInfo+"', '" + createCardInDate+"', '" + createCardSuccess+"', '" +degreeType +"', '" + disabilityCardDate+"', '"
-						+ gatherStatus+"', '" +hcFailInfo +"', '" +hcInTime +"', '" +hcPushedDate +"', '" +hcSuccess +"', '"
-						+healthCareType +"', '" + householdAddress+"', '" +householdCommunity +"', '" +householdCounty +"', '" + householdStreet+"', '"
-						+idcradDept +"', '" + mainSourceIncomeType+"', '" +marryStateType +"', '" + name+"', '" +nation +"', '"
-						+newspaperGetWayType +"', '" +personType +"', '" + postalCode+"', '" +resideType +"', '" +residenceAddress +"', '"
-						+residenceCommunity +"', '" +residenceCounty +"', '" +residenceStreet +"', '" +revenueType +"', '" +selfCareAbilityType +"', '"
-						+ sex+"', '" + treatmentOney+"', '"+yktNumber+"')";
+						+ "', '" + contacter + "', '" + contacterIdcardNumber
+						+ "', '" + contacterIdcardType + "', '"
+						+ contacterMobile + "', '" + contacterRelation + "', '"
+						+ creatCardDate + "', '" + creatCardPushDate + "', '"
+						+ creatCardStatus + "', '" + createCardFailInfo
+						+ "', '" + createCardInDate + "', '"
+						+ createCardSuccess + "', '" + degreeType + "', '"
+						+ disabilityCardDate + "', '" + gatherStatus + "', '"
+						+ hcFailInfo + "', '" + hcInTime + "', '"
+						+ hcPushedDate + "', '" + hcSuccess + "', '"
+						+ healthCareType + "', '" + householdAddress + "', '"
+						+ householdCommunity + "', '" + householdCounty
+						+ "', '" + householdStreet + "', '" + idcradDept
+						+ "', '" + mainSourceIncomeType + "', '"
+						+ marryStateType + "', '" + name + "', '" + nation
+						+ "', '" + newspaperGetWayType + "', '" + personType
+						+ "', '" + postalCode + "', '" + resideType + "', '"
+						+ residenceAddress + "', '" + residenceCommunity
+						+ "', '" + residenceCounty + "', '" + residenceStreet
+						+ "', '" + revenueType + "', '" + selfCareAbilityType
+						+ "', '" + sex + "', '" + treatmentOney + "', '"
+						+ yktNumber + "')";
 
 				/*
 				 * String housCounty_id = HOUSEHOLD_COUNTY_ID(m
@@ -764,8 +792,9 @@ public class OldServiceImpl extends CommonsDataOperationServiceImpl implements
 				 */
 				System.out.println(sql);
 				int update = JdbcTemplate.update(sql);
-				if(update>0){
-					String syncsql = "UPDATE omp_old_info i SET i.sync = '1'WHERE i.CERTIFICATES_NUMBER = '" + cid + "'";
+				if (update > 0) {
+					String syncsql = "UPDATE omp_old_info i SET i.sync = '1'WHERE i.CERTIFICATES_NUMBER = '"
+							+ cid + "'";
 					JdbcTemplate.update(syncsql);
 				}
 			}
@@ -816,7 +845,7 @@ public class OldServiceImpl extends CommonsDataOperationServiceImpl implements
 
 	@Override
 	public List<Map<String, Object>> getPerson(String cardIds) {
-	String sql = "SELECT * from card_person o WHERE o.certificatesNumber = "
+		String sql = "SELECT * from card_person o WHERE o.certificatesNumber = "
 				+ cardIds;
 		List<Map<String, Object>> list = JdbcTemplate.queryForList(sql);
 		return list;
