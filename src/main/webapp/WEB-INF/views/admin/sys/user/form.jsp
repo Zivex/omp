@@ -59,6 +59,7 @@
 										<input type="password" id="repassword" class="form-control" data-rule-required="true" data-rule-equalTo="#password" data-msg-equalTo="两次输入密码不一致" placeholder="确认密码" />
 									</div>
 								</div>
+
 								<div class="form-group">
 									<label for="entity.roles" class="col-md-2 control-label">分配角色: </label>
 									<div class="col-md-4">
@@ -67,6 +68,17 @@
 										</form:select>
 									</div>
 								</div>
+
+								<div class="form-group"><label class="col-md-2 control-label">
+									<form:radiobutton path="entity.password" value="g-" onchange="addRegion()"  />	政府 </label>
+								  <label class="col-md-2 control-label">
+								  <form:radiobutton path="entity.password" value="b-"  />	银行
+								  </label>
+								</div>
+							<div class="form-group" ><label class="col-md-2 control-label" id="level">
+
+
+							</div>
 							</form:form>
 							<div class="form-group">
 								<label for="name" class="col-md-2 control-label"></label>
@@ -95,7 +107,7 @@
 			$("#command").submit();
 		}
 
-		//pre-submit callback 
+		//pre-submit callback
 		function showFormRequest(formData, jqForm, options) {
 			var suc = $("#command").valid();
 			if (suc) {
@@ -105,7 +117,7 @@
 			return false;
 		}
 
-		// post-submit callback 
+		// post-submit callback
 		function showFormResponse(responseText, statusText, xhr, $form) {
 			$("#displayDiv").unmask();
 			suc = responseText.success;
@@ -123,6 +135,40 @@
 			initialFormValidate('command');
 			initSaveForm();
 		});
+
+		//显示分级属性
+		function addRegion(){
+			var divshow = $("#level");
+			divshow.text("");// 清空数据
+			divshow.append("1");
+
+
+
+
+
+
+
+
+
+			     //  $.ajax(
+        // {
+        //     url: "send/index",
+        //     type: "post",
+        //     success: function (data) {
+        //         var divshow = $("#showInfo2");
+        //         divshow.text("");// 清空数据
+        //         divshow.append(data); // 添加Html内容，不能用Text 或 Val
+        //         divshow.dialog({
+        //             title: "短信群发系统",
+        //             height: 250,
+        //             width: 580
+        //         });
+
+        //     }
+        // }
+        // );
+        // return false;
+		}
 	</script>
 
 
