@@ -2,8 +2,11 @@ package com.capinfo.region.model;
 
 import java.util.Date;
 import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -13,57 +16,57 @@ import com.capinfo.framework.model.BaseEntity;
 @Table(name = "OMP_REGION")
 //@SequenceGenerator(name = "OmpRegion", sequenceName = "SEQ_OMP_REGION", allocationSize = 1)
 public class OmpRegion implements BaseEntity {
-	
+
 	private static final long serialVersionUID = 1L;
 
 
 	private Long id;
 
-	
+
 	private String name;
 
-	
-    private int levelid;
 
-	
+    private Long levelid;
+
+
     private String description;
 
-	
+
     private String createdate;
 
-	
-    private int creatorid;
+
+    private Long creatorid;
 
 
-    private int parentid;
+    private Long parentid;
 
-	
+
     private String num;
 
-	
+
     private String shortname;
 
-	
+
     private String disporder;
 
-	
+
     private String standardNo;
 
-	
+
     private Short useFlag;
 
 
     private String oldDictionaryId;
 
 
-    private int convertId;
+    private Long convertId;
 
 
-    private int peopleNum;
-    
-	
+    private Long peopleNum;
+
+
 	public static void sortList(List list, List<OmpRegion> sourcelist,
-			int convertId) {
+			Long convertId) {
 		for (int i = 0; i < sourcelist.size(); i++) {
 			OmpRegion e = sourcelist.get(i);
 			if (e.getParentid()==convertId) {
@@ -81,13 +84,13 @@ public class OmpRegion implements BaseEntity {
 	}
 	@Id
 //	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "OmpRegion")
-	@Column(name = "id", unique = true, nullable = false, precision = 12, scale = 0)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "ID", unique = true, nullable = false, precision = 12, scale = 0)
 	public Long getId() {
 		return id;
 	}
-	public void setId(Long arg0) {
-		// TODO Auto-generated method stub
-		
+	public void setId(Long id) {
+		this.id = id;
 	}
 	@Column(name = "NAME")
 	public String getName() {
@@ -97,10 +100,10 @@ public class OmpRegion implements BaseEntity {
 		this.name = name;
 	}
 	@Column(name = "LEVELID")
-	public int getLevelid() {
+	public Long getLevelid() {
 		return levelid;
 	}
-	public void setLevelid(int levelid) {
+	public void setLevelid(Long levelid) {
 		this.levelid = levelid;
 	}
 	@Column(name = "DESCRIPTION")
@@ -118,17 +121,17 @@ public class OmpRegion implements BaseEntity {
 		this.createdate = createdate;
 	}
 	@Column(name = "CREATORID")
-	public int getCreatorid() {
+	public Long getCreatorid() {
 		return creatorid;
 	}
-	public void setCreatorid(int creatorid) {
+	public void setCreatorid(Long creatorid) {
 		this.creatorid = creatorid;
 	}
 	@Column(name = "PARENTID")
-	public int getParentid() {
+	public Long getParentid() {
 		return parentid;
 	}
-	public void setParentid(int parentid) {
+	public void setParentid(Long parentid) {
 		this.parentid = parentid;
 	}
 	@Column(name = "NUM")
@@ -149,7 +152,7 @@ public class OmpRegion implements BaseEntity {
 	public String getDisporder() {
 		return disporder;
 	}
-	
+
 	public void setDisporder(String disporder) {
 		this.disporder = disporder;
 	}
@@ -176,27 +179,27 @@ public class OmpRegion implements BaseEntity {
 		this.oldDictionaryId = oldDictionaryId;
 	}
 	@Column(name = "CONVERT_ID")
-	public int getConvertId() {
+	public Long getConvertId() {
 		return convertId;
 	}
-	public void setConvertId(int convertId) {
+	public void setConvertId(Long convertId) {
 		this.convertId = convertId;
 	}
 	@Column(name = "PEOPLE_NUM")
-	public int getPeopleNum() {
+	public Long getPeopleNum() {
 		return peopleNum;
 	}
-	public void setPeopleNum(int peopleNum) {
+	public void setPeopleNum(Long peopleNum) {
 		this.peopleNum = peopleNum;
 	}
-	
-	
-	
-	
 
 
 
-	
-	
-	
+
+
+
+
+
+
+
 }

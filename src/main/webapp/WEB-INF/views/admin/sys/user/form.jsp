@@ -70,9 +70,9 @@
 								</div>
 
 								<div class="form-group"><label class="col-md-2 control-label">
-									<form:radiobutton path="entity.account_type" value="g-" onchange="addRegion()"  />	政府 </label>
+									<form:radiobutton path="entity.account_type" value="g-" onchange="addRegion()" data-rule-required="true" data-msg-equalTo="请选择账户类型" />	政府 </label>
 								  <label class="col-md-2 control-label">
-								  <form:radiobutton path="entity.account_type" value="b-"  />	银行
+								  <form:radiobutton path="entity.account_type" value="b-"  data-rule-required="true" />	银行
 								  </label>
 								</div>
 							<div class="form-group" ><label class="checkbox-inline" id="level"></label>
@@ -103,6 +103,9 @@
 
 	<!-- Script	-->
 	<script type="text/javascript">
+
+
+
 		function submitForm() {
 			$("#command").submit();
 		}
@@ -140,11 +143,11 @@
 		function addRegion(){
 			var divshow = $("#level");
 			divshow.text("");// 清空数据
-			divshow.append('市 : <select id="shi" name="shi"> <option value="0">--请选择--</option> <option value="2">北京</option> </select> 区域： <select id="county" name="county"> <option value="${county }">--请选择--</option> </select> 街道： <select id="street" name="street"> <option value="${street }">--请选择--</option> </select> 社区： <select id="community" name="community"> <option value="${community }">--请选择--</option> </select>');
+			divshow.append('市 : <select id="shi" name="shi" class="{required:true}"> <option value="0">--请选择--</option> <option value="2">北京</option> </select> 区域： <select id="county" name="county"> <option value="${county }">--请选择--</option> </select> 街道： <select id="street" name="street"> <option value="${street }">--请选择--</option> </select> 社区： <select id="community" name="community"> <option value="${community }">--请选择--</option> </select>');
 			// $.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",function(data){
 			// 	for(var i = 0;i<data.length;i++){
 			// 		$("#county").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
-			// 	}				
+			// 	}
 			// });
 		$("#shi").change(function(){
 				$("#street option:not(:first)").remove();
@@ -154,7 +157,7 @@
 				$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",{id:id},function(data){
 					for(var i = 0;i<data.length;i++){
 						$("#county").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
-					}				
+					}
 				});
 			});
 
@@ -168,17 +171,17 @@
 				$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",{id:id},function(data){
 					for(var i = 0;i<data.length;i++){
 						$("#street").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
-					}				
+					}
 				});
 			});
-			
+
 			$("#street").change(function(){
 				$("#community option:not(:first)").remove();
 				var id = $("#street").val();
 				$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",{id:id},function(data){
 					for(var i = 0;i<data.length;i++){
 						$("#community").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
-					}				
+					}
 				});
 			});
 

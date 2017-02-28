@@ -55,7 +55,7 @@ public class SystemUserController extends AuthenticationSuccessHandlerImpl {
 
 	/**
 	 * 用户管理首页
-	 * 
+	 *
 	 * @param parameter
 	 * @return
 	 */
@@ -74,7 +74,7 @@ public class SystemUserController extends AuthenticationSuccessHandlerImpl {
 
 	/**
 	 * 用户管理列表
-	 * 
+	 *
 	 * @param parameter
 	 * @return
 	 */
@@ -93,7 +93,7 @@ public class SystemUserController extends AuthenticationSuccessHandlerImpl {
 
 	/**
 	 * 用户详情
-	 * 
+	 *
 	 * @param parameter
 	 * @return
 	 */
@@ -110,7 +110,7 @@ public class SystemUserController extends AuthenticationSuccessHandlerImpl {
 
 	/**
 	 * 新建用户信息页面
-	 * 
+	 *
 	 * @param parameter
 	 * @return
 	 */
@@ -124,7 +124,7 @@ public class SystemUserController extends AuthenticationSuccessHandlerImpl {
 
 	/**
 	 * 保存用户
-	 * 
+	 *
 	 * @param request
 	 * @param response
 	 * @param parameter
@@ -152,36 +152,46 @@ public class SystemUserController extends AuthenticationSuccessHandlerImpl {
 				parameter.getEntity().setPassword(pass);
 				//判断用户等级
 				String community = parameter.getCommunity();
-				OmpRegion region = null;
+				int leave = 0;
+				//区域
+				String r = "";
 				if(community != null && !"".equals(community)){
-					parameter.getEntity().setLeave(4);
-					 region = systemUserService.getbiRegoinid(Long.parseLong(community));
+					leave = 4;
+					r = community;
+
 				}else{
 					String street = parameter.getStreet();
 					if(street != null && !"".equals(street)){
-						parameter.getEntity().setLeave(3);
-						 region = systemUserService.getbiRegoinid(Long.parseLong(street));
+						leave = 3;
+						r = street;
 					}else{
-						String county = parameter.getCounty();						
+						String county = parameter.getCounty();
 						if(county != null && !"".equals(county)){
-							parameter.getEntity().setLeave(2);
-							region = systemUserService.getbiRegoinid(Long.parseLong(county));
+							leave = 2;
+							r = county;
 						}else{
 							String shi = parameter.getShi();
-							parameter.getEntity().setLeave(1);
-							region = systemUserService.getbiRegoinid(Long.parseLong(shi));
+							leave = 1;
+							r = shi;
 						}
-						
+
 					}
 				}
+				OmpRegion region = systemUserService.getbiRegoinid(Long.parseLong(r));
+				//账户类型
+				String standardNo = region.getStandardNo();
+				String account_type = parameter.getEntity().getAccount_type();
+				account_type = account_type+standardNo;
+				parameter.getEntity().setAccount_type(account_type);
+				//账户等级
+				parameter.getEntity().setLeave(leave);
+				Long id = region.getId();
+				Long parentid = region.getParentid();
+				//设置账户从属关系
+				parameter.getEntity().setRid(id);
+				parameter.getEntity().setParentid(parentid);
 				parameter.getEntity().setRegionName(region.getName());
-				
-				
-//				String shi = parameter.getShi();
-//				String county = parameter.getCounty();
-//				String street = parameter.getStreet();
-//				String community = parameter.getCommunity();
-				
+
 				boolean suc = systemUserService.saveUser(parameter.getEntity());
 				String info = suc == true ? "添加用户成功" : "添加用户失败";
 				messages.setSuccess(suc);
@@ -195,7 +205,7 @@ public class SystemUserController extends AuthenticationSuccessHandlerImpl {
 
 	/**
 	 * 编辑用户页面
-	 * 
+	 *
 	 * @param parameter
 	 * @return
 	 */
@@ -214,7 +224,7 @@ public class SystemUserController extends AuthenticationSuccessHandlerImpl {
 
 	/**
 	 * 修改用户信息
-	 * 
+	 *
 	 * @param request
 	 * @param response
 	 * @param model
@@ -246,7 +256,7 @@ public class SystemUserController extends AuthenticationSuccessHandlerImpl {
 
 	/**
 	 * 删除用户
-	 * 
+	 *
 	 * @param parameter
 	 * @return
 	 */
@@ -275,7 +285,7 @@ public class SystemUserController extends AuthenticationSuccessHandlerImpl {
 
 	/**
 	 * 重置密码
-	 * 
+	 *
 	 * @param parameter
 	 * @return
 	 */
@@ -299,7 +309,7 @@ public class SystemUserController extends AuthenticationSuccessHandlerImpl {
 
 	/**
 	 * 更改密码
-	 * 
+	 *
 	 * @param parameter
 	 * @return
 	 */
@@ -346,7 +356,7 @@ public class SystemUserController extends AuthenticationSuccessHandlerImpl {
 
 	/**
 	 * 更改用户信息
-	 * 
+	 *
 	 * @param parameter
 	 * @param user
 	 * @return

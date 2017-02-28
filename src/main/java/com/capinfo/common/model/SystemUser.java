@@ -27,7 +27,7 @@ import com.capinfo.framework.model.system.SecureUser;
 public class SystemUser implements SecureUser<SystemUser, Role> {
 
 	private Long id;
-	
+
 	private Long parentid;
 
 	private String logonName;
@@ -43,18 +43,21 @@ public class SystemUser implements SecureUser<SystemUser, Role> {
 	private Boolean enabled = true;
 
 	private Set<Role> roles = new HashSet<Role>();
-	
+
 	private int num;
-	
+
 	//账户类型
 	private String account_type;
-	
+
 	//账户等级
 	private int leave;
-	
+
 	//行政信息
 	private String regionName;
-	
+
+	//行政信息
+		private Long rid;
+
 
 	@Id
 //	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq")
@@ -122,7 +125,7 @@ public class SystemUser implements SecureUser<SystemUser, Role> {
 	public void setEnabled(Boolean enabled) {
 		this.enabled = enabled;
 	}
-	
+
 	@Column(name = "num")
 	public int getNum() {
 		return num;
@@ -131,7 +134,7 @@ public class SystemUser implements SecureUser<SystemUser, Role> {
 	public void setNum(int num) {
 		this.num = num;
 	}
-	
+
 	@Column(name = "parentid")
 	public Long getParentid() {
 		return parentid;
@@ -163,6 +166,16 @@ public class SystemUser implements SecureUser<SystemUser, Role> {
 
 	public void setRegionName(String regionName) {
 		this.regionName = regionName;
+	}
+
+
+	@Column(name = "rid")
+	public Long getRid() {
+		return rid;
+	}
+
+	public void setRid(Long rid) {
+		this.rid = rid;
 	}
 
 	public SystemUser() {
