@@ -1,68 +1,66 @@
 package com.capinfo.region.model;
 
-import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+
+import com.capinfo.framework.model.BaseEntity;
 
 @Entity
 @Table(name = "OMP_REGION")
 //@SequenceGenerator(name = "OmpRegion", sequenceName = "SEQ_OMP_REGION", allocationSize = 1)
-public class OmpRegion {
+public class OmpRegion implements BaseEntity {
 	
-	@Id
-//	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "OmpRegion")
-	@Column(name = "id", unique = true, nullable = false, precision = 12, scale = 0)
-	private int id;
+	private static final long serialVersionUID = 1L;
 
-	@Column(name = "NAME")
+
+	private Long id;
+
+	
 	private String name;
 
-	@Column(name = "LEVELID")
+	
     private int levelid;
 
-	@Column(name = "DESCRIPTION")
+	
     private String description;
 
-	@Column(name = "CREATEDATE")
-    private Date createdate;
+	
+    private String createdate;
 
-	@Column(name = "CREATORID")
+	
     private int creatorid;
 
-	@Column(name = "PARENTID")
+
     private int parentid;
 
-	@Column(name = "NUM")
+	
     private String num;
 
-	@Column(name = "SHORTNAME")
+	
     private String shortname;
 
-	@Column(name = "DISPORDER")
+	
     private String disporder;
 
-	@Column(name = "STANDARD_NO")
+	
     private String standardNo;
 
-	@Column(name = "USE_FLAG")
+	
     private Short useFlag;
 
-	@Column(name = "OLD_DICTIONARY_ID")
+
     private String oldDictionaryId;
 
-	@Column(name = "CONVERT_ID")
+
     private int convertId;
 
-	@Column(name = "PEOPLE_NUM")
+
     private int peopleNum;
+    
 	
 	public static void sortList(List list, List<OmpRegion> sourcelist,
 			int convertId) {
@@ -81,87 +79,81 @@ public class OmpRegion {
 			}
 		}
 	}
-
-	public int getId() {
+	@Id
+//	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "OmpRegion")
+	@Column(name = "id", unique = true, nullable = false, precision = 12, scale = 0)
+	public Long getId() {
 		return id;
 	}
-
-	public void setId(int id) {
-		this.id = id;
+	public void setId(Long arg0) {
+		// TODO Auto-generated method stub
+		
 	}
-
+	@Column(name = "NAME")
 	public String getName() {
 		return name;
 	}
-
 	public void setName(String name) {
 		this.name = name;
 	}
-
+	@Column(name = "LEVELID")
 	public int getLevelid() {
 		return levelid;
 	}
-
 	public void setLevelid(int levelid) {
 		this.levelid = levelid;
 	}
-
+	@Column(name = "DESCRIPTION")
 	public String getDescription() {
 		return description;
 	}
-
 	public void setDescription(String description) {
 		this.description = description;
 	}
-
-	public Date getCreatedate() {
+	@Column(name = "CREATEDATE")
+	public String getCreatedate() {
 		return createdate;
 	}
-
-	public void setCreatedate(Date createdate) {
+	public void setCreatedate(String createdate) {
 		this.createdate = createdate;
 	}
-
+	@Column(name = "CREATORID")
 	public int getCreatorid() {
 		return creatorid;
 	}
-
 	public void setCreatorid(int creatorid) {
 		this.creatorid = creatorid;
 	}
-
+	@Column(name = "PARENTID")
 	public int getParentid() {
 		return parentid;
 	}
-
 	public void setParentid(int parentid) {
 		this.parentid = parentid;
 	}
-
+	@Column(name = "NUM")
 	public String getNum() {
 		return num;
 	}
-
 	public void setNum(String num) {
 		this.num = num;
 	}
-
+	@Column(name = "SHORTNAME")
 	public String getShortname() {
 		return shortname;
 	}
-
 	public void setShortname(String shortname) {
 		this.shortname = shortname;
 	}
-
+	@Column(name = "DISPORDER")
 	public String getDisporder() {
 		return disporder;
 	}
-
+	
 	public void setDisporder(String disporder) {
 		this.disporder = disporder;
 	}
-
+	@Column(name = "STANDARD_NO")
 	public String getStandardNo() {
 		return standardNo;
 	}
@@ -169,38 +161,40 @@ public class OmpRegion {
 	public void setStandardNo(String standardNo) {
 		this.standardNo = standardNo;
 	}
-
+	@Column(name = "USE_FLAG")
 	public Short getUseFlag() {
 		return useFlag;
 	}
-
 	public void setUseFlag(Short useFlag) {
 		this.useFlag = useFlag;
 	}
-
+	@Column(name = "OLD_DICTIONARY_ID")
 	public String getOldDictionaryId() {
 		return oldDictionaryId;
 	}
-
 	public void setOldDictionaryId(String oldDictionaryId) {
 		this.oldDictionaryId = oldDictionaryId;
 	}
-
+	@Column(name = "CONVERT_ID")
 	public int getConvertId() {
 		return convertId;
 	}
-
 	public void setConvertId(int convertId) {
 		this.convertId = convertId;
 	}
-
+	@Column(name = "PEOPLE_NUM")
 	public int getPeopleNum() {
 		return peopleNum;
 	}
-
 	public void setPeopleNum(int peopleNum) {
 		this.peopleNum = peopleNum;
 	}
+	
+	
+	
+	
+
+
 
 	
 	

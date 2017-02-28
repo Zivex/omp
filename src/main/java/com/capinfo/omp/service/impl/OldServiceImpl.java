@@ -376,7 +376,7 @@ public class OldServiceImpl extends CommonsDataOperationServiceImpl implements
 
 	@Override
 	public List<Map<String, Object>> getRegionById(String county) {
-		String sql = "select r.id,r.name from Omp_Region r where r.parentid = "
+		String sql = "select r.id,r.name from Omp_Region r where r.USE_FLAG=1 and r.parentid = "
 				+ county;
 		List<Map<String, Object>> list = JdbcTemplate.queryForList(sql);
 		return list;

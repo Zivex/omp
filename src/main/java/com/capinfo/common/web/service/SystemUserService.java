@@ -6,6 +6,7 @@ import com.capinfo.common.model.Resource;
 import com.capinfo.common.model.SystemUser;
 import com.capinfo.common.web.parameter.SystemUserParameter;
 import com.capinfo.framework.web.service.CommonsDataOperationService;
+import com.capinfo.region.model.OmpRegion;
 
 public interface SystemUserService extends CommonsDataOperationService<SystemUser, SystemUserParameter> {
 
@@ -55,6 +56,14 @@ public interface SystemUserService extends CommonsDataOperationService<SystemUse
 	 * @return
 	 */
 	public List<Resource> getResources();
+	
+	/**
+	 * 获取区域信息
+	 * @param l 
+	 * 
+	 * @return
+	 */
+	public OmpRegion getbiRegoinid(long l);
 
 	public boolean resetPassword(SystemUserParameter parameter);
 

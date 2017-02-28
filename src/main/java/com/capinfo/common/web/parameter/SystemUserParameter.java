@@ -21,7 +21,50 @@ public class SystemUserParameter extends DataListParameter<SystemUser> {
 	
 	private String oldPassword;
 	
+	//行政区域
+	private String shi;
+	private  String county;
+	private  String street;
+	private  String community;
 	
+	
+
+	
+	
+	
+	
+	public String getShi() {
+		return shi;
+	}
+
+	public void setShi(String shi) {
+		this.shi = shi;
+	}
+
+	public String getCounty() {
+		return county;
+	}
+
+	public void setCounty(String county) {
+		this.county = county;
+	}
+
+	public String getStreet() {
+		return street;
+	}
+
+	public void setStreet(String street) {
+		this.street = street;
+	}
+
+	public String getCommunity() {
+		return community;
+	}
+
+	public void setCommunity(String community) {
+		this.community = community;
+	}
+
 	public Long[] getRoleIds() {
 		return roleIds;
 	}

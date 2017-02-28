@@ -27,6 +27,8 @@ import com.capinfo.framework.model.system.SecureUser;
 public class SystemUser implements SecureUser<SystemUser, Role> {
 
 	private Long id;
+	
+	private Long parentid;
 
 	private String logonName;
 
@@ -44,17 +46,15 @@ public class SystemUser implements SecureUser<SystemUser, Role> {
 	
 	private int num;
 	
+	//账户类型
+	private String account_type;
 	
-
-
-	public SystemUser() {
-		super();
-	}
-
-	public SystemUser(Long id) {
-		super();
-		this.id = id;
-	}
+	//账户等级
+	private int leave;
+	
+	//行政信息
+	private String regionName;
+	
 
 	@Id
 //	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq")
@@ -131,6 +131,49 @@ public class SystemUser implements SecureUser<SystemUser, Role> {
 	public void setNum(int num) {
 		this.num = num;
 	}
+	
+	@Column(name = "parentid")
+	public Long getParentid() {
+		return parentid;
+	}
+
+	public void setParentid(Long parentid) {
+		this.parentid = parentid;
+	}
+	@Column(name = "account_type")
+	public String getAccount_type() {
+		return account_type;
+	}
+
+	public void setAccount_type(String account_type) {
+		this.account_type = account_type;
+	}
+	@Column(name = "leavel")
+	public int getLeave() {
+		return leave;
+	}
+
+	public void setLeave(int leave) {
+		this.leave = leave;
+	}
+	@Column(name = "regionName")
+	public String getRegionName() {
+		return regionName;
+	}
+
+	public void setRegionName(String regionName) {
+		this.regionName = regionName;
+	}
+
+	public SystemUser() {
+		super();
+	}
+
+	public SystemUser(Long id) {
+		super();
+		this.id = id;
+	}
+
 
 	// @OneToMany(targetEntity = UserRole.class, cascade = CascadeType.ALL,
 	// fetch = FetchType.LAZY)

@@ -35,6 +35,7 @@ import com.capinfo.framework.model.Messages;
 import com.capinfo.framework.model.Messages.MessageType;
 import com.capinfo.framework.service.GeneralService;
 import com.capinfo.framework.web.view.model.DataListViewModel;
+import com.capinfo.region.model.OmpRegion;
 
 @Controller
 @RequestMapping("/admin/sys/user")
@@ -149,6 +150,38 @@ public class SystemUserController extends AuthenticationSuccessHandlerImpl {
 				String pass = parameter.getEntity().getPassword();
 				//parameter.getEntity().setPassword(passwordEncoder.encode(pass));
 				parameter.getEntity().setPassword(pass);
+				//判断用户等级
+				String community = parameter.getCommunity();
+				OmpRegion region = null;
+				if(community != null && !"".equals(community)){
+					parameter.getEntity().setLeave(4);
+					 region = systemUserService.getbiRegoinid(Long.parseLong(community));
+				}else{
+					String street = parameter.getStreet();
+					if(street != null && !"".equals(street)){
+						parameter.getEntity().setLeave(3);
+						 region = systemUserService.getbiRegoinid(Long.parseLong(street));
+					}else{
+						String county = parameter.getCounty();						
+						if(county != null && !"".equals(county)){
+							parameter.getEntity().setLeave(2);
+							region = systemUserService.getbiRegoinid(Long.parseLong(county));
+						}else{
+							String shi = parameter.getShi();
+							parameter.getEntity().setLeave(1);
+							region = systemUserService.getbiRegoinid(Long.parseLong(shi));
+						}
+						
+					}
+				}
+				parameter.getEntity().setRegionName(region.getName());
+				
+				
+//				String shi = parameter.getShi();
+//				String county = parameter.getCounty();
+//				String street = parameter.getStreet();
+//				String community = parameter.getCommunity();
+				
 				boolean suc = systemUserService.saveUser(parameter.getEntity());
 				String info = suc == true ? "添加用户成功" : "添加用户失败";
 				messages.setSuccess(suc);

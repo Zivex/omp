@@ -70,13 +70,13 @@
 								</div>
 
 								<div class="form-group"><label class="col-md-2 control-label">
-									<form:radiobutton path="entity.password" value="g-" onchange="addRegion()"  />	政府 </label>
+									<form:radiobutton path="entity.account_type" value="g-" onchange="addRegion()"  />	政府 </label>
 								  <label class="col-md-2 control-label">
-								  <form:radiobutton path="entity.password" value="b-"  />	银行
+								  <form:radiobutton path="entity.account_type" value="b-"  />	银行
 								  </label>
 								</div>
-							<div class="form-group" ><label class="col-md-2 control-label" id="level">
-
+							<div class="form-group" ><label class="checkbox-inline" id="level"></label>
+<%-- <form:select path=""></form:select> --%>
 
 							</div>
 							</form:form>
@@ -140,7 +140,47 @@
 		function addRegion(){
 			var divshow = $("#level");
 			divshow.text("");// 清空数据
-			divshow.append("1");
+			divshow.append('市 : <select id="shi" name="shi"> <option value="0">--请选择--</option> <option value="2">北京</option> </select> 区域： <select id="county" name="county"> <option value="${county }">--请选择--</option> </select> 街道： <select id="street" name="street"> <option value="${street }">--请选择--</option> </select> 社区： <select id="community" name="community"> <option value="${community }">--请选择--</option> </select>');
+			// $.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",function(data){
+			// 	for(var i = 0;i<data.length;i++){
+			// 		$("#county").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
+			// 	}				
+			// });
+		$("#shi").change(function(){
+				$("#street option:not(:first)").remove();
+				$("#community option:not(:first)").remove();
+				$("#county option:not(:first)").remove();
+				var id = $("#shi").val();
+				$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",{id:id},function(data){
+					for(var i = 0;i<data.length;i++){
+						$("#county").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
+					}				
+				});
+			});
+
+
+
+
+			$("#county").change(function(){
+				$("#street option:not(:first)").remove();
+				$("#community option:not(:first)").remove();
+				var id = $("#county").val();
+				$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",{id:id},function(data){
+					for(var i = 0;i<data.length;i++){
+						$("#street").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
+					}				
+				});
+			});
+			
+			$("#street").change(function(){
+				$("#community option:not(:first)").remove();
+				var id = $("#street").val();
+				$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",{id:id},function(data){
+					for(var i = 0;i<data.length;i++){
+						$("#community").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
+					}				
+				});
+			});
 
 
 
@@ -148,26 +188,24 @@
 
 
 
+		// 	      $.ajax(
+  //       {
+  //           url: "send/index",
+  //           type: "post",
+  //           success: function (data) {
+  //               var divshow = $("#showInfo2");
+  //               divshow.text("");// 清空数据
+  //               divshow.append(data); // 添加Html内容，不能用Text 或 Val
+  //               divshow.dialog({
+  //                   title: "短信群发系统",
+  //                   height: 250,
+  //                   width: 580
+  //               });
 
-
-			     //  $.ajax(
-        // {
-        //     url: "send/index",
-        //     type: "post",
-        //     success: function (data) {
-        //         var divshow = $("#showInfo2");
-        //         divshow.text("");// 清空数据
-        //         divshow.append(data); // 添加Html内容，不能用Text 或 Val
-        //         divshow.dialog({
-        //             title: "短信群发系统",
-        //             height: 250,
-        //             width: 580
-        //         });
-
-        //     }
-        // }
-        // );
-        // return false;
+  //           }
+  //       }
+  //       );
+  //       return false;
 		}
 	</script>
 

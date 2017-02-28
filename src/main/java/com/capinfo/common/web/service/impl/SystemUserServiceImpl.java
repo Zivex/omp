@@ -19,8 +19,10 @@ import com.capinfo.common.web.service.SystemUserService;
 import com.capinfo.framework.dao.SearchCriteria.OrderRow;
 import com.capinfo.framework.dao.SearchCriteriaBuilder;
 import com.capinfo.framework.dao.impl.restriction.RestrictionExpression;
+import com.capinfo.framework.model.BaseEntity;
 import com.capinfo.framework.model.system.SecureRole;
 import com.capinfo.framework.web.service.impl.CommonsDataOperationServiceImpl;
+import com.capinfo.region.model.OmpRegion;
 
 public class SystemUserServiceImpl extends CommonsDataOperationServiceImpl<SystemUser, SystemUserParameter> implements SystemUserService {
 
@@ -187,6 +189,12 @@ public class SystemUserServiceImpl extends CommonsDataOperationServiceImpl<Syste
 		String oldRawPassword = parameter.getOldPassword();
 		String olEencodedPassword = user.getPassword();
 		return passwordEncoder.matches(oldRawPassword, olEencodedPassword);
+	}
+
+	@Override
+	public OmpRegion getbiRegoinid(long rid) {
+		OmpRegion entity = getGeneralService().getObjectById(OmpRegion.class, rid);
+		return entity;
 	}
 
 }
