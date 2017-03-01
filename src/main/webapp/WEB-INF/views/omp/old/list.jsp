@@ -45,15 +45,15 @@
 						<tr>
 							<td><input type="checkbox" class="ids" value="${old.id}" /></td>
 							<td><a id="viewItem" onclick="hxtoOldInfo(${old.id});">${old.name}</a></td>
-							<td style="text-align: center;">${old.q}</td>
-							<td style="text-align: center;">${old.j}</td>
-							<td style="text-align: center;">${old.s}</td>
+							<td style="text-align: center;">${old.household_county.name}</td>
+							<td style="text-align: center;">${old.household_street.name}</td>
+							<td style="text-align: center;">${old.household_community.name}</td>
 							<td style="text-align: center;">${old.zjnumber}</td>
-							<td style="text-align: center;">${old.CERTIFICATES_NUMBER}</td>
+							<td style="text-align: center;">${old.certificates_number}</td>
 							<%-- 							<td style="text-align: center;">${old.phone}</td> --%>
 							<td style="text-align: center;">${old.teltype}</td>
 							<c:if test="${sys == 'admin'}">
-								<td style="text-align: center;">${old.agent_id}</td>
+								<td style="text-align: center;">${old.account_type}</td>
 							</c:if>
 
 							<c:if test="${old.call_id == 1}">
@@ -81,10 +81,10 @@
 									<ul class="dropdown-menu" role="menu">
 										<li><a onclick="toupd(${old.id})">修改</a></li>
 										<li><a
-											onclick="see(${old.CERTIFICATES_NUMBER},${old.id})">查看</a></li>
+											onclick="see(${old.certificates_number},${old.id})">查看</a></li>
 										<li><a href="###" onclick="deleteUser(${old.id},this);">删除</a></li>
 										<c:if test="${sys ==  'admin'}">
-											<li><a onclick="ompKeyModify(${old.id},${old.typeid} )">指令个性化</a></li>
+											<li><a onclick="ompKeyModify(${old.id} )">指令个性化</a></li>
 										</c:if>
 										<%-- <li><a onclick="tocreOrder(${old.id})">生成指令</a></li> --%>
 									</ul>
@@ -118,7 +118,7 @@
 
 <!-- Script	-->
 <SCRIPT type="text/javascript">
-	
+
 	/**
 	* 删除用户
 	*/
@@ -133,20 +133,20 @@
 	// 		$("#listForm").submit();
 		}
 	}
-	
+
 	$(document).ready(function() {
 		initListForm();
 		<c:if test="${DataTotalCount!=null&&DataTotalCount>0}">
 		initPagination(<c:out value="${DataTotalCount}"/>,<c:out value="${PerPieceSize}"/>,<c:out value="${CurrentPieceNum}"/>);
 		</c:if>
 	});
-	
+
 	function check(){
 		$(".ids").map(function() {
 			$(this).attr("checked", !$(this).attr("checked"));
 		});
 	}
-	
+
 	function createOrder(){
 		var ids = $(".ids:checkbox:checked").map(function(){
 			return $(this).val();

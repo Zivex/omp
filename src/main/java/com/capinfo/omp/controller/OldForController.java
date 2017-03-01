@@ -7,9 +7,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.ss.usermodel.Cell;
@@ -26,26 +24,22 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
-
-import com.capinfo.assistant.platform.ws.card.model.CardPersonMessageBack;
-import com.capinfo.assistant.platform.ws.card.service.CardPersonMessageWsServiceProxy;
 import com.capinfo.common.model.SystemUser;
-import com.capinfo.omp.model.OmpOldInfo;
+import com.capinfo.omp.model.Omp_Old_Info;
 import com.capinfo.omp.service.OldService;
 import com.capinfo.omp.utils.JsonUtil;
 import com.capinfo.omp.utils.Page;
 import com.capinfo.omp.ws.client.ClientGetLandNumberService;
-import com.capinfo.region.model.Omp_Old_Info;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 /**
- * 
+ *
  * 展示主页面
- * 
+ *
  * @author Administrator
- * 
+ *
  */
 @Controller
 @RequestMapping("/old")
@@ -66,7 +60,7 @@ public class OldForController {
 			String creationTime, HttpServletRequest request) {
 		ModelAndView mv = new ModelAndView("/omp/old/initial");
 		getList(mv, current, name, idCard, zjNumber, county, street, community,
-				isGenerationOrder, isindividuation, creationTime);
+				isGenerationOrder, isindividuation, creationTime,user);
 
 		// oldService.saveLogger("2", "老人信息表", "lixing", "1");
 		return mv;
@@ -74,7 +68,7 @@ public class OldForController {
 
 	/**
 	 * 老人列表查询
-	 * 
+	 *
 	 * @param current
 	 * @param name
 	 * @param idCard
@@ -91,10 +85,12 @@ public class OldForController {
 	public ModelAndView listtoo(String current, String name, String idCard,
 			String zjNumber, String county, String street, String community,
 			String isGenerationOrder, String isindividuation,
-			String creationTime) {
+			String creationTime,@ModelAttribute("eccomm_admin") SystemUser user) {
 		ModelAndView mv = new ModelAndView("/omp/old/list");
+		//oldService.getOldContextList(page, name, idCard, zjNumber, county, street, community, isGenerationOrder, isindividuation, user);
+
 		getList(mv, current, name, idCard, zjNumber, county, street, community,
-				isGenerationOrder, isindividuation, creationTime);
+				isGenerationOrder, isindividuation, creationTime,user);
 		// LogRecord.logger("2", "", "", "", "2");
 		return mv;
 	}
@@ -102,7 +98,7 @@ public class OldForController {
 	public void getList(ModelAndView mv, String current, String name,
 			String idCard, String zjNumber, String county, String street,
 			String community, String isGenerationOrder, String isindividuation,
-			String creationTime) {
+			String creationTime,SystemUser user) {
 
 		if (StringUtils.isEmpty(current)) {
 			current = "1";
@@ -112,12 +108,12 @@ public class OldForController {
 		}
 
 		int count = oldService.getCount(name, idCard, zjNumber, county, street,
-				community, isGenerationOrder, isindividuation);
-		count = count == 0 ? 1 : count;
+				community, isGenerationOrder, isindividuation,user);
+		//count = count == 0 ? 1 : count;
 		Page page = new Page<>(current, count, "10");
-		List<Map<String, Object>> entities = oldService.getOldContextList(page,
+		List<Omp_Old_Info> entities = oldService.getOldContextList(page,
 				name, idCard, zjNumber, county, street, community,
-				isGenerationOrder, isindividuation);
+				isGenerationOrder, isindividuation,user);
 		mv.addObject("dataList", entities);
 		mv.addObject("DataTotalCount", count);
 		mv.addObject("CurrentPieceNum", page.getCurrentPage());
@@ -134,7 +130,7 @@ public class OldForController {
 
 	/**
 	 * 导入老人Excel
-	 * 
+	 *
 	 * @param request
 	 * @param excelFile
 	 * @return
@@ -214,7 +210,7 @@ public class OldForController {
 
 	/**
 	 * POI:解析Excel文件中的数据并把每行数据封装成一个实体
-	 * 
+	 *
 	 * @param fis
 	 *            文件输入流
 	 * @param flunk
@@ -251,21 +247,21 @@ public class OldForController {
 
 		for (int i = 10; i < rowNum + 1; i++) {
 			Row row = sheetAt0.getRow(i);
-			
-			
+
+
 			String call_id = getCellValue(row.getCell(9));
 			Long callId = 0l;
 			if ("是".equals(call_id)) {
 				callId = 1l;
 			}
-			
+
 //			OmpOldInfo omp = new OmpOldInfo(CountyId, StreetId, CommunityId,
 //					workername, workertel, getCellValue(row.getCell(1)),
 //					getCellValue(row.getCell(2)), getCellValue(row.getCell(3)),
 //					getCellValue(row.getCell(4)), getCellValue(row.getCell(5)),
 //					getCellValue(row.getCell(6)), getCellValue(row.getCell(7)),
 //					getCellValue(row.getCell(8)), getCellValue(row.getCell(9)));
-			
+
 			Omp_Old_Info old_info = new Omp_Old_Info();
 			old_info.setHousehold_county_id(countyId);
 			old_info.setHousehold_street_id(streetId);
@@ -281,8 +277,8 @@ public class OldForController {
 			old_info.setTeltype(getCellValue(row.getCell(7)));
 			old_info.setAddress(getCellValue(row.getCell(8)));
 			old_info.setCall_id(callId);
-			
-			
+
+
 			// 去数据库查询身份证号码是否重复，重复返回false,不重复返回true
 			// if (oldService.checkRe(getCellValue(row.getCell(2)),
 			// getCellValue(row.getCell(3)))) {
@@ -330,7 +326,7 @@ public class OldForController {
 
 	/**
 	 * 去修改老人数据
-	 * 
+	 *
 	 * @param id
 	 * @return
 	 */
@@ -348,7 +344,7 @@ public class OldForController {
 
 	/**
 	 * 查看老人数据
-	 * 
+	 *
 	 * @param id
 	 * @return
 	 */
@@ -359,17 +355,20 @@ public class OldForController {
 		List<Map<String, Object>> list = oldService.getOldById(id);
 		Map<String, Object> map = list.get(0);
 		List<Map<String, Object>> person = oldService.getPerson(cardId);
-		Map<String, Object> mapPreson = person.get(0);
+		if(person == null){
+			Map<String, Object> mapPreson = person.get(0);
+			
+			mv.addObject("mapPreson", mapPreson);
+		}
 		Map Region = oldService.getRegionList(map);
 		mv.addObject("Region", Region);
 		mv.addObject("detaMap", map);
-		mv.addObject("mapPreson", mapPreson);
 		return mv;
 	}
 
 	/**
 	 * 去查看老人数据
-	 * 
+	 *
 	 * @param id
 	 * @return
 	 */
@@ -415,7 +414,7 @@ public class OldForController {
 
 	/**
 	 * 去修改老人话机数据
-	 * 
+	 *
 	 * @param id
 	 * @return
 	 */
@@ -459,7 +458,7 @@ public class OldForController {
 
 	/**
 	 * 老人个性化数据修改
-	 * 
+	 *
 	 * @param id
 	 * @return
 	 */
@@ -480,7 +479,7 @@ public class OldForController {
 
 	/**
 	 * 修改老人数据
-	 * 
+	 *
 	 * @param id
 	 * @return
 	 */
@@ -516,7 +515,7 @@ public class OldForController {
 
 	/**
 	 * 省市街区三级联动
-	 * 
+	 *
 	 * @param id
 	 * @return
 	 */
@@ -533,7 +532,7 @@ public class OldForController {
 
 	/**
 	 * 停用老人信息
-	 * 
+	 *
 	 * @param id
 	 * @return
 	 */
@@ -545,7 +544,7 @@ public class OldForController {
 
 	/**
 	 * 导入
-	 * 
+	 *
 	 * @return
 	 */
 	@RequestMapping("/Import/toImport.shtml")
@@ -556,7 +555,7 @@ public class OldForController {
 
 	/**
 	 * 生成指令
-	 * 
+	 *
 	 * @param ids
 	 * @return
 	 */

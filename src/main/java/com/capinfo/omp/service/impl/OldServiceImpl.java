@@ -10,20 +10,21 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.capinfo.assistant.platform.ws.card.model.CardPersonMessageBack;
 import com.capinfo.assistant.platform.ws.card.service.CardPersonMessageWsServiceProxy;
 import com.capinfo.common.model.SystemUser;
-import com.capinfo.common.web.parameter.SystemUserParameter;
-import com.capinfo.framework.service.GeneralService;
+import com.capinfo.framework.dao.SearchCriteriaBuilder;
+import com.capinfo.framework.dao.impl.restriction.RestrictionExpression;
 import com.capinfo.framework.web.service.impl.CommonsDataOperationServiceImpl;
-import com.capinfo.omp.model.OmpOldInfo;
+import com.capinfo.omp.model.Omp_Old_Info;
 import com.capinfo.omp.parameter.OrderParameter;
 import com.capinfo.omp.service.OldService;
 import com.capinfo.omp.utils.Page;
-import com.capinfo.region.model.Omp_Old_Info;
 
 @SuppressWarnings("rawtypes")
 @Service
@@ -35,162 +36,120 @@ public class OldServiceImpl extends
 	private JdbcTemplate JdbcTemplate;
 
 	@Override
-	public List<Map<String, Object>> getOldContextList(Page page, String name,
+	public List<Omp_Old_Info> getOldContextList(Page page, String name,
 			String idCard, String zjNumber, String county, String street,
-			String community, String isGenerationOrder, String isindividuation) {
-		String userName = SecurityContextHolder.getContext()
-				.getAuthentication().getName();
-		String uName = "";
-		if (!"admin".equals(userName)) {
-			uName = " AND I.agent_id  =  '" + userName + "'";
+			String community, String isGenerationOrder, String isindividuation,
+			SystemUser user) {
+		SearchCriteriaBuilder<Omp_Old_Info> searchCriteriaBuilder = new SearchCriteriaBuilder(
+				Omp_Old_Info.class);
+		// 名字
+		searchCriteriaBuilder.addQueryCondition("name",
+				RestrictionExpression.EQUALS_OP, name);
+		searchCriteriaBuilder.addQueryCondition("certificates_number",
+				RestrictionExpression.EQUALS_OP, idCard);
+		searchCriteriaBuilder.addQueryCondition("zjnumber",
+				RestrictionExpression.EQUALS_OP, zjNumber);
+		searchCriteriaBuilder.addQueryCondition("household_county_id",
+				RestrictionExpression.EQUALS_OP, county);
+		searchCriteriaBuilder.addQueryCondition("household_street_id",
+				RestrictionExpression.EQUALS_OP, street);
+		searchCriteriaBuilder.addQueryCondition("household_community_id",
+				RestrictionExpression.EQUALS_OP, community);
+		searchCriteriaBuilder.addQueryCondition("isGenerationOrder",
+				RestrictionExpression.EQUALS_OP, isGenerationOrder);
+		searchCriteriaBuilder.addQueryCondition("isindividuation",
+				RestrictionExpression.EQUALS_OP, isindividuation);
+		searchCriteriaBuilder.addLimitCondition(
+				(page.getCurrentPage() - 1) * 10, 10);
+		// 根据当前用户搜索
+		if ("admin".equals(user.getName())) {
+			searchCriteriaBuilder.addQueryCondition("account_type",
+					RestrictionExpression.EQUALS_OP, user.getAccount_type());
+		}
+		if (user.getLeave() > 1) {
+			String rname = "";
+			switch (user.getLeave()) {
+			case 2:
+				rname = "household_county_id";
+				break;
+			case 3:
+				rname = "household_street_id";
+				break;
+			case 4:
+				rname = "household_community_id";
+				break;
+			}
+			searchCriteriaBuilder.addQueryCondition(rname,
+					RestrictionExpression.EQUALS_OP, user.getRid());
+
 		}
 
-		if (name != null && !StringUtils.isEmpty(name)) {
-			name = " AND I.NAME  LIKE  '%" + name + "%'";
-		} else {
-			name = "";
-		}
-		if (idCard != null && !StringUtils.isEmpty(idCard)) {
-			idCard = " AND I.CERTIFICATES_NUMBER = '" + idCard + "'";
-		}
-		if (zjNumber != null && !StringUtils.isEmpty(zjNumber)) {
-			zjNumber = "  AND I.ZJNUMBER = '" + zjNumber + "'";
-		}
-		if (county != null && idCard != null && !StringUtils.isEmpty(county)) {
-			county = " AND I.HOUSEHOLD_COUNTY_ID = '" + county + "'";
-		}
-		if (street != null && !StringUtils.isEmpty(street)) {
-			street = " AND I.HOUSEHOLD_STREET_ID = '" + street + "'";
-		}
-		if (community != null && !StringUtils.isEmpty(community)) {
-			community = " AND I.HOUSEHOLD_COMMUNITY_ID = '" + community + "'";
-		}
-		if (isGenerationOrder != null
-				&& !StringUtils.isEmpty(isGenerationOrder)) {
-			isGenerationOrder = " AND I.isGenerationOrder = '"
-					+ isGenerationOrder + "'";
-		}
+		List<Omp_Old_Info> Omp_Old_InfoList = getGeneralService().getObjects(
+				searchCriteriaBuilder.build());
 
-		if (isindividuation != null && !StringUtils.isEmpty(isindividuation)) {
-			isindividuation = " AND I.isindividuation = '" + isindividuation
-					+ "'";
-		}
 		/*
+		 * 
+		 * 
+		 * String userName = SecurityContextHolder.getContext()
+		 * .getAuthentication().getName(); String uName = ""; if
+		 * (!"admin".equals(userName)) { uName = " AND I.agent_id  =  '" +
+		 * userName + "'"; }
+		 * 
+		 * if (name != null && !StringUtils.isEmpty(name)) { name =
+		 * " AND I.NAME  LIKE  '%" + name + "%'"; } else { name = ""; } if
+		 * (idCard != null && !StringUtils.isEmpty(idCard)) { idCard =
+		 * " AND I.CERTIFICATES_NUMBER = '" + idCard + "'"; } if (zjNumber !=
+		 * null && !StringUtils.isEmpty(zjNumber)) { zjNumber =
+		 * "  AND I.ZJNUMBER = '" + zjNumber + "'"; } if (county != null &&
+		 * idCard != null && !StringUtils.isEmpty(county)) { county =
+		 * " AND I.HOUSEHOLD_COUNTY_ID = '" + county + "'"; } if (street != null
+		 * && !StringUtils.isEmpty(street)) { street =
+		 * " AND I.HOUSEHOLD_STREET_ID = '" + street + "'"; } if (community !=
+		 * null && !StringUtils.isEmpty(community)) { community =
+		 * " AND I.HOUSEHOLD_COMMUNITY_ID = '" + community + "'"; } if
+		 * (isGenerationOrder != null &&
+		 * !StringUtils.isEmpty(isGenerationOrder)) { isGenerationOrder =
+		 * " AND I.isGenerationOrder = '" + isGenerationOrder + "'"; }
+		 * 
+		 * if (isindividuation != null && !StringUtils.isEmpty(isindividuation))
+		 * { isindividuation = " AND I.isindividuation = '" + isindividuation +
+		 * "'"; }
+		 * 
 		 * if (!StringUtils.isEmpty(creationTime)) { creationTime =
 		 * " AND I.creationTime like '%"+creationTime+"%'"; }
+		 * 
+		 * String sql =
+		 * "select i.agent_id,i.call_id, i.id,i.`NAME`,i.ZJNUMBER,i.PHONE,i.TELTYPE,r2.`NAME` q,r3.`NAME` j,r1.`NAME` s,r5.id typeid,i.address,i.CERTIFICATES_NUMBER,i.isindividuation from omp_region r1,omp_region r2,omp_region r3,omp_phone_type r5,omp_old_info i "
+		 * + "where STATE = 1 " + name + idCard + zjNumber + county + street +
+		 * uName + community + isGenerationOrder + isindividuation +
+		 * " and  r1.id = i.HOUSEHOLD_COMMUNITY_ID and r2.id = i.HOUSEHOLD_COUNTY_ID  and r5.phoneType = i.TELTYPE and r3.ID = i.HOUSEHOLD_STREET_ID LIMIT "
+		 * + (page.getCurrentPage() - 1) page.getPageSize() + ", " +
+		 * page.getPageSize(); List<Map<String, Object>> queryForList =
+		 * JdbcTemplate.queryForList(sql);
 		 */
-		String sql = "select i.agent_id,i.call_id, i.id,i.`NAME`,i.ZJNUMBER,i.PHONE,i.TELTYPE,r2.`NAME` q,r3.`NAME` j,r1.`NAME` s,r5.id typeid,i.address,i.CERTIFICATES_NUMBER,i.isindividuation from omp_region r1,omp_region r2,omp_region r3,omp_phone_type r5,omp_old_info i "
-				+ "where STATE = 1 "
-				+ name
-				+ idCard
-				+ zjNumber
-				+ county
-				+ street
-				+ uName
-				+ community
-				+ isGenerationOrder
-				+ isindividuation
-				+ " and  r1.id = i.HOUSEHOLD_COMMUNITY_ID and r2.id = i.HOUSEHOLD_COUNTY_ID  and r5.phoneType = i.TELTYPE and r3.ID = i.HOUSEHOLD_STREET_ID LIMIT "
-				+ (page.getCurrentPage() - 1)
-				* page.getPageSize()
-				+ ", "
-				+ page.getPageSize();
-		List<Map<String, Object>> queryForList = JdbcTemplate.queryForList(sql);
-		return queryForList;
+		return Omp_Old_InfoList;
 	}
 
 	@Override
 	public boolean addOld(Omp_Old_Info ompOldInfo, SystemUser user) {
-		String userType = user.getAccount_type();
-		char type = userType.charAt(0);
-		ompOldInfo.setAccount_type(String.valueOf(type));
+		ompOldInfo.setAccount_type(user.getAccount_type());
 		ompOldInfo.setAgent_id(user.getId());
-		ompOldInfo.setIsGenerationOrder(1l);
-		ompOldInfo.setIsindividuation("1");
-		ompOldInfo.setIspersonalized(1l);
-		ompOldInfo.setNum(0l);
 		ompOldInfo.setState(1l);
-		ompOldInfo.setSync(1l);
-		ompOldInfo.setTel("111");
-		ompOldInfo.setUpdateTime("1234:1");
-		ompOldInfo.setUpdNumber(2l);
-		ompOldInfo.setUsertype(userType);
+		getGeneralService().saveOrUpdate(ompOldInfo);
 
-		GeneralService g = super.getGeneralService();
-		g.saveOrUpdate(ompOldInfo);
-		System.out.println("成功");
+		Long autoIncId = ompOldInfo.getId();
 
-		return false;
-		// System.out.println("====================" + name);
-		// final String sql = "insert into omp_old_info"
-		// +
-		// "(household_county_id,household_street_id,household_community_id,workername,workertel,"
-		// +
-		// "name,certificates_number,zjnumber,phone,address,emergencycontact,emergencycontacttle,"
-		// +
-		// "teltype,state,Ispersonalized,creationTime,agent_id,num,call_id)values('"
-		// + ompOldInfo.getHouseholdCountyId()
-		// + "','"
-		// + ompOldInfo.getHouseholdStreetId()
-		// + "','"
-		// + ompOldInfo.getHouseholdCommunityId()
-		// + "','"
-		// + ompOldInfo.getWorkername()
-		// + "','"
-		// + ompOldInfo.getWorkertel()
-		// + "','"
-		// + ompOldInfo.getName()
-		// + "','"
-		// + ompOldInfo.getCertificatesNumber()
-		// + "','"
-		// + ompOldInfo.getzjNumber()
-		// + "','"
-		// + ompOldInfo.getPhone()
-		// + "','"
-		// + ompOldInfo.getAddress()
-		// + "','"
-		// + ompOldInfo.getEmergencycontact()
-		// + "','"
-		// + ompOldInfo.getEmergencycontacttle()
-		// + "','"
-		// + ompOldInfo.getTeltype()
-		// + "',1,0,'"
-		// + format
-		// + "','"
-		// + name
-		// + "',1," + callId + ")";
-		//
-		// System.out.println(sql);
-		//
-		// KeyHolder keyHolder = new GeneratedKeyHolder();
-		// int autoIncId = 0;
-		//
-		// JdbcTemplate.update(new PreparedStatementCreator() {
-		// public PreparedStatement createPreparedStatement(Connection con)
-		// throws SQLException {
-		// PreparedStatement ps = con.prepareStatement(sql,
-		// PreparedStatement.RETURN_GENERATED_KEYS);
-		// return ps;
-		// }
-		// }, keyHolder);
-		//
-		// autoIncId = keyHolder.getKey().intValue();
-		// if (autoIncId > 0) {
-		// addOldKeyInfo(ompOldInfo, autoIncId);
-		// }
-		//
-		// return autoIncId > 0;
+		if (autoIncId > 0) {
+			addOldKeyInfo(ompOldInfo, autoIncId);
+		}
 
-		// int update = JdbcTemplate.update(sql);
-		// if (update==1) {
-		// return true;
-		// }
-		// return false;
+		return autoIncId > 0;
+
 	}
 
 	// 新增老人，自动匹配社区座机信息
-	private boolean addOldKeyInfo(OmpOldInfo ompOldInfo, int OldID) {
-		String CommunityId = ompOldInfo.getHouseholdCommunityId();
+	private boolean addOldKeyInfo(Omp_Old_Info ompOldInfo, Long OldID) {
+		String CommunityId = ompOldInfo.getHousehold_community_id();
 		Map<String, Object> maps = getCommunityInfo(CommunityId);
 		String sqlString = "";
 		if (!"".equals(ompOldInfo.getTeltype())
@@ -279,13 +238,26 @@ public class OldServiceImpl extends
 	@Override
 	public int getCount(String name, String idCard, String zjNumber,
 			String county, String street, String community,
-			String isGenerationOrder, String isindividuation) {
-		String userName = SecurityContextHolder.getContext()
-				.getAuthentication().getName();
-		String uName = "";
-		if (!"admin".equals(userName)) {
-			uName = " AND I.agent_id  =  '" + userName + "'";
+			String isGenerationOrder, String isindividuation, SystemUser user) {
+
+		// String uName = "";
+		// if (!"admin".equals(user.getName())) {
+		// uName = " AND I.agent_id  =  '" + user.getName() + "'";
+		// }
+		// 查询用户区域
+		String rname = "";
+		switch (user.getLeave()) {
+		case 2:
+			rname = " and i.HOUSEHOLD_COUNTY_ID = " + user.getRid();
+			break;
+		case 3:
+			rname = " and i.HOUSEHOLD_STREET_ID = " + user.getRid();
+			break;
+		case 4:
+			rname = " and i.HOUSEHOLD_COMMUNITY_ID = " + user.getRid();
+			break;
 		}
+
 		if (name != null && !StringUtils.isEmpty(name)) {
 			name = " AND I.NAME  LIKE  '%" + name + "%'";
 		} else {
@@ -321,7 +293,7 @@ public class OldServiceImpl extends
 		 * " AND I.creationTime like '%"+creationTime+"%'"; }
 		 */
 		String sql = "SELECT count(i.ID) FROM	OMP_OLD_INFO i WHERE i.STATE = 1 "
-				+ uName
+				+ rname
 				+ name
 				+ idCard
 				+ zjNumber

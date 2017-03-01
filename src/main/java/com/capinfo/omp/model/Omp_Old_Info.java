@@ -1,12 +1,19 @@
-package com.capinfo.region.model;
+package com.capinfo.omp.model;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
 import com.capinfo.framework.model.BaseEntity;
+import com.capinfo.region.model.OmpRegion;
 
 /**
  * 用户信息
@@ -19,9 +26,16 @@ public class Omp_Old_Info implements BaseEntity {
 
 	private static final long serialVersionUID = 1L;
 	private Long id;
-	private String household_county_id;
+	
+    private String household_county_id;
+	private OmpRegion household_county;
+	
 	private String household_street_id;
+	private OmpRegion household_street;
+	
 	private String household_community_id;
+	private OmpRegion household_community;
+	
 	private String workername;
 	private String workertel;
 	private String name;
@@ -281,8 +295,34 @@ public class Omp_Old_Info implements BaseEntity {
 	public Omp_Old_Info() {
 		super();
 	}
+	@ManyToOne(targetEntity = OmpRegion.class, fetch = FetchType.LAZY)
+	@JoinColumn(name = "household_county_id", insertable = false, updatable = false)
+	public OmpRegion getHousehold_county() {
+		return household_county;
+	}
 
-	
+	public void setHousehold_county(OmpRegion household_county) {
+		this.household_county = household_county;
+	}
+	@ManyToOne(targetEntity = OmpRegion.class, fetch = FetchType.LAZY)
+	@JoinColumn(name = "household_street_id", insertable = false, updatable = false)
+	public OmpRegion getHousehold_street() {
+		return household_street;
+	}
+
+	public void setHousehold_street(OmpRegion household_street) {
+		this.household_street = household_street;
+	}
+	@ManyToOne(targetEntity = OmpRegion.class, fetch = FetchType.LAZY)
+	@JoinColumn(name = "household_community_id", insertable = false, updatable = false)
+	public OmpRegion getHousehold_community() {
+		return household_community;
+	}
+
+	public void setHousehold_community(OmpRegion household_community) {
+		this.household_community = household_community;
+	}
+
 	
 	
 
