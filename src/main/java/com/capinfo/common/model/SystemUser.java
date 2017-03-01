@@ -2,7 +2,6 @@ package com.capinfo.common.model;
 
 import java.util.HashSet;
 import java.util.Set;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -56,7 +55,9 @@ public class SystemUser implements SecureUser<SystemUser, Role> {
 	private String regionName;
 
 	//行政信息
-		private Long rid;
+	private Long rid;
+	//是否显示老人打全部信息
+	private Long	display_all;
 
 
 	@Id
@@ -176,6 +177,17 @@ public class SystemUser implements SecureUser<SystemUser, Role> {
 
 	public void setRid(Long rid) {
 		this.rid = rid;
+	}
+	
+	
+	
+	@Column(name = "display_all")
+	public Long getDisplay_all() {
+		return display_all;
+	}
+
+	public void setDisplay_all(Long display_all) {
+		this.display_all = display_all;
 	}
 
 	public SystemUser() {

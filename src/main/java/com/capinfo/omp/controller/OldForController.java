@@ -35,6 +35,7 @@ import com.capinfo.omp.service.OldService;
 import com.capinfo.omp.utils.JsonUtil;
 import com.capinfo.omp.utils.Page;
 import com.capinfo.omp.ws.client.ClientGetLandNumberService;
+import com.capinfo.region.model.Omp_Old_Info;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -141,7 +142,7 @@ public class OldForController {
 	 */
 	@RequestMapping("/oldMatch/importInformation.shtml")
 	public ModelAndView importInformation(HttpServletRequest request,
-			@RequestParam("excelFile") MultipartFile excelFile)
+			@RequestParam("excelFile") MultipartFile excelFile,@ModelAttribute("eccomm_admin") SystemUser user)
 			throws Exception {
 		ModelAndView mv = new ModelAndView("/omp/old/order");
 		System.out.println(excelFile);
@@ -154,35 +155,35 @@ public class OldForController {
 			String zjNumber = "{'landLineNumber':'";// 导入成功后将座机号码同步到中航
 			int nb = 10;
 			int enb = 0;
-			List<OmpOldInfo> list = (List<OmpOldInfo>) map.get("infos");
-			for (OmpOldInfo ompOldInfo : list) {
+			List<Omp_Old_Info> list = (List<Omp_Old_Info>) map.get("infos");
+			for (Omp_Old_Info ompOldInfo : list) {
 				// 判断是否以010开头
-				String match = ompOldInfo.getzjNumber().substring(0, 3);
+				String match = ompOldInfo.getZjnumber().substring(0, 3);
 				String linkNbr = "";
 				if (match.equals("010")) {
-					linkNbr = ompOldInfo.getzjNumber().substring(3);
+					linkNbr = ompOldInfo.getZjnumber().substring(3);
 				} else {
-					linkNbr = ompOldInfo.getzjNumber();
+					linkNbr = ompOldInfo.getZjnumber();
 				}
 
 				zjNumber = zjNumber + linkNbr + ",";
 				// 去掉010
-				ompOldInfo.setzjNumber(linkNbr);
+				ompOldInfo.setZjnumber(linkNbr);
 				nb++;
-				// 通过座机号，身份证号判断是否存在老人 1打座机号已存在 2身份证号已存在 0不存在
-				int t = oldService.checkOldIsHave(ompOldInfo.getzjNumber(),
-						ompOldInfo.getCertificatesNumber());
+				// 通过座机号，身份证号判断是否存在老人 1大座机号已存在 2身份证号已存在 0不存在
+				int t = oldService.checkOldIsHave(ompOldInfo.getZjnumber(),
+						ompOldInfo.getCertificates_number());
 				if (t == 0) {
 					// if (true) {
 					// 身份证号码 (通过身份证ID查询老人信息 )
-					String cardId = ompOldInfo.getCertificatesNumber();
+					// String cardId = ompOldInfo.getCertificatesNumber();
 					// CardPersonMessageWsServiceProxy d = new
 					// CardPersonMessageWsServiceProxy();
 					// CardPersonMessageBack m = d
 					// .getCardPersonMessageByIDNumber(cardId);
 					// System.out.println("老人信息属性:" + m.getBankCard());
-
-					oldService.addOld(ompOldInfo, format);
+					ompOldInfo.setCreationTime(format);
+					oldService.addOld(ompOldInfo, user);
 				} else if (t == 1) {
 					errorstr = errorstr + "'" + nb + "',大座机号重复 '<br/>'&lt;br&gt;";
 					enb++;
@@ -225,8 +226,8 @@ public class OldForController {
 	public Map<String, Object> importEmployeeByPoi(InputStream fis)
 			throws Exception {
 
-		List<OmpOldInfo> infos = new ArrayList<OmpOldInfo>();
-		List<OmpOldInfo> failure = new ArrayList<OmpOldInfo>();
+		List<Omp_Old_Info> infos = new ArrayList<Omp_Old_Info>();
+		List<Omp_Old_Info> failure = new ArrayList<Omp_Old_Info>();
 		Workbook workbook = WorkbookFactory.create(fis);
 		Sheet sheetAt0 = workbook.getSheetAt(0);
 		Row row3 = sheetAt0.getRow(3);
@@ -237,11 +238,11 @@ public class OldForController {
 		// 社区
 		String community = getCellValue(row3.getCell(6));
 		// 根据市区名称查询市区ID
-		String CountyId = oldService.getIdByName(area, 3);
+		String countyId = oldService.getIdByName(area, 3);
 		// 根据街道名称查询街道ID
-		String StreetId = oldService.getIdByName(street, 4);
+		String streetId = oldService.getIdByName(street, 4);
 		// 根据社区名称查询社区ID
-		String CommunityId = oldService.getIdByName(community, 5);
+		String communityId = oldService.getIdByName(community, 5);
 		Row row6 = sheetAt0.getRow(6);
 		// 姓名
 		String workername = getCellValue(row6.getCell(1));
@@ -250,17 +251,42 @@ public class OldForController {
 
 		for (int i = 10; i < rowNum + 1; i++) {
 			Row row = sheetAt0.getRow(i);
-
-			OmpOldInfo omp = new OmpOldInfo(CountyId, StreetId, CommunityId,
-					workername, workertel, getCellValue(row.getCell(1)),
-					getCellValue(row.getCell(2)), getCellValue(row.getCell(3)),
-					getCellValue(row.getCell(4)), getCellValue(row.getCell(5)),
-					getCellValue(row.getCell(6)), getCellValue(row.getCell(7)),
-					getCellValue(row.getCell(8)), getCellValue(row.getCell(9)));
+			
+			
+			String call_id = getCellValue(row.getCell(9));
+			Long callId = 0l;
+			if ("是".equals(call_id)) {
+				callId = 1l;
+			}
+			
+//			OmpOldInfo omp = new OmpOldInfo(CountyId, StreetId, CommunityId,
+//					workername, workertel, getCellValue(row.getCell(1)),
+//					getCellValue(row.getCell(2)), getCellValue(row.getCell(3)),
+//					getCellValue(row.getCell(4)), getCellValue(row.getCell(5)),
+//					getCellValue(row.getCell(6)), getCellValue(row.getCell(7)),
+//					getCellValue(row.getCell(8)), getCellValue(row.getCell(9)));
+			
+			Omp_Old_Info old_info = new Omp_Old_Info();
+			old_info.setHousehold_county_id(countyId);
+			old_info.setHousehold_street_id(streetId);
+			old_info.setHousehold_community_id(communityId);
+			old_info.setWorkername(workername);
+			old_info.setWorkertel(workertel);
+			old_info.setName(getCellValue(row.getCell(1)));
+			old_info.setCertificates_number(getCellValue(row.getCell(2)));
+			old_info.setZjnumber(getCellValue(row.getCell(3)));
+			old_info.setPhone(getCellValue(row.getCell(4)));
+			old_info.setEmergencycontact(getCellValue(row.getCell(5)));
+			old_info.setEmergencycontacttle(getCellValue(row.getCell(6)));
+			old_info.setTeltype(getCellValue(row.getCell(7)));
+			old_info.setAddress(getCellValue(row.getCell(8)));
+			old_info.setCall_id(callId);
+			
+			
 			// 去数据库查询身份证号码是否重复，重复返回false,不重复返回true
 			// if (oldService.checkRe(getCellValue(row.getCell(2)),
 			// getCellValue(row.getCell(3)))) {
-			infos.add(omp);
+			infos.add(old_info);
 			// } else {
 			// failure.add(omp);
 			// }

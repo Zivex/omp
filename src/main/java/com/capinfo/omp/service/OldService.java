@@ -4,15 +4,16 @@ import java.util.List;
 import java.util.Map;
 
 import com.capinfo.assistant.platform.ws.card.model.CardPersonMessageBack;
+import com.capinfo.common.model.SystemUser;
 import com.capinfo.framework.web.service.CommonsDataOperationService;
 import com.capinfo.omp.model.OmpOldInfo;
 import com.capinfo.omp.model.OmpOldMatch;
-import com.capinfo.omp.model.Omp_Old_Info;
 import com.capinfo.omp.parameter.OrderParameter;
 import com.capinfo.omp.utils.Page;
+import com.capinfo.region.model.Omp_Old_Info;
 
 
-public interface OldService  {
+public interface OldService extends CommonsDataOperationService<Omp_Old_Info, OrderParameter>  {
 
 	/**
 	 * 查询
@@ -32,10 +33,11 @@ public interface OldService  {
 	/**
 	 * 增加
 	 * @param format 
+	 * @param user 
 	 * 
 	 * @return
 	 */
-	boolean addOld(OmpOldInfo ompOldInfo, String format);
+	boolean addOld(Omp_Old_Info ompOldInfo, SystemUser user);
 
 	/**
 	 * 修改

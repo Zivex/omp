@@ -1,10 +1,12 @@
 package com.capinfo.omp.parameter;
-
 import com.capinfo.framework.web.parameter.DataListParameter;
-import com.capinfo.omp.model.Omp_Old_Info;
+import com.capinfo.region.model.Omp_Old_Info;
 
 public class OrderParameter extends DataListParameter<Omp_Old_Info> {
 	private Omp_Old_Info entity = new Omp_Old_Info();
+	private Class<Omp_Old_Info> entityClazz = Omp_Old_Info.class;
+	
+	
 	private String name;
 	private String current;
 	private String idCard;
@@ -107,5 +109,15 @@ public class OrderParameter extends DataListParameter<Omp_Old_Info> {
 	public void setEntity(Omp_Old_Info entity) {
 		this.entity = entity;
 	}
+
+	public Class<Omp_Old_Info> getEntityClazz() {
+		return entityClazz;
+	}
+
+	public void setEntityClazz(Class<Omp_Old_Info> entityClazz) {
+		this.entityClazz = entityClazz;
+	}
+	
+	
 	
 }

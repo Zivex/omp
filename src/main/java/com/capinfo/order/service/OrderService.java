@@ -6,10 +6,10 @@ import java.util.Map;
 import org.springframework.stereotype.Service;
 
 import com.capinfo.framework.web.service.CommonsDataOperationService;
-import com.capinfo.omp.model.Omp_Old_Info;
 import com.capinfo.omp.parameter.OrderParameter;
 import com.capinfo.omp.utils.Page;
 import com.capinfo.omp.ws.model.ImKey;
+import com.capinfo.region.model.Omp_Old_Info;
 
 @Service
 public interface OrderService {

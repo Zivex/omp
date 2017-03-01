@@ -1,46 +1,34 @@
 package com.capinfo.omp.service.impl;
 
-import java.io.Serializable;
 import java.rmi.RemoteException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
-
-import net.sf.json.JSONObject;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.xml.resolver.apps.resolver;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.PreparedStatementCreator;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.capinfo.assistant.platform.ws.card.model.CardPersonMessageBack;
 import com.capinfo.assistant.platform.ws.card.service.CardPersonMessageWsServiceProxy;
+import com.capinfo.common.model.SystemUser;
+import com.capinfo.common.web.parameter.SystemUserParameter;
+import com.capinfo.framework.service.GeneralService;
 import com.capinfo.framework.web.service.impl.CommonsDataOperationServiceImpl;
-import com.capinfo.omp.model.CardPerson;
-import com.capinfo.omp.model.CardPerson1;
 import com.capinfo.omp.model.OmpOldInfo;
-import com.capinfo.omp.model.Omp_Old_Info;
 import com.capinfo.omp.parameter.OrderParameter;
 import com.capinfo.omp.service.OldService;
 import com.capinfo.omp.utils.Page;
+import com.capinfo.region.model.Omp_Old_Info;
 
 @SuppressWarnings("rawtypes")
 @Service
-public class OldServiceImpl extends CommonsDataOperationServiceImpl implements
+public class OldServiceImpl extends
+		CommonsDataOperationServiceImpl<Omp_Old_Info, OrderParameter> implements
 		OldService {
 
 	@Autowired
@@ -112,71 +100,86 @@ public class OldServiceImpl extends CommonsDataOperationServiceImpl implements
 	}
 
 	@Override
-	public boolean addOld(OmpOldInfo ompOldInfo, String format) {
-		// 获取用户名
-		String name = SecurityContextHolder.getContext().getAuthentication()
-				.getName();
-		String call_id = ompOldInfo.getCall_id();
-		int callId = 0;
-		if ("是".equals(call_id)) {
-			callId = 1;
-		}
-		System.out.println("====================" + name);
-		final String sql = "insert into omp_old_info"
-				+ "(household_county_id,household_street_id,household_community_id,workername,workertel,"
-				+ "name,certificates_number,zjnumber,phone,address,emergencycontact,emergencycontacttle,"
-				+ "teltype,state,Ispersonalized,creationTime,agent_id,num,call_id)values('"
-				+ ompOldInfo.getHouseholdCountyId()
-				+ "','"
-				+ ompOldInfo.getHouseholdStreetId()
-				+ "','"
-				+ ompOldInfo.getHouseholdCommunityId()
-				+ "','"
-				+ ompOldInfo.getWorkername()
-				+ "','"
-				+ ompOldInfo.getWorkertel()
-				+ "','"
-				+ ompOldInfo.getName()
-				+ "','"
-				+ ompOldInfo.getCertificatesNumber()
-				+ "','"
-				+ ompOldInfo.getzjNumber()
-				+ "','"
-				+ ompOldInfo.getPhone()
-				+ "','"
-				+ ompOldInfo.getAddress()
-				+ "','"
-				+ ompOldInfo.getEmergencycontact()
-				+ "','"
-				+ ompOldInfo.getEmergencycontacttle()
-				+ "','"
-				+ ompOldInfo.getTeltype()
-				+ "',1,0,'"
-				+ format
-				+ "','"
-				+ name
-				+ "',1," + callId + ")";
+	public boolean addOld(Omp_Old_Info ompOldInfo, SystemUser user) {
+		String userType = user.getAccount_type();
+		char type = userType.charAt(0);
+		ompOldInfo.setAccount_type(String.valueOf(type));
+		ompOldInfo.setAgent_id(user.getId());
+		ompOldInfo.setIsGenerationOrder(1l);
+		ompOldInfo.setIsindividuation("1");
+		ompOldInfo.setIspersonalized(1l);
+		ompOldInfo.setNum(0l);
+		ompOldInfo.setState(1l);
+		ompOldInfo.setSync(1l);
+		ompOldInfo.setTel("111");
+		ompOldInfo.setUpdateTime("1234:1");
+		ompOldInfo.setUpdNumber(2l);
+		ompOldInfo.setUsertype(userType);
 
-		System.out.println(sql);
+		GeneralService g = super.getGeneralService();
+		g.saveOrUpdate(ompOldInfo);
+		System.out.println("成功");
 
-		KeyHolder keyHolder = new GeneratedKeyHolder();
-		int autoIncId = 0;
-
-		JdbcTemplate.update(new PreparedStatementCreator() {
-			public PreparedStatement createPreparedStatement(Connection con)
-					throws SQLException {
-				PreparedStatement ps = con.prepareStatement(sql,
-						PreparedStatement.RETURN_GENERATED_KEYS);
-				return ps;
-			}
-		}, keyHolder);
-
-		autoIncId = keyHolder.getKey().intValue();
-		if (autoIncId > 0) {
-			addOldKeyInfo(ompOldInfo, autoIncId);
-		}
-
-		return autoIncId > 0;
+		return false;
+		// System.out.println("====================" + name);
+		// final String sql = "insert into omp_old_info"
+		// +
+		// "(household_county_id,household_street_id,household_community_id,workername,workertel,"
+		// +
+		// "name,certificates_number,zjnumber,phone,address,emergencycontact,emergencycontacttle,"
+		// +
+		// "teltype,state,Ispersonalized,creationTime,agent_id,num,call_id)values('"
+		// + ompOldInfo.getHouseholdCountyId()
+		// + "','"
+		// + ompOldInfo.getHouseholdStreetId()
+		// + "','"
+		// + ompOldInfo.getHouseholdCommunityId()
+		// + "','"
+		// + ompOldInfo.getWorkername()
+		// + "','"
+		// + ompOldInfo.getWorkertel()
+		// + "','"
+		// + ompOldInfo.getName()
+		// + "','"
+		// + ompOldInfo.getCertificatesNumber()
+		// + "','"
+		// + ompOldInfo.getzjNumber()
+		// + "','"
+		// + ompOldInfo.getPhone()
+		// + "','"
+		// + ompOldInfo.getAddress()
+		// + "','"
+		// + ompOldInfo.getEmergencycontact()
+		// + "','"
+		// + ompOldInfo.getEmergencycontacttle()
+		// + "','"
+		// + ompOldInfo.getTeltype()
+		// + "',1,0,'"
+		// + format
+		// + "','"
+		// + name
+		// + "',1," + callId + ")";
+		//
+		// System.out.println(sql);
+		//
+		// KeyHolder keyHolder = new GeneratedKeyHolder();
+		// int autoIncId = 0;
+		//
+		// JdbcTemplate.update(new PreparedStatementCreator() {
+		// public PreparedStatement createPreparedStatement(Connection con)
+		// throws SQLException {
+		// PreparedStatement ps = con.prepareStatement(sql,
+		// PreparedStatement.RETURN_GENERATED_KEYS);
+		// return ps;
+		// }
+		// }, keyHolder);
+		//
+		// autoIncId = keyHolder.getKey().intValue();
+		// if (autoIncId > 0) {
+		// addOldKeyInfo(ompOldInfo, autoIncId);
+		// }
+		//
+		// return autoIncId > 0;
 
 		// int update = JdbcTemplate.update(sql);
 		// if (update==1) {

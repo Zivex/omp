@@ -21,6 +21,7 @@ import com.capinfo.framework.dao.SearchCriteriaBuilder;
 import com.capinfo.framework.dao.impl.restriction.RestrictionExpression;
 import com.capinfo.framework.model.BaseEntity;
 import com.capinfo.framework.model.system.SecureRole;
+import com.capinfo.framework.service.GeneralService;
 import com.capinfo.framework.web.service.impl.CommonsDataOperationServiceImpl;
 import com.capinfo.region.model.OmpRegion;
 
@@ -67,7 +68,8 @@ public class SystemUserServiceImpl extends CommonsDataOperationServiceImpl<Syste
 	public boolean saveUser(SystemUser user) {
 		boolean suc = true;
 		try {
-			getGeneralService().saveOrUpdate(user);
+			GeneralService g = getGeneralService();
+			g.saveOrUpdate(user);
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage(), e);
 			suc = false;

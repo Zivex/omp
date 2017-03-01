@@ -1,4 +1,4 @@
-package com.capinfo.omp.model;
+package com.capinfo.region.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -6,19 +6,19 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-
 import com.capinfo.framework.model.BaseEntity;
-import com.capinfo.framework.model.StatusEnabled;
+
 /**
  * 用户信息
- * @author lenovo
+ * @author zx
  *
  */
 @Entity
-@Table(name = "Omp_Old_Info")
-public class Omp_Old_Info implements BaseEntity,StatusEnabled {
+@Table(name = "omp_old_info")
+public class Omp_Old_Info implements BaseEntity {
 
-	private long id;
+	private static final long serialVersionUID = 1L;
+	private Long id;
 	private String household_county_id;
 	private String household_street_id;
 	private String household_community_id;
@@ -34,34 +34,37 @@ public class Omp_Old_Info implements BaseEntity,StatusEnabled {
 	private String tel;
 	private String teltype;
 	private String usertype;
-	private String state;
-	private String ispersonalized;
-	private String updNumber;
-	private Integer isGenerationOrder;
+	private Long state;
+	private Long ispersonalized;
+	private Long updNumber;
+	private Long isGenerationOrder;
 	private String creationTime;
 	private String updateTime;
-	private Integer isindividuation;
-	private String sync;
-	private String agent_id;
-	private Integer num;
-
+	private String isindividuation;
+	private Long sync;
+	private Long agent_id;
+	private Long num;
+	private Long call_id;
+	private String account_type;
+	
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ID", unique = true, nullable = false, precision = 12, scale = 0)
-	@Override
-	public void setId(Long arg0) {
-		// TODO Auto-generated method stub
-
-	}
-	@Override
 	public Long getId() {
-		// TODO Auto-generated method stub
-		return null;
+		return id;
 	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+	
+	
 	@Column(name = "household_county_id", length = 256)
 	public String getHousehold_county_id() {
 		return household_county_id;
 	}
+
 
 	public void setHousehold_county_id(String household_county_id) {
 		this.household_county_id = household_county_id;
@@ -178,36 +181,36 @@ public class Omp_Old_Info implements BaseEntity,StatusEnabled {
 	public void setUsertype(String usertype) {
 		this.usertype = usertype;
 	}
-	@Column(name = "state", length = 256)
-	public String getState() {
+	@Column(name = "state" )
+	public Long getState() {
 		return state;
 	}
 
-	public void setState(String state) {
+	public void setState(Long state) {
 		this.state = state;
 	}
-	@Column(name = "ispersonalized", length = 256)
-	public String getIspersonalized() {
+	@Column(name = "ispersonalized"  )
+	public Long getIspersonalized() {
 		return ispersonalized;
 	}
 
-	public void setIspersonalized(String ispersonalized) {
+	public void setIspersonalized(Long ispersonalized) {
 		this.ispersonalized = ispersonalized;
 	}
-	@Column(name = "updNumber", length = 256)
-	public String getUpdNumber() {
+	@Column(name = "updNumber"  )
+	public Long getUpdNumber() {
 		return updNumber;
 	}
 
-	public void setUpdNumber(String updNumber) {
+	public void setUpdNumber(Long updNumber) {
 		this.updNumber = updNumber;
 	}
-	@Column(name = "isGenerationOrder", length = 256)
-	public Integer getIsGenerationOrder() {
+	@Column(name = "isGenerationOrder"  )
+	public Long getIsGenerationOrder() {
 		return isGenerationOrder;
 	}
 
-	public void setIsGenerationOrder(Integer isGenerationOrder) {
+	public void setIsGenerationOrder(Long isGenerationOrder) {
 		this.isGenerationOrder = isGenerationOrder;
 	}
 	@Column(name = "creationTime", length = 256)
@@ -227,46 +230,61 @@ public class Omp_Old_Info implements BaseEntity,StatusEnabled {
 		this.updateTime = updateTime;
 	}
 	@Column(name = "isindividuation", length = 256)
-	public Integer getIsindividuation() {
+	public String getIsindividuation() {
 		return isindividuation;
 	}
 
-	public void setIsindividuation(Integer isindividuation) {
+	public void setIsindividuation(String isindividuation) {
 		this.isindividuation = isindividuation;
 	}
-	@Column(name = "sync", length = 256)
-	public String getSync() {
+	@Column(name = "sync"  )
+	public Long getSync() {
 		return sync;
 	}
 
-	public void setSync(String sync) {
+	public void setSync(Long sync) {
 		this.sync = sync;
 	}
-	@Column(name = "agent_id", length = 256)
-	public String getAgent_id() {
+	@Column(name = "agent_id")
+	public Long getAgent_id() {
 		return agent_id;
 	}
 
-	public void setAgent_id(String agent_id) {
+	public void setAgent_id(Long agent_id) {
 		this.agent_id = agent_id;
 	}
-	@Column(name = "num", length = 256)
-	public Integer getNum() {
+	@Column(name = "num")
+	public Long getNum() {
 		return num;
 	}
 
-	public void setNum(Integer num) {
+	public void setNum(Long num) {
 		this.num = num;
 	}
-	@Override
-	public Boolean getEnabled() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	@Override
-	public void setEnabled(Boolean arg0) {
-		// TODO Auto-generated method stub
-		
+	@Column(name = "call_id", length = 11)
+	public Long getCall_id() {
+		return call_id;
 	}
 
+	public void setCall_id(Long call_id) {
+		this.call_id = call_id;
+	}
+	@Column(name = "account_type", length = 11)
+	public String getAccount_type() {
+		return account_type;
+	}
+
+	public void setAccount_type(String account_type) {
+		this.account_type = account_type;
+	}
+
+	public Omp_Old_Info() {
+		super();
+	}
+
+	
+	
+	
+
+	
 }

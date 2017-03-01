@@ -68,15 +68,26 @@
 										</form:select>
 									</div>
 								</div>
+								<div class="form-group">
+									<label for=entity.display_all class="col-md-2 control-label">是否显示老人打全部信息: </label>
+									<div class="form-inline">
+										<div class="col-md-4">
+											 <label >
+												<form:radiobutton path="entity.display_all" value="1"  />	是 </label>
+											 <label>
+								 				 <form:radiobutton path="entity.display_all" value="0"  />	否</label>
+										</div>
+									
+								  </div>
+								</div>
 
 								<div class="form-group"><label class="col-md-2 control-label">
-									<form:radiobutton path="entity.account_type" value="g-" onchange="addRegion()" data-rule-required="true" data-msg-equalTo="请选择账户类型" />	政府 </label>
+									<form:radiobutton path="entity.account_type" value="g-" onchange="addRegion()" />	政府 </label>
 								  <label class="col-md-2 control-label">
 								  <form:radiobutton path="entity.account_type" value="b-"  data-rule-required="true" />	银行
 								  </label>
 								</div>
 							<div class="form-group" ><label class="checkbox-inline" id="level"></label>
-<%-- <form:select path=""></form:select> --%>
 
 							</div>
 							</form:form>
@@ -184,31 +195,6 @@
 					}
 				});
 			});
-
-
-
-
-
-
-
-		// 	      $.ajax(
-  //       {
-  //           url: "send/index",
-  //           type: "post",
-  //           success: function (data) {
-  //               var divshow = $("#showInfo2");
-  //               divshow.text("");// 清空数据
-  //               divshow.append(data); // 添加Html内容，不能用Text 或 Val
-  //               divshow.dialog({
-  //                   title: "短信群发系统",
-  //                   height: 250,
-  //                   width: 580
-  //               });
-
-  //           }
-  //       }
-  //       );
-  //       return false;
 		}
 	</script>
 

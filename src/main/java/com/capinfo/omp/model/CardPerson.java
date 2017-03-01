@@ -2,6 +2,9 @@ package com.capinfo.omp.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.Table;
 
 import com.capinfo.assistant.platform.ws.card.model.CardPersonMessageBack;
@@ -10,9 +13,13 @@ import com.capinfo.framework.model.StatusEnabled;
 
 @Entity
 @Table(name = "card_person")
-public class CardPerson implements BaseEntity, StatusEnabled {
+public class CardPerson implements BaseEntity {
 	
 	private static final long serialVersionUID = 1L;
+	
+	
+	private Long id;
+	
 	/**
 	 * 姓名
 	 * */
@@ -260,7 +267,21 @@ public class CardPerson implements BaseEntity, StatusEnabled {
 	/**
 	 * 居住小区类型
 	 */
+	
 	private String biotope;
+	
+	
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "ID", unique = true, nullable = false, precision = 12, scale = 0)
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
 	@Column(name = "name")
 	public String getName() {
 		return name;
@@ -677,30 +698,7 @@ public class CardPerson implements BaseEntity, StatusEnabled {
 	public void setBiotope(String biotope) {
 		this.biotope = biotope;
 	}
-	@Override
-	public Boolean getEnabled() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
-	@Override
-	public void setEnabled(Boolean arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public Long getId() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void setId(Long arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-	
 	
 	
 	

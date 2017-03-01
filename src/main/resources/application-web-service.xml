@@ -13,6 +13,10 @@
 
 	<context:component-scan base-package="com.capinfo" />
 	
+	<!-- 老人管理 -->
+	<bean id="oldService" parent="commonsDataOperationService"
+		class="com.capinfo.omp.service.impl.OldServiceImpl">
+	</bean>
 	
 	<bean id="commonsDataOperationService"
 		class="com.capinfo.framework.web.service.impl.CommonsDataOperationServiceImpl">
@@ -57,9 +61,6 @@
 	</bean>	 -->
 	
 	
-	<!-- 老人管理 -->
-<!-- 	<bean id="oldServiceImpl" parent="commonsDataOperationService" -->
-<!-- 		class="com.capinfo.omp.service.impl.OldServiceImpl"> -->
-<!-- 	</bean> -->
+	
 
 </beans>

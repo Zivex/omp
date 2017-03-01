@@ -75,8 +75,16 @@
 			<td>${mapPreson.sex }</td>
 		</tr>
 		<tr>
+			<td>证件类型</td>
+			<td>${mapPreson.certificatesType }</td>
+		</tr>
+		<tr>
 			<td>身份证号码</td>
 			<td>${mapPreson.certificatesNumber }</td>
+		</tr>
+		<tr>
+			<td>发证机关</td>
+			<td>${mapPreson.idcradDept }</td>
 		</tr>
 		<tr>
 			<td>证件有郊期</td>
@@ -103,6 +111,67 @@
 			<td>${mapPreson.residenceAddress }</td>
 		</tr>
 		<tr>
+			<td>制卡推送时间</td>
+			<td>${mapPreson.creatCardPushDate }</td>
+		</tr>
+		<tr>
+			<td>制卡回盘时间</td>
+			<td>${mapPreson.createCardInDate }</td>
+		</tr>
+		<tr>
+			<td>制卡是否成功</td>
+			<td>${mapPreson.createCardSuccess }</td>
+		</tr>
+		<tr>
+			<td>制卡失败原因</td>
+			<td>${mapPreson.createCardFailInfo }</td>
+		</tr>
+		<tr>
+			<td>区县是否推送</td>
+			<td>${mapPreson.cityPushed }</td>
+		</tr>
+		<tr>
+			<td>区县推送时间</td>
+			<td>${mapPreson.cityPushedDate }</td>
+		</tr>
+		<tr>
+			<td>核查推送时间</td>
+			<td>${mapPreson.hcPushedDate }</td>
+		</tr>
+		<tr>
+			<td>核查回盘时间</td>
+			<td>${mapPreson.hcInTime }</td>
+		</tr>
+		<tr>
+			<td>核查是否成功</td>
+			<td>${mapPreson.hcSuccess }</td>
+		</tr>
+		<tr>
+			<td>核查失败原因</td>
+			<td>${mapPreson.hcFailInfo }</td>
+		</tr>
+		<tr>
+			<td>卡类型</td>
+			<td>${mapPreson.cardType }</td>
+		</tr>
+		<tr>
+			<td>数据采集状态</td>
+			<td>${mapPreson.gatherStatus }</td>
+		</tr>
+		<tr>
+			<td>系统审核状态</td>
+			<td>${mapPreson.auditStatus }</td>
+		</tr>
+		<tr>
+			<td>制卡</td>
+			<td>${mapPreson.creatCardStatus }</td>
+		</tr>
+		
+		
+		
+		
+		
+		<tr>
 			<td>银行卡号</td>
 			<td>${mapPreson.bankCard }</td>
 		</tr>
@@ -119,12 +188,59 @@
 			<td>${mapPreson.yktNumber }</td>
 		</tr>
 		<tr>
+			<td>制卡时间</td>
+			<td>${mapPreson.creatCardDate }</td>
+		</tr>
+		<tr>
 			<td>民族</td>
 			<td>${mapPreson.nation }</td>
 		</tr>
 		<tr>
+			<td>邮编</td>
+			<td>${mapPreson.postalCode }</td>
+		</tr>
+		<tr>
+			<td>户口在区县</td>
+			<td>${mapPreson.householdCounty }</td>
+		</tr>
+		<tr>
+			<td>户口所在街道</td>
+			<td>${mapPreson.householdStreet }</td>
+		</tr>
+		<tr>
+			<td>户口所在社区</td>
+			<td>${mapPreson.householdCommunity }</td>
+		</tr>
+		<tr>
+			<td>户口地址</td>
+			<td>${mapPreson.householdAddress }</td>
+		</tr>
+		<tr>
+			<td>报纸收取方式</td>
+			<td>${mapPreson.newspaperGetWayType }</td>
+		</tr>
+		<tr>
+			<td>民族</td>
+			<td>${mapPreson.nation }</td>
+		</tr>
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		<tr>
 			<td>紧急联系人</td>
 			<td>${mapPreson.contacter }</td>
+		</tr>
+		<tr>
+			<td>紧急联系人证件类型</td>
+			<td>${mapPreson.contacterIdcardType }</td>
 		</tr>
 		<tr>
 			<td>紧急联系人证件号码</td>
@@ -161,6 +277,10 @@
 		<tr>
 			<td>主要经济来源</td>
 			<td>${mapPreson.mainSourceIncomeType }</td>
+		</tr>
+		<tr>
+			<td>人员类型/td>
+			<td>${mapPreson.personType }</td>
 		</tr>
 		<tr>
 			<td>生活自理情况</td>

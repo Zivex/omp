@@ -33,7 +33,7 @@
 						<!-- 						<th width="10%" style="text-align: center;">联系电话</th> -->
 						<th width="10%" style="text-align: center;">话机类型</th>
 						<c:if test="${sys == 'admin'}">
-							<th width="10%">所属客户</th>
+							<th width="10%">所属账户</th>
 						</c:if>
 						<th width="10%" style="text-align: center;">是否有来显</th>
 						<th width="8%" style="text-align: center;">个性类型</th>

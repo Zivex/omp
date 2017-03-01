@@ -48,7 +48,7 @@
 												<td width="20%">${userINfo.voiceCount }</td>
 											</tr>
 											<tr>
-												<td width="20%">语音发送次数</td>
+												<td width="20%">累计发送次数</td>
 												<td width="20%">${userINfo.sumCount }</td>
 											</tr>
 											<tr>
@@ -58,10 +58,6 @@
 											<tr>
 												<td width="20%">发送失败</td>
 												<td width="20%">${userINfo.executeFail }</td>
-											</tr>
-											<tr>
-												<td width="20%">未接听</td>
-												<td width="20%">${userINfo.notAnswer }</td>
 											</tr>
 										</table>
 									</div>
