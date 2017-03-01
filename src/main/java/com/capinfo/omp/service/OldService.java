@@ -6,49 +6,50 @@ import java.util.Map;
 import com.capinfo.assistant.platform.ws.card.model.CardPersonMessageBack;
 import com.capinfo.common.model.SystemUser;
 import com.capinfo.framework.web.service.CommonsDataOperationService;
-import com.capinfo.omp.model.OmpOldInfo;
 import com.capinfo.omp.model.OmpOldMatch;
+import com.capinfo.omp.model.Omp_Old_Info;
 import com.capinfo.omp.parameter.OrderParameter;
 import com.capinfo.omp.utils.Page;
-import com.capinfo.region.model.Omp_Old_Info;
 
 
 public interface OldService extends CommonsDataOperationService<Omp_Old_Info, OrderParameter>  {
 
 	/**
 	 * 查询
-	 * @param page 
-	 * @param community 
-	 * @param street 
-	 * @param county 
-	 * @param zjNumber 
-	 * @param idCard 
-	 * @param name 
-	 * @param creationTime 
-	 * 
+	 * @param page
+	 * @param community
+	 * @param street
+	 * @param county
+	 * @param zjNumber
+	 * @param idCard
+	 * @param name
+	 * @param creationTime
+	 *
 	 * @return
 	 */
-	List<Map<String, Object>> getOldContextList(Page page, String name, String idCard, String zjNumber, String county, String street, String community, String isGenerationOrder,String isindividuation);
+	List<Omp_Old_Info> getOldContextList(Page page, String name, String idCard, String zjNumber, String county, String street, String community, String isGenerationOrder,String isindividuation,SystemUser user);
+
+	//List getOldContextList(Page page, String name, String idCard, String zjNumber, String county, String street, String community, String isGenerationOrder,String isindividuation,SystemUser user);
 
 	/**
 	 * 增加
-	 * @param format 
-	 * @param user 
-	 * 
+	 * @param format
+	 * @param user
+	 *
 	 * @return
 	 */
 	boolean addOld(Omp_Old_Info ompOldInfo, SystemUser user);
 
 	/**
 	 * 修改
-	 * 
+	 *
 	 * @return
 	 */
 	boolean updOldById(Map<String, Object> map);
 
 	/**
 	 * 删除
-	 * 
+	 *
 	 * @return
 	 */
 	int delOldById(String id);
@@ -58,9 +59,9 @@ public interface OldService extends CommonsDataOperationService<Omp_Old_Info, Or
 	String getIdByName(String area, int i);
 
 	List<Map<String, Object>> getOldById(String id);
-    
+
 	List<Map<String, Object>> getOldById1(String id);
-	
+
 	Map getRegionList(Map<String, Object> map);
 
 	List<Map<String, Object>> getRegionById(String id);
@@ -88,19 +89,19 @@ public interface OldService extends CommonsDataOperationService<Omp_Old_Info, Or
 	Integer checkOldIsHave(String phoneid, String cardID);
 
 	List<Map<String, Object>> getOldKeyInfoById(String id);
-	
+
 	boolean saveLogger(String type,String content,String creater,String state);
-	
+
 	void saveolInfo(String carid);
-	
+
 	boolean getcountid();
-	
+
 	String checkDeBatchSendInstructions();
-	
+
 	String HOUSEHOLD_COUNTY_ID(String add);
-	
+
 	String HOUSEHOLD_STREET_ID(String add);
-	
+
 	String HOUSEHOLD_COMMUNITY_ID(String add);
 
 	List<Map<String, Object>> getPerson(String cardIds);

@@ -1,6 +1,6 @@
 package com.capinfo.omp.parameter;
 import com.capinfo.framework.web.parameter.DataListParameter;
-import com.capinfo.region.model.Omp_Old_Info;
+import com.capinfo.omp.model.Omp_Old_Info;
 
 public class OrderParameter extends DataListParameter<Omp_Old_Info> {
 	private Omp_Old_Info entity = new Omp_Old_Info();

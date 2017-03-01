@@ -1,4 +1,4 @@
-package com.capinfo.region.model;
+package com.capinfo.omp.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
