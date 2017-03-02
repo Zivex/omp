@@ -322,8 +322,6 @@ public class Omp_Old_Info implements BaseEntity {
 	public void setHousehold_community(OmpRegion household_community) {
 		this.household_community = household_community;
 	}
-
-	
 	
 
 	

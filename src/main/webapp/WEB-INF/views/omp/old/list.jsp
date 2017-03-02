@@ -85,6 +85,7 @@
 										<li><a href="###" onclick="deleteUser(${old.id},this);">删除</a></li>
 										<c:if test="${sys ==  'admin'}">
 											<li><a onclick="ompKeyModify(${old.id} )">指令个性化</a></li>
+											<%-- 											<li><a onclick="ompKeyModify(${old.id},${old.typeid} )">指令个性化</a></li> --%>
 										</c:if>
 										<%-- <li><a onclick="tocreOrder(${old.id})">生成指令</a></li> --%>
 									</ul>
