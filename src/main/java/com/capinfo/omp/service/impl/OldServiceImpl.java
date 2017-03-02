@@ -62,10 +62,10 @@ public class OldServiceImpl extends
 		searchCriteriaBuilder.addLimitCondition(
 				(page.getCurrentPage() - 1) * 10, 10);
 		// 根据当前用户搜索
-		if ("admin".equals(user.getName())) {
-			searchCriteriaBuilder.addQueryCondition("account_type",
-					RestrictionExpression.EQUALS_OP, user.getAccount_type());
-		}
+//		if ("admin".equals(user.getName())) {
+//			searchCriteriaBuilder.addQueryCondition("account_type",
+//					RestrictionExpression.EQUALS_OP, user.getAccount_type());
+//		}
 		if (user.getLeave() > 1) {
 			String rname = "";
 			switch (user.getLeave()) {
@@ -81,52 +81,10 @@ public class OldServiceImpl extends
 			}
 			searchCriteriaBuilder.addQueryCondition(rname,
 					RestrictionExpression.EQUALS_OP, user.getRid());
-
 		}
 
-		List<Omp_Old_Info> Omp_Old_InfoList = getGeneralService().getObjects(
-				searchCriteriaBuilder.build());
+		List<Omp_Old_Info> Omp_Old_InfoList = getGeneralService().getObjects(searchCriteriaBuilder.build());
 
-		/*
-		 * 
-		 * 
-		 * String userName = SecurityContextHolder.getContext()
-		 * .getAuthentication().getName(); String uName = ""; if
-		 * (!"admin".equals(userName)) { uName = " AND I.agent_id  =  '" +
-		 * userName + "'"; }
-		 * 
-		 * if (name != null && !StringUtils.isEmpty(name)) { name =
-		 * " AND I.NAME  LIKE  '%" + name + "%'"; } else { name = ""; } if
-		 * (idCard != null && !StringUtils.isEmpty(idCard)) { idCard =
-		 * " AND I.CERTIFICATES_NUMBER = '" + idCard + "'"; } if (zjNumber !=
-		 * null && !StringUtils.isEmpty(zjNumber)) { zjNumber =
-		 * "  AND I.ZJNUMBER = '" + zjNumber + "'"; } if (county != null &&
-		 * idCard != null && !StringUtils.isEmpty(county)) { county =
-		 * " AND I.HOUSEHOLD_COUNTY_ID = '" + county + "'"; } if (street != null
-		 * && !StringUtils.isEmpty(street)) { street =
-		 * " AND I.HOUSEHOLD_STREET_ID = '" + street + "'"; } if (community !=
-		 * null && !StringUtils.isEmpty(community)) { community =
-		 * " AND I.HOUSEHOLD_COMMUNITY_ID = '" + community + "'"; } if
-		 * (isGenerationOrder != null &&
-		 * !StringUtils.isEmpty(isGenerationOrder)) { isGenerationOrder =
-		 * " AND I.isGenerationOrder = '" + isGenerationOrder + "'"; }
-		 * 
-		 * if (isindividuation != null && !StringUtils.isEmpty(isindividuation))
-		 * { isindividuation = " AND I.isindividuation = '" + isindividuation +
-		 * "'"; }
-		 * 
-		 * if (!StringUtils.isEmpty(creationTime)) { creationTime =
-		 * " AND I.creationTime like '%"+creationTime+"%'"; }
-		 * 
-		 * String sql =
-		 * "select i.agent_id,i.call_id, i.id,i.`NAME`,i.ZJNUMBER,i.PHONE,i.TELTYPE,r2.`NAME` q,r3.`NAME` j,r1.`NAME` s,r5.id typeid,i.address,i.CERTIFICATES_NUMBER,i.isindividuation from omp_region r1,omp_region r2,omp_region r3,omp_phone_type r5,omp_old_info i "
-		 * + "where STATE = 1 " + name + idCard + zjNumber + county + street +
-		 * uName + community + isGenerationOrder + isindividuation +
-		 * " and  r1.id = i.HOUSEHOLD_COMMUNITY_ID and r2.id = i.HOUSEHOLD_COUNTY_ID  and r5.phoneType = i.TELTYPE and r3.ID = i.HOUSEHOLD_STREET_ID LIMIT "
-		 * + (page.getCurrentPage() - 1) page.getPageSize() + ", " +
-		 * page.getPageSize(); List<Map<String, Object>> queryForList =
-		 * JdbcTemplate.queryForList(sql);
-		 */
 		return Omp_Old_InfoList;
 	}
 
