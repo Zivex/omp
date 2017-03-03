@@ -23,6 +23,7 @@ import com.capinfo.framework.model.BaseEntity;
 import com.capinfo.framework.model.system.SecureRole;
 import com.capinfo.framework.service.GeneralService;
 import com.capinfo.framework.web.service.impl.CommonsDataOperationServiceImpl;
+import com.capinfo.omp.model.UserRecharge;
 import com.capinfo.region.model.OmpRegion;
 
 public class SystemUserServiceImpl extends CommonsDataOperationServiceImpl<SystemUser, SystemUserParameter> implements SystemUserService {
@@ -197,6 +198,11 @@ public class SystemUserServiceImpl extends CommonsDataOperationServiceImpl<Syste
 	public OmpRegion getbiRegoinid(long rid) {
 		OmpRegion entity = getGeneralService().getObjectById(OmpRegion.class, rid);
 		return entity;
+	}
+
+	@Override
+	public void recharge(Long money,Long id) {
+		UserRecharge r = new UserRecharge();
 	}
 
 }

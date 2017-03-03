@@ -82,7 +82,14 @@ public class OldServiceImpl extends
 			searchCriteriaBuilder.addQueryCondition(rname,
 					RestrictionExpression.EQUALS_OP, user.getRid());
 		}
-
+		String sql = "";
+//		sql += "and this_.CREATE_CARD_SUCCESS = 1 and this_.has_pushed = 1 and this_.residence_county_id !=31381";
+		
+		
+		
+		if (!"".equals(sql)) {
+			searchCriteriaBuilder.addAdditionalRestrictionSql(sql);
+		}
 		List<Omp_Old_Info> Omp_Old_InfoList = getGeneralService().getObjects(searchCriteriaBuilder.build());
 
 		return Omp_Old_InfoList;
@@ -93,6 +100,7 @@ public class OldServiceImpl extends
 		ompOldInfo.setAccount_type(user.getAccount_type());
 		ompOldInfo.setAgent_id(user.getId());
 		ompOldInfo.setState(1l);
+		ompOldInfo.setSync(0L);
 		getGeneralService().saveOrUpdate(ompOldInfo);
 
 		Long autoIncId = ompOldInfo.getId();
@@ -778,8 +786,7 @@ public class OldServiceImpl extends
 
 	@Override
 	public List<Map<String, Object>> getPerson(String cardIds) {
-		String sql = "SELECT * from card_person o WHERE o.certificatesNumber = "
-				+ cardIds;
+		String sql = "SELECT * from card_person o WHERE o.certificatesNumber = '"+ cardIds+"'";
 		List<Map<String, Object>> list = JdbcTemplate.queryForList(sql);
 		return list;
 	}

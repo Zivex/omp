@@ -415,5 +415,14 @@ public class SystemUserController extends AuthenticationSuccessHandlerImpl {
 		}
 
 	}
+	
+	
+	@RequestMapping(value = "recharge.shtml", method = RequestMethod.POST)
+	@ResponseBody
+	public String recharge(Long money,Long id) {
+		systemUserService.recharge(money,id);
+		
+		return "1";
+	}
 
 }

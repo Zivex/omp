@@ -81,7 +81,7 @@
 									<ul class="dropdown-menu" role="menu">
 										<li><a onclick="toupd(${old.id})">修改</a></li>
 										<li><a
-											onclick="see(${old.certificates_number},${old.id})">查看</a></li>
+											onclick="see('${old.certificates_number}',${old.id})">查看</a></li>
 										<li><a href="###" onclick="deleteUser(${old.id},this);">删除</a></li>
 										<c:if test="${sys ==  'admin'}">
 											<li><a onclick="ompKeyModify(${old.id} )">指令个性化</a></li>

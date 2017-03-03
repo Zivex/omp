@@ -73,4 +73,6 @@ public interface SystemUserService extends CommonsDataOperationService<SystemUse
 
 	public boolean deleteUser(SystemUserParameter parameter);
 
+	public void recharge(Long money, Long id);
+
 }

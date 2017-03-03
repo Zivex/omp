@@ -255,7 +255,7 @@
 				<td>${mapPreson.mainSourceIncomeType }</td>
 			</tr>
 			<tr>
-				<td>人员类型/td>
+				<td>人员类型</td>
 				<td>${mapPreson.personType }</td>
 			</tr>
 			<tr>

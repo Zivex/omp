@@ -85,7 +85,7 @@ public class OldForController {
 	public ModelAndView listtoo(String current, String name, String idCard,
 			String zjNumber, String county, String street, String community,
 			String isGenerationOrder, String isindividuation,
-			String creationTime,@ModelAttribute("eccomm_admin") SystemUser user) {
+			String creationTime,@ModelAttribute("eccomm_admin") SystemUser user,int call_id) {
 		ModelAndView mv = new ModelAndView("/omp/old/list");
 		//oldService.getOldContextList(page, name, idCard, zjNumber, county, street, community, isGenerationOrder, isindividuation, user);
 

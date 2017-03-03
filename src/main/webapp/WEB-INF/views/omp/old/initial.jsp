@@ -84,7 +84,7 @@
 												<option value="1">已个性化</option>
 										</select></td>
 
-										<td>区域：</td>
+										<td>区域enen：</td>
 										<td><select id="county" name="county">
 												<option value="${county }">--请选择--</option>
 										</select></td>
@@ -96,9 +96,18 @@
 										<td><select id="community" name="community">
 												<option value="${community }">--请选择--</option>
 										</select></td>
+
 									</tr>
 									<tr>
-<!-- 										<td><input type="button" onclick="quety()" value="查询"/></td> -->
+										<td>是否有来电显示：</td>
+										<td><select id="call_id" name="call_id">
+												<option value="${call_id }">--请选择--</option>
+												<option value="0">非个性化</option>
+												<option value="1">已个性化</option>
+										</select></td>
+									</tr>
+									<tr>
+										<!-- 										<td><input type="button" onclick="quety()" value="查询"/></td> -->
 										<td><button>查询</button>
 										<td><input type="reset" /></td>
 										<td><button onclick="importInformation()">导入</button></td>
@@ -212,6 +221,7 @@
 			});
 		}
 		function see(cardId,id){
+			alert(cardId)
 			$.post("${pageContext.request.contextPath}/old/oldMatch/see.shtml",
 					{cardId:cardId,id:id},
 					function(data){
@@ -245,6 +255,7 @@
 		}
 		
 		 
+		 
 		$(document).ready(function() {
 			initalizeSiderBar();
 			selectMenu("o_old");
@@ -273,9 +284,8 @@
 			});
 		});
 		
-		
-		
-		function hxBackClick(){
+
+		function hxBackClick() {
 
 			$("#displayDiv1").hide();
 			$("#displayDiv").show();
