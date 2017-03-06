@@ -150,7 +150,6 @@ public class OldForController {
 			@RequestParam("excelFile") MultipartFile excelFile,
 			@ModelAttribute("eccomm_admin") SystemUser user) throws Exception {
 
-		ModelAndView mv = new ModelAndView("/omp/old/order");
 		System.out.println(excelFile);
 		String errorstr = "错误行数为: \n";
 		if (excelFile != null && !"".equals(excelFile)) {
@@ -561,7 +560,11 @@ public class OldForController {
 
 	/**
 	 * 老人导入
+<<<<<<< HEAD
 	 *
+=======
+	 *
+>>>>>>> branch 'master' of https://github.com/Zivex/omp.git
 	 * @return
 	 */
 	@RequestMapping("/Import/toImport.shtml")
