@@ -43,18 +43,6 @@
 							<form:form id="command" role="form" class="form-inline"
 								action="${queryForm}" method="post">
 								<input id="pageNo" name="current" type="hidden" value="1">
-								<!-- 								&nbsp; -->
-								<!-- 									<a role="button" class="btn btn-primary" onclick="DeAuditInformation()">未生成指令</a> -->
-								<!-- 								&nbsp; -->
-								<!-- 								&nbsp; -->
-								<!-- 									<a role="button" class="btn btn-primary" onclick="DeAuditInformation()">*已生成指令*</a> -->
-								<!-- 								&nbsp; -->
-								<!-- 								&nbsp; -->
-								<!-- 									<a role="button" class="btn btn-primary" onclick="importInformation()">导入信息</a> -->
-								<!-- 								&nbsp; -->
-								<!-- 								&nbsp; -->
-								<!-- 									<a role="button" class="btn btn-primary" onclick="oldInformationDisplay()">老人信息展示</a> -->
-								<!-- 								&nbsp; -->
 								<table class="table">
 									<tr>
 										<td>姓名：</td>
@@ -84,7 +72,7 @@
 												<option value="1">已个性化</option>
 										</select></td>
 
-										<td>区域enen：</td>
+										<td>区域：</td>
 										<td><select id="county" name="county">
 												<option value="${county }">--请选择--</option>
 										</select></td>
@@ -102,15 +90,15 @@
 										<td>是否有来电显示：</td>
 										<td><select id="call_id" name="call_id">
 												<option value="${call_id }">--请选择--</option>
-												<option value="0">非个性化</option>
-												<option value="1">已个性化</option>
+												<option value="0">是</option>
+												<option value="1">否</option>
 										</select></td>
 									</tr>
 									<tr>
-										<!-- 										<td><input type="button" onclick="quety()" value="查询"/></td> -->
-										<td><button>查询</button>
-										<td><input type="reset" /></td>
-										<td><button onclick="importInformation()">导入</button></td>
+<!-- 																				<td><input type="button" onclick="quety()" value="查询"/></td> -->
+										<td><input class="btn btn-default" type="submit" value="查询">
+										<td><input class="btn btn-danger" type="reset" value="重置">
+										<td><a class="btn btn-default" href="#" onclick="importInformation()" role="button">导入</a>
 										<!-- 											<td><button>导出</button></td> -->
 										<!-- 	<td><button onclick="createOrder()">批量生成指令</button></td> -->
 									</tr>
@@ -139,14 +127,14 @@
 
 	<!-- Script	-->
 	<script type="text/javascript">
-	
+
 	$(function(){
 		$("#displayDiv1").hide();
 		$("#displayDiv").show();
 		$("#backButton").hide();
 	});
-	
-	
+
+
 		/**
 		 * 显示FORM对话框
 		 **/
@@ -162,7 +150,7 @@
 			}
 			showDynamicModal(url);
 		}
-		
+
 		/**
 		* 导入信息
 		**/
@@ -171,7 +159,7 @@
 			var url = '<c:url value="/old/Import/toImport.shtml"/>';
 			showDynamicModal(url);
 		}
-		
+
 		/**
 		 *老人信息查询
 		 */
@@ -197,10 +185,10 @@
 						isGenerationOrder:isGenerationOrder,
 						isindividuation:isindividuation
 					});
-			
+
 		}
-		
-		
+
+
 		/**
 		 *未审核信息展示
 		 */
@@ -212,7 +200,7 @@
 				$("#resultDiv").html(data);
 			})
 		}
-		
+
 		function toupd(id){
 			$.post("${pageContext.request.contextPath}/old/oldMatch/upd.shtml",
 					{id:id},
@@ -221,7 +209,6 @@
 			});
 		}
 		function see(cardId,id){
-			alert(cardId)
 			$.post("${pageContext.request.contextPath}/old/oldMatch/see.shtml",
 					{cardId:cardId,id:id},
 					function(data){
@@ -253,9 +240,9 @@
 				alert(data);
 			});
 		}
-		
-		 
-		 
+
+
+
 		$(document).ready(function() {
 			initalizeSiderBar();
 			selectMenu("o_old");
@@ -263,27 +250,27 @@
 			$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",function(data){
 				for(var i = 0;i<data.length;i++){
 					$("#county").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
-				}				
+				}
 			});
 			$("#county").change(function(){
 				var id = $("#county").val();
 				$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",{id:id},function(data){
 					for(var i = 0;i<data.length;i++){
 						$("#street").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
-					}				
+					}
 				});
 			});
-			
+
 			$("#street").change(function(){
 				var id = $("#street").val();
 				$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",{id:id},function(data){
 					for(var i = 0;i<data.length;i++){
 						$("#community").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
-					}				
+					}
 				});
 			});
 		});
-		
+
 
 		function hxBackClick() {
 

@@ -107,5 +107,7 @@ public interface OldService extends CommonsDataOperationService<Omp_Old_Info, Or
 
 	List<Map<String, Object>> getPerson(String cardIds);
 
+	void exportExcel(String string);
+
 
 }
