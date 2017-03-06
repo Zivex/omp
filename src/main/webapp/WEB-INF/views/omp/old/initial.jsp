@@ -43,18 +43,6 @@
 							<form:form id="command" role="form" class="form-inline"
 								action="${queryForm}" method="post">
 								<input id="pageNo" name="current" type="hidden" value="1">
-								<!-- 								&nbsp; -->
-								<!-- 									<a role="button" class="btn btn-primary" onclick="DeAuditInformation()">未生成指令</a> -->
-								<!-- 								&nbsp; -->
-								<!-- 								&nbsp; -->
-								<!-- 									<a role="button" class="btn btn-primary" onclick="DeAuditInformation()">*已生成指令*</a> -->
-								<!-- 								&nbsp; -->
-								<!-- 								&nbsp; -->
-								<!-- 									<a role="button" class="btn btn-primary" onclick="importInformation()">导入信息</a> -->
-								<!-- 								&nbsp; -->
-								<!-- 								&nbsp; -->
-								<!-- 									<a role="button" class="btn btn-primary" onclick="oldInformationDisplay()">老人信息展示</a> -->
-								<!-- 								&nbsp; -->
 								<table class="table">
 									<tr>
 										<td>姓名：</td>
@@ -84,7 +72,7 @@
 												<option value="1">已个性化</option>
 										</select></td>
 
-										<td>区域enen：</td>
+										<td>区域：</td>
 										<td><select id="county" name="county">
 												<option value="${county }">--请选择--</option>
 										</select></td>
@@ -102,15 +90,15 @@
 										<td>是否有来电显示：</td>
 										<td><select id="call_id" name="call_id">
 												<option value="${call_id }">--请选择--</option>
-												<option value="0">非个性化</option>
-												<option value="1">已个性化</option>
+												<option value="0">是</option>
+												<option value="1">否</option>
 										</select></td>
 									</tr>
 									<tr>
-										<!-- 										<td><input type="button" onclick="quety()" value="查询"/></td> -->
-										<td><button>查询</button>
-										<td><input type="reset" /></td>
-										<td><button onclick="importInformation()">导入</button></td>
+<!-- 																				<td><input type="button" onclick="quety()" value="查询"/></td> -->
+										<td><input class="btn btn-default" type="submit" value="查询">
+										<td><input class="btn btn-danger" type="reset" value="重置">
+										<td><a class="btn btn-default" href="#" onclick="importInformation()" role="button">导入</a>
 										<!-- 											<td><button>导出</button></td> -->
 										<!-- 	<td><button onclick="createOrder()">批量生成指令</button></td> -->
 									</tr>
