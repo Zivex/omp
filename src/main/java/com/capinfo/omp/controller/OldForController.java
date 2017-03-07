@@ -371,7 +371,7 @@ public class OldForController {
 		List<Map<String, Object>> list = oldService.getOldById(id);
 		Map<String, Object> map = list.get(0);
 		List<Map<String, Object>> person = oldService.getPerson(cardId);
-		if (person == null) {
+		if (person != null) {
 			Map<String, Object> mapPreson = person.get(0);
 
 			mv.addObject("mapPreson", mapPreson);
@@ -560,11 +560,6 @@ public class OldForController {
 
 	/**
 	 * 老人导入
-<<<<<<< HEAD
-	 *
-=======
-	 *
->>>>>>> branch 'master' of https://github.com/Zivex/omp.git
 	 * @return
 	 */
 	@RequestMapping("/Import/toImport.shtml")
