@@ -112,7 +112,10 @@
 			</tr>
 			<tr>
 				<td>制卡是否成功</td>
-				<td>${mapPreson.createCardSuccess }</td>
+				<td>
+				<c:if test="${mapPreson.createCardSuccess ==1 }">成功</c:if>
+				<c:if test="${mapPreson.createCardSuccess ==0 }">失败</c:if>
+				</td>
 			</tr>
 			<tr>
 				<td>制卡失败原因</td>
@@ -120,7 +123,10 @@
 			</tr>
 			<tr>
 				<td>区县是否推送</td>
-				<td>${mapPreson.cityPushed }</td>
+				<td>
+				<c:if test="${mapPreson.cityPushed == 2205}">成功</c:if>
+				<c:if test="${mapPreson.cityPushed == 2206}">失败</c:if>
+				</td>
 			</tr>
 			<tr>
 				<td>区县推送时间</td>
@@ -136,7 +142,10 @@
 			</tr>
 			<tr>
 				<td>核查是否成功</td>
-				<td>${mapPreson.hcSuccess }</td>
+				<td>
+				<c:if test="${mapPreson.hcSuccess == 1 }">成功</c:if>
+				<c:if test="${mapPreson.hcSuccess == 0 }">失败</c:if>
+				</td>
 			</tr>
 			<tr>
 				<td>核查失败原因</td>
