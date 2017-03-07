@@ -10,6 +10,7 @@ import com.capinfo.omp.model.OmpOldMatch;
 import com.capinfo.omp.model.Omp_Old_Info;
 import com.capinfo.omp.parameter.OrderParameter;
 import com.capinfo.omp.utils.Page;
+import com.capinfo.omp.utils.excel.ExcelBuilder;
 
 
 public interface OldService extends CommonsDataOperationService<Omp_Old_Info, OrderParameter>  {
@@ -107,7 +108,7 @@ public interface OldService extends CommonsDataOperationService<Omp_Old_Info, Or
 
 	List<Map<String, Object>> getPerson(String cardIds);
 
-	void exportExcel(String string);
+	ExcelBuilder exportExcel(OrderParameter parameter);
 
 
 }

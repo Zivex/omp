@@ -31,10 +31,14 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.capinfo.common.model.SystemUser;
+import com.capinfo.framework.util.DateUtils;
 import com.capinfo.omp.model.Omp_Old_Info;
+import com.capinfo.omp.parameter.OrderParameter;
 import com.capinfo.omp.service.OldService;
 import com.capinfo.omp.utils.JsonUtil;
 import com.capinfo.omp.utils.Page;
+import com.capinfo.omp.utils.excel.ExcelBuilder;
+import com.capinfo.omp.utils.excel.ExportUtils;
 import com.capinfo.omp.ws.client.ClientGetLandNumberService;
 
 import net.sf.json.JSONArray;
@@ -91,8 +95,8 @@ public class OldForController {
 	public ModelAndView listtoo(String current, String name, String idCard,
 			String zjNumber, String county, String street, String community,
 			String isGenerationOrder, String isindividuation,
-			String creationTime,
-			@ModelAttribute("eccomm_admin") SystemUser user, Integer call_id) {
+			String creationTime,Integer call_id,
+			@ModelAttribute("eccomm_admin") SystemUser user) {
 		ModelAndView mv = new ModelAndView("/omp/old/list");
 		// oldService.getOldContextList(page, name, idCard, zjNumber, county,
 		// street, community, isGenerationOrder, isindividuation, user);
@@ -152,6 +156,8 @@ public class OldForController {
 
 		System.out.println(excelFile);
 		String errorstr = "错误行数为: \n";
+		String linkNbr = "";
+		String num = "";
 		if (excelFile != null && !"".equals(excelFile)) {
 			InputStream fis = excelFile.getInputStream();
 			Map<String, Object> map = importEmployeeByPoi(fis);
@@ -165,16 +171,15 @@ public class OldForController {
 				// 判断是否以010开头
 				CharSequence subSequence = ompOldInfo.getZjnumber()
 						.subSequence(0, 1);
-				String linkNbr = "";
 				if (!subSequence.equals("0")) {
 					nb++;
 					errorstr = errorstr + "第" + nb + "行:大座机缺少区号 \n";
 					enb++;
-					// linkNbr = ompOldInfo.getZjnumber().substring(3);
 				} else {
+//					linkNbr = ompOldInfo.getZjnumber().substring(3);
 					linkNbr = ompOldInfo.getZjnumber();
 
-					zjNumber = zjNumber + linkNbr + ",";
+					//zjNumber = zjNumber + linkNbr + ",";
 					// 去掉010
 					// ompOldInfo.setZjnumber(linkNbr);
 					nb++;
@@ -201,7 +206,13 @@ public class OldForController {
 						enb++;
 					}
 					if (enb == 0) {
-						ompOldInfo.setCreationTime(format);
+						linkNbr = ompOldInfo.getZjnumber();
+						//判断
+						num = linkNbr.substring(0, 3);
+						if("010".equals(num)){
+							ompOldInfo.setZjnumber(linkNbr.substring(3));
+						}
+						zjNumber = zjNumber + linkNbr.substring(3) + ",";
 						oldService.addOld(ompOldInfo, user);
 					}
 
@@ -652,24 +663,20 @@ public class OldForController {
 	 */
 	@RequestMapping("/exportExcel.shtml")
 	public void exportExcel(NativeWebRequest request,
-			HttpServletResponse response) {
+			HttpServletResponse response,OrderParameter parameter ) {
 		try {
 			OutputStream stream = response.getOutputStream();
-
 			response.setContentType("application/msexcel;charset=UTF-8");
-			// response.setHeader(
-			// "Content-Disposition",
-			// "attachment;filename=\""
-			// + ExportUtils.getExportFileName(request, "人员信息导出 "
-			// + DateUtils.currentDateTime()) + ".xlsx");
-
-			oldService.exportExcel("");
-
-			// excelBuilder.writeToStream(stream);
-
+			 response.setHeader(
+			 "Content-Disposition",
+			 "attachment;filename=\""
+			 + ExportUtils.getExportFileName(request, "老人信息"
+			 + DateUtils.currentDateTime()) + ".xlsx");
+			ExcelBuilder exportExcel = oldService.exportExcel(parameter);
+			exportExcel.writeToStream(stream);
 			stream.close();
 		} catch (Exception e) {
-			// e.printStackTrace();
+			 e.printStackTrace();
 		}
 		;
 

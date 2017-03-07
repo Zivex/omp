@@ -1,12 +1,13 @@
 package com.capinfo.omp.parameter;
+
 import com.capinfo.framework.web.parameter.DataListParameter;
 import com.capinfo.omp.model.Omp_Old_Info;
-
+/*
+ * 查询老人接收参数
+ */
 public class OrderParameter extends DataListParameter<Omp_Old_Info> {
 	private Omp_Old_Info entity = new Omp_Old_Info();
 	private Class<Omp_Old_Info> entityClazz = Omp_Old_Info.class;
-	
-	
 	private String name;
 	private String current;
 	private String idCard;
@@ -17,9 +18,7 @@ public class OrderParameter extends DataListParameter<Omp_Old_Info> {
 	private String isGenerationOrder;
 	private String isindividuation;
 	private String creationTime;
-	
-	
-	
+	private Integer call_id;
 
 	public String getName() {
 		return name;
@@ -36,7 +35,6 @@ public class OrderParameter extends DataListParameter<Omp_Old_Info> {
 	public void setCurrent(String current) {
 		this.current = current;
 	}
-
 
 	public String getIdCard() {
 		return idCard;
@@ -117,7 +115,13 @@ public class OrderParameter extends DataListParameter<Omp_Old_Info> {
 	public void setEntityClazz(Class<Omp_Old_Info> entityClazz) {
 		this.entityClazz = entityClazz;
 	}
-	
-	
-	
+
+	public Integer getCall_id() {
+		return call_id;
+	}
+
+	public void setCall_id(Integer call_id) {
+		this.call_id = call_id;
+	}
+
 }
