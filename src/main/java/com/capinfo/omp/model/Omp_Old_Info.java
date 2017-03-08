@@ -10,6 +10,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.capinfo.assistant.platform.ws.card.model.CardPersonMessageBack;
 import com.capinfo.framework.model.BaseEntity;
 import com.capinfo.region.model.OmpRegion;
 
@@ -20,7 +21,7 @@ import com.capinfo.region.model.OmpRegion;
  */
 @Entity
 @Table(name = "omp_old_info")
-public class Omp_Old_Info implements BaseEntity {
+public class Omp_Old_Info extends CardPersonMessageBack implements BaseEntity  {
 
 	private static final long serialVersionUID = 1L;
 	private Long id;

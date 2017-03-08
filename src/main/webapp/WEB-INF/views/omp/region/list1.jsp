@@ -271,14 +271,10 @@
 	
 	//保存社区指令
 	function save(){
-		
-		
 	    var streetId=document.getElementById("shequId").value;  
-	    alert(streetId)
 		var communityids = $(".tb2").map(function(){
 			return $(this).val();
 		}).get().join();
-		
 		var ptype = $(".phoneType:checked").val();
 		var trnumber = $("#table3 tr").length;
 		$("#table3").find("tr").eq(1);

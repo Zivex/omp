@@ -19,6 +19,7 @@ import com.capinfo.assistant.platform.ws.card.service.CardPersonMessageWsService
 import com.capinfo.common.model.SystemUser;
 import com.capinfo.framework.dao.SearchCriteriaBuilder;
 import com.capinfo.framework.dao.impl.restriction.RestrictionExpression;
+import com.capinfo.framework.model.BaseEntity;
 import com.capinfo.framework.web.service.impl.CommonsDataOperationServiceImpl;
 import com.capinfo.omp.model.CardPerson;
 import com.capinfo.omp.model.Omp_Old_Info;
@@ -48,7 +49,7 @@ public class OldServiceImpl extends
 			String idCard, String zjNumber, String county, String street,
 			String community, String isGenerationOrder, String isindividuation,
 			SystemUser user) {
-		SearchCriteriaBuilder<Omp_Old_Info> searchCriteriaBuilder = new SearchCriteriaBuilder(
+		SearchCriteriaBuilder<Omp_Old_Info> searchCriteriaBuilder = new SearchCriteriaBuilder<Omp_Old_Info>(
 				Omp_Old_Info.class);
 		// 名字
 		searchCriteriaBuilder.addQueryCondition("name",
@@ -473,6 +474,7 @@ public class OldServiceImpl extends
 		return update > 0;
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void saveolInfo(String carid) {
 		CardPersonMessageWsServiceProxy d = new CardPersonMessageWsServiceProxy();
@@ -481,258 +483,278 @@ public class OldServiceImpl extends
 			for (int i = 0, len = strs.length; i < len; i++) {
 				String cid = strs[i].toString();
 				CardPersonMessageBack m = d.getCardPersonMessageByIDNumber(cid);
-				String auditStatus = m.getAuditStatus();
-				if ("".equals(auditStatus) || auditStatus == null) {
-					auditStatus = "";
-				}
-				String bankCard = m.getBankCard();
-				if ("".equals(bankCard) || bankCard == null) {
-					bankCard = "";
-				}
-				String biotope = m.getBiotope();
-				if ("".equals(biotope) || biotope == null) {
-					biotope = "";
-				}
-				String birthdate = m.getBirthdate();
-				if ("".equals(birthdate) || birthdate == null) {
-					birthdate = "";
-				}
-				String bookId = m.getBookId();
-				if ("".equals(bookId) || bookId == null) {
-					bookId = "";
-				}
-				String cardType = m.getCardType();
-				if ("".equals(cardType) || cardType == null) {
-					cardType = "";
-				}
-				String certificatesNumber = m.getCertificatesNumber();
-				if ("".equals(certificatesNumber) || certificatesNumber == null) {
-					// certificatesNumber = "";
-					return;
-				}
-				String certificatesType = m.getCertificatesType();
-				if ("".equals(certificatesType) || certificatesType == null) {
-					certificatesType = "";
-				}
-				String cityPushed = m.getCityPushed();
-				if ("".equals(cityPushed) || cityPushed == null) {
-					cityPushed = "";
-				}
-				String cityPushedDate = m.getCityPushedDate();
-				if ("".equals(cityPushedDate) || cityPushedDate == null) {
-					cityPushedDate = "";
-				}
-				String contacter = m.getContacter();
-				if ("".equals(contacter) || contacter == null) {
-					contacter = "";
-				}
-				String contacterIdcardNumber = m.getContacterIdcardNumber();
-				if ("".equals(contacterIdcardNumber)
-						|| contacterIdcardNumber == null) {
-					contacterIdcardNumber = "";
-				}
-				String contacterIdcardType = m.getContacterIdcardType();
-				if ("".equals(contacterIdcardType)
-						|| contacterIdcardType == null) {
-					contacterIdcardType = "";
-				}
-				String contacterMobile = m.getContacterMobile();
-				if ("".equals(contacterMobile) || contacterMobile == null) {
-					contacterMobile = "";
-				}
-				String contacterRelation = m.getContacterRelation();
-				if ("".equals(contacterRelation) || contacterRelation == null) {
-					contacterRelation = "";
-				}
-				String creatCardDate = m.getCreatCardDate();
-				if ("".equals(creatCardDate) || creatCardDate == null) {
-					creatCardDate = "";
-				}
-				String creatCardPushDate = m.getCreatCardPushDate();
-				if ("".equals(creatCardPushDate) || creatCardPushDate == null) {
-					creatCardPushDate = "";
-				}
-				String creatCardStatus = m.getCreatCardStatus();
-				if ("".equals(creatCardStatus) || creatCardStatus == null) {
-					creatCardStatus = "";
-				}
-				String createCardFailInfo = m.getCreateCardFailInfo();
-				if ("".equals(createCardFailInfo) || createCardFailInfo == null) {
-					createCardFailInfo = "";
-				}
-				String createCardInDate = m.getCreateCardInDate();
-				if ("".equals(createCardInDate) || createCardInDate == null) {
-					createCardInDate = "";
-				}
-				String createCardSuccess = m.getCreateCardSuccess();
-				if ("".equals(createCardSuccess) || createCardSuccess == null) {
-					createCardSuccess = "";
-				}
-				String degreeType = m.getDegreeType();
-				if ("".equals(degreeType) || degreeType == null) {
-					degreeType = "";
-				}
-				String disabilityCardDate = m.getDisabilityCardDate();
-				if ("".equals(disabilityCardDate) || disabilityCardDate == null) {
-					disabilityCardDate = "";
-				}
-				String gatherStatus = m.getGatherStatus();
-				if ("".equals(gatherStatus) || gatherStatus == null) {
-					gatherStatus = "";
-				}
-				String hcFailInfo = m.getHcFailInfo();
-				if ("".equals(hcFailInfo) || hcFailInfo == null) {
-					hcFailInfo = "";
-				}
-				String hcInTime = m.getHcInTime();
-				if ("".equals(hcInTime) || hcInTime == null) {
-					hcInTime = "";
-				}
-				String hcPushedDate = m.getHcPushedDate();
-				if ("".equals(hcPushedDate) || hcPushedDate == null) {
-					hcPushedDate = "";
-				}
-				String hcSuccess = m.getHcSuccess();
-				if ("".equals(hcSuccess) || hcSuccess == null) {
-					hcSuccess = "";
-				}
-				String healthCareType = m.getHealthCareType();
-				if ("".equals(healthCareType) || healthCareType == null) {
-					healthCareType = "";
-				}
-				String householdAddress = m.getHouseholdAddress();
-				if ("".equals(householdAddress) || householdAddress == null) {
-					householdAddress = "";
-				}
-				String householdCommunity = m.getHouseholdCommunity();
-				if ("".equals(householdCommunity) || householdCommunity == null) {
-					householdCommunity = "";
-				}
-				String householdCounty = m.getHouseholdCounty();
-				if ("".equals(householdCounty) || householdCounty == null) {
-					householdCounty = "";
-				}
-				String householdStreet = m.getHouseholdStreet();
-				if ("".equals(householdStreet) || householdStreet == null) {
-					householdStreet = "";
-				}
-				String idcradDept = m.getIdcradDept();
-				if ("".equals(idcradDept) || idcradDept == null) {
-					idcradDept = "";
-				}
-				String mainSourceIncomeType = m.getMainSourceIncomeType();
-				if ("".equals(mainSourceIncomeType)
-						|| mainSourceIncomeType == null) {
-					mainSourceIncomeType = "";
-				}
-				String marryStateType = m.getMarryStateType();
-				if ("".equals(marryStateType) || marryStateType == null) {
-					marryStateType = "";
-				}
-				String name = m.getName();
-				if ("".equals(name) || name == null) {
-					name = "";
-				}
-				String nation = m.getNation();
-				if ("".equals(nation) || nation == null) {
-					nation = "";
-				}
-				String newspaperGetWayType = m.getNewspaperGetWayType();
-				if ("".equals(newspaperGetWayType)
-						|| newspaperGetWayType == null) {
-					newspaperGetWayType = "";
-				}
-				String personType = m.getPersonType();
-				if ("".equals(personType) || personType == null) {
-					personType = "";
-				}
-				String postalCode = m.getPostalCode();
-				if ("".equals(postalCode) || postalCode == null) {
-					postalCode = "";
-				}
-				String residenceAddress = m.getResidenceAddress();
-				if ("".equals(residenceAddress) || residenceAddress == null) {
-					residenceAddress = "";
-				}
-				String residenceCommunity = m.getResidenceCommunity();
-				if ("".equals(residenceCommunity) || residenceCommunity == null) {
-					residenceCommunity = "";
-				}
-				String residenceCounty = m.getResidenceCounty();
-				if ("".equals(residenceCounty) || residenceCounty == null) {
-					residenceCounty = "";
-				}
-				String residenceStreet = m.getResidenceStreet();
-				if ("".equals(residenceStreet) || residenceStreet == null) {
-					residenceStreet = "";
-				}
-				String resideType = m.getResideType();
-				if ("".equals(resideType) || resideType == null) {
-					resideType = "";
-				}
-				String revenueType = m.getRevenueType();
-				if ("".equals(revenueType) || revenueType == null) {
-					revenueType = "";
-				}
-				String selfCareAbilityType = m.getSelfCareAbilityType();
-				if ("".equals(selfCareAbilityType)
-						|| selfCareAbilityType == null) {
-					selfCareAbilityType = "";
-				}
-				String sex = m.getSex();
-				if ("".equals(sex) || sex == null) {
-					sex = "";
-				}
-				String treatmentOney = m.getTreatmentOney();
-				if ("".equals(treatmentOney) || treatmentOney == null) {
-					treatmentOney = "";
-				}
-				String yktNumber = m.getYktNumber();
-				if ("".equals(yktNumber) || yktNumber == null) {
-					yktNumber = "";
-				}
-				String bjtNumber = m.getBjtNumber();
-				if ("".equals(bjtNumber) || bjtNumber == null) {
-					bjtNumber = "";
+				String sqlcount = "select count(*) from card_person t where t.certificatesNumber ='"
+						+ cid + "'";
+				int forInt = JdbcTemplate.queryForInt(sqlcount);
+				// 判断cardPseron 老人是否存在 存在不做操作
+				if (forInt == 0) {
+
+					String auditStatus = m.getAuditStatus();
+					if ("".equals(auditStatus) || auditStatus == null) {
+						auditStatus = "";
+					}
+					String bankCard = m.getBankCard();
+					if ("".equals(bankCard) || bankCard == null) {
+						bankCard = "";
+					}
+					String biotope = m.getBiotope();
+					if ("".equals(biotope) || biotope == null) {
+						biotope = "";
+					}
+					String birthdate = m.getBirthdate();
+					if ("".equals(birthdate) || birthdate == null) {
+						birthdate = "";
+					}
+					String bookId = m.getBookId();
+					if ("".equals(bookId) || bookId == null) {
+						bookId = "";
+					}
+					String cardType = m.getCardType();
+					if ("".equals(cardType) || cardType == null) {
+						cardType = "";
+					}
+					String certificatesNumber = m.getCertificatesNumber();
+					if ("".equals(certificatesNumber)
+							|| certificatesNumber == null) {
+						// certificatesNumber = "";
+						return;
+					}
+					String certificatesType = m.getCertificatesType();
+					if ("".equals(certificatesType) || certificatesType == null) {
+						certificatesType = "";
+					}
+					String cityPushed = m.getCityPushed();
+					if ("".equals(cityPushed) || cityPushed == null) {
+						cityPushed = "";
+					}
+					String cityPushedDate = m.getCityPushedDate();
+					if ("".equals(cityPushedDate) || cityPushedDate == null) {
+						cityPushedDate = "";
+					}
+					String contacter = m.getContacter();
+					if ("".equals(contacter) || contacter == null) {
+						contacter = "";
+					}
+					String contacterIdcardNumber = m.getContacterIdcardNumber();
+					if ("".equals(contacterIdcardNumber)
+							|| contacterIdcardNumber == null) {
+						contacterIdcardNumber = "";
+					}
+					String contacterIdcardType = m.getContacterIdcardType();
+					if ("".equals(contacterIdcardType)
+							|| contacterIdcardType == null) {
+						contacterIdcardType = "";
+					}
+					String contacterMobile = m.getContacterMobile();
+					if ("".equals(contacterMobile) || contacterMobile == null) {
+						contacterMobile = "";
+					}
+					String contacterRelation = m.getContacterRelation();
+					if ("".equals(contacterRelation)
+							|| contacterRelation == null) {
+						contacterRelation = "";
+					}
+					String creatCardDate = m.getCreatCardDate();
+					if ("".equals(creatCardDate) || creatCardDate == null) {
+						creatCardDate = "";
+					}
+					String creatCardPushDate = m.getCreatCardPushDate();
+					if ("".equals(creatCardPushDate)
+							|| creatCardPushDate == null) {
+						creatCardPushDate = "";
+					}
+					String creatCardStatus = m.getCreatCardStatus();
+					if ("".equals(creatCardStatus) || creatCardStatus == null) {
+						creatCardStatus = "";
+					}
+					String createCardFailInfo = m.getCreateCardFailInfo();
+					if ("".equals(createCardFailInfo)
+							|| createCardFailInfo == null) {
+						createCardFailInfo = "";
+					}
+					String createCardInDate = m.getCreateCardInDate();
+					if ("".equals(createCardInDate) || createCardInDate == null) {
+						createCardInDate = "";
+					}
+					String createCardSuccess = m.getCreateCardSuccess();
+					if ("".equals(createCardSuccess)
+							|| createCardSuccess == null) {
+						createCardSuccess = "";
+					}
+					String degreeType = m.getDegreeType();
+					if ("".equals(degreeType) || degreeType == null) {
+						degreeType = "";
+					}
+					String disabilityCardDate = m.getDisabilityCardDate();
+					if ("".equals(disabilityCardDate)
+							|| disabilityCardDate == null) {
+						disabilityCardDate = "";
+					}
+					String gatherStatus = m.getGatherStatus();
+					if ("".equals(gatherStatus) || gatherStatus == null) {
+						gatherStatus = "";
+					}
+					String hcFailInfo = m.getHcFailInfo();
+					if ("".equals(hcFailInfo) || hcFailInfo == null) {
+						hcFailInfo = "";
+					}
+					String hcInTime = m.getHcInTime();
+					if ("".equals(hcInTime) || hcInTime == null) {
+						hcInTime = "";
+					}
+					String hcPushedDate = m.getHcPushedDate();
+					if ("".equals(hcPushedDate) || hcPushedDate == null) {
+						hcPushedDate = "";
+					}
+					String hcSuccess = m.getHcSuccess();
+					if ("".equals(hcSuccess) || hcSuccess == null) {
+						hcSuccess = "";
+					}
+					String healthCareType = m.getHealthCareType();
+					if ("".equals(healthCareType) || healthCareType == null) {
+						healthCareType = "";
+					}
+					String householdAddress = m.getHouseholdAddress();
+					if ("".equals(householdAddress) || householdAddress == null) {
+						householdAddress = "";
+					}
+					String householdCommunity = m.getHouseholdCommunity();
+					if ("".equals(householdCommunity)
+							|| householdCommunity == null) {
+						householdCommunity = "";
+					}
+					String householdCounty = m.getHouseholdCounty();
+					if ("".equals(householdCounty) || householdCounty == null) {
+						householdCounty = "";
+					}
+					String householdStreet = m.getHouseholdStreet();
+					if ("".equals(householdStreet) || householdStreet == null) {
+						householdStreet = "";
+					}
+					String idcradDept = m.getIdcradDept();
+					if ("".equals(idcradDept) || idcradDept == null) {
+						idcradDept = "";
+					}
+					String mainSourceIncomeType = m.getMainSourceIncomeType();
+					if ("".equals(mainSourceIncomeType)
+							|| mainSourceIncomeType == null) {
+						mainSourceIncomeType = "";
+					}
+					String marryStateType = m.getMarryStateType();
+					if ("".equals(marryStateType) || marryStateType == null) {
+						marryStateType = "";
+					}
+					String name = m.getName();
+					if ("".equals(name) || name == null) {
+						name = "";
+					}
+					String nation = m.getNation();
+					if ("".equals(nation) || nation == null) {
+						nation = "";
+					}
+					String newspaperGetWayType = m.getNewspaperGetWayType();
+					if ("".equals(newspaperGetWayType)
+							|| newspaperGetWayType == null) {
+						newspaperGetWayType = "";
+					}
+					String personType = m.getPersonType();
+					if ("".equals(personType) || personType == null) {
+						personType = "";
+					}
+					String postalCode = m.getPostalCode();
+					if ("".equals(postalCode) || postalCode == null) {
+						postalCode = "";
+					}
+					String residenceAddress = m.getResidenceAddress();
+					if ("".equals(residenceAddress) || residenceAddress == null) {
+						residenceAddress = "";
+					}
+					String residenceCommunity = m.getResidenceCommunity();
+					if ("".equals(residenceCommunity)
+							|| residenceCommunity == null) {
+						residenceCommunity = "";
+					}
+					String residenceCounty = m.getResidenceCounty();
+					if ("".equals(residenceCounty) || residenceCounty == null) {
+						residenceCounty = "";
+					}
+					String residenceStreet = m.getResidenceStreet();
+					if ("".equals(residenceStreet) || residenceStreet == null) {
+						residenceStreet = "";
+					}
+					String resideType = m.getResideType();
+					if ("".equals(resideType) || resideType == null) {
+						resideType = "";
+					}
+					String revenueType = m.getRevenueType();
+					if ("".equals(revenueType) || revenueType == null) {
+						revenueType = "";
+					}
+					String selfCareAbilityType = m.getSelfCareAbilityType();
+					if ("".equals(selfCareAbilityType)
+							|| selfCareAbilityType == null) {
+						selfCareAbilityType = "";
+					}
+					String sex = m.getSex();
+					if ("".equals(sex) || sex == null) {
+						sex = "";
+					}
+					String treatmentOney = m.getTreatmentOney();
+					if ("".equals(treatmentOney) || treatmentOney == null) {
+						treatmentOney = "";
+					}
+					String yktNumber = m.getYktNumber();
+					if ("".equals(yktNumber) || yktNumber == null) {
+						yktNumber = "";
+					}
+					String bjtNumber = m.getBjtNumber();
+					if ("".equals(bjtNumber) || bjtNumber == null) {
+						bjtNumber = "";
+					}
+
+					Omp_Old_Info o = getGeneralService().getObjectById(
+							Omp_Old_Info.class, Long.parseLong(cid));
+
+					String sql = "INSERT INTO `card_person` VALUES ('"
+							+ auditStatus + "', '" + bankCard + "', '"
+							+ biotope + "', '" + birthdate + "', '" + bjtNumber
+							+ "', '" + bookId + "', '" + cardType + "', '"
+							+ certificatesNumber + "', '" + certificatesType
+							+ "', '" + cityPushed + "', '" + cityPushedDate
+							+ "', '" + contacter + "', '"
+							+ contacterIdcardNumber + "', '"
+							+ contacterIdcardType + "', '" + contacterMobile
+							+ "', '" + contacterRelation + "', '"
+							+ creatCardDate + "', '" + creatCardPushDate
+							+ "', '" + creatCardStatus + "', '"
+							+ createCardFailInfo + "', '" + createCardInDate
+							+ "', '" + createCardSuccess + "', '" + degreeType
+							+ "', '" + disabilityCardDate + "', '"
+							+ gatherStatus + "', '" + hcFailInfo + "', '"
+							+ hcInTime + "', '" + hcPushedDate + "', '"
+							+ hcSuccess + "', '" + healthCareType + "', '"
+							+ householdAddress + "', '" + householdCommunity
+							+ "', '" + householdCounty + "', '"
+							+ householdStreet + "', '" + idcradDept + "', '"
+							+ mainSourceIncomeType + "', '" + marryStateType
+							+ "', '" + name + "', '" + nation + "', '"
+							+ newspaperGetWayType + "', '" + personType
+							+ "', '" + postalCode + "', '" + resideType
+							+ "', '" + residenceAddress + "', '"
+							+ residenceCommunity + "', '" + residenceCounty
+							+ "', '" + residenceStreet + "', '" + revenueType
+							+ "', '" + selfCareAbilityType + "', '" + sex
+							+ "', '" + treatmentOney + "', '" + yktNumber
+							+ "'," + o.getId() + ")";
+					System.out.println(sql);
+					int update = JdbcTemplate.update(sql);
+					if (update > 0) {
+						String syncsql = "UPDATE omp_old_info i SET i.sync = '1'WHERE i.CERTIFICATES_NUMBER = '"
+								+ cid + "'";
+						JdbcTemplate.update(syncsql);
+					}
 				}
 
-				// Serializable save = se.save(cardPerson1);
-				// System.out.println(save);
-				String sql = "INSERT INTO `card_person` VALUES ('"
-						+ auditStatus + "', '" + bankCard + "', '" + biotope
-						+ "', '" + birthdate + "', '" + bjtNumber + "', '"
-						+ bookId + "', '" + cardType + "', '"
-						+ certificatesNumber + "', '" + certificatesType
-						+ "', '" + cityPushed + "', '" + cityPushedDate
-						+ "', '" + contacter + "', '" + contacterIdcardNumber
-						+ "', '" + contacterIdcardType + "', '"
-						+ contacterMobile + "', '" + contacterRelation + "', '"
-						+ creatCardDate + "', '" + creatCardPushDate + "', '"
-						+ creatCardStatus + "', '" + createCardFailInfo
-						+ "', '" + createCardInDate + "', '"
-						+ createCardSuccess + "', '" + degreeType + "', '"
-						+ disabilityCardDate + "', '" + gatherStatus + "', '"
-						+ hcFailInfo + "', '" + hcInTime + "', '"
-						+ hcPushedDate + "', '" + hcSuccess + "', '"
-						+ healthCareType + "', '" + householdAddress + "', '"
-						+ householdCommunity + "', '" + householdCounty
-						+ "', '" + householdStreet + "', '" + idcradDept
-						+ "', '" + mainSourceIncomeType + "', '"
-						+ marryStateType + "', '" + name + "', '" + nation
-						+ "', '" + newspaperGetWayType + "', '" + personType
-						+ "', '" + postalCode + "', '" + resideType + "', '"
-						+ residenceAddress + "', '" + residenceCommunity
-						+ "', '" + residenceCounty + "', '" + residenceStreet
-						+ "', '" + revenueType + "', '" + selfCareAbilityType
-						+ "', '" + sex + "', '" + treatmentOney + "', '"
-						+ yktNumber + "')";
-				System.out.println(sql);
-				int update = JdbcTemplate.update(sql);
-				if (update > 0) {
-					String syncsql = "UPDATE omp_old_info i SET i.sync = '1'WHERE i.CERTIFICATES_NUMBER = '"
-							+ cid + "'";
-					JdbcTemplate.update(syncsql);
-				}
 			}
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
@@ -791,10 +813,21 @@ public class OldServiceImpl extends
 	 * 导出
 	 */
 	@Override
-	public ExcelBuilder exportExcel(OrderParameter parameter) {
-		System.out.println("ex===============================");
-		List<CardPerson> cardPersonlist = getGeneralService().getObjects(
+	public ExcelBuilder exportExcel(OrderParameter parameter, SystemUser user) {
+		List<Omp_Old_Info> oldPersonlist = getGeneralService().getObjects(
 				getSearchCriteriaBuilder(parameter).build());
+		List<CardPerson> cardPersontList = new ArrayList<CardPerson>();
+		// if(user.getDisplay_all()==1){
+
+		for (Omp_Old_Info old : oldPersonlist) {
+			CardPerson person = getGeneralService().getObjectById(
+					CardPerson.class, old.getId());
+			cardPersontList.add(person);
+		}
+
+		List<CardPerson> cardPersonlist = getGeneralService().getAllObjects(
+				CardPerson.class);
+		// }
 
 		ExcelBuilder excelBuilder = new ExcelBuilder();
 		Workbook wb = excelBuilder.getWorkbook();// 工作薄
@@ -813,9 +846,7 @@ public class OldServiceImpl extends
 	private List<ExcelSheet> getExcelDataList(List<CardPerson> cardPersontList) {
 		List<ExcelSheet> excelSheetList = new ArrayList<ExcelSheet>();
 		if (null != cardPersontList && cardPersontList.size() > 0) {
-
 			ExcelSheet excelSheet = new ExcelSheet();
-
 			excelSheet.setSchema(this.getSchema("")); // 设置表格结构
 			excelSheet.setSheetName("老人基本信息"); // sheet的名称
 			excelSheet.setDataList(cardPersontList); // 设置数据集
@@ -856,16 +887,25 @@ public class OldServiceImpl extends
 		List<ColHeaderCell> colHeaderCellList = new ArrayList<ColHeaderCell>();
 		ColHeaderCell colHeaderCell = null;
 		String[] headerLabels = null;
-		headerLabels = new String[] { "编号", "姓名", "性别", "民族", "证件类型", "证件号",
-				"发证机关", "有效期", "生日", "同步时间", "人员类型", "卡类型", "居住地区县", "居住地街道",
-				"居住地社区", "居住地地址", "户口在区县", "户口所在街道", "户口所在社区", "户口地址",
-				"报纸收取方式", "联系人", "联系人证件类型", "联系人证件号码", "联系人手机号", "与联系人关系",
-				"居住情况", "文化程度", "医疗保障类型", "月收入", "享受金额", "主要经济来源", "生活自理情况",
-				"婚姻状况", "居住小区类型", "卡的生效时间", "卡是否可用", "银行卡号", "一本通号", "北京通号",
-				"一卡通号", "审批状态", "信息采集状态", "申请状态", "制卡申请时间", "制卡成功时间", "补换卡号",
-				"补换卡制卡时间", "临时卡号", "临时卡制卡时间", "制卡是否成功", "制卡失败原因", "是否推送",
-				"区县是否推送", "区县推送时间", "核查是否推送", "核查推送时间", "核查是否成功", "核查回盘时间",
-				"核查失败原因", "制卡推送时间", "制卡回盘时间", "是否死亡", "是否可用" };
+		headerLabels = new String[] { "姓名", "性别", "证件类型", "证件号码", "发证机关",
+				"证件有郊期", "出生日期", "居住地所在区县", "居住地所在街道", "居住地所在社区", "居住地地址",
+				"制卡推送时间", "制卡回盘时间", "制卡是否成功", "制卡失败原因", "区县是否推送", "区县推送时间",
+				"核查推送时间", "核查回盘时间", "核查是否成功", "核查失败原因", "卡类型", "数据采集状态",
+				"系统审核状态", "制卡", "银行卡号", "一本通号", "北京通号", "一卡通号", "制卡时间", "民族",
+				"邮编", "户口在区县", "户口所在街道", "户口所在社区", "户口地址", "报纸收取方式", "联系人",
+				"联系人证件类型", "联系人证件号码", "联系人手机号", "与联系人关系", "居住情况", "文化程度",
+				"医疗保障类型", "月收入", "享受金额", "主要经济来源", "人员类型", "生活自理情况", "婚姻状况",
+				"居住小区类型" };
+		// "编号", "姓名", "性别", "民族", "证件类型", "证件号",
+		// "发证机关", "有效期", "生日", "同步时间", "人员类型", "卡类型", "居住地区县", "居住地街道",
+		// "居住地社区", "居住地地址", "户口在区县", "户口所在街道", "户口所在社区", "户口地址",
+		// "报纸收取方式", "联系人", "联系人证件类型", "联系人证件号码", "联系人手机号", "与联系人关系",
+		// "居住情况", "文化程度", "医疗保障类型", "月收入", "享受金额", "主要经济来源", "生活自理情况",
+		// "婚姻状况", "居住小区类型", "卡的生效时间", "卡是否可用", "银行卡号", "一本通号", "北京通号",
+		// "一卡通号", "审批状态", "信息采集状态", "申请状态", "制卡申请时间", "制卡成功时间", "补换卡号",
+		// "补换卡制卡时间", "临时卡号", "临时卡制卡时间", "制卡是否成功", "制卡失败原因", "是否推送",
+		// "区县是否推送", "区县推送时间", "核查是否推送", "核查推送时间", "核查是否成功", "核查回盘时间",
+		// "核查失败原因", "制卡推送时间", "制卡回盘时间", "是否死亡", "是否可用" };
 		for (int i = 0; i < headerLabels.length; i++) {
 			colHeaderCell = new ColHeaderCell();
 			colHeaderCell.setLabel(headerLabels[i]);
@@ -883,134 +923,258 @@ public class OldServiceImpl extends
 		List<Column> columnList = new ArrayList<Column>();
 		Column column = null;
 		String[] columnNames = new String[] {
-				// 编号
-				"id",
-				// 姓名
+
+				// "id",
+
+				/**
+				 * 姓名
+				 * */
 				"name",
-				// 性别
-				"sexType.name",
-				// 民族
-				"cardPersonDetail.nation.name",
-				// 证件类型
-				"certificatesType.name",
-				// 证件号
+				/**
+				 * 姓别
+				 */
+				"sex",
+				/**
+				 * 证件类型
+				 */
+				"certificatesType",
+				/**
+				 * 证件号码
+				 */
 				"certificatesNumber",
-				// 发证机关
+				/**
+				 * 发证机关
+				 */
 				"idcradDept",
-				// 有效期
-				"cardInfo.disabilityCardDate",
-				// 生日
+				/**
+				 * 证件有郊期
+				 */
+				"disabilityCardDate",
+				/**
+				 * 出生日期
+				 */
+
 				"birthdate",
-				// 同步时间
-				"synchronizationTime",
-				// 人员类型
-				"personType.name",
-				// 卡类型
-				"cardType.name",
-				// 居住地区县
-				"residenceCounty.name",
-				// 居住地街道
-				"residenceStreet.name",
-				// 居住地社区
-				"residenceCommunity.name",
-				// 居住地地址
+				/**
+				 * 居住地所在区县
+				 */
+				"residenceCounty",
+				/**
+				 * 居住地所在街道
+				 */
+				"residenceStreet",
+				/**
+				 * 居住地所在社区
+				 */
+				"residenceCommunity",
+
+				/**
+				 * 居住地地址
+				 */
 				"residenceAddress",
-				// 户口在区县
-				"cardPersonDetail.householdCounty.name",
-				// 户口所在街道
-				"cardPersonDetail.householdStreet.name",
-				// 户口所在社区
-				"cardPersonDetail.householdCommunity.name",
-				// 户口地址
-				"cardPersonDetail.householdAddress",
-				// 报纸收取方式
-				"cardPersonDetail.newspaperGetWayType.name",
-				// 联系人
-				"cardPersonDetail.contacter",
-				// 联系人证件类型
-				"cardPersonDetail.contacterIdcardType.name",
-				// 联系人证件号码
-				"cardPersonDetail.contacterIdcardNumber",
-				// 联系人手机号
-				"cardPersonDetail.contacterMobile",
-				// 与联系人关系
-				"cardPersonDetail.contacterRelation",
-				// 居住情况
-				"cardPersonDetail.resideType.name",
-				// 文化程度
-				"cardPersonDetail.degreeType.name",
-				// 医疗保障类型
-				"cardPersonDetail.healthCareType.name",
-				// 月收入
-				"cardPersonDetail.revenueType.name",
-				// 享受金额
-				"cardPersonDetail.treatmentOney",
-				// 主要经济来源
-				"cardPersonDetail.mainSourceIncomeType.name",
-				// 生活自理情况
-				"cardPersonDetail.selfCareAbilityType.name",
-				// 婚姻状况
-				"cardPersonDetail.marryStateType.name",
-				// 居住小区类型
-				"cardPersonDetail.biotope.name",
-				// 卡的生效时间
-				"cardInfo.send_card_date",
-				// 卡是否可用
-				"cardInfo.enabled",
-				// 银行卡号
-				"cardInfo.bankCard",
-				// 一本通号
-				"cardInfo.bookId",
-				// 北京通号
-				"cardInfo.bjtNumber",
-				// 一卡通号
-				"cardInfo.yktNumber",
-				// 审批状态
-				"auditStatus.name",
-				// 信息采集状态
-				"gatherStatus.name",
-				// 申请状态
-				"application_status.name",
-				// 制卡申请时间
-				"cardInfo.business_card_application_time",
-				// 制卡成功时间
-				"cardInfo.business_card_making_time",
-				// 补换卡号
-				"cardInfo.replace_the_card_number",
-				// 补换卡制卡时间
-				"cardInfo.replace_card_making_time",
-				// 临时卡号
-				"cardInfo.temporary_card_number",
-				// 临时卡制卡时间
-				"cardInfo.temporary_card_making_time",
-				// 制卡是否成功
-				"createCardSuccess",
-				// 制卡失败原因
-				"createCardFailInfo",
-				// 是否推送
-				"hasPushed",
-				// 区县是否推送
-				"cityPushed",
-				// 区县推送时间
+
+				/**
+				 * 制卡推送时间
+				 */
 				"creatCardPushDate",
-				// 核查是否推送
-				"hcHasPushed",
-				// 核查推送时间
-				"hcPushedDate",
-				// 核查是否成功
-				"hcSuccess",
-				// 核查回盘时间
-				"hcInTime",
-				// 核查失败原因
-				"hcInTime",
-				// 制卡推送时间
-				"creatCardPushDate",
-				// 制卡回盘时间
+				/**
+				 * 制卡回盘时间
+				 */
 				"createCardInDate",
-				// 是否死亡
-				"iseffect.name",
-				// 是否可用
-				"enabled" };
+				/**
+				 * 制卡是否成功
+				 */
+				"createCardSuccess",
+				/**
+				 * 制卡失败原因
+				 */
+				"createCardFailInfo",
+
+				/**
+				 * 区县是否推送
+				 */
+				"cityPushed",
+
+				/**
+				 * 区县推送时间
+				 */
+				"cityPushedDate",
+
+				/**
+				 * 核查推送时间
+				 */
+				"hcPushedDate",
+				/**
+				 * 核查回盘时间
+				 */
+				"hcInTime",
+				/**
+				 * 核查是否成功
+				 */
+				"hcSuccess",
+				/**
+				 * 核查失败原因
+				 */
+				"hcFailInfo",
+
+				/**
+				 * 卡类型
+				 */
+				"cardType",
+
+				/**
+				 * 数据采集状态
+				 */
+				"gatherStatus",
+				/**
+				 * 系统审核状态
+				 */
+				"auditStatus",
+
+				/**
+				 * 制卡
+				 */
+				"creatCardStatus",
+
+				/**
+				 * 银行卡号
+				 */
+				"bankCard",
+				/**
+				 * 一本通号
+				 */
+				"bookId",
+
+				/**
+				 * 北京通号
+				 */
+
+				"bjtNumber",
+
+				/**
+				 * 一卡通号
+				 */
+
+				"yktNumber",
+
+				/**
+				 * 制卡时间
+				 */
+
+				"creatCardDate",
+
+				/**
+				 * 民族
+				 */
+
+				"nation",
+				/**
+				 * 邮编
+				 */
+				"postalCode",
+
+				/**
+				 * 户口在区县
+				 */
+				"householdCounty",
+				/**
+				 * 户口所在街道
+				 */
+				"householdStreet",
+				/**
+				 * 户口所在社区
+				 */
+				"householdCommunity",
+
+				/**
+				 * 户口地址
+				 */
+				"householdAddress",
+				/**
+				 * 报纸收取方式
+				 */
+
+				"newspaperGetWayType",
+
+				/**
+				 * 联系人
+				 */
+				"contacter",
+				/**
+				 * 联系人证件类型
+				 */
+
+				"contacterIdcardType",
+
+				/**
+				 * 联系人证件号码
+				 */
+				"contacterIdcardNumber",
+
+				/**
+				 * 联系人手机号
+				 */
+
+				"contacterMobile",
+				/**
+				 * 与联系人关系
+				 */
+
+				"contacterRelation",
+				/**
+				 * 居住情况
+				 */
+				"resideType",
+
+				/**
+				 * 文化程度
+				 */
+				"degreeType",
+
+				/**
+				 * 医疗保障类型
+				 */
+				"healthCareType",
+
+				/**
+				 * 月收入
+				 */
+				"revenueType",
+
+				/**
+				 * 享受金额
+				 */
+
+				"treatmentOney",
+
+				/**
+				 * 主要经济来源
+				 */
+
+				"mainSourceIncomeType",
+
+				/**
+				 * 人员类型
+				 */
+				"personType",
+
+				/**
+				 * 生活自理情况
+				 */
+
+				"selfCareAbilityType",
+
+				/**
+				 * 婚姻状况
+				 */
+
+				"marryStateType",
+
+				/**
+				 * 居住小区类型
+				 */
+
+				"biotope" };
 		int defaultWidth = 7000;
 		boolean defaultIsAutoSize = true;
 		boolean defaultIsGroupColumn = false;
@@ -1166,45 +1330,6 @@ public class OldServiceImpl extends
 				defaultIsAutoSize, defaultIsGroupColumn, defaultIsIndexColumn);
 		columnList.add(column);
 		column = getColumnInstance(columnNames[50], defaultWidth,
-				defaultIsAutoSize, defaultIsGroupColumn, defaultIsIndexColumn);
-		columnList.add(column);
-		column = getColumnInstance(columnNames[51], defaultWidth,
-				defaultIsAutoSize, defaultIsGroupColumn, defaultIsIndexColumn);
-		columnList.add(column);
-		column = getColumnInstance(columnNames[52], defaultWidth,
-				defaultIsAutoSize, defaultIsGroupColumn, defaultIsIndexColumn);
-		columnList.add(column);
-		column = getColumnInstance(columnNames[53], defaultWidth,
-				defaultIsAutoSize, defaultIsGroupColumn, defaultIsIndexColumn);
-		columnList.add(column);
-		column = getColumnInstance(columnNames[54], defaultWidth,
-				defaultIsAutoSize, defaultIsGroupColumn, defaultIsIndexColumn);
-		columnList.add(column);
-		column = getColumnInstance(columnNames[55], defaultWidth,
-				defaultIsAutoSize, defaultIsGroupColumn, defaultIsIndexColumn);
-		columnList.add(column);
-		column = getColumnInstance(columnNames[56], defaultWidth,
-				defaultIsAutoSize, defaultIsGroupColumn, defaultIsIndexColumn);
-		columnList.add(column);
-		column = getColumnInstance(columnNames[57], defaultWidth,
-				defaultIsAutoSize, defaultIsGroupColumn, defaultIsIndexColumn);
-		columnList.add(column);
-		column = getColumnInstance(columnNames[58], defaultWidth,
-				defaultIsAutoSize, defaultIsGroupColumn, defaultIsIndexColumn);
-		columnList.add(column);
-		column = getColumnInstance(columnNames[59], defaultWidth,
-				defaultIsAutoSize, defaultIsGroupColumn, defaultIsIndexColumn);
-		columnList.add(column);
-		column = getColumnInstance(columnNames[60], defaultWidth,
-				defaultIsAutoSize, defaultIsGroupColumn, defaultIsIndexColumn);
-		columnList.add(column);
-		column = getColumnInstance(columnNames[61], defaultWidth,
-				defaultIsAutoSize, defaultIsGroupColumn, defaultIsIndexColumn);
-		columnList.add(column);
-		column = getColumnInstance(columnNames[62], defaultWidth,
-				defaultIsAutoSize, defaultIsGroupColumn, defaultIsIndexColumn);
-		columnList.add(column);
-		column = getColumnInstance(columnNames[63], defaultWidth,
 				defaultIsAutoSize, defaultIsGroupColumn, defaultIsIndexColumn);
 		columnList.add(column);
 		return columnList;

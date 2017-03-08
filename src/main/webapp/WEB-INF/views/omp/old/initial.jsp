@@ -42,6 +42,7 @@
 							<c:url var="queryForm" value="/old/oldMatch/listtoo.shtml" />
 							<form:form id="command" role="form" class="form-inline"
 								action="${queryForm}" method="post">
+								<%-- 								action="${queryForm}" method="post"> --%>
 								<input id="pageNo" name="current" type="hidden" value="1">
 								<table class="table">
 									<tr>
@@ -95,15 +96,13 @@
 										</select></td>
 									</tr>
 									<tr>
-										<!-- 																				<td><input type="button" onclick="quety()" value="查询"/></td> -->
 										<td><input class="btn btn-default" type="submit"
 											value="查询">
 										<td><input class="btn btn-danger" type="reset" value="重置">
 										<td><a class="btn btn-default" href="#"
 											onclick="importInformation()" role="button">导入</a>
-										<td><a class="btn btn-default" href="#"
-											onclick="exportExcel()" role="button">导出</a> <!-- 											<td><button>导出</button></td> -->
-											<!-- 	<td><button onclick="createOrder()">批量生成指令</button></td> -->
+<!-- 										<td><a class="btn btn-default" href="#" -->
+<!-- 											onclick="exportExcel()" role="button">导出</a> -->
 									</tr>
 								</table>
 							</form:form>
@@ -190,35 +189,11 @@
 					});
 		}
 		
-			//导出		
-			function exportExcel(){
-				alert(1);
-				var f = $("#command").serialize(); 
-				alert(f)
-				
-				
-				var isindividuation = $("#isindividuation").val();
-				var name = $("#name").val();
-				var creationTime = $("#creationTime").val();
-				var idCard = $("#idCard").val();
-				var zjNumber = $("#zjNumber").val();
-				var county = $("#county").val();
-				var street = $("#street").val();
-				var community = $("#community").val();
-				var isGenerationOrder = $("#isGenerationOrder").val();
-				$.post("<%=request.getContextPath() %>/old/oldMatch/exportExcel.shtml",
-						{
-							creationTime:creationTime,
-							name:name,
-							idCard:idCard,
-							zjNumber:zjNumber,
-							county:county,
-							street:street,
-							community:community,
-							isGenerationOrder:isGenerationOrder,
-							isindividuation:isindividuation
-						});
-			}
+		//导出		
+		function exportExcel(){
+			var f = $("#command").serialize(); 
+			location.href = "<%=request.getContextPath() %>/old/oldMatch/exportExcel.shtml?"+f;
+		}
 
 		/**
 		 *未审核信息展示
@@ -295,12 +270,12 @@
 			$("#street").change(function(){
 				var id = $("#street").val();
 				$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",{id : id},function(data) {
-					for (var i = 0; i < data.length; i++) {
-						$("#community").append("<option value='"+data[i].id+"'>"+ data[i].name+ "</option>");
-					}
+										for (var i = 0; i < data.length; i++) {
+											$("#community").append("<option value='"+data[i].id+"'>"+ data[i].name+ "</option>");
+										}
+									});
 				});
-			});
-		});
+						});
 
 		function hxBackClick() {
 

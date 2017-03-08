@@ -1,10 +1,10 @@
 package com.capinfo.common.security.access;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentHashMap.KeySetView;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -106,6 +106,9 @@ public class InvocationSecurityMetadataSourceServiceImpl implements FilterInvoca
 		FilterInvocation filterInvocation = (FilterInvocation) object;
 		HttpServletRequest request = filterInvocation.getHttpRequest();
 		Iterator<String> ite = getRequestMap().keySet().iterator();
+	//	Iterator<String> ite = getRequestMap().entrySet().iterator();
+		
+		
 		while (ite.hasNext()) {
 			String resURL = ite.next();
 			RequestMatcher requestMatcher = new AntPathRequestMatcher(resURL);

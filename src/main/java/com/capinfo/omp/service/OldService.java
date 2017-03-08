@@ -108,7 +108,7 @@ public interface OldService extends CommonsDataOperationService<Omp_Old_Info, Or
 
 	List<Map<String, Object>> getPerson(String cardIds);
 
-	ExcelBuilder exportExcel(OrderParameter parameter);
+	ExcelBuilder exportExcel(OrderParameter parameter, SystemUser user);
 
 
 }
