@@ -20,7 +20,7 @@ public interface OmpRegionService{
 	public List<Map<String, Object>> getOrder(String ptype);
 
 	public List<Map<String, Object>> getServiceType();
-	
+
 	public List<Map<String, Object>> gerRegionById(String id);
 
 
@@ -29,32 +29,32 @@ public interface OmpRegionService{
 	public boolean isSqOrder(String comid, String ptype, String kid);
 
 	public void updSqOrder(String comid, String ptype, String kid, String showid, String shownumber);
-    
-	public void updateOrder1(String shequId,String zhiling);
-	
-	public void updateOrder2(String shequId,String zhiling);
-	
-	public void updateOrder3(String shequId,String zhiling);
-	
+
+	public void updateOrder1(String shequId,String zhiling,String jsonName);
+
+	public void updateOrder2(String shequId,String zhiling,String jsonName);
+
+	public void updateOrder3(String shequId,String zhiling,String jsonName);
+
     public void updateOrderSId1(String streetId,String zhiling);
-	
+
 	public void updateOrderSId2(String streetId,String zhiling);
-	
+
 	public void updateOrderSId3(String streetId,String zhiling);
-	
+
     public void updateOrderSIdNew1(String streetId,String zhiling,String fuwuName);
-	
+
 	public void updateOrderSIdNew2(String streetId,String zhiling,String fuwuName);
-	
+
 	public void updateOrderSIdNew3(String streetId,String zhiling,String fuwuName);
-	
+
 	public List<Map<String, Object>> getOrderByCommunity(String id);
-    
+
 	//取得街道的数量
 	int getCount(String county, String street,String community, String isSend, String creationTime);
 	//取得街道列表信息
 	public List<Map<String, Object>> getStreetList(Page page,String county, String street,String community,String isSend, String creationTime);
-	
+
 	public String gerRegion(String id);
 
 	public int login(String user, String pass);

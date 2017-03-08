@@ -22,11 +22,11 @@
 					for(var i = 0;i<data.length;i++){
 						$("#table").append("<tr><td><input class='ids' type='checkbox' value='"+data[i].id+"'/></td><td>"+data[i].text+"</td></tr>");
 					}
-		
+
 				});
 			}
 		});
-		
+
 		$(".phoneType").change(function(){
 			var ptype = $(this).val();
 			$.post("<%=request.getContextPath()%>/admin/omp/ompRegion/getOrder.shtml",{ptype:ptype},function(data){
@@ -41,7 +41,7 @@
 				}
 			});
 		});
-		
+
 		$.post("<%=request.getContextPath()%>/admin/omp/ompRegion/getServiceType.shtml",function(data){
 			$("#select").empty();
 			$("#select").append("<option value=''>请选择</option>")
@@ -49,8 +49,8 @@
 				$("#select").append("<option value='"+data[i].serviceName+"'>"+data[i].serviceName+"</option>")
 			}
 		});
-		
-		
+
+
 	});
 </script>
 
@@ -147,18 +147,18 @@
 		<div>
 			<form action="">
 				<table class="table table-bordered" id="table4">
-					
+
 				</table>
 			</form>
 		</div>
 	</div>
-	
+
 </div>
 
 <script type="text/javascript">
 
 	function del() {
-		
+
 		$(".ids:checkbox:checked").map(function() {
 			$(this).parent().parent().remove();
 		});
@@ -183,16 +183,16 @@
 	function mapping() {
 		$("#table2").empty();
 		$(".ids:checkbox:checked").map(function(){
-			
+
 			var id = $(this).val();
 			//批量添加的是社区的上级  街道的ID 赋值操作
 			document.getElementById("streetId").value=id;
-			
+
 			var name = $(this).parent().next().text();
 			$("#table2").append(
 					"<tr><td><input class='tb2' type='hidden' value='"+id+"'/></td><td>"
 							+ name + "</td></tr>");
-			
+
 			$(this).parent().parent().remove();
 		});
 	}
@@ -210,14 +210,13 @@
 			}
 		});
 	}
-	
+
 	//保存社区指令
 	function save(){
-		    var streetId=document.getElementById("streetId").value;    
+		    var streetId=document.getElementById("streetId").value;
 			var communityids = $(".tb2").map(function(){
 				return $(this).val();
 			}).get().join();
-		//	alert(communityids);
 			var ptype = $(".phoneType:checked").val();
 			var trnumber = $("#table3 tr").length;
 			$("#table3").find("tr").eq(1);
@@ -225,7 +224,6 @@
 			var jsonName="[{";
 			for(var i=1;i<trnumber;i++){
 				var key = $("#table3").find("tr").eq(i).find("td").eq(0).text();
-				
 				var kid = $("#table3").find("tr").eq(i).find("td").eq(2).attr("value");
 				//服务商名称
 				var showname = $("#table3").find("tr").eq(i).find("td").eq(3).text();
@@ -240,52 +238,52 @@
 					shownumber="96003";
 					showname="96003";
 				}
-				 if(!reg.test(shownumber)){  
-					 alert("电话号码不可含有特殊字符。"); 
+				 if(!reg.test(shownumber)){
+					 alert("电话号码不可含有特殊字符。");
 					 return false;
-				 }  
+				 }
 				 //M1:对应的服务商电话
 				json = json + "\"" + key + "\"" ;
 				json = json + ":\"" + shownumber + "\"" ;
-				//M1:对应的服务商名称 
+				//M1:对应的服务商名称
 				jsonName = jsonName + "\"" + key + "\"" ;
 				jsonName = jsonName + ":\"" + showname + "\"" ;
 				if (i+1 < 17){//
 					json = json + ",";
 					jsonName=jsonName + ",";
 				}
-				
+
 			};
 			json = json + "}]";
 			jsonName = jsonName + "}]";
 			<%-- $.post("<%=request.getContextPath()%>/admin/omp/ompRegion/saveSqOrderSId.shtml",
 					{streetId:streetId,kid:kid,communityids:communityids,ptype:ptype,json:json,showid:showid,shownumber:shownumber},
 					function(data){
-				           
-			}); --%>  
+
+			}); --%>
 			$.post("<%=request.getContextPath()%>/admin/omp/ompRegion/saveSqOrderSIdNew.shtml",
 				{streetId:streetId,kid:kid,communityids:communityids,ptype:ptype,json:json,jsonName:jsonName,showid:showid,shownumber:shownumber},
-				function(data){	           
+				function(data){
 			});
 			alert("保存成功");
 	}
-	
-	
+
+
 	function ExportCommunityOrder(){
 		var i = 0;
 		var id = $(".ids:checkbox:checked").map(function() {
 			i++;
 			return $(this).val();
 		}).get().join();
-		
+
 		if(i>1){
 			alert("您好，一次只能导出一个社区指令");
 		}else{
 			$.post("<%=request.getContextPath()%>/admin/omp/ompRegion/exportExcel.shtml",{id:id});
 		}
-		
+
 	}
-	
+
 </script>
 <style>
 td {

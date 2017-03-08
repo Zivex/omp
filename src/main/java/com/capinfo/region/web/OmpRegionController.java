@@ -52,21 +52,21 @@ public class OmpRegionController {
 
 	/**
 	 * 区划管理列表
-	 * 
+	 *
 	 * @param parameter
 	 * @param mv
 	 */
 	@RequestMapping("/initial.shtml")
 	@ResponseBody
 	private ModelAndView getSortList() {
-		
+
 	//	ModelAndView mv = new ModelAndView("/omp/region/allocation");
 		ModelAndView mv = new ModelAndView("/omp/region/initial");
 		return mv;
 	}
-	
-	
-	
+
+
+
 	@RequestMapping("/list.shtml")
 	@ResponseBody
 	private ModelAndView getsortList(HttpServletRequest request,String pid) {
@@ -80,29 +80,29 @@ public class OmpRegionController {
 //		mv.addObject("community",community);
 		return mv;
 	}
-	
-	
+
+
 	@RequestMapping("listNew.shtml")
 	public ModelAndView listNew(String current,String county, String street, String community,String isSend,String creationTime) {
 		ModelAndView mv = new ModelAndView("/omp/region/listNew");
 		getStreetList(mv, current,county, street,community, isSend, creationTime);
 		return mv;
 	}
-	
+
 	@RequestMapping("list1.shtml")
 	public ModelAndView listtoo(String current,String county, String street, String community,String isSend,String creationTime) {
 		ModelAndView mv = new ModelAndView("/omp/region/list1");
 		getStreetList(mv, current,county, street,community, isSend, creationTime);
 		return mv;
 	}
-	
+
 	@RequestMapping("list2.shtml")
 	public ModelAndView listtoos(String current,String county, String street, String community,String isSend,String creationTime) {
 		ModelAndView mv = new ModelAndView("/omp/order/list1");
 		getStreetList(mv, current,county, street,community, isSend, creationTime);
 		return mv;
 	}
-	
+
 	/**
 	 * 带有查询条件的 街道列表
 	 * @param mv
@@ -116,7 +116,7 @@ public class OmpRegionController {
 	 * @param creationTime 创建时间
 	 */
 	public void getStreetList(ModelAndView mv,String current,String county, String street,String community, String isSend,String creationTime) {
-		
+
 		if (StringUtils.isEmpty(current)) {
 			current = "1";
 		}
@@ -133,10 +133,10 @@ public class OmpRegionController {
 		mv.addObject("community",community);
 		mv.addObject("isSend",isSend);
 	}
-	
-	
-	
-	
+
+
+
+
 	@RequestMapping("/get.shtml")
 	@ResponseBody
 	private List<Map<String, Object>> getList(String id) {
@@ -154,7 +154,7 @@ public class OmpRegionController {
 	 * 获取服务商信息
 	 */
 	@RequestMapping("/getOrder.shtml")
-	@ResponseBody 
+	@ResponseBody
 	public List<Map<String, Object>> getOrder(HttpServletRequest request) {
 		String jjtype="";
 		String sntype="";
@@ -165,7 +165,7 @@ public class OmpRegionController {
 		String sname="";
 		String id="";
 		String kid="";
-		String KEY=""; 
+		String KEY="";
 		String LinkNbr="96003";
 		String fuwuName="";
 		JSONObject jsonObject=new JSONObject();
@@ -187,7 +187,7 @@ public class OmpRegionController {
 			if(data.get(0).get("nstype")!=null){
 				nstype=data.get(0).get("nstype").toString();
 			}
-			
+
 			if(data.get(0).get("jjtypename")!=null){
 				jjtypename=data.get(0).get("jjtypename").toString();
 			}
@@ -197,12 +197,12 @@ public class OmpRegionController {
 			if(data.get(0).get("nstypename")!=null){
 				nstypename=data.get(0).get("nstypename").toString();
 			}
-			
+
 		}
-		
-		
+
+
 		if (!StringUtils.isEmpty(ptype)) {
-			
+
 			List<Map<String,Object>> order = ompRegionService.getOrder(ptype);
 			if("1".equals(ptype)){
 				jsonObject=JsonUtil.getJson(jjtype);
@@ -212,10 +212,10 @@ public class OmpRegionController {
 			}else{
 				jsonObject=JsonUtil.getJson(nstype);
 			}
-			
+
 			JSONArray json1=JsonUtil.getJson1(jsonObject);
 			JSONArray jsonName=JsonUtil.getJson1(jsonObjectName);
-			
+
 		    if(json1.size()>0){
 		       for(int i=0;i<json1.size();i++){
 		    	 Map<String, Object> map = new HashMap<String, Object>();
@@ -238,7 +238,7 @@ public class OmpRegionController {
                  if(jobName!=null){//服务商名称
                 	 fuwuName= jobName.get("value").toString();
                   }
-                  
+
 		         map.put("id", id);
 		         map.put("sname", sname);
 		         map.put("kid", kid);
@@ -251,22 +251,22 @@ public class OmpRegionController {
 		         listItems.add(map);
 		       }
 		 //      System.out.println(listItems);
-		       
+
 		    }
-			
-			return listItems; 
+
+			return listItems;
 		}
-		
-		
+
+
 		return null;
-		
+
 	}
-	
+
 	/*
 	 * 获取服务商信息作为一个方法调用
 	 */
 	@RequestMapping("/getOrderByShequId.shtml")
-	@ResponseBody 
+	@ResponseBody
 	public List<Map<String, Object>> getOrderByShequId(String shequId,String ptype) {
 		String jjtype="";
 		String sntype="";
@@ -274,10 +274,10 @@ public class OmpRegionController {
 		String sname="";
 		String id="";
 		String kid="";
-		String KEY=""; 
+		String KEY="";
 		String LinkNbr="96003";
 		JSONObject jsonObject=new JSONObject();
-		
+
 		List<Map<String,Object>> data= ompRegionService.gerRegionById(shequId);
 		List<Map<String,Object>> listItems=new ArrayList<Map<String,Object>>();
 
@@ -291,12 +291,12 @@ public class OmpRegionController {
 			if(data.get(0).get("nstype")!=null){
 				nstype=data.get(0).get("nstype").toString();
 			}
-			
+
 		}
-		
-		
+
+
 		if (!StringUtils.isEmpty(ptype)) {
-			
+
 			List<Map<String,Object>> order = ompRegionService.getOrder(ptype);
 			if("1".equals(ptype)){
 				jsonObject=JsonUtil.getJson(jjtype);
@@ -305,13 +305,13 @@ public class OmpRegionController {
 			}else{
 				jsonObject=JsonUtil.getJson(nstype);
 			}
-			
+
 			JSONArray json1=JsonUtil.getJson1(jsonObject);
 		    if(json1.size()>0){
 		       for(int i=0;i<json1.size();i++){
 		    	 Map<String, Object> map = new HashMap<String, Object>();
 		         JSONObject job = json1.getJSONObject(i);  // 遍历 jsonarray 数组，把每一个对象转成 json 对象
-		         
+
 		         if(order!=null&&!"".equals(order)){
 		        	 id=order.get(i).get("id").toString();
 		        	 if(order.get(i).get("sname")==null){
@@ -338,27 +338,27 @@ public class OmpRegionController {
 		         listItems.add(map);
 		       }
 		//       System.out.println(listItems);
-		       
+
 		    }
-			
+
 		//	System.out.println("===="+listItems);
-			return listItems; 
+			return listItems;
 		}
-		
-		
+
+
 		return null;
-		
+
 	}
-	
-	
+
+
 	@RequestMapping("/getServiceType.shtml")
 	@ResponseBody
 	public List<Map<String,Object>> getServiceType() {
 		List<Map<String, Object>> list = ompRegionService.getServiceType();
 		return list;
 	}
-	
-	
+
+
 	@RequestMapping("/login.shtml")
 	public boolean login(String user,String pass) {
 		boolean result=true;
@@ -370,7 +370,7 @@ public class OmpRegionController {
 		}
 		return result;
 	}
-	
+
 	/**
 	 * 按照社区ID单个修改指令
 	 * @param request
@@ -379,19 +379,20 @@ public class OmpRegionController {
 	@ResponseBody
 	public void saveSqOrder(HttpServletRequest request) {
 		String kid = request.getParameter("kid");
-		String shequId = request.getParameter("shequId");//社区
+		String shequId = request.getParameter("shequId");// 社区
 		String ptype = request.getParameter("ptype");
-		String zhiling=request.getParameter("json");
-		
-	    System.out.println("社区ID："+shequId+"类型："+ptype+"指令："+zhiling); 
-		
-		if("1".equals(ptype)){//居家型
-			//更新社区指令
-			ompRegionService.updateOrder1(shequId,zhiling);
-		}else if("2".equals(ptype)){//失能型
-			ompRegionService.updateOrder2(shequId,zhiling);
-		}else{//农商型
-			ompRegionService.updateOrder3(shequId,zhiling);
+		String zhiling = request.getParameter("json");
+		String jsonName = request.getParameter("jsonName");
+
+	    System.out.println("社区ID："+shequId+"类型："+ptype+"指令："+zhiling);
+
+		if ("1".equals(ptype)) {// 居家型
+			// 更新社区指令
+			ompRegionService.updateOrder1(shequId, zhiling, jsonName);
+		} else if ("2".equals(ptype)) {// 失能型
+			ompRegionService.updateOrder2(shequId, zhiling, jsonName);
+		} else {// 农商型
+			ompRegionService.updateOrder3(shequId, zhiling, jsonName);
 		}
 		String showid = request.getParameter("showid");
 		String shownumber = request.getParameter("shownumber");
@@ -400,9 +401,9 @@ public class OmpRegionController {
 			shownumber = "96003";
 		}
 		String communityids = request.getParameter("communityids");
-	
+
 	}
-	
+
 	/**
 	 * 按照街道ID批量修改社区指令
 	 * @param request
@@ -414,9 +415,9 @@ public class OmpRegionController {
 		String streetId = request.getParameter("streetId");//街道的ID
 		String ptype = request.getParameter("ptype");
 		String zhiling=request.getParameter("json");
-		
-	    System.out.println("街道ID："+streetId+"类型："+ptype+"指令："+zhiling); 
-		
+
+	    System.out.println("街道ID："+streetId+"类型："+ptype+"指令："+zhiling);
+
 		if("1".equals(ptype)){//居家型
 			//更新社区指令
 			ompRegionService.updateOrderSId1(streetId,zhiling);
@@ -432,9 +433,9 @@ public class OmpRegionController {
 			shownumber = "96003";
 		}
 		String communityids = request.getParameter("communityids");
-	
+
 	}
-	
+
 	/**
 	 * 按照街道ID批量修改社区指令
 	 * @param request
@@ -449,10 +450,10 @@ public class OmpRegionController {
 		String zhiling=request.getParameter("json");
 		//键位对应的服务商名称
 		String fuwuName=request.getParameter("jsonName");
-		
+
 		String communityids=request.getParameter("communityids");
-		System.out.println("街区的IDS:"+communityids); 
-	    System.out.println("街道ID："+streetId+"类型："+ptype+"指令："+zhiling+"服务商名称:"+fuwuName); 
+		System.out.println("街区的IDS:"+communityids);
+	    System.out.println("街道ID："+streetId+"类型："+ptype+"指令："+zhiling+"服务商名称:"+fuwuName);
 		//将取得的街区ID转化为数组
 	    String[] streetIds = communityids.split(",");
     	for (String street : streetIds) {
@@ -466,156 +467,156 @@ public class OmpRegionController {
 			}else{//农商型
 				ompRegionService.updateOrderSIdNew3(streetId,zhiling,fuwuName);
 			}
-			
+
 		}
-	    
+
 		String showid = request.getParameter("showid");
 		String shownumber = request.getParameter("shownumber");
 		System.out.println("键位："+showid+"-----"+shownumber);
 		if (StringUtils.isEmpty(shownumber)) {
 			shownumber = "96003";
 		}
-	
+
 	}
-	
-	
+
+
 	@RequestMapping("/exportExcelNew.shtml")
 	public String exportExcelNew(String shequId,HttpServletResponse response) throws Exception {
 		String name="";
 		List<Map<String, Object>> shequInfo=ompRegionService.gerRegionById(shequId);
 		if(shequInfo!=null&&shequInfo.get(0).get("text")!=null){
-			name=shequInfo.get(0).get("text").toString(); 
+			name=shequInfo.get(0).get("text").toString();
 		}
-		// 第一步，创建一个webbook，对应一个Excel文件  
-        HSSFWorkbook wb = new HSSFWorkbook();  
-        // 第二步，在webbook中添加一个sheet,对应Excel文件中的sheet  
-        HSSFSheet sheet1 = wb.createSheet("居家型");  
+		// 第一步，创建一个webbook，对应一个Excel文件
+        HSSFWorkbook wb = new HSSFWorkbook();
+        // 第二步，在webbook中添加一个sheet,对应Excel文件中的sheet
+        HSSFSheet sheet1 = wb.createSheet("居家型");
         HSSFSheet sheet2 = wb.createSheet("失能型");
         HSSFSheet sheet3 = wb.createSheet("农商型");
-        // 第三步，在sheet中添加表头第0行,注意老版本poi对Excel的行数列数有限制short  
-        HSSFRow row1 = sheet1.createRow((int) 0); 
-        HSSFRow row2 = sheet2.createRow((int) 0); 
-        HSSFRow row3= sheet3.createRow((int) 0); 
-        // 第四步，创建单元格，并设置值表头 设置表头居中  
-        HSSFCellStyle style = wb.createCellStyle();  
-        style.setAlignment(HSSFCellStyle.ALIGN_CENTER); // 创建一个居中格式  
-        HSSFCell cell = row1.createCell((short) 0);  
+        // 第三步，在sheet中添加表头第0行,注意老版本poi对Excel的行数列数有限制short
+        HSSFRow row1 = sheet1.createRow((int) 0);
+        HSSFRow row2 = sheet2.createRow((int) 0);
+        HSSFRow row3= sheet3.createRow((int) 0);
+        // 第四步，创建单元格，并设置值表头 设置表头居中
+        HSSFCellStyle style = wb.createCellStyle();
+        style.setAlignment(HSSFCellStyle.ALIGN_CENTER); // 创建一个居中格式
+        HSSFCell cell = row1.createCell((short) 0);
         HSSFCell cell1 = row1.createCell((short) 1);
-        HSSFCell cell2 = row1.createCell((short) 2);  
+        HSSFCell cell2 = row1.createCell((short) 2);
         HSSFCell cell3 = row1.createCell((short) 3);
-        
+
         //sheet1中的标题
         cell = row1.createCell((short) 0);
-        cell.setCellValue("键位");  
-        cell.setCellStyle(style);  
-        cell = row1.createCell((short) 1);  
-        cell.setCellValue("话机类型");  
-        cell.setCellStyle(style);  
-        cell = row1.createCell((short) 2);  
-        cell.setCellValue("服务类型");  
-        cell.setCellStyle(style);  
-        cell = row1.createCell((short) 3);  
-        cell.setCellValue("联系电话");  
-        cell.setCellStyle(style);  
-        
+        cell.setCellValue("键位");
+        cell.setCellStyle(style);
+        cell = row1.createCell((short) 1);
+        cell.setCellValue("话机类型");
+        cell.setCellStyle(style);
+        cell = row1.createCell((short) 2);
+        cell.setCellValue("服务类型");
+        cell.setCellStyle(style);
+        cell = row1.createCell((short) 3);
+        cell.setCellValue("联系电话");
+        cell.setCellStyle(style);
+
         //sheet2中的标题
         cell = row2.createCell((short) 0);
-        cell.setCellValue("键位");  
-        cell.setCellStyle(style);  
-        cell = row2.createCell((short) 1);  
-        cell.setCellValue("话机类型");  
-        cell.setCellStyle(style);  
-        cell = row2.createCell((short) 2);  
-        cell.setCellValue("服务类型");  
-        cell.setCellStyle(style);  
-        cell = row2.createCell((short) 3);  
-        cell.setCellValue("联系电话");  
-        cell.setCellStyle(style);  
-        
+        cell.setCellValue("键位");
+        cell.setCellStyle(style);
+        cell = row2.createCell((short) 1);
+        cell.setCellValue("话机类型");
+        cell.setCellStyle(style);
+        cell = row2.createCell((short) 2);
+        cell.setCellValue("服务类型");
+        cell.setCellStyle(style);
+        cell = row2.createCell((short) 3);
+        cell.setCellValue("联系电话");
+        cell.setCellStyle(style);
+
         //sheet3中的标题
         cell = row3.createCell((short) 0);
-        cell.setCellValue("键位");  
-        cell.setCellStyle(style);  
-        cell = row3.createCell((short) 1);  
-        cell.setCellValue("话机类型");  
-        cell.setCellStyle(style);  
-        cell = row3.createCell((short) 2);  
-        cell.setCellValue("服务类型");  
-        cell.setCellStyle(style);  
-        cell = row3.createCell((short) 3);  
-        cell.setCellValue("联系电话");  
-        cell.setCellStyle(style); 
-        
-   
-        cell.setCellStyle(style);  
-        // 第五步，写入实体数据 实际应用中这些数据从数据库得到，  
+        cell.setCellValue("键位");
+        cell.setCellStyle(style);
+        cell = row3.createCell((short) 1);
+        cell.setCellValue("话机类型");
+        cell.setCellStyle(style);
+        cell = row3.createCell((short) 2);
+        cell.setCellValue("服务类型");
+        cell.setCellStyle(style);
+        cell = row3.createCell((short) 3);
+        cell.setCellValue("联系电话");
+        cell.setCellStyle(style);
+
+
+        cell.setCellStyle(style);
+        // 第五步，写入实体数据 实际应用中这些数据从数据库得到，
         List<Map<String, Object>> jjTypeinfo=getOrderByShequId(shequId,"1");
         List<Map<String, Object>> snTypeinfo=getOrderByShequId(shequId,"2");
         List<Map<String, Object>> nsTypeinfo=getOrderByShequId(shequId,"3");
 
-        for (int i = 0; i < jjTypeinfo.size(); i++){  
+        for (int i = 0; i < jjTypeinfo.size(); i++){
             row1 = sheet1.createRow((int) i + 1);
           //  sheet1.setColumnWidth(i, 20*256);//设置列宽度
-            sheet1.autoSizeColumn(i); //自动设置宽度 
-            style.setAlignment(HSSFCellStyle.ALIGN_CENTER); // 创建一个居中格式  
+            sheet1.autoSizeColumn(i); //自动设置宽度
+            style.setAlignment(HSSFCellStyle.ALIGN_CENTER); // 创建一个居中格式
             cell3=row1.createCell(0);
             cell2=row1.createCell(1);
             cell1=row1.createCell(2);
             cell= row1.createCell(3);
             //居中显示
-            cell.setCellStyle(style); 
-            cell1.setCellStyle(style); 
-            cell2.setCellStyle(style); 
-            cell3.setCellStyle(style); 
-            // 第四步，创建单元格，并设置值  
+            cell.setCellStyle(style);
+            cell1.setCellStyle(style);
+            cell2.setCellStyle(style);
+            cell3.setCellStyle(style);
+            // 第四步，创建单元格，并设置值
             cell3.setCellValue(jjTypeinfo.get(i).get("KEY").toString());
             cell2.setCellValue(jjTypeinfo.get(i).get("ptype").toString());
             cell1.setCellValue(jjTypeinfo.get(i).get("sname").toString());
             cell.setCellValue(jjTypeinfo.get(i).get("LinkNbr").toString());
-        } 
-        
-        for (int i = 0; i < snTypeinfo.size(); i++){  
-        	style.setAlignment(HSSFCellStyle.ALIGN_CENTER); // 创建一个居中格式  
+        }
+
+        for (int i = 0; i < snTypeinfo.size(); i++){
+        	style.setAlignment(HSSFCellStyle.ALIGN_CENTER); // 创建一个居中格式
             row3 = sheet2.createRow((int) i + 1);
           //sheet2.setColumnWidth(i, 20*256);//设置列宽度
-            sheet2.autoSizeColumn(i); //自动设置宽度 
+            sheet2.autoSizeColumn(i); //自动设置宽度
             cell3=row3.createCell(0);
             cell2=row3.createCell(1);
             cell1=row3.createCell(2);
             cell= row3.createCell(3);
             //居中显示
-            cell.setCellStyle(style); 
-            cell1.setCellStyle(style); 
-            cell2.setCellStyle(style); 
-            cell3.setCellStyle(style); 
-            
-            // 第四步，创建单元格，并设置值  
+            cell.setCellStyle(style);
+            cell1.setCellStyle(style);
+            cell2.setCellStyle(style);
+            cell3.setCellStyle(style);
+
+            // 第四步，创建单元格，并设置值
             cell3.setCellValue(snTypeinfo.get(i).get("KEY").toString());
             cell2.setCellValue(snTypeinfo.get(i).get("ptype").toString());
             cell1.setCellValue(snTypeinfo.get(i).get("sname").toString());
             cell.setCellValue(snTypeinfo.get(i).get("LinkNbr").toString());
-        } 
-        
-        for (int i = 0; i < nsTypeinfo.size(); i++){  
-        	style.setAlignment(HSSFCellStyle.ALIGN_CENTER); // 创建一个居中格式  
+        }
+
+        for (int i = 0; i < nsTypeinfo.size(); i++){
+        	style.setAlignment(HSSFCellStyle.ALIGN_CENTER); // 创建一个居中格式
             row3 = sheet3.createRow((int) i + 1);
          // sheet3.setColumnWidth(i, 20*256);//设置列宽度
-            sheet3.autoSizeColumn(i); //自动设置宽度 
+            sheet3.autoSizeColumn(i); //自动设置宽度
             cell3=row3.createCell(0);
             cell2=row3.createCell(1);
             cell1=row3.createCell(2);
             cell= row3.createCell(3);
             //居中显示
-            cell.setCellStyle(style); 
-            cell1.setCellStyle(style); 
-            cell2.setCellStyle(style); 
-            cell3.setCellStyle(style); 
-            // 第四步，创建单元格，并设置值  
+            cell.setCellStyle(style);
+            cell1.setCellStyle(style);
+            cell2.setCellStyle(style);
+            cell3.setCellStyle(style);
+            // 第四步，创建单元格，并设置值
             cell3.setCellValue(nsTypeinfo.get(i).get("KEY").toString());
             cell2.setCellValue(nsTypeinfo.get(i).get("ptype").toString());
             cell1.setCellValue(nsTypeinfo.get(i).get("sname").toString());
             cell.setCellValue(nsTypeinfo.get(i).get("LinkNbr").toString());
-        } 
+        }
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         wb.write(os);
         byte[] content = os.toByteArray();
@@ -645,41 +646,41 @@ public class OmpRegionController {
                 bos.close();
         }
         return null;
-        // 第六步，将文件存到指定位置  
-        /*try{  
-            FileOutputStream fout = new FileOutputStream("D:/"+name+"服务指令.xls");  
-            wb.write(fout);  
-            fout.close();  
-        }  
-        catch (Exception e){  
-            e.printStackTrace();  
-        }  
-      
+        // 第六步，将文件存到指定位置
+        /*try{
+            FileOutputStream fout = new FileOutputStream("D:/"+name+"服务指令.xls");
+            wb.write(fout);
+            fout.close();
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
 		return "redirect:/admin/omp/ompRegio/initial.shtml";*/
 	}
-	
-	
-	
+
+
+
 	@RequestMapping("/exportExcel.shtml")
 	public String exportExcel(String id) throws Exception {
 		String region = ompRegionService.gerRegion(id);
 		String title = region;
 		String[] rowName = {"序号","键位","伙计类型","服务类型","服务商名称","服务商电话"};
 		List<List> dataList = new ArrayList<List>();
-		List<Map<String, Object>> list = ompRegionService.getOrderByCommunity(id); 
+		List<Map<String, Object>> list = ompRegionService.getOrderByCommunity(id);
 		for (Map<String, Object> map : list) {
 			List list2 = mapTransitionList(map);
 			dataList.add(list2);
-			
+
 		}
 		ExportExcel excel = new ExportExcel(title, rowName, dataList);
 		OutputStream out = new FileOutputStream("d:\\workbook.xls");
 		excel.export(out);
 		return "redirect:/admin/omp/ompRegio/initial.shtml";
 	}
-	
-	
-	
+
+
+
 	// map转换成lisy
 	public static List mapTransitionList(Map map) {
 		List list = new ArrayList();

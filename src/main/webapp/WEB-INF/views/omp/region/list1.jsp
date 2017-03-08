@@ -44,7 +44,7 @@
 							 </c:if>
 							 <c:if test="${quhua.jjType==null&&quhua.snType==null&&quhua.nsType==null}">
 							      <span style="color: red">否</span>
-							 </c:if>    
+							 </c:if>
 							</td>
 							<%-- <td style="text-align: center;">${quhua.time}</td> --%>
 							<td style="text-align: center;">
@@ -60,7 +60,7 @@
 										<c:if test="${old.logonName ne 'admin'}">
 											<li><a href="###" onclick="look(${quhua.id},this);">查看指令</a></li>
 										</c:if>
-										
+
 										<li><a onclick="daochu(${quhua.id})">导出指令</a></li>
 									</ul>
 								</div>
@@ -109,7 +109,7 @@
 			</form>
 	     </div>
 	</div>
-	
+
 	<div style="width: 48%;float: right;" id="div3">
 		<div>
 			<div style="float: left;">
@@ -134,12 +134,12 @@
 		<div>
 			<form action="">
 				<table class="table table-bordered" id="table4">
-					
+
 				</table>
 			</form>
 		</div>
 	</div>
-	
+
 </div>
 
 
@@ -149,8 +149,8 @@
 	</table>
 </div>
 
-	
-	
+
+
 <!-- Script	-->
 <SCRIPT type="text/javascript">
 
@@ -166,7 +166,7 @@
 					$(this).parent().parent().remove();
 				});
 	}
-	
+
 	function query() {
 		var showName = $("#showName").val();
 		var serverType = $("#select").val();
@@ -180,11 +180,11 @@
 			}
 		});
 	}
-	
+
     //获取服务商信息
 	$(".phoneType").change(function(){
 		var ptype = $(this).val();
-		var shequId=document.getElementById("shequId").value; 
+		var shequId=document.getElementById("shequId").value;
 		$.post("<%=request.getContextPath()%>/admin/omp/ompRegion/getOrder.shtml",{ptype:ptype,shequId:shequId},function(data){
 				$("#table3").empty();
 				$("#table3").append("<tr><td>键位</td><td>话机类型</td><td>服务类型</td><td>服务商名称</td><td>服务商电话</td><td><input type='button' onclick='addprovider()' value='添加'/></td></tr>");
@@ -196,7 +196,7 @@
 			}
 		});
 	});
-	
+
 	$.post("<%=request.getContextPath()%>/admin/omp/ompRegion/getServiceType.shtml",function(data){
 		$("#select").empty();
 		$("#select").append("<option value=''>请选择</option>")
@@ -204,9 +204,9 @@
 			$("#select").append("<option value='"+data[i].serviceName+"'>"+data[i].serviceName+"</option>")
 		}
 	});
-	
-	
-	
+
+
+
 	function showDetails(oid){
 		debugger;
 		$.post("<%=request.getContextPath() %>/old/oldMatch/getOldKeyPointMessage.shtml",{oid:oid},function(data){
@@ -216,7 +216,7 @@
 			}
 		});
 	}
-	
+
 	//新增修改指令
 	function addZhiling(Id){
 		document.getElementById("shequId").value=Id;
@@ -224,15 +224,15 @@
 		document.getElementById('content').style.display='none';
 		document.getElementById('imp').style.display='none';
 	}
-	
+
 	//修改指令
 	function edit(Id){
-		
+
 		document.getElementById("shequId").value=Id;
 		document.getElementById('div2').style.display='block';
 		document.getElementById('content').style.display='none';
 		document.getElementById('imp').style.display='none';
-		
+
 	}
 	//查看指令
 	function look(Id){
@@ -245,20 +245,20 @@
 		document.getElementById('imp').style.display='none';
 		document.getElementById('div4').style.width='1300px';
 	}
-    
+
 	//导出指令
 	function daochu(Id){
-        
+
 		document.getElementById("shequId").value=Id;
 		document.getElementById('div2').style.display='block';
 		document.getElementById('div3').style.display='none';
 		document.getElementById('content').style.display='none';
 		document.getElementById('save').style.display='none';
 		document.getElementById('div4').style.width='1300px';
-		
+
 	}
 
-	
+
 	//新增服务商
 	function addprovider() {
 		var id = $(".spId:checked").val();
@@ -268,10 +268,10 @@
 		$(".addprov:checked").parent().prev().prev().text(name);
 		$(".addprov:checked").parent().prev().find("input").first().val(number);
 	}
-	
+
 	//保存社区指令
 	function save(){
-	    var streetId=document.getElementById("shequId").value;  
+	    var shequId=document.getElementById("shequId").value;
 		var communityids = $(".tb2").map(function(){
 			return $(this).val();
 		}).get().join();
@@ -279,12 +279,12 @@
 		var trnumber = $("#table3 tr").length;
 		$("#table3").find("tr").eq(1);
 		var json = "[{";
-		
-		
+
+
 		var jsonName="[{";
 		for(var i=1;i<trnumber;i++){
 			var key = $("#table3").find("tr").eq(i).find("td").eq(0).text();
-			
+
 			var kid = $("#table3").find("tr").eq(i).find("td").eq(2).attr("value");
 			//服务商名称
 			var showname = $("#table3").find("tr").eq(i).find("td").eq(3).text();
@@ -299,46 +299,46 @@
 				shownumber="96003";
 				showname="96003";
 			}
-			 if(!reg.test(shownumber)){  
-				 alert("电话号码不可含有特殊字符。"); 
+			 if(!reg.test(shownumber)){
+				 alert("电话号码不可含有特殊字符。");
 				 return false;
-			 }  
+			 }
 			 //M1:对应的服务商电话
 			json = json + "\"" + key + "\"" ;
 			json = json + ":\"" + shownumber + "\"" ;
-			//M1:对应的服务商名称 
+			//M1:对应的服务商名称
 			jsonName = jsonName + "\"" + key + "\"" ;
 			jsonName = jsonName + ":\"" + showname + "\"" ;
 			if (i+1 < 17){//
 				json = json + ",";
 				jsonName=jsonName + ",";
 			}
-			
+
 		};
 		json = json + "}]";
 		jsonName = jsonName + "}]";
-		
-		
-		
-		$.post("<%=request.getContextPath()%>/admin/omp/ompRegion/saveSqOrderSIdNew.shtml",
-				{streetId:streetId,kid:kid,communityids:communityids,ptype:ptype,json:json,jsonName:jsonName,showid:showid,shownumber:shownumber},
-				function(data){	           
+
+
+
+		$.post("<%=request.getContextPath()%>/admin/omp/ompRegion/saveSqOrder.shtml",
+				{shequId:shequId,kid:kid,communityids:communityids,ptype:ptype,json:json,jsonName:jsonName,showid:showid,shownumber:shownumber},
+				function(data){
 			});
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
+
+
+
+
+
+
+
+
+
+
+
+
 		/* for(var i=1;i<trnumber;i++){
 			var key = $("#table3").find("tr").eq(i).find("td").eq(0).text();
-			
+
 			var kid = $("#table3").find("tr").eq(i).find("td").eq(2).attr("value");
 			//服务商名称
 			var showname = $("#table3").find("tr").eq(i).find("td").eq(3).text();
@@ -352,29 +352,29 @@
 			if(shownumber==""){
 				shownumber="96003";
 			}
-			 if(!reg.test(shownumber)){  
-				 alert("电话号码不可含有特殊字符。"); 
+			 if(!reg.test(shownumber)){
+				 alert("电话号码不可含有特殊字符。");
 				 return false;
-			 }  
+			 }
 			json = json + "\"" + key + "\"" ;
 			json = json + ":\"" + shownumber + "\"" ;
 			if (i+1 < 17){//
 				json = json + ",";
 			}
-			
+
 		};
 		json = json + "}]"; */
 		$.post("<%=request.getContextPath()%>/admin/omp/ompRegion/saveSqOrder.shtml",
 				{shequId:shequId,kid:kid,communityids:communityids,ptype:ptype,json:json,showid:showid,shownumber:shownumber},
 				function(data){
-			           
-		});  
+
+		});
 		    document.getElementById('div2').style.display='none';
 		    document.getElementById('div3').style.display='none';
 		    document.getElementById('content').style.display='block';
 			alert("保存成功");
 	}
-	
+
 	//保存社区指令
 	function imp(){
 			/*  $.messager.confirm('确认', '确认把该搜索结果导出Excel表格 ？', function(r) {
@@ -401,8 +401,8 @@
 		    document.getElementById('imp').style.display='none';
 			//alert("已成功导出到D盘下");
 	}
-	
-	
+
+
 	/**
 	* 删除用户
 	*/
@@ -415,14 +415,14 @@
 	// 		$("#listForm").submit();
 		}
 	}
-	
+
 	$(document).ready(function() {
 		initListForm();
 		<c:if test="${DataTotalCount!=null&&DataTotalCount>0}">
 		  initPagination(<c:out value="${DataTotalCount}"/>,<c:out value="${PerPieceSize}"/>,<c:out value="${CurrentPieceNum}"/>);
 		</c:if>
 	});
-	
+
 	function check(){
 		$(".ids").map(function() {
 			$(this).attr("checked", !$(this).attr("checked"));
@@ -437,6 +437,6 @@
 			alert(data);
 		});
 	}
-	
-	
+
+
 </SCRIPT>
