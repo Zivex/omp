@@ -616,7 +616,7 @@ public class OldForController {
 	}
 
 	@RequestMapping("/oldMatch/batchSendInstructions.shtml")
-	public void batchSendInstructions() throws Exception {
+	public void batchSendInstructions() throws Exception { 
 		if (oldService.getcountid()) {
 			System.out.println("batchSendInstructions:定时器自动执行发送指令程序，间隔时间1分钟");
 			String id = oldService.checkDeBatchSendInstructions();

@@ -487,7 +487,8 @@ public class OldServiceImpl extends
 						+ cid + "'";
 				int forInt = JdbcTemplate.queryForInt(sqlcount);
 				// 判断cardPseron 老人是否存在 存在不做操作
-				if (forInt == 0) {
+				String certificatesNumber = m.getCertificatesNumber();
+				if (forInt == 0 && certificatesNumber != null && !"".equals(certificatesNumber) && !"null".equals(certificatesNumber)) {
 
 					String auditStatus = m.getAuditStatus();
 					if ("".equals(auditStatus) || auditStatus == null) {
@@ -513,12 +514,12 @@ public class OldServiceImpl extends
 					if ("".equals(cardType) || cardType == null) {
 						cardType = "";
 					}
-					String certificatesNumber = m.getCertificatesNumber();
-					if ("".equals(certificatesNumber)
-							|| certificatesNumber == null) {
-						// certificatesNumber = "";
-						return;
-					}
+//					String certificatesNumber = m.getCertificatesNumber();
+//					if ("".equals(certificatesNumber)
+//							|| certificatesNumber == null) {
+//						// certificatesNumber = "";
+//						break;
+//					}
 					String certificatesType = m.getCertificatesType();
 					if ("".equals(certificatesType) || certificatesType == null) {
 						certificatesType = "";
@@ -711,9 +712,9 @@ public class OldServiceImpl extends
 					if ("".equals(bjtNumber) || bjtNumber == null) {
 						bjtNumber = "";
 					}
-
-					Omp_Old_Info o = getGeneralService().getObjectById(
-							Omp_Old_Info.class, Long.parseLong(cid));
+					
+					String sqlint = "select t.id from omp_old_info t where t.CERTIFICATES_NUMBER ='"+cid+"'";
+					int queryForInt = JdbcTemplate.queryForInt(sqlint);
 
 					String sql = "INSERT INTO `card_person` VALUES ('"
 							+ auditStatus + "', '" + bankCard + "', '"
@@ -745,7 +746,7 @@ public class OldServiceImpl extends
 							+ "', '" + residenceStreet + "', '" + revenueType
 							+ "', '" + selfCareAbilityType + "', '" + sex
 							+ "', '" + treatmentOney + "', '" + yktNumber
-							+ "'," + o.getId() + ")";
+							+ "'," + queryForInt + ")";
 					System.out.println(sql);
 					int update = JdbcTemplate.update(sql);
 					if (update > 0) {
