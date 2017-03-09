@@ -22,7 +22,7 @@
 			</div>
 			<div class="modal-body">
 				<form class="form-inline">
-					<input type="text" id="rmb" class="form-control"> &nbsp;元
+					<input type="text" id="rmb" class="form-control"> &nbsp;条
 				</form>
 			</div>
 			<div class="modal-footer">
@@ -48,7 +48,7 @@
 				<thead>
 					<tr class="active">
 						<th width="20%">登录名</th>
-						<th width="20%">姓名</th>
+						<th width="20%">账户名</th>
 						<th width="20%">用户类型</th>
 						<th width="20%">所属区域</th>
 						<!-- 						<th width="20%">用户等级</th> -->
@@ -137,7 +137,7 @@ function restePass(uid){
 	}
 }
 
-	
+
 $(document).ready(function() {
 	initListForm();
 	<c:if test="${DataTotalCount!=null&&DataTotalCount>0}">
@@ -160,8 +160,8 @@ function recharge(){
 			location.reload();
 		});
 	}
-	
-	
+
+
 }
 
 </SCRIPT>

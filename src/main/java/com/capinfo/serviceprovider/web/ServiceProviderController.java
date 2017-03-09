@@ -44,7 +44,7 @@ public class ServiceProviderController {
 
 	/**
 	 * 服务商管理列表
-	 * 
+	 *
 	 * @param parameter
 	 * @return
 	 */
@@ -58,9 +58,9 @@ public class ServiceProviderController {
 
 	/**
 	 * 服务商管理列表
-	 * 
+	 *
 	 * @param mv
-	 * 
+	 *
 	 * @param parameter
 	 * @param mv
 	 * @return
@@ -91,7 +91,7 @@ public class ServiceProviderController {
 
 	/**
 	 * 服务商列表
-	 * 
+	 *
 	 * @param parameter
 	 * @return
 	 */
@@ -129,7 +129,7 @@ public class ServiceProviderController {
 
 	/**
 	 * 导出服务商信息
-	 * 
+	 *
 	 * @return
 	 * @throws Exception
 	 */
@@ -183,8 +183,8 @@ public class ServiceProviderController {
 		ModelAndView mv = new ModelAndView("/omp/serviceProvider/Import");
 		return mv;
 	}
-	
-	
+
+
     /**
      * 删除
      * @return
@@ -200,7 +200,7 @@ public class ServiceProviderController {
 
 	/**
 	 * 服务商导入
-	 * 
+	 *
 	 * @param parameter
 	 * @return
 	 * @throws Exception
@@ -211,162 +211,11 @@ public class ServiceProviderController {
 		InputStream in = null;
 		List<List<Object>> listob = null;
 		in = file.getInputStream();
-		listob = new ImportExcelUtil().getBankListByExcel(in, file.getOriginalFilename(),2);
+		listob = new ImportExcelUtil().getBankListByExcel(in, file.getOriginalFilename(),0);
 		int i = ompOldMatchService.importService(listob);
 		mv.addObject("messageCount", i);
 		return mv;
 	}
 
-	// public void setWorkbookStyle(ModelAndView mv) throws Exception{
-	// List<Map<String, Object>> list = (List<Map<String, Object>>)
-	// mv.getModel().get("command");
-	// // 第一步，创建一个webbook，对应一个Excel文件
-	// HSSFWorkbook workbook = new HSSFWorkbook(); // 创建工作簿对象
-	// // 第二步，在webbook中添加一个sheet,对应Excel文件中的sheet
-	// HSSFSheet sheet = workbook.createSheet("服务商信息表"); // 创建工作表
-	// // 第三步，在sheet中添加表头第0行,注意老版本poi对Excel的行数列数有限制short
-	// // 第四步，创建单元格，并设置值表头 设置表头居中
-	// HSSFCellStyle columnTopStyle = getColumnTopStyle(workbook);
-	//// sheet.addMergedRegion(new CellRangeAddress(0, 1, 0, (4)));
-	//
-	// HSSFCellStyle style = getStyle(workbook);
-	// HSSFRow row = sheet.createRow(0);
-	// HSSFCell cell0 = row.createCell((short)0);
-	// cell0.setCellStyle(columnTopStyle);
-	// cell0.setCellValue("名称");
-	// HSSFCell cell1 = row.createCell((short)1);
-	// cell1.setCellStyle(columnTopStyle);
-	// cell1.setCellValue("配送范围");
-	// HSSFCell cell2 = row.createCell((short)2);
-	// cell2.setCellStyle(columnTopStyle);
-	// cell2.setCellValue("服务类型");
-	// HSSFCell cell3 = row.createCell((short)3);
-	// cell3.setCellStyle(columnTopStyle);
-	// cell3.setCellValue("是否大座机服务商");
-	// HSSFCell cell4 = row.createCell((short)4);
-	// cell4.setCellStyle(columnTopStyle);
-	// cell4.setCellValue("服务商电话");
-	// for (int i = 0; i < list.size(); i++) {
-	// Map<String, Object> map = list.get(i);
-	// HSSFRow r = sheet.createRow(i+1);
-	// Set<String> keySet = map.keySet();
-	// HSSFCell cell00 = r.createCell(0);
-	// cell00.setCellStyle(style);
-	// cell00.setCellValue(map.get("SERVER_NAME").toString());
-	// HSSFCell cell01 = r.createCell(1);
-	// cell01.setCellValue(map.get("SCOPE_DELIVERY").toString());
-	// cell01.setCellStyle(style);
-	// HSSFCell cell02 = r.createCell(2);
-	// cell02.setCellValue(map.get("SERVER_TYPE").toString());
-	// cell02.setCellStyle(style);
-	// HSSFCell cell03 = r.createCell(3);
-	//// cell03.setCellValue(map.get("SERVER_TYPE").toString());
-	// cell03.setCellStyle(style);
-	// HSSFCell cell04 = r.createCell(4);
-	// cell04.setCellValue(map.get("SERVER_TEL").toString());
-	// cell04.setCellStyle(style);
-	//
-	// }
-	//
-	// FileOutputStream fileOut = null;
-	// try {
-	// fileOut = new FileOutputStream("d:\\workbook.xls");
-	// workbook.write(fileOut);
-	// } catch (FileNotFoundException e) {
-	// // TODO Auto-generated catch block
-	// e.printStackTrace();
-	// }finally{
-	// fileOut.close();
-	// }
-	// }
-	//
-	//
-	// /*
-	// * 列数据信息单元格样式
-	// */
-	// public HSSFCellStyle getStyle(HSSFWorkbook workbook) {
-	// // 设置字体
-	// HSSFFont font = workbook.createFont();
-	// //设置字体大小
-	// //font.setFontHeightInPoints((short)10);
-	// //字体加粗
-	// //font.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
-	// //设置字体名字
-	// font.setFontName("Courier New");
-	// //设置样式;
-	// HSSFCellStyle style = workbook.createCellStyle();
-	// //设置底边框;
-	// style.setBorderBottom(HSSFCellStyle.BORDER_THIN);
-	// //设置底边框颜色;
-	// style.setBottomBorderColor(HSSFColor.BLACK.index);
-	// //设置左边框;
-	// style.setBorderLeft(HSSFCellStyle.BORDER_THIN);
-	// //设置左边框颜色;
-	// style.setLeftBorderColor(HSSFColor.BLACK.index);
-	// //设置右边框;
-	// style.setBorderRight(HSSFCellStyle.BORDER_THIN);
-	// //设置右边框颜色;
-	// style.setRightBorderColor(HSSFColor.BLACK.index);
-	// //设置顶边框;
-	// style.setBorderTop(HSSFCellStyle.BORDER_THIN);
-	// //设置顶边框颜色;
-	// style.setTopBorderColor(HSSFColor.BLACK.index);
-	// //在样式用应用设置的字体;
-	// style.setFont(font);
-	// //设置自动换行;
-	// style.setWrapText(false);
-	// //设置水平对齐的样式为居中对齐;
-	// style.setAlignment(HSSFCellStyle.ALIGN_CENTER);
-	// //设置垂直对齐的样式为居中对齐;
-	// style.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
-	//
-	// return style;
-	//
-	// }
-	//
-	//
-	// /*
-	// * 列头单元格样式
-	// */
-	// public HSSFCellStyle getColumnTopStyle(HSSFWorkbook workbook) {
-	//
-	// // 设置字体
-	// HSSFFont font = workbook.createFont();
-	// //设置字体大小
-	// font.setFontHeightInPoints((short)11);
-	// //字体加粗
-	// font.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
-	// //设置字体名字
-	// font.setFontName("Courier New");
-	// //设置样式;
-	// HSSFCellStyle style = workbook.createCellStyle();
-	// //设置底边框;
-	// style.setBorderBottom(HSSFCellStyle.BORDER_THIN);
-	// //设置底边框颜色;
-	// style.setBottomBorderColor(HSSFColor.BLACK.index);
-	// //设置左边框;
-	// style.setBorderLeft(HSSFCellStyle.BORDER_THIN);
-	// //设置左边框颜色;
-	// style.setLeftBorderColor(HSSFColor.BLACK.index);
-	// //设置右边框;
-	// style.setBorderRight(HSSFCellStyle.BORDER_THIN);
-	// //设置右边框颜色;
-	// style.setRightBorderColor(HSSFColor.BLACK.index);
-	// //设置顶边框;
-	// style.setBorderTop(HSSFCellStyle.BORDER_THIN);
-	// //设置顶边框颜色;
-	// style.setTopBorderColor(HSSFColor.BLACK.index);
-	// //在样式用应用设置的字体;
-	// style.setFont(font);
-	// //设置自动换行;
-	// style.setWrapText(false);
-	// //设置水平对齐的样式为居中对齐;
-	// style.setAlignment(HSSFCellStyle.ALIGN_CENTER);
-	// //设置垂直对齐的样式为居中对齐;
-	// style.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
-	//
-	// return style;
-	//
-	// }
 
 }
