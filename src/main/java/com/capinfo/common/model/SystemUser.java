@@ -22,7 +22,8 @@ import com.capinfo.framework.model.system.SecureUser;
 
 @Entity
 @Table(name = "USERS")
-//@SequenceGenerator(allocationSize = 1, name = "seq", sequenceName = "SEQ_USERS")
+// @SequenceGenerator(allocationSize = 1, name = "seq", sequenceName =
+// "SEQ_USERS")
 public class SystemUser implements SecureUser<SystemUser, Role> {
 
 	private Long id;
@@ -45,23 +46,25 @@ public class SystemUser implements SecureUser<SystemUser, Role> {
 
 	private int num;
 
-	//账户类型
+	// 账户类型
 	private String account_type;
 
-	//账户等级
+	// 账户等级
 	private int leave;
 
-	//行政信息
+	// 行政信息
 	private String regionName;
 
-	//行政信息
+	// 行政信息
 	private Long rid;
-	//是否显示老人打全部信息
-	private Long	display_all;
+	// 是否显示老人打全部信息
+	private Long display_all;
 
+	// 用户编码
+	private String encoding;
 
 	@Id
-//	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq")
+	// @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ID", unique = true, nullable = false, precision = 12, scale = 0)
 	public Long getId() {
@@ -144,6 +147,7 @@ public class SystemUser implements SecureUser<SystemUser, Role> {
 	public void setParentid(Long parentid) {
 		this.parentid = parentid;
 	}
+
 	@Column(name = "account_type")
 	public String getAccount_type() {
 		return account_type;
@@ -152,6 +156,7 @@ public class SystemUser implements SecureUser<SystemUser, Role> {
 	public void setAccount_type(String account_type) {
 		this.account_type = account_type;
 	}
+
 	@Column(name = "leavel")
 	public int getLeave() {
 		return leave;
@@ -160,6 +165,7 @@ public class SystemUser implements SecureUser<SystemUser, Role> {
 	public void setLeave(int leave) {
 		this.leave = leave;
 	}
+
 	@Column(name = "regionName")
 	public String getRegionName() {
 		return regionName;
@@ -169,7 +175,6 @@ public class SystemUser implements SecureUser<SystemUser, Role> {
 		this.regionName = regionName;
 	}
 
-
 	@Column(name = "rid")
 	public Long getRid() {
 		return rid;
@@ -178,9 +183,7 @@ public class SystemUser implements SecureUser<SystemUser, Role> {
 	public void setRid(Long rid) {
 		this.rid = rid;
 	}
-	
-	
-	
+
 	@Column(name = "display_all")
 	public Long getDisplay_all() {
 		return display_all;
@@ -188,6 +191,15 @@ public class SystemUser implements SecureUser<SystemUser, Role> {
 
 	public void setDisplay_all(Long display_all) {
 		this.display_all = display_all;
+	}
+
+	@Column(name = "encoding")
+	public String getEncoding() {
+		return encoding;
+	}
+
+	public void setEncoding(String encoding) {
+		this.encoding = encoding;
 	}
 
 	public SystemUser() {
@@ -198,7 +210,6 @@ public class SystemUser implements SecureUser<SystemUser, Role> {
 		super();
 		this.id = id;
 	}
-
 
 	// @OneToMany(targetEntity = UserRole.class, cascade = CascadeType.ALL,
 	// fetch = FetchType.LAZY)

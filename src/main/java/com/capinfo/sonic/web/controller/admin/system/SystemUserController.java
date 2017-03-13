@@ -63,6 +63,11 @@ public class SystemUserController extends AuthenticationSuccessHandlerImpl {
 	public ModelAndView index(SystemUserParameter parameter, @ModelAttribute("eccomm_admin") SystemUser user) {
 		ModelAndView mv = new ModelAndView("/admin/sys/user/initial");
 		List<SystemUser> entities = new ArrayList<SystemUser>();
+		if(user.getLeave()==1 && ("b".equals(user.getAccount_type())||"m".equals(user.getAccount_type()))){
+			String account_type = user.getAccount_type();
+			parameter.setEncode(account_type);
+			parameter.getEntity().setEncoding(user.getEncoding());
+		}
 		int totalCount = this.systemUserService.getTotalCount(parameter);
 		if (totalCount > 0) {
 			entities = systemUserService.getList(parameter, totalCount, parameter.getCurrentPieceNum());
@@ -82,6 +87,11 @@ public class SystemUserController extends AuthenticationSuccessHandlerImpl {
 	public ModelAndView userList(SystemUserParameter parameter, @ModelAttribute("eccomm_admin") SystemUser user) {
 		ModelAndView mv = new ModelAndView("/admin/sys/user/list");
 		List<SystemUser> entities = new ArrayList<SystemUser>();
+		if(user.getLeave()==1 && ("b".equals(user.getAccount_type())||"m".equals(user.getAccount_type()))){
+			String account_type = user.getAccount_type();
+			parameter.setEncode(account_type);
+			parameter.getEntity().setEncoding(user.getEncoding());
+		}
 		int totalCount = this.systemUserService.getTotalCount(parameter);
 		if (totalCount > 0) {
 			entities = systemUserService.getList(parameter, totalCount, parameter.getCurrentPieceNum());
@@ -136,6 +146,8 @@ public class SystemUserController extends AuthenticationSuccessHandlerImpl {
 	@ResponseBody
 	public JSONObject saveUser(@Valid @ModelAttribute("command") SystemUserParameter parameter, BindingResult result) {
 		Messages messages = new Messages();
+		//设置下级管理编码
+		//String code ="101";
 		// 基本验证
 		if (result.hasErrors()) {
 			messages.setSuccess(false);
@@ -150,47 +162,57 @@ public class SystemUserController extends AuthenticationSuccessHandlerImpl {
 				String pass = parameter.getEntity().getPassword();
 				//parameter.getEntity().setPassword(passwordEncoder.encode(pass));
 				parameter.getEntity().setPassword(pass);
-				//判断用户等级
-				String community = parameter.getCommunity();
-				int leave = 0;
-				//区域
-				String r = "";
-				if(community != null && !"".equals(community)){
-					leave = 4;
-					r = community;
-
-				}else{
-					String street = parameter.getStreet();
-					if(street != null && !"".equals(street)){
-						leave = 3;
-						r = street;
-					}else{
-						String county = parameter.getCounty();
-						if(county != null && !"".equals(county)){
-							leave = 2;
-							r = county;
-						}else{
-							String shi = parameter.getShi();
-							leave = 1;
-							r = shi;
-						}
-
-					}
-				}
-				OmpRegion region = systemUserService.getbiRegoinid(Long.parseLong(r));
-				//账户类型
-				String standardNo = region.getStandardNo();
+				//判断用户类型
 				String account_type = parameter.getEntity().getAccount_type();
-				account_type = account_type+standardNo;
-				parameter.getEntity().setAccount_type(account_type);
-				//账户等级
-				parameter.getEntity().setLeave(leave);
-				Long id = region.getId();
-				Long parentid = region.getParentid();
-				//设置账户从属关系
-				parameter.getEntity().setRid(id);
-				parameter.getEntity().setParentid(parentid);
-				parameter.getEntity().setRegionName(region.getName());
+				//政府
+				if("g".equals(account_type)){
+					//判断用户等级
+					String community = parameter.getCommunity();
+					int leave = 1;
+					//区域
+					String r = "";
+					if(community != null && !"".equals(community)){
+						leave = 5;
+						r = community;
+
+					}else{
+						String street = parameter.getStreet();
+						if(street != null && !"".equals(street)){
+							leave = 4;
+							r = street;
+						}else{
+							String county = parameter.getCounty();
+							if(county != null && !"".equals(county)){
+								leave = 3;
+								r = county;
+							}else{
+								String shi = parameter.getShi();
+								leave = 2;
+								r = shi;
+							}
+
+						}
+					}
+					OmpRegion region = systemUserService.getbiRegoinid(Long.parseLong(r));
+					//账户类型
+					String standardNo = region.getStandardNo();
+					account_type = account_type+standardNo;
+					parameter.getEntity().setAccount_type(account_type);
+					//账户等级
+					parameter.getEntity().setLeave(leave);
+					Long id = region.getId();
+					Long parentid = region.getParentid();
+					//设置账户从属关系
+					parameter.getEntity().setRid(id);
+					parameter.getEntity().setParentid(parentid);
+					parameter.getEntity().setRegionName(region.getName());
+				}else{
+					//account_type = account_type+code;
+					//parameter.getEntity().setAccount_type(account_type);
+					parameter.getEntity().setLeave(1);
+					parameter.getEntity().setEncoding("101");
+				}
+				
 
 				boolean suc = systemUserService.saveUser(parameter.getEntity());
 				String info = suc == true ? "添加用户成功" : "添加用户失败";

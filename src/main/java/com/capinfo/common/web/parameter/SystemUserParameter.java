@@ -27,12 +27,18 @@ public class SystemUserParameter extends DataListParameter<SystemUser> {
 	private  String street;
 	private  String community;
 	
+	//用户编码
+	private  String encode;
 	
+	
+	public String getEncode() {
+		return encode;
+	}
 
-	
-	
-	
-	
+	public void setEncode(String encode) {
+		this.encode = encode;
+	}
+
 	public String getShi() {
 		return shi;
 	}

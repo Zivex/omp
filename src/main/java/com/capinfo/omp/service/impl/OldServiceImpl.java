@@ -16,8 +16,11 @@ import org.springframework.stereotype.Service;
 
 import com.capinfo.assistant.platform.ws.card.model.CardPersonMessageBack;
 import com.capinfo.assistant.platform.ws.card.service.CardPersonMessageWsServiceProxy;
+import com.capinfo.common.model.Resource;
 import com.capinfo.common.model.SystemUser;
+import com.capinfo.framework.dao.SearchCriteria;
 import com.capinfo.framework.dao.SearchCriteriaBuilder;
+import com.capinfo.framework.dao.SearchCriteria.OrderRow;
 import com.capinfo.framework.dao.impl.restriction.RestrictionExpression;
 import com.capinfo.framework.model.BaseEntity;
 import com.capinfo.framework.web.service.impl.CommonsDataOperationServiceImpl;
@@ -70,11 +73,6 @@ public class OldServiceImpl extends
 				RestrictionExpression.EQUALS_OP, isindividuation);
 		searchCriteriaBuilder.addLimitCondition(
 				(page.getCurrentPage() - 1) * 10, 10);
-		// 根据当前用户搜索
-		// if ("admin".equals(user.getName())) {
-		// searchCriteriaBuilder.addQueryCondition("account_type",
-		// RestrictionExpression.EQUALS_OP, user.getAccount_type());
-		// }
 		if (user.getLeave() > 1) {
 			String rname = "";
 			switch (user.getLeave()) {
@@ -487,9 +485,8 @@ public class OldServiceImpl extends
 						+ cid + "'";
 				int forInt = JdbcTemplate.queryForInt(sqlcount);
 				// 判断cardPseron 老人是否存在 存在不做操作
-				String certificatesNumber = m.getCertificatesNumber();
-				if (forInt == 0 && certificatesNumber != null && !"".equals(certificatesNumber) && !"null".equals(certificatesNumber)) {
-
+				// String certificatesNumber = m.getCertificatesNumber();
+				if (forInt == 0) {
 					String auditStatus = m.getAuditStatus();
 					if ("".equals(auditStatus) || auditStatus == null) {
 						auditStatus = "";
@@ -514,12 +511,11 @@ public class OldServiceImpl extends
 					if ("".equals(cardType) || cardType == null) {
 						cardType = "";
 					}
-//					String certificatesNumber = m.getCertificatesNumber();
-//					if ("".equals(certificatesNumber)
-//							|| certificatesNumber == null) {
-//						// certificatesNumber = "";
-//						break;
-//					}
+					String certificatesNumber = cid;
+					// if ("".equals(certificatesNumber)
+					// || certificatesNumber == null) {
+					// certificatesNumber = "";
+					// }
 					String certificatesType = m.getCertificatesType();
 					if ("".equals(certificatesType) || certificatesType == null) {
 						certificatesType = "";
@@ -712,8 +708,9 @@ public class OldServiceImpl extends
 					if ("".equals(bjtNumber) || bjtNumber == null) {
 						bjtNumber = "";
 					}
-					
-					String sqlint = "select t.id from omp_old_info t where t.CERTIFICATES_NUMBER ='"+cid+"'";
+
+					String sqlint = "select t.id from omp_old_info t where t.CERTIFICATES_NUMBER ='"
+							+ cid + "'";
 					int queryForInt = JdbcTemplate.queryForInt(sqlint);
 
 					String sql = "INSERT INTO `card_person` VALUES ('"
@@ -815,27 +812,54 @@ public class OldServiceImpl extends
 	 */
 	@Override
 	public ExcelBuilder exportExcel(OrderParameter parameter, SystemUser user) {
-		List<Omp_Old_Info> oldPersonlist = getGeneralService().getObjects(
-				getSearchCriteriaBuilder(parameter).build());
 		List<CardPerson> cardPersontList = new ArrayList<CardPerson>();
-		// if(user.getDisplay_all()==1){
 
-		for (Omp_Old_Info old : oldPersonlist) {
-			CardPerson person = getGeneralService().getObjectById(
-					CardPerson.class, old.getId());
-			cardPersontList.add(person);
+		SearchCriteriaBuilder<Omp_Old_Info> searchCriteriaBuilder = super
+				.getSearchCriteriaBuilder(parameter);
+		// 名字
+		searchCriteriaBuilder.addQueryCondition("name",
+				RestrictionExpression.EQUALS_OP, parameter.getName());
+		searchCriteriaBuilder.addQueryCondition("certificates_number",
+				RestrictionExpression.EQUALS_OP, parameter.getIdCard());
+		searchCriteriaBuilder.addQueryCondition("zjnumber",
+				RestrictionExpression.EQUALS_OP, parameter.getZjNumber());
+		searchCriteriaBuilder.addQueryCondition("household_county_id",
+				RestrictionExpression.EQUALS_OP, parameter.getCounty());
+		searchCriteriaBuilder.addQueryCondition("household_street_id",
+				RestrictionExpression.EQUALS_OP, parameter.getStreet());
+		searchCriteriaBuilder.addQueryCondition("household_community_id",
+				RestrictionExpression.EQUALS_OP, parameter.getCommunity());
+		searchCriteriaBuilder.addQueryCondition("isGenerationOrder",
+				RestrictionExpression.EQUALS_OP,
+				parameter.getIsGenerationOrder());
+		searchCriteriaBuilder
+				.addQueryCondition("isindividuation",
+						RestrictionExpression.EQUALS_OP,
+						parameter.getIsindividuation());
+
+		List<Omp_Old_Info> oldPersonlist = getGeneralService().getObjects(
+				searchCriteriaBuilder.build());
+		for (Omp_Old_Info omp_Old_Info : oldPersonlist) {
+			
 		}
-
-		List<CardPerson> cardPersonlist = getGeneralService().getAllObjects(
-				CardPerson.class);
-		// }
+		if (user.getDisplay_all() == 1) {
+			for (Omp_Old_Info old : oldPersonlist) {
+				CardPerson person = getGeneralService().getObjectById(
+						CardPerson.class, old.getId());
+				cardPersontList.add(person);
+			}
+			for (CardPerson omp_Old_Info : cardPersontList) {
+				
+			}
+		}
 
 		ExcelBuilder excelBuilder = new ExcelBuilder();
 		Workbook wb = excelBuilder.getWorkbook();// 工作薄
 		Theme theme = new DefaultTheme(wb);
+
 		try {
-			excelBuilder.setExcelSheetList(this
-					.getExcelDataList(cardPersonlist));
+			excelBuilder.setExcelSheetList(this.getExcelDataList(
+					cardPersontList, oldPersonlist));
 			excelBuilder.setTheme(theme);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -844,28 +868,35 @@ public class OldServiceImpl extends
 		return excelBuilder;
 	}
 
-	private List<ExcelSheet> getExcelDataList(List<CardPerson> cardPersontList) {
+	private List<ExcelSheet> getExcelDataList(List<CardPerson> cardPersontList,
+			List<Omp_Old_Info> oldPersonlist) {
+		
 		List<ExcelSheet> excelSheetList = new ArrayList<ExcelSheet>();
+		if (null != oldPersonlist && oldPersonlist.size() > 0) {
+			ExcelSheet excelSheeto = new ExcelSheet();
+			excelSheeto.setSchema(this.getSchemaOld("")); // 设置表格结构
+			excelSheeto.setSheetName("老人基本信息"); // sheet的名称
+			excelSheeto.setDataList(oldPersonlist); // 设置数据集
+			excelSheetList.add(excelSheeto);// sheet添加到结果集
+		}
+
 		if (null != cardPersontList && cardPersontList.size() > 0) {
 			ExcelSheet excelSheet = new ExcelSheet();
-			excelSheet.setSchema(this.getSchema("")); // 设置表格结构
-			excelSheet.setSheetName("老人基本信息"); // sheet的名称
-			excelSheet.setDataList(cardPersontList); // 设置数据集
-			excelSheetList.add(excelSheet);// sheet添加到结果集
+			excelSheet.setSchema(this.getSchema(""));
+			excelSheet.setSheetName("老人详细信息");
+			excelSheet.setDataList(cardPersontList);
+			excelSheetList.add(excelSheet);
 		}
 		return excelSheetList;
 	}
 
 	/**
-	 * 特殊格式的schema配置 获取（定制）供应商订单模板
-	 * 
-	 * @param totalStr
-	 * @return
+	 * 配置excel模版(老人详细信息)
 	 */
 	private Schema getSchema(String totalStr) {
 		Schema schema = new Schema();
 		// 标题
-		schema.setTitle("老人基本信息");
+		schema.setTitle("老人详细信息");
 		// 行高
 		schema.setDefaultRowHeight(500);
 		// 列标题列表
@@ -878,9 +909,32 @@ public class OldServiceImpl extends
 		schema.addColFooterCell(getColFooterCell(totalStr));
 		return schema;
 	}
+	
+	
+	/**
+	 * 配置excel模版(老人基本信息)
+	 */
+	private Schema getSchemaOld(String totalStr) {
+		Schema schema = new Schema();
+		// 标题
+		schema.setTitle("老人基本信息");
+		// 行高
+		schema.setDefaultRowHeight(500);
+		// 列标题列表
+		schema.addColHeaderCell(this.getColHeaderCellListOld());
+		// 列属性（内容）
+		schema.setColumnList(this.getColumnListOld());
+
+		totalStr = totalStr == null ? "未查询到相关数据" : totalStr;
+		// 表尾
+		schema.addColFooterCell(getColFooterCell(totalStr));
+		return schema;
+	}
+	
+	
 
 	/**
-	 * 获取（定制）表头
+	 * 获取（定制）表头(老人详细信息)
 	 * 
 	 * @return
 	 */
@@ -897,16 +951,28 @@ public class OldServiceImpl extends
 				"联系人证件类型", "联系人证件号码", "联系人手机号", "与联系人关系", "居住情况", "文化程度",
 				"医疗保障类型", "月收入", "享受金额", "主要经济来源", "人员类型", "生活自理情况", "婚姻状况",
 				"居住小区类型" };
-		// "编号", "姓名", "性别", "民族", "证件类型", "证件号",
-		// "发证机关", "有效期", "生日", "同步时间", "人员类型", "卡类型", "居住地区县", "居住地街道",
-		// "居住地社区", "居住地地址", "户口在区县", "户口所在街道", "户口所在社区", "户口地址",
-		// "报纸收取方式", "联系人", "联系人证件类型", "联系人证件号码", "联系人手机号", "与联系人关系",
-		// "居住情况", "文化程度", "医疗保障类型", "月收入", "享受金额", "主要经济来源", "生活自理情况",
-		// "婚姻状况", "居住小区类型", "卡的生效时间", "卡是否可用", "银行卡号", "一本通号", "北京通号",
-		// "一卡通号", "审批状态", "信息采集状态", "申请状态", "制卡申请时间", "制卡成功时间", "补换卡号",
-		// "补换卡制卡时间", "临时卡号", "临时卡制卡时间", "制卡是否成功", "制卡失败原因", "是否推送",
-		// "区县是否推送", "区县推送时间", "核查是否推送", "核查推送时间", "核查是否成功", "核查回盘时间",
-		// "核查失败原因", "制卡推送时间", "制卡回盘时间", "是否死亡", "是否可用" };
+		for (int i = 0; i < headerLabels.length; i++) {
+			colHeaderCell = new ColHeaderCell();
+			colHeaderCell.setLabel(headerLabels[i]);
+			colHeaderCellList.add(colHeaderCell);
+		}
+		return colHeaderCellList;
+	}
+	
+	/**
+	 * 获取（定制）表头(老人基本信息)
+	 * 
+	 * @return
+	 */
+	private List<ColHeaderCell> getColHeaderCellListOld() {
+		List<ColHeaderCell> colHeaderCellList = new ArrayList<ColHeaderCell>();
+		ColHeaderCell colHeaderCell = null;
+		String[] headerLabels = null;
+		headerLabels = new String[] { "区域", "街道", "社区", "工作人员", "工作人员电话",
+				"老人姓名", "身份证号码", "大座机号码", "电话号码", "住址", "紧急联络人",
+				"紧急联络人电话", "电话", "电话类型", "用户类型", "状态", "是否个性化",
+				"更改指令次数", "是否生成指令", "创建时间", "更新时间", "是否个性化", "是否同步",
+				"隶属用户", "初始的语音发送数量", "来电显示", "账户类型" };
 		for (int i = 0; i < headerLabels.length; i++) {
 			colHeaderCell = new ColHeaderCell();
 			colHeaderCell.setLabel(headerLabels[i]);
@@ -916,7 +982,7 @@ public class OldServiceImpl extends
 	}
 
 	/**
-	 * 定制每一列属性的配置信息
+	 * 定制每一列属性的配置信息(老人详细信息)
 	 * 
 	 * @return
 	 */
@@ -926,7 +992,6 @@ public class OldServiceImpl extends
 		String[] columnNames = new String[] {
 
 				// "id",
-
 				/**
 				 * 姓名
 				 * */
@@ -1331,6 +1396,132 @@ public class OldServiceImpl extends
 				defaultIsAutoSize, defaultIsGroupColumn, defaultIsIndexColumn);
 		columnList.add(column);
 		column = getColumnInstance(columnNames[50], defaultWidth,
+				defaultIsAutoSize, defaultIsGroupColumn, defaultIsIndexColumn);
+		columnList.add(column);
+		column = getColumnInstance(columnNames[51], defaultWidth,
+				defaultIsAutoSize, defaultIsGroupColumn, defaultIsIndexColumn);
+		columnList.add(column);
+		return columnList;
+	}
+	/**
+	 * 定制每一列属性的配置信息(老人基本信息)
+	 * @return
+	 */
+	private List<Column> getColumnListOld() {
+		List<Column> columnList = new ArrayList<Column>();
+		Column column = null;
+		String[] columnNames = new String[] {
+				"household_county.name",
+				"household_street.name",
+				"household_community.name",
+				"workername",
+				"workertel",
+				"name",
+				"certificates_number",
+				"zjnumber",
+				"phone",
+				"address",
+				"emergencycontact",
+				"emergencycontacttle",
+				"tel",
+				"teltype",
+				"usertype",
+				"state",
+				"ispersonalized",
+				"updNumber",
+				"isGenerationOrder",
+				"creationTime",
+				"updateTime",
+				"isindividuation",
+				"sync",
+				"agent_id",
+				"num",
+				"call_id",
+				"account_type"
+			};
+		int defaultWidth = 7000;
+		boolean defaultIsAutoSize = true;
+		boolean defaultIsGroupColumn = false;
+		boolean defaultIsIndexColumn = false;
+		column = getColumnInstance(columnNames[0], defaultWidth,
+				defaultIsAutoSize, defaultIsGroupColumn, defaultIsIndexColumn);
+		columnList.add(column);
+		column = getColumnInstance(columnNames[1], defaultWidth,
+				defaultIsAutoSize, defaultIsGroupColumn, defaultIsIndexColumn);
+		columnList.add(column);
+		column = getColumnInstance(columnNames[2], defaultWidth,
+				defaultIsAutoSize, defaultIsGroupColumn, defaultIsIndexColumn);
+		columnList.add(column);
+		column = getColumnInstance(columnNames[3], defaultWidth,
+				defaultIsAutoSize, defaultIsGroupColumn, defaultIsIndexColumn);
+		columnList.add(column);
+		column = getColumnInstance(columnNames[4], defaultWidth,
+				defaultIsAutoSize, defaultIsGroupColumn, defaultIsIndexColumn);
+		columnList.add(column);
+		column = getColumnInstance(columnNames[5], defaultWidth,
+				defaultIsAutoSize, defaultIsGroupColumn, defaultIsIndexColumn);
+		columnList.add(column);
+		column = getColumnInstance(columnNames[6], defaultWidth,
+				defaultIsAutoSize, defaultIsGroupColumn, defaultIsIndexColumn);
+		columnList.add(column);
+		column = getColumnInstance(columnNames[7], defaultWidth,
+				defaultIsAutoSize, defaultIsGroupColumn, defaultIsIndexColumn);
+		columnList.add(column);
+		column = getColumnInstance(columnNames[8], defaultWidth,
+				defaultIsAutoSize, defaultIsGroupColumn, defaultIsIndexColumn);
+		columnList.add(column);
+		column = getColumnInstance(columnNames[9], defaultWidth,
+				defaultIsAutoSize, defaultIsGroupColumn, defaultIsIndexColumn);
+		columnList.add(column);
+		column = getColumnInstance(columnNames[10], defaultWidth,
+				defaultIsAutoSize, defaultIsGroupColumn, defaultIsIndexColumn);
+		columnList.add(column);
+		column = getColumnInstance(columnNames[11], defaultWidth,
+				defaultIsAutoSize, defaultIsGroupColumn, defaultIsIndexColumn);
+		columnList.add(column);
+		column = getColumnInstance(columnNames[12], defaultWidth,
+				defaultIsAutoSize, defaultIsGroupColumn, defaultIsIndexColumn);
+		columnList.add(column);
+		column = getColumnInstance(columnNames[13], defaultWidth,
+				defaultIsAutoSize, defaultIsGroupColumn, defaultIsIndexColumn);
+		columnList.add(column);
+		column = getColumnInstance(columnNames[14], defaultWidth,
+				defaultIsAutoSize, defaultIsGroupColumn, defaultIsIndexColumn);
+		columnList.add(column);
+		column = getColumnInstance(columnNames[15], defaultWidth,
+				defaultIsAutoSize, defaultIsGroupColumn, defaultIsIndexColumn);
+		columnList.add(column);
+		column = getColumnInstance(columnNames[16], defaultWidth,
+				defaultIsAutoSize, defaultIsGroupColumn, defaultIsIndexColumn);
+		columnList.add(column);
+		column = getColumnInstance(columnNames[17], defaultWidth,
+				defaultIsAutoSize, defaultIsGroupColumn, defaultIsIndexColumn);
+		columnList.add(column);
+		column = getColumnInstance(columnNames[18], defaultWidth,
+				defaultIsAutoSize, defaultIsGroupColumn, defaultIsIndexColumn);
+		columnList.add(column);
+		column = getColumnInstance(columnNames[19], defaultWidth,
+				defaultIsAutoSize, defaultIsGroupColumn, defaultIsIndexColumn);
+		columnList.add(column);
+		column = getColumnInstance(columnNames[20], defaultWidth,
+				defaultIsAutoSize, defaultIsGroupColumn, defaultIsIndexColumn);
+		columnList.add(column);
+		column = getColumnInstance(columnNames[21], defaultWidth,
+				defaultIsAutoSize, defaultIsGroupColumn, defaultIsIndexColumn);
+		columnList.add(column);
+		column = getColumnInstance(columnNames[22], defaultWidth,
+				defaultIsAutoSize, defaultIsGroupColumn, defaultIsIndexColumn);
+		columnList.add(column);
+		column = getColumnInstance(columnNames[23], defaultWidth,
+				defaultIsAutoSize, defaultIsGroupColumn, defaultIsIndexColumn);
+		columnList.add(column);
+		column = getColumnInstance(columnNames[24], defaultWidth,
+				defaultIsAutoSize, defaultIsGroupColumn, defaultIsIndexColumn);
+		columnList.add(column);
+		column = getColumnInstance(columnNames[25], defaultWidth,
+				defaultIsAutoSize, defaultIsGroupColumn, defaultIsIndexColumn);
+		columnList.add(column);
+		column = getColumnInstance(columnNames[26], defaultWidth,
 				defaultIsAutoSize, defaultIsGroupColumn, defaultIsIndexColumn);
 		columnList.add(column);
 		return columnList;

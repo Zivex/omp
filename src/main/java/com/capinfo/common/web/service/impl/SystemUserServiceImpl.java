@@ -39,6 +39,8 @@ public class SystemUserServiceImpl extends CommonsDataOperationServiceImpl<Syste
 		searchCriteriaBuilder.addQueryCondition("name", RestrictionExpression.LIKE_OP, user.getName());
 		searchCriteriaBuilder.addQueryCondition("logonName", RestrictionExpression.LIKE_OP, user.getLogonName());
 		searchCriteriaBuilder.addQueryCondition("enabled", RestrictionExpression.EQUALS_OP, true);
+		searchCriteriaBuilder.addQueryCondition("account_type", RestrictionExpression.EQUALS_OP, parameter.getEncode());
+		searchCriteriaBuilder.addQueryCondition("encoding", RestrictionExpression.LIKE_OP, parameter.getEntity().getEncoding());
 		// 角色
 		String inRoleStr = parameter.getRolesIdStrs();
 		if (StringUtils.isNotBlank(inRoleStr) && !inRoleStr.equals("0")) {

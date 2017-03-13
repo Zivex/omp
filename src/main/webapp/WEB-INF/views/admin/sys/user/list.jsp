@@ -76,7 +76,7 @@
 									<ul class="dropdown-menu" role="menu">
 										<li><a
 											href='<c:url value="/admin/sys/user/edit.shtml?entity.id=${item.id}"/>'>修改</a></li>
-										<c:if test="${item.logonName ne 'admin'}">
+										<c:if test="${item.logonName ne sessionScope.eccomm_admin.logonName}">
 											<li><a href="###" onclick="deleteUser(${item.id});">删除</a></li>
 											<li><a href="###" onclick="restePass(${item.id});">重置密码</a></li>
 										</c:if>

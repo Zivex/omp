@@ -101,8 +101,8 @@
 										<td><input class="btn btn-danger" type="reset" value="重置">
 										<td><a class="btn btn-default" href="#"
 											onclick="importInformation()" role="button">导入</a>
-<!-- 										<td><a class="btn btn-default" href="#" -->
-<!-- 											onclick="exportExcel()" role="button">导出</a> -->
+										<td><a class="btn btn-default" href="#"
+											onclick="exportExcel()" role="button">导出</a>
 									</tr>
 								</table>
 							</form:form>

@@ -69,7 +69,7 @@
 									</div>
 								</div>
 								<div class="form-group">
-									<label for=entity.display_all class="col-md-2 control-label">是否显示老人打全部信息: </label>
+									<label for=entity.display_all class="col-md-2 control-label">是否显示全部信息: </label>
 									<div class="form-inline">
 										<div class="col-md-4">
 											 <label >
@@ -81,13 +81,19 @@
 								  </div>
 								</div>
 
-								<div class="form-group"><label class="col-md-2 control-label">
-									<form:radiobutton path="entity.account_type" value="g-" onchange="addRegion()" />	政府 </label>
-								  <label class="col-md-2 control-label">
-								  <form:radiobutton path="entity.account_type" value="b-"  data-rule-required="true" />	银行
-								  </label>
+								<div class="form-group">
+									<label class="col-md-2 control-label"> <form:radiobutton
+											path="entity.account_type" value="g" onchange="addRegion()" />
+										政府
+									</label> <label class="col-md-2 control-label"> <form:radiobutton
+											path="entity.account_type" value="b" onchange="purge()" />
+										银行
+									</label> <label class="col-md-2 control-label"> <form:radiobutton
+											path="entity.account_type" value="m" onchange="purge()" />
+										商户
+									</label>
 								</div>
-							<div class="form-group" ><label class="checkbox-inline" id="level"></label>
+								<div class="form-group" ><label class="checkbox-inline" id="level"></label>
 
 							</div>
 							</form:form>
@@ -114,9 +120,6 @@
 
 	<!-- Script	-->
 	<script type="text/javascript">
-
-
-
 		function submitForm() {
 			$("#command").submit();
 		}
@@ -155,11 +158,6 @@
 			var divshow = $("#level");
 			divshow.text("");// 清空数据
 			divshow.append('市 : <select id="shi" name="shi" class="{required:true}"> <option value="0">--请选择--</option> <option value="2">北京</option> </select> 区域： <select id="county" name="county"> <option value="${county }">--请选择--</option> </select> 街道： <select id="street" name="street"> <option value="${street }">--请选择--</option> </select> 社区： <select id="community" name="community"> <option value="${community }">--请选择--</option> </select>');
-			// $.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",function(data){
-			// 	for(var i = 0;i<data.length;i++){
-			// 		$("#county").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
-			// 	}
-			// });
 		$("#shi").change(function(){
 				$("#street option:not(:first)").remove();
 				$("#community option:not(:first)").remove();
@@ -195,6 +193,12 @@
 					}
 				});
 			});
+			
+		}
+		//清空数据
+		function purge(){
+			var divshow = $("#level");
+			divshow.text("");// 清空数据
 		}
 	</script>
 
