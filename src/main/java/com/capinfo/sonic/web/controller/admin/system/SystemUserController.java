@@ -1,6 +1,7 @@
 package com.capinfo.sonic.web.controller.admin.system;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -31,10 +32,13 @@ import com.capinfo.common.security.cache.SecurityCache;
 import com.capinfo.common.web.parameter.SystemUserParameter;
 import com.capinfo.common.web.service.RoleService;
 import com.capinfo.common.web.service.SystemUserService;
+import com.capinfo.framework.model.BaseEntity;
 import com.capinfo.framework.model.Messages;
 import com.capinfo.framework.model.Messages.MessageType;
 import com.capinfo.framework.service.GeneralService;
 import com.capinfo.framework.web.view.model.DataListViewModel;
+import com.capinfo.omp.model.Composition;
+import com.capinfo.omp.parameter.CompositionParameter;
 import com.capinfo.region.model.OmpRegion;
 
 @Controller
@@ -212,7 +216,7 @@ public class SystemUserController extends AuthenticationSuccessHandlerImpl {
 					parameter.getEntity().setLeave(1);
 					parameter.getEntity().setEncoding("101");
 				}
-				
+
 
 				boolean suc = systemUserService.saveUser(parameter.getEntity());
 				String info = suc == true ? "添加用户成功" : "添加用户失败";
@@ -437,14 +441,75 @@ public class SystemUserController extends AuthenticationSuccessHandlerImpl {
 		}
 
 	}
-	
-	
+
+
 	@RequestMapping(value = "recharge.shtml", method = RequestMethod.POST)
 	@ResponseBody
 	public String recharge(Long money,Long id) {
 		systemUserService.recharge(money,id);
-		
+
 		return "1";
 	}
-
+	/**
+	 * 跳转到建立银行商户组织
+	 *
+	 * @param parameter
+	 * @return
+	 */
+	@RequestMapping(value = "/toComposition.shtml")
+	public ModelAndView toComposition(CompositionParameter parameter) {
+		ModelAndView mv = new ModelAndView("/admin/sys/user/composition");
+		mv.addObject("command", parameter);
+		return mv;
+	}
+	/**
+	 * 保存
+	 *
+	 * @param parameter
+	 * @return
+	 */
+	@RequestMapping(value = "/saveComposition.shtml")
+	public ModelAndView saveComposition(@ModelAttribute("eccomm_admin") SystemUser user,CompositionParameter parameter) {
+		ModelAndView mv = new ModelAndView("/admin/sys/user/composition");
+		Composition entity = parameter.getEntity();
+		Composition entityC = generalService.getObjectById(Composition.class, entity.getId());
+		if(entity.getPrient_id()!=0){
+			Composition entityP = generalService.getObjectById(Composition.class, entity.getPrient_id());
+			if(entityP.getLevelid()!=null){
+				entityC.setLevelid(entityP.getLevelid()+1);
+				entityC.setPrient_id(entityP.getId());
+			}
+		}else{
+			entityC.setLevelid(1L);
+		}
+		entityC.setUpdatetime(new Date());
+		generalService.saveOrUpdate(entityC);
+		mv.addObject("command", parameter);
+		return mv;
+	}
+	/**
+	 * 添加机构
+	 *
+	 * @param parameter
+	 * @return
+	 */
+	@RequestMapping(value = "addComposition.shtml")
+	@ResponseBody
+	public String addComposition(@ModelAttribute("eccomm_admin") SystemUser user,CompositionParameter parameter,String name) {
+		parameter.getEntity().setName(name);
+		systemUserService.addMechanism(parameter.getEntity(),user);
+		return "添加成功";
+	}
+	/**
+	 * ajax下拉追加机构
+	 *
+	 * @param parameter
+	 * @return
+	 */
+	@RequestMapping(value = "selectComposition.shtml")
+	@ResponseBody
+	public List<Composition> selectComposition(@ModelAttribute("eccomm_admin") SystemUser user) {
+		List<Composition> compositionList = systemUserService.getCompositionList(user);
+		return compositionList;
+	}
 }

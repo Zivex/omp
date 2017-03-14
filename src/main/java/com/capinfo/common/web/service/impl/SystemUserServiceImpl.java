@@ -2,6 +2,7 @@ package com.capinfo.common.web.service.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -23,7 +24,9 @@ import com.capinfo.framework.model.BaseEntity;
 import com.capinfo.framework.model.system.SecureRole;
 import com.capinfo.framework.service.GeneralService;
 import com.capinfo.framework.web.service.impl.CommonsDataOperationServiceImpl;
+import com.capinfo.omp.model.Composition;
 import com.capinfo.omp.model.UserRecharge;
+import com.capinfo.omp.parameter.CompositionParameter;
 import com.capinfo.region.model.OmpRegion;
 
 public class SystemUserServiceImpl extends CommonsDataOperationServiceImpl<SystemUser, SystemUserParameter> implements SystemUserService {
@@ -183,7 +186,7 @@ public class SystemUserServiceImpl extends CommonsDataOperationServiceImpl<Syste
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * com.capinfo.smart.web.service.admin.system.SystemUserService#isUserPassword
 	 * (com.capinfo.smart.web.parameter.admin.system.SystemUserParameter)
@@ -205,6 +208,24 @@ public class SystemUserServiceImpl extends CommonsDataOperationServiceImpl<Syste
 	@Override
 	public void recharge(Long money,Long id) {
 		UserRecharge r = new UserRecharge();
+	}
+
+	@Override
+	public void addMechanism(Composition composition,SystemUser user) {
+		Date date = new Date();		//创建时间
+		composition.setCreatedate(date);
+		composition.setUse_flag(1L);
+		composition.setCid(user.getId());
+		getGeneralService().saveOrUpdate(composition);
+	}
+
+	@Override
+	public List<Composition> getCompositionList(SystemUser user) {
+		List<Composition> resources = new ArrayList<Composition>();
+		SearchCriteriaBuilder<Composition> searchCriteriaBuilder = new SearchCriteriaBuilder<Composition>(Composition.class);
+		searchCriteriaBuilder.addQueryCondition("cid", RestrictionExpression.EQUALS_OP, user.getId());
+		resources = getGeneralService().getObjects(searchCriteriaBuilder.build());
+		return resources;
 	}
 
 }

@@ -6,13 +6,15 @@ import com.capinfo.common.model.Resource;
 import com.capinfo.common.model.SystemUser;
 import com.capinfo.common.web.parameter.SystemUserParameter;
 import com.capinfo.framework.web.service.CommonsDataOperationService;
+import com.capinfo.omp.model.Composition;
+import com.capinfo.omp.parameter.CompositionParameter;
 import com.capinfo.region.model.OmpRegion;
 
 public interface SystemUserService extends CommonsDataOperationService<SystemUser, SystemUserParameter> {
 
 	/**
 	 * 更新用户信息
-	 * 
+	 *
 	 * @param parameter
 	 * @return
 	 */
@@ -20,7 +22,7 @@ public interface SystemUserService extends CommonsDataOperationService<SystemUse
 
 	/**
 	 * 新增用户
-	 * 
+	 *
 	 * @param user
 	 * @return
 	 */
@@ -28,7 +30,7 @@ public interface SystemUserService extends CommonsDataOperationService<SystemUse
 
 	/**
 	 * 用户
-	 * 
+	 *
 	 * @param parameter
 	 * @return
 	 */
@@ -36,7 +38,7 @@ public interface SystemUserService extends CommonsDataOperationService<SystemUse
 
 	/**
 	 * 判断是否存在用户
-	 * 
+	 *
 	 * @param user
 	 * @return
 	 */
@@ -44,7 +46,7 @@ public interface SystemUserService extends CommonsDataOperationService<SystemUse
 
 	/**
 	 * 根据用户名获取用户信息
-	 * 
+	 *
 	 * @param userName
 	 * @return
 	 */
@@ -52,15 +54,15 @@ public interface SystemUserService extends CommonsDataOperationService<SystemUse
 
 	/**
 	 * 获取全部授权资源
-	 * 
+	 *
 	 * @return
 	 */
 	public List<Resource> getResources();
-	
+
 	/**
 	 * 获取区域信息
-	 * @param l 
-	 * 
+	 * @param l
+	 *
 	 * @return
 	 */
 	public OmpRegion getbiRegoinid(long l);
@@ -74,6 +76,11 @@ public interface SystemUserService extends CommonsDataOperationService<SystemUse
 	public boolean deleteUser(SystemUserParameter parameter);
 
 	public void recharge(Long money, Long id);
-	
+
+	//添加机构
+	public void addMechanism (Composition composition,SystemUser user);
+
+	public List<Composition> getCompositionList(SystemUser user);
+
 
 }

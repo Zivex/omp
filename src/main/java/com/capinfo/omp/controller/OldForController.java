@@ -33,6 +33,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.capinfo.common.model.SystemUser;
 import com.capinfo.framework.util.DateUtils;
 import com.capinfo.omp.model.Omp_Old_Info;
+import com.capinfo.omp.parameter.CompositionParameter;
 import com.capinfo.omp.parameter.OrderParameter;
 import com.capinfo.omp.service.OldService;
 import com.capinfo.omp.utils.JsonUtil;
@@ -45,11 +46,11 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 /**
- * 
+ *
  * 展示主页面
- * 
+ *
  * @author Administrator
- * 
+ *
  */
 @Controller
 @RequestMapping("/old")
@@ -78,7 +79,7 @@ public class OldForController {
 
 	/**
 	 * 老人列表查询
-	 * 
+	 *
 	 * @param current
 	 * @param name
 	 * @param idCard
@@ -142,7 +143,7 @@ public class OldForController {
 
 	/**
 	 * 导入老人Excel
-	 * 
+	 *
 	 * @param request
 	 * @param excelFile
 	 * @return
@@ -224,7 +225,7 @@ public class OldForController {
 
 	/**
 	 * POI:解析Excel文件中的数据并把每行数据封装成一个实体
-	 * 
+	 *
 	 * @param fis
 	 *            文件输入流
 	 * @param flunk
@@ -323,7 +324,7 @@ public class OldForController {
 
 	/**
 	 * 去修改老人数据
-	 * 
+	 *
 	 * @param id
 	 * @return
 	 */
@@ -341,7 +342,7 @@ public class OldForController {
 
 	/**
 	 * 查看老人数据
-	 * 
+	 *
 	 * @param id
 	 * @return
 	 */
@@ -364,7 +365,7 @@ public class OldForController {
 
 	/**
 	 * 去查看老人数据
-	 * 
+	 *
 	 * @param id
 	 * @return
 	 */
@@ -408,7 +409,7 @@ public class OldForController {
 
 	/**
 	 * 去修改老人话机数据
-	 * 
+	 *
 	 * @param id
 	 * @return
 	 */
@@ -450,7 +451,7 @@ public class OldForController {
 
 	/**
 	 * 老人个性化数据修改
-	 * 
+	 *
 	 * @param id
 	 * @return
 	 */
@@ -471,7 +472,7 @@ public class OldForController {
 
 	/**
 	 * 修改老人数据
-	 * 
+	 *
 	 * @param id
 	 * @return
 	 */
@@ -507,7 +508,7 @@ public class OldForController {
 
 	/**
 	 * 省市街区三级联动
-	 * 
+	 *
 	 * @param id
 	 * @return
 	 */
@@ -524,7 +525,7 @@ public class OldForController {
 
 	/**
 	 * 停用老人信息
-	 * 
+	 *
 	 * @param id
 	 * @return
 	 */
@@ -536,7 +537,7 @@ public class OldForController {
 
 	/**
 	 * 老人导入
-	 * 
+	 *
 	 * @return
 	 */
 	@RequestMapping("/Import/toImport.shtml")
@@ -547,7 +548,7 @@ public class OldForController {
 
 	/**
 	 * 生成指令
-	 * 
+	 *
 	 * @param ids
 	 * @return
 	 */
@@ -616,7 +617,7 @@ public class OldForController {
 	}
 
 	@RequestMapping("/oldMatch/batchSendInstructions.shtml")
-	public void batchSendInstructions() throws Exception { 
+	public void batchSendInstructions() throws Exception {
 		if (oldService.getcountid()) {
 			System.out.println("batchSendInstructions:定时器自动执行发送指令程序，间隔时间1分钟");
 			String id = oldService.checkDeBatchSendInstructions();
@@ -647,4 +648,6 @@ public class OldForController {
 		;
 
 	}
+
+
 }
