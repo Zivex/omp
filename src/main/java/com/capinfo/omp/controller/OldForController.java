@@ -160,7 +160,7 @@ public class OldForController {
 		String num = "";
 		if (excelFile != null && !"".equals(excelFile)) {
 			InputStream fis = excelFile.getInputStream();
-			Map<String, Object> map = importEmployeeByPoi(fis);
+			Map<String, Object> map = importEmployeeByPoi(fis,user.getAccount_type());
 			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");// 设置日期格式
 			String format = df.format(new Date());// new Date()为获取当前系统时间
 			String zjNumber = "{'landLineNumber':'";// 导入成功后将座机号码同步到中航
@@ -228,13 +228,14 @@ public class OldForController {
 	 *
 	 * @param fis
 	 *            文件输入流
+	 * @param string 
 	 * @param flunk
 	 * @param success
 	 * @param map
 	 * @return List<OmpOldInfo> Excel中数据封装实体的集合
 	 * @throws Exception
 	 */
-	public Map<String, Object> importEmployeeByPoi(InputStream fis)
+	public Map<String, Object> importEmployeeByPoi(InputStream fis, String acc)
 			throws Exception {
 
 		List<Omp_Old_Info> infos = new ArrayList<Omp_Old_Info>();
@@ -254,6 +255,8 @@ public class OldForController {
 		String streetId = oldService.getIdByName(street, 4);
 		// 根据社区名称查询社区ID
 		String communityId = oldService.getIdByName(community, 5);
+		//查询社区编码
+		String comNUm = oldService.getIdByComCod(community, 5);
 		Row row6 = sheetAt0.getRow(6);
 		// 姓名
 		String workername = getCellValue(row6.getCell(1));
@@ -283,6 +286,7 @@ public class OldForController {
 			old_info.setTeltype(getCellValue(row.getCell(7)));
 			old_info.setAddress(getCellValue(row.getCell(8)));
 			old_info.setCall_id(callId);
+			old_info.setAccount_type(acc+comNUm);
 			infos.add(old_info);
 
 		}

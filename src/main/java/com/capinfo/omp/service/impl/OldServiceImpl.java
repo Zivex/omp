@@ -104,10 +104,14 @@ public class OldServiceImpl extends
 
 	@Override
 	public boolean addOld(Omp_Old_Info ompOldInfo, SystemUser user) {
-		ompOldInfo.setAccount_type(user.getAccount_type());
+		SystemUser entity = getGeneralService().getObjectById(SystemUser.class, user.getId());
+		ompOldInfo.setUser_name(entity.getName());
 		ompOldInfo.setAgent_id(user.getId());
 		ompOldInfo.setState(1l);
 		ompOldInfo.setSync(0L);
+		ompOldInfo.setNum(0L);
+		ompOldInfo.setIsindividuation(0);
+		
 		getGeneralService().saveOrUpdate(ompOldInfo);
 
 		Long autoIncId = ompOldInfo.getId();
@@ -287,6 +291,18 @@ public class OldServiceImpl extends
 		Object object = queryForList.get(0).get("ID");
 		return object.toString();
 	}
+	
+	@Override
+	public String getIdByComCod(String parameter, int level) {
+		String sql = "select r.standard_no STANDARD_NO from Omp_Region r where r.name like '%"
+				+ parameter + "%' and r.levelid = " + level;
+		// String sql =
+		// "select  r.id id,r.name name,r.parentid parentid from OMP_REGION r where r.name='"+parameter+"'";
+		List<Map<String, Object>> queryForList = JdbcTemplate.queryForList(sql);
+		Object object = queryForList.get(0).get("STANDARD_NO");
+		return object.toString();
+	}
+	
 
 	@Override
 	public List<Map<String, Object>> getOldById(String id) {

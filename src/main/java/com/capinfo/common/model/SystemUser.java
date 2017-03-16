@@ -63,6 +63,7 @@ public class SystemUser implements SecureUser<SystemUser, Role> {
 	// 用户编码
 	private String encoding;
 
+
 	@Id
 	// @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -201,6 +202,8 @@ public class SystemUser implements SecureUser<SystemUser, Role> {
 	public void setEncoding(String encoding) {
 		this.encoding = encoding;
 	}
+	
+	
 
 	public SystemUser() {
 		super();

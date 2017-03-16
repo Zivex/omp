@@ -36,9 +36,9 @@
 							<form:form method="post" action='${save}' class="form-horizontal" role="form">
 								<form:hidden path="entity.id" />
 								<div class="form-group">
-									<label for="entity.name" class="col-md-2 control-label">姓&emsp;&emsp;名: </label>
+									<label for="entity.name" class="col-md-2 control-label">名&emsp;&emsp;称: </label>
 									<div class="col-md-4">
-										<form:input path="entity.name" class="form-control" data-rule-required="true" data-rule-maxlength="100" data-rule-userName="true" placeholder="姓名" />
+										<form:input path="entity.name" class="form-control" data-rule-required="true" data-rule-maxlength="100" data-rule-userName="true" placeholder="名称" />
 									</div>
 								</div>
 								<div class="form-group">

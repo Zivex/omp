@@ -24,7 +24,8 @@
 				<thead>
 					<tr class="active">
 						<th width="5%"><input type="checkbox" onclick="check()" /></th>
-						<th width="6%">姓名</th>
+						<th width="10%" style="text-align: center;">编号</th>
+						<th width="6%" style="text-align: center;">姓名</th>
 						<th width="6%" style="text-align: center;">区域</th>
 						<th width="10%" style="text-align: center;">街道</th>
 						<th width="12%" style="text-align: center;">社区</th>
@@ -33,10 +34,10 @@
 						<!-- 						<th width="10%" style="text-align: center;">联系电话</th> -->
 						<th width="10%" style="text-align: center;">话机类型</th>
 						<c:if test="${sys == 'admin'}">
-							<th width="10%">所属账户</th>
+							<th width="10%" style="text-align: center;">名称</th>
 						</c:if>
-						<th width="10%" style="text-align: center;">是否有来显</th>
-						<th width="8%" style="text-align: center;">个性类型</th>
+						<th width="10%" style="text-align: center;">来电显示</th>
+						<th width="8%" style="text-align: center;">个性化</th>
 						<th width="10%" style="text-align: center;">操作</th>
 					</tr>
 				</thead>
@@ -44,6 +45,7 @@
 					<c:forEach var="old" items="${dataList}" varStatus="sta">
 						<tr>
 							<td><input type="checkbox" class="ids" value="${old.id}" /></td>
+							<td style="text-align: center;">${old.account_type}</td>
 							<td><a id="viewItem" onclick="hxtoOldInfo(${old.id});">${old.name}</a></td>
 							<td style="text-align: center;">${old.household_county.name}</td>
 							<td style="text-align: center;">${old.household_street.name}</td>
@@ -53,7 +55,7 @@
 							<%-- 							<td style="text-align: center;">${old.phone}</td> --%>
 							<td style="text-align: center;">${old.teltype}</td>
 							<c:if test="${sys == 'admin'}">
-								<td style="text-align: center;">${old.account_type}</td>
+								<td style="text-align: center;">${old.user_name}</td>
 							</c:if>
 
 							<c:if test="${old.call_id == 1}">
