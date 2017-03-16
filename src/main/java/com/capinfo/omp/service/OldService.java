@@ -110,5 +110,7 @@ public interface OldService extends CommonsDataOperationService<Omp_Old_Info, Or
 
 	ExcelBuilder exportExcel(OrderParameter parameter, SystemUser user);
 
+	String getIdByComCod(String community, int i);
+
 
 }

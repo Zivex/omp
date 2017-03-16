@@ -103,6 +103,10 @@
 
 							<button class="btn btn-primary btn-sm" data-toggle="modal"
 								data-target="#myModal">上传语音</button>
+								<a class="btn btn-primary btn-sm" href="<%=request.getContextPath() %>/resources/pdf/help.pdf">
+							帮助</a>
+								
+								
 							<div class="modal fade" id="myModal" tabindex="-1" role="dialog"
 								aria-labelledby="myModalLabel" aria-hidden="true">
 								<div class="modal-dialog">

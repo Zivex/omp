@@ -54,13 +54,14 @@ public class Omp_Old_Info extends CardPersonMessageBack implements BaseEntity {
 	private Long isGenerationOrder;
 	private String creationTime;
 	private String updateTime;
-	private String isindividuation;
+	private int isindividuation;
 	private Long sync;
 	private Long agent_id;
 	private Long num;
 	private Long call_id;
 	private String account_type;
-
+	// 用户名称
+	private String user_name;
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ID", unique = true, nullable = false, precision = 12, scale = 0)
@@ -262,11 +263,11 @@ public class Omp_Old_Info extends CardPersonMessageBack implements BaseEntity {
 	}
 
 	@Column(name = "isindividuation", length = 256)
-	public String getIsindividuation() {
+	public int getIsindividuation() {
 		return isindividuation;
 	}
 
-	public void setIsindividuation(String isindividuation) {
+	public void setIsindividuation(int isindividuation) {
 		this.isindividuation = isindividuation;
 	}
 
@@ -349,5 +350,15 @@ public class Omp_Old_Info extends CardPersonMessageBack implements BaseEntity {
 	public void setHousehold_community(OmpRegion household_community) {
 		this.household_community = household_community;
 	}
+	@Column(name = "user_name", length = 11)
+	public String getUser_name() {
+		return user_name;
+	}
+
+	public void setUser_name(String user_name) {
+		this.user_name = user_name;
+	}
+
+
 
 }

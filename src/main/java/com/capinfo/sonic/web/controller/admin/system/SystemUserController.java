@@ -197,12 +197,12 @@ public class SystemUserController extends AuthenticationSuccessHandlerImpl {
 
 						}
 					}
-					OmpRegion region = systemUserService.getbiRegoinid(Long.parseLong(r));
 					//账户类型
-					String standardNo = region.getStandardNo();
-					account_type = account_type+standardNo;
-					parameter.getEntity().setAccount_type(account_type);
+					//account_type = account_type+standardNo;
+					//parameter.getEntity().setAccount_type(account_type);
 					//账户等级
+					OmpRegion region = systemUserService.getbiRegoinid(Long.parseLong(r));
+					//String standardNo = region.getStandardNo();
 					parameter.getEntity().setLeave(leave);
 					Long id = region.getId();
 					Long parentid = region.getParentid();
@@ -214,10 +214,7 @@ public class SystemUserController extends AuthenticationSuccessHandlerImpl {
 					//account_type = account_type+code;
 					//parameter.getEntity().setAccount_type(account_type);
 					parameter.getEntity().setLeave(1);
-					parameter.getEntity().setEncoding("101");
 				}
-
-
 				boolean suc = systemUserService.saveUser(parameter.getEntity());
 				String info = suc == true ? "添加用户成功" : "添加用户失败";
 				messages.setSuccess(suc);

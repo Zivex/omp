@@ -62,8 +62,11 @@
 							<td><a id="viewItem" href="###"
 								onclick="showDetails(${item.id});">${item.logonName}</a></td>
 							<td>${item.name}</td>
-							<td><c:if test="${item.userType==0}">管理员</c:if> <c:if
-									test="${item.userType==1}">普通人员</c:if></td>
+							<td>
+								<c:if test="${item.account_type=='g'}">政府</c:if> 	
+								<c:if test="${item.account_type=='b'}">银行</c:if> 	
+								<c:if test="${item.account_type=='m'}">商户</c:if> 	
+								<c:if test="${item.account_type=='ADMIN'}">管理员</c:if> 	
 							<td>${item.regionName}</td>
 							<%-- 							<td>${item.leavel}</td> --%>
 							<td>
