@@ -14,7 +14,7 @@
 		<input id="item_entity_id" type="hidden" name="id" value="">
 		<input id="currentPage" type="hidden" name="current" value="">
 		<c:if test="${DataTotalCount>0}">
-		
+
 			<table class="table table-hover table-middle" role="grid">
 				<thead>
 					<tr class="active">
@@ -25,8 +25,8 @@
 						<th width="10%">操作</th>
 					</tr>
 				</thead>
-				
-				
+
+
 				<tbody>
 				<c:forEach items="${entities}" var="vo"  varStatus="i">
 					 <tr>
@@ -34,30 +34,30 @@
 					 	<td>${vo.n}</td>
 					 	<td>${vo.t}</td>
 					 	<td>${vo.r}</td>
-					 	<td>
-								<div class="btn-group">
-									<button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
-										操作 <span class="caret"></span>
-									</button>
-									<ul class="dropdown-menu" role="menu">
-<%-- 										<li><a onclick="toupd(${old.id})">发送</a></li> --%>
-										<c:if test="${old.logonName ne 'admin'}">
-											<li><a href="###" onclick="deleteUser(${old.id},this);">删除</a></li>
-										</c:if>
-									</ul>
-								</div>
-							</td>
+<!-- 					 	<td> -->
+<!-- 								<div class="btn-group"> -->
+<!-- 									<button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown"> -->
+<!-- 										操作 <span class="caret"></span> -->
+<!-- 									</button> -->
+<!-- 									<ul class="dropdown-menu" role="menu"> -->
+<%-- <%-- 										<li><a onclick="toupd(${old.id})">发送</a></li> --%> --%>
+<%-- 										<c:if test="${old.logonName ne 'admin'}"> --%>
+<%-- 											<li><a href="###" onclick="deleteUser(${old.id},this);">删除</a></li> --%>
+<%-- 										</c:if> --%>
+<!-- 									</ul> -->
+<!-- 								</div> -->
+<!-- 							</td> -->
 					 </tr>
 					 </c:forEach>
 				</tbody>
-				
-				
+
+
 			</table>
 		</c:if>
 	</form:form>
-	
+
 	<div class="panel-footer">
-	
+
 		<table class="table table-pagination">
 			<thead>
 				<tr>
@@ -67,12 +67,12 @@
 				</tr>
 			</thead>
 		</table>
-		
+
 	</div>
 </div>
 
-	
-	
+
+
 <!-- Script	-->
 <SCRIPT type="text/javascript">
 	$(document).ready(function() {

@@ -50,7 +50,7 @@
 						<th width="20%">登录名</th>
 						<th width="20%">账户名</th>
 						<th width="20%">用户类型</th>
-						<th width="20%">所属区域</th>
+<!-- 						<th width="20%">所属区域</th> -->
 						<!-- 						<th width="20%">用户等级</th> -->
 						<th width="20%">操作</th>
 						<th width="20%">充值操作</th>
@@ -63,11 +63,11 @@
 								onclick="showDetails(${item.id});">${item.logonName}</a></td>
 							<td>${item.name}</td>
 							<td>
-								<c:if test="${item.account_type=='g'}">政府</c:if> 	
-								<c:if test="${item.account_type=='b'}">银行</c:if> 	
-								<c:if test="${item.account_type=='m'}">商户</c:if> 	
-								<c:if test="${item.account_type=='ADMIN'}">管理员</c:if> 	
-							<td>${item.regionName}</td>
+								<c:if test="${item.account_type=='g'}">政府</c:if>
+								<c:if test="${item.account_type=='b'}">银行</c:if>
+								<c:if test="${item.account_type=='m'}">商户</c:if>
+								<c:if test="${item.account_type=='ADMIN'}">管理员</c:if>
+<%-- 							<td>${item.regionName}</td> --%>
 							<%-- 							<td>${item.leavel}</td> --%>
 							<td>
 								<div class="btn-group">

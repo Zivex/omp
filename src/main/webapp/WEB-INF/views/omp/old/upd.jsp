@@ -12,21 +12,21 @@
 				<td>姓名：</td><td><input type="text" id="name" name="name" value="${detaMap.name }"/></td>
 			</tr>
 			<tr>
-				<td>区县：</td><td><select name="county" id="county">
-					<c:forEach items="${Region.county }" var="county">
-						<option value="${county.id }"<c:if test="${county.id==detaMap.household_county_id }">selected="selected"</c:if>>${county.name}</option>
+				<td>区县：</td><td><select name="county" id="county1" onchange="udpCounty()" >
+					<c:forEach items="${Region.county }" var="county" >
+						<option class="county" value="${county.id }"<c:if test="${county.id==detaMap.household_county_id }">selected="selected"</c:if>>${county.name}</option>
 					</c:forEach>
 				</select></td>
 			</tr>
 			<tr>
-				<td>街道：</td><td><select name="street" id="street">
+				<td>街道：</td><td><select name="street" id="street1" onchange="udpStreet()">
 						<c:forEach items="${Region.street }" var="street">
 							<option value="${street.id }"<c:if test="${street.id==detaMap.household_street_id }">selected="selected"</c:if>>${street.name}</option>
 						</c:forEach>
 				</select></td>
 			</tr>
 			<tr>
-				<td>社区：</td><td><select name="community" id="community">
+				<td>社区：</td><td><select name="community" id="community1">
 						<c:forEach items="${Region.community }" var="community">
 							<option value="${community.id }"<c:if test="${community.id==detaMap.household_community_id }">selected="selected"</c:if>>${community.name}</option>
 						</c:forEach>
@@ -63,9 +63,56 @@
 </div>
 <!-- Script	-->
 <SCRIPT type="text/javascript">
+var county1 = $("#county1");
+var street1 = $("#street1");
+var community1 = $("#community1");
+function udpCounty(){
+	changCounty(county1,street1,community1);
+}
+function udpStreet(){
+	changStreet(street1,community1);
+}
 
-	$(document).ready(function(){
+
+//修改街道
+function changCounty(county1,street1,community1){
+	community1.empty();
+	community1.append("<option>请选择</option>")
+	var id = county1.val();
+	$.post("${pageContext.request.contextPath }/old/oldMatch/getRegionById.shtml",
+			{id:id},
+			function(data){
+				street1.empty();
+				street1.append("<option>请选择</option>")
+				for(var i = 0;i<data.length;i++){
+					street1.append("<option value='"+data[i].id+"'>"+data[i].name+"</option>")
+				}
+
+	});
+}
+//修改社区
+function changStreet(street1,community1){
+	var id = street1.val();
+	$.post("${pageContext.request.contextPath }/old/oldMatch/getRegionById.shtml",
+			{id:id},
+			function(data){
+				community1.empty();
+				community1.append("<option>请选择</option>")
+				for(var i = 0;i<data.length;i++){
+					community1.append("<option value='"+data[i].id+"'>"+data[i].name+"</option>")
+				}
+	});
+}
+
+function changCommunity(community1){
+
+}
+
+
+
+ 	$(document).ready(function(){
 		$("#county").change(function(){
+			alert(1);
 			$("#community").empty();
 			$("#community").append("<option>请选择</option>")
 			var id = $("#county").val();
@@ -75,13 +122,12 @@
 						$("#street").empty();
 						$("#street").append("<option>请选择</option>")
 						for(var i = 0;i<data.length;i++){
-							$("#street").append("<option value='"+data[i].ID+"'>"+data[i].NAME+"</option>")
+							$("#street").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>")
 						}
-			
+
 			});
 		});
 		$("#street").change(function(){
-			
 			var id = $("#county").val();
 			$.post("${pageContext.request.contextPath }/old/oldMatch/getRegionById.shtml",
 					{id:id},
@@ -89,7 +135,7 @@
 						$("#community").empty();
 						$("#community").append("<option>请选择</option>")
 						for(var i = 0;i<data.length;i++){
-							$("#community").append("<option value='"+data[i].ID+"'>"+data[i].NAME+"</option>")
+							$("#community").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>")
 						}
 			});
 		});
@@ -107,5 +153,5 @@
 				return;
 			}
 		});
-	}
+ 	}
 </SCRIPT>

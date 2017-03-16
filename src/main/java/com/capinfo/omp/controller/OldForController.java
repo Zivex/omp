@@ -228,7 +228,7 @@ public class OldForController {
 	 *
 	 * @param fis
 	 *            文件输入流
-	 * @param string 
+	 * @param string
 	 * @param flunk
 	 * @param success
 	 * @param map
@@ -522,7 +522,6 @@ public class OldForController {
 		if (StringUtils.isEmpty(id)) {
 			id = "2";
 		}
-		@SuppressWarnings("unchecked")
 		List<Map<String, Object>> list = oldService.getRegionById(id);
 		return list;
 	}
