@@ -6,6 +6,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.capinfo.common.model.Role;
+import com.capinfo.common.model.SystemUser;
 import com.capinfo.common.web.parameter.RoleParameter;
 import com.capinfo.common.web.service.RoleService;
 import com.capinfo.framework.dao.SearchCriteria.OrderRow;
@@ -26,7 +27,7 @@ public class RoleServiceImpl extends CommonsDataOperationServiceImpl<Role, RoleP
 	}
 
 	@Override
-	public List<Role> getAllRoles() {
+	public List<Role> getAllRoles(SystemUser user) {
 		try {
 			return getGeneralService().getAllObjects(Role.class);
 		} catch (RuntimeException e) {

@@ -60,9 +60,6 @@ public class OldForController {
 	@Autowired
 	private OldService oldService;
 
-	// @Autowired
-	// private CardPersonMessageBack CardPersonMessageBack;
-
 	@RequestMapping("/oldMatch/list.shtml")
 	public ModelAndView list(@ModelAttribute("eccomm_admin") SystemUser user,
 			String current, String name, String idCard, String zjNumber,

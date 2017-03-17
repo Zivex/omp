@@ -86,10 +86,10 @@
 											path="entity.account_type" value="g" onchange="addRegion()" />
 										政府
 									</label> <label class="col-md-2 control-label"> <form:radiobutton
-											path="entity.account_type" value="b" onchange="purge()" />
+											path="entity.account_type" value="b" onclick="addb('b')" />
 										银行
 									</label> <label class="col-md-2 control-label"> <form:radiobutton
-											path="entity.account_type" value="m" onchange="purge()" />
+											path="entity.account_type" value="m" onclick="addm('m')" />
 										商户
 									</label>
 								</div>
@@ -120,6 +120,8 @@
 
 	<!-- Script	-->
 	<script type="text/javascript">
+	
+	var divshow = $("#level");
 		function submitForm() {
 			$("#command").submit();
 		}
@@ -152,10 +154,11 @@
 			initialFormValidate('command');
 			initSaveForm();
 		});
-
+		
+		//政府
 		//显示分级属性
 		function addRegion(){
-			var divshow = $("#level");
+			
 			divshow.text("");// 清空数据
 			divshow.append('市 : <select id="shi" name="shi" class="{required:true}"> <option value="0">--请选择--</option> <option value="2">北京</option> </select> 区域： <select id="county" name="county"> <option value="${county }">--请选择--</option> </select> 街道： <select id="street" name="street"> <option value="${street }">--请选择--</option> </select> 社区： <select id="community" name="community"> <option value="${community }">--请选择--</option> </select>');
 		$("#shi").change(function(){
@@ -195,6 +198,23 @@
 			});
 			
 		}
+		
+		//企业
+		//银行		
+		function addb(type){
+			purge();
+			divshow.append('企业名称: <select id="addEnterprise" name="entity.type_id" class="{required:true}"> <option value="0">--请选择--</option> </select> ');
+			$.post("<%=request.getContextPath() %>/enterprise/queryEnterprise.shtml",{type:type},function(data){
+				for(var i = 0;i<data.length;i++){
+					$("#addEnterprise").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
+				}
+			});
+		}
+		//商户
+		function addm(){
+			addb("m");
+		}
+		
 		//清空数据
 		function purge(){
 			var divshow = $("#level");

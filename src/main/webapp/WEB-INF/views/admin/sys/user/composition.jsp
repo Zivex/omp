@@ -105,6 +105,8 @@
 	<!-- Script	-->
 	<script type="text/javascript">
 	$(document).ready(function() {
+			initalizeSiderBar();
+			selectMenu("omp_composition");
 		selectC();
 	});
 	//提交表单

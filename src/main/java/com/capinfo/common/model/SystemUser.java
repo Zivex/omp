@@ -2,6 +2,7 @@ package com.capinfo.common.model;
 
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -19,6 +21,8 @@ import javax.persistence.Transient;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import com.capinfo.framework.model.system.SecureUser;
+import com.capinfo.omp.model.Enterprise;
+import com.capinfo.region.model.OmpRegion;
 
 @Entity
 @Table(name = "USERS")
@@ -62,6 +66,10 @@ public class SystemUser implements SecureUser<SystemUser, Role> {
 
 	// 用户编码
 	private String encoding;
+	
+	// 企业名称
+	private Long type_id;
+	private Enterprise enterprise;
 
 
 	@Id
@@ -204,6 +212,24 @@ public class SystemUser implements SecureUser<SystemUser, Role> {
 	}
 	
 	
+	
+	@Column(name = "type_id")
+	public Long getType_id() {
+		return type_id;
+	}
+
+	public void setType_id(Long type_id) {
+		this.type_id = type_id;
+	}
+	@ManyToOne(targetEntity = Enterprise.class, fetch = FetchType.LAZY)
+	@JoinColumn(name = "type_id", insertable = false, updatable = false)
+	public Enterprise getEnterprise() {
+		return enterprise;
+	}
+
+	public void setEnterprise(Enterprise enterprise) {
+		this.enterprise = enterprise;
+	}
 
 	public SystemUser() {
 		super();

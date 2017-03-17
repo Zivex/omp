@@ -32,6 +32,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.capinfo.common.model.Resource;
 import com.capinfo.common.model.Role;
+import com.capinfo.common.model.SystemUser;
 import com.capinfo.common.security.cache.SecurityCache;
 import com.capinfo.common.web.parameter.ResourceParameter;
 import com.capinfo.common.web.service.ResourceService;
@@ -166,14 +167,14 @@ public class ResourceController {
 	 * @return
 	 */
 	@RequestMapping(value = "/form.shtml", method = RequestMethod.GET)
-	public ModelAndView form(NativeWebRequest request, HttpServletResponse response, ResourceParameter parameter) {
+	public ModelAndView form(SystemUser user,NativeWebRequest request, HttpServletResponse response, ResourceParameter parameter) {
 		ModelAndView mv = new ModelAndView("/admin/sys/resource/form");
 		if (parameter.getEntity().getId() != null) {
 			Resource resource = resourceService.getResourceById(parameter.getEntity().getId());
 			parameter.setEntity(resource);
 		}
 		mv.addObject("command", parameter);
-		mv.addObject("roleList", roleService.getAllRoles());
+		mv.addObject("roleList", roleService.getAllRoles(user));
 		return mv;
 	}
 

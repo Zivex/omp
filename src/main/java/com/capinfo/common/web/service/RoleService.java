@@ -3,6 +3,7 @@ package com.capinfo.common.web.service;
 import java.util.List;
 
 import com.capinfo.common.model.Role;
+import com.capinfo.common.model.SystemUser;
 import com.capinfo.common.web.parameter.RoleParameter;
 import com.capinfo.framework.web.service.CommonsDataOperationService;
 
@@ -19,10 +20,11 @@ public interface RoleService extends CommonsDataOperationService<Role, RoleParam
 	
 	/**
 	 * 所有角色
+	 * @param user 
 	 * 
 	 * @return
 	 */
-	public List<Role> getAllRoles();
+	public List<Role> getAllRoles(SystemUser user);
 	
 	/**
 	 * 角色

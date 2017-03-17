@@ -76,7 +76,7 @@ public class SystemUserController extends AuthenticationSuccessHandlerImpl {
 		if (totalCount > 0) {
 			entities = systemUserService.getList(parameter, totalCount, parameter.getCurrentPieceNum());
 		}
-		mv.addObject("roleList", roleService.getAllRoles());
+		mv.addObject("roleList", roleService.getAllRoles(user));
 		mv.addAllObjects(new DataListViewModel<SystemUser>("dataList", entities, totalCount, this.systemUserService, parameter).buildViewModel());
 		return mv;
 	}
@@ -100,7 +100,7 @@ public class SystemUserController extends AuthenticationSuccessHandlerImpl {
 		if (totalCount > 0) {
 			entities = systemUserService.getList(parameter, totalCount, parameter.getCurrentPieceNum());
 		}
-		mv.addObject("roleList", roleService.getAllRoles());
+		mv.addObject("roleList", roleService.getAllRoles(user));
 		mv.addAllObjects(new DataListViewModel<SystemUser>("dataList", entities, totalCount, this.systemUserService, parameter).buildViewModel());
 		return mv;
 	}
@@ -132,7 +132,7 @@ public class SystemUserController extends AuthenticationSuccessHandlerImpl {
 	public ModelAndView saveUserInto(SystemUserParameter parameter) {
 		ModelAndView mv = new ModelAndView("/admin/sys/user/form");
 		mv.addObject("command", parameter);
-		mv.addObject("roleList", roleService.getAllRoles());
+		mv.addObject("roleList", roleService.getAllRoles(parameter.getEntity()));
 		return mv;
 	}
 
@@ -240,7 +240,7 @@ public class SystemUserController extends AuthenticationSuccessHandlerImpl {
 			parameter.setEntity(user);
 		}
 		mv.addObject("command", parameter);
-		mv.addObject("roleList", roleService.getAllRoles());
+		mv.addObject("roleList", roleService.getAllRoles(parameter.getEntity()));
 
 		return mv;
 	}
