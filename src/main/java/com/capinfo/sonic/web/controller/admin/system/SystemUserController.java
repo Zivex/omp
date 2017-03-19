@@ -129,10 +129,10 @@ public class SystemUserController extends AuthenticationSuccessHandlerImpl {
 	 * @return
 	 */
 	@RequestMapping(value = "/form.shtml", method = RequestMethod.GET)
-	public ModelAndView saveUserInto(SystemUserParameter parameter) {
+	public ModelAndView saveUserInto(SystemUserParameter parameter, @ModelAttribute("eccomm_admin") SystemUser user) {
 		ModelAndView mv = new ModelAndView("/admin/sys/user/form");
 		mv.addObject("command", parameter);
-		mv.addObject("roleList", roleService.getAllRoles(parameter.getEntity()));
+		mv.addObject("roleList", roleService.getAllRoles(user));
 		return mv;
 	}
 

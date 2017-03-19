@@ -72,7 +72,7 @@ public class OldServiceImpl extends
 		searchCriteriaBuilder.addQueryCondition("isindividuation",
 				RestrictionExpression.EQUALS_OP, isindividuation);
 		searchCriteriaBuilder.addLimitCondition(
-				(page.getCurrentPage() - 1) * 10, 10);
+				(page.getCurrentPage() - 1) * page.getPageSize(),  page.getPageSize());
 		if (user.getLeave() > 1) {
 			String rname = "";
 			switch (user.getLeave()) {
@@ -111,7 +111,7 @@ public class OldServiceImpl extends
 		ompOldInfo.setSync(0L);
 		ompOldInfo.setNum(0L);
 		ompOldInfo.setIsindividuation(0);
-		
+
 		getGeneralService().saveOrUpdate(ompOldInfo);
 
 		Long autoIncId = ompOldInfo.getId();
@@ -291,7 +291,7 @@ public class OldServiceImpl extends
 		Object object = queryForList.get(0).get("ID");
 		return object.toString();
 	}
-	
+
 	@Override
 	public String getIdByComCod(String parameter, int level) {
 		String sql = "select r.standard_no STANDARD_NO from Omp_Region r where r.name like '%"
@@ -302,7 +302,7 @@ public class OldServiceImpl extends
 		Object object = queryForList.get(0).get("STANDARD_NO");
 		return object.toString();
 	}
-	
+
 
 	@Override
 	public List<Map<String, Object>> getOldById(String id) {
@@ -856,7 +856,7 @@ public class OldServiceImpl extends
 		List<Omp_Old_Info> oldPersonlist = getGeneralService().getObjects(
 				searchCriteriaBuilder.build());
 		for (Omp_Old_Info omp_Old_Info : oldPersonlist) {
-			
+
 		}
 		if (user.getDisplay_all() == 1) {
 			for (Omp_Old_Info old : oldPersonlist) {
@@ -865,7 +865,7 @@ public class OldServiceImpl extends
 				cardPersontList.add(person);
 			}
 			for (CardPerson omp_Old_Info : cardPersontList) {
-				
+
 			}
 		}
 
@@ -886,7 +886,7 @@ public class OldServiceImpl extends
 
 	private List<ExcelSheet> getExcelDataList(List<CardPerson> cardPersontList,
 			List<Omp_Old_Info> oldPersonlist) {
-		
+
 		List<ExcelSheet> excelSheetList = new ArrayList<ExcelSheet>();
 		if (null != oldPersonlist && oldPersonlist.size() > 0) {
 			ExcelSheet excelSheeto = new ExcelSheet();
@@ -925,8 +925,8 @@ public class OldServiceImpl extends
 		schema.addColFooterCell(getColFooterCell(totalStr));
 		return schema;
 	}
-	
-	
+
+
 	/**
 	 * 配置excel模版(老人基本信息)
 	 */
@@ -946,12 +946,12 @@ public class OldServiceImpl extends
 		schema.addColFooterCell(getColFooterCell(totalStr));
 		return schema;
 	}
-	
-	
+
+
 
 	/**
 	 * 获取（定制）表头(老人详细信息)
-	 * 
+	 *
 	 * @return
 	 */
 	private List<ColHeaderCell> getColHeaderCellList() {
@@ -974,10 +974,10 @@ public class OldServiceImpl extends
 		}
 		return colHeaderCellList;
 	}
-	
+
 	/**
 	 * 获取（定制）表头(老人基本信息)
-	 * 
+	 *
 	 * @return
 	 */
 	private List<ColHeaderCell> getColHeaderCellListOld() {
@@ -999,7 +999,7 @@ public class OldServiceImpl extends
 
 	/**
 	 * 定制每一列属性的配置信息(老人详细信息)
-	 * 
+	 *
 	 * @return
 	 */
 	private List<Column> getColumnList() {
@@ -1545,7 +1545,7 @@ public class OldServiceImpl extends
 
 	/**
 	 * 定制（设置）Excel中每列的属性
-	 * 
+	 *
 	 * @param columnName
 	 * @param width
 	 * @param isAutoSize

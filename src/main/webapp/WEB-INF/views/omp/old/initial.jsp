@@ -188,10 +188,10 @@
 						isindividuation:isindividuation
 					});
 		}
-		
-		//导出		
+
+		//导出
 		function exportExcel(){
-			var f = $("#command").serialize(); 
+			var f = $("#command").serialize();
 			location.href = "<%=request.getContextPath() %>/old/oldMatch/exportExcel.shtml?"+f;
 		}
 

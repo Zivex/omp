@@ -61,14 +61,14 @@ public class OldForController {
 	private OldService oldService;
 
 	@RequestMapping("/oldMatch/list.shtml")
-	public ModelAndView list(@ModelAttribute("eccomm_admin") SystemUser user,
+	public ModelAndView list(@ModelAttribute("eccomm_admin") SystemUser user,String pageSize,
 			String current, String name, String idCard, String zjNumber,
 			String county, String street, String community,
 			String isGenerationOrder, String isindividuation,
 			String creationTime, HttpServletRequest request) {
 		ModelAndView mv = new ModelAndView("/omp/old/initial");
 		getList(mv, current, name, idCard, zjNumber, county, street, community,
-				isGenerationOrder, isindividuation, creationTime, user);
+				isGenerationOrder, isindividuation, creationTime, user,pageSize);
 
 		// oldService.saveLogger("2", "老人信息表", "lixing", "1");
 		return mv;
@@ -90,7 +90,7 @@ public class OldForController {
 	 * @return
 	 */
 	@RequestMapping("/oldMatch/listtoo.shtml")
-	public ModelAndView listtoo(String current, String name, String idCard,
+	public ModelAndView listtoo(String current,String pageSize, String name, String idCard,
 			String zjNumber, String county, String street, String community,
 			String isGenerationOrder, String isindividuation,
 			String creationTime, Integer call_id,
@@ -100,7 +100,7 @@ public class OldForController {
 		// street, community, isGenerationOrder, isindividuation, user);
 
 		getList(mv, current, name, idCard, zjNumber, county, street, community,
-				isGenerationOrder, isindividuation, creationTime, user);
+				isGenerationOrder, isindividuation, creationTime, user,pageSize);
 		// LogRecord.logger("2", "", "", "", "2");
 		return mv;
 	}
@@ -108,7 +108,7 @@ public class OldForController {
 	public void getList(ModelAndView mv, String current, String name,
 			String idCard, String zjNumber, String county, String street,
 			String community, String isGenerationOrder, String isindividuation,
-			String creationTime, SystemUser user) {
+			String creationTime, SystemUser user,String pageSize) {
 
 		if (StringUtils.isEmpty(current)) {
 			current = "1";
@@ -116,18 +116,21 @@ public class OldForController {
 		if (StringUtils.isEmpty(isindividuation)) {
 			isindividuation = "";
 		}
+		if (StringUtils.isEmpty(pageSize)) {
+			pageSize = "10";
+		}
 
 		int count = oldService.getCount(name, idCard, zjNumber, county, street,
 				community, isGenerationOrder, isindividuation, user);
 		// count = count == 0 ? 1 : count;
-		Page page = new Page<>(current, count, "10");
+		Page page = new Page<>(current, count, pageSize);
 		List<Omp_Old_Info> entities = oldService.getOldContextList(page, name,
 				idCard, zjNumber, county, street, community, isGenerationOrder,
 				isindividuation, user);
 		mv.addObject("dataList", entities);
 		mv.addObject("DataTotalCount", count);
 		mv.addObject("CurrentPieceNum", page.getCurrentPage());
-		mv.addObject("PerPieceSize", "10");
+		mv.addObject("PerPieceSize", pageSize);
 		mv.addObject("name", name);
 		mv.addObject("idCard", idCard);
 		mv.addObject("zjNumber", zjNumber);

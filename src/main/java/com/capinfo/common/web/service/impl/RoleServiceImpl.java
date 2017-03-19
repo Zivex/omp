@@ -13,7 +13,6 @@ import com.capinfo.framework.dao.SearchCriteria.OrderRow;
 import com.capinfo.framework.dao.SearchCriteriaBuilder;
 import com.capinfo.framework.dao.impl.restriction.RestrictionExpression;
 import com.capinfo.framework.web.service.impl.CommonsDataOperationServiceImpl;
-
 public class RoleServiceImpl extends CommonsDataOperationServiceImpl<Role, RoleParameter> implements RoleService {
 
 	private static final Log LOGGER = LogFactory.getLog(RoleServiceImpl.class);
@@ -26,10 +25,22 @@ public class RoleServiceImpl extends CommonsDataOperationServiceImpl<Role, RoleP
 		return searchCriteriaBuilder;
 	}
 
+	@SuppressWarnings("null")
 	@Override
 	public List<Role> getAllRoles(SystemUser user) {
+		List<Role> listNew = null;
 		try {
-			return getGeneralService().getAllObjects(Role.class);
+			 List<Role> list = getGeneralService().getAllObjects(Role.class);
+			 if(user.getLeave()!=0){
+				 for (Role role : list) {
+					 if(role.getId()!=1 || role.getId()!=2){
+						 listNew.add(role);
+					 }
+				}
+			 }else {
+				 listNew = list;
+			}
+			 return listNew;
 		} catch (RuntimeException e) {
 			LOGGER.debug(e.getMessage(), e);
 			return null;

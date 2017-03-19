@@ -98,19 +98,29 @@
 				</tbody>
 			</table>
 		</c:if>
-	</form:form>
 	<div class="panel-footer">
 		<table class="table table-pagination">
 			<thead>
 				<tr>
 					<td align="left">共<span class="text-danger"><strong>${DataTotalCount}</strong></span>条记录（每页<span
-						class="text-info"><strong>${PerPieceSize}</strong></span>条记录）&emsp;
+						class="text-info"><strong> <select id="pageSize" name="pageSize" onchange="pageS(this)">
+									<option value="10"
+										<c:if test="${PerPieceSize == '10'}">selected</c:if> >10</option>
+									<option value="20"
+										<c:if test="${PerPieceSize == '20'}">selected</c:if> >20</option>
+									<option value="50"
+										<c:if test="${PerPieceSize == '50'}">selected</c:if> >50</option>
+									<option value="100"
+										<c:if test="${PerPieceSize == '100'}">selected</c:if> >100</option>
+							</select>
+						</strong></span>条记录）&emsp;
 					</td>
 					<td align="right" height="28"><div id="result_page"></div></td>
 				</tr>
 			</thead>
 		</table>
 	</div>
+	</form:form>
 </div>
 <div>
 	<table class="table" id="table1">
@@ -157,6 +167,21 @@
 		$.post("<%=request.getContextPath()%>/old/oldMatch/createOrder.shtml",{ids:ids},function(data){
 			alert(data);
 		});
+	}
+	function pageS(num){
+		var isindividuation = $("#isindividuation").val();
+		var name = $("#name").val();
+		var creationTime = $("#creationTime").val();
+		var idCard = $("#idCard").val();
+		var zjNumber = $("#zjNumber").val();
+		var county = $("#county").val();
+		var street = $("#street").val();
+		var community = $("#community").val();
+		var isGenerationOrder = $("#isGenerationOrder").val();
+
+
+
+		window.location.href="${pageContext.request.contextPath}/old/oldMatch/list.shtml?pageSize="+num.value+"&name="+name+"&idCard="+idCard+"&zjNumber="+zjNumber+"&county="+county+"&street="+county+"&community="+community+"&isGenerationOrder="+isGenerationOrder+"&isindividuation="+isindividuation;
 	}
 
 </SCRIPT>

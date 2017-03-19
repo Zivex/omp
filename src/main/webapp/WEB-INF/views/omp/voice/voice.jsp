@@ -105,8 +105,8 @@
 								data-target="#myModal">上传语音</button>
 								<a class="btn btn-primary btn-sm" href="<%=request.getContextPath() %>/resources/pdf/help.pdf">
 							帮助</a>
-								
-								
+
+
 							<div class="modal fade" id="myModal" tabindex="-1" role="dialog"
 								aria-labelledby="myModalLabel" aria-hidden="true">
 								<div class="modal-dialog">
@@ -133,7 +133,7 @@
 
 												<div class="form-group">
 													<label for="inputfile">文件输入</label> <input type="file"
-														name="muFile" id="finame">
+														name="muFile" id="finame" onchange="Javascript:validate_excel(this);">
 												</div>
 										</div>
 										<div class="modal-footer">
@@ -189,21 +189,21 @@
 			}
 			showDynamicModal(url);
 		}
-		
-		
+
+
 		/**
 		 *指令查询
 		 */
 		 function quety(){
-			
+
 					var name = $("#name").val();
 					$.post("<%=request.getContextPath() %>/voice/voiceManage/listVoice.shtml",
 							{
 								name:name
 							});
-				
+
 		}
-		
+
 		function openUpload(){
 			var sure=confirm("确认上传语音吗？");
 			if(sure){
@@ -213,9 +213,9 @@
 				$("#userid").val(ids);
 				$("#formf").submit();
 			}
-			
+
 		}
-		
+
 		$(document).ready(function() {
 			initalizeSiderBar();
 			selectMenu("o_voice3");
@@ -223,27 +223,34 @@
 			$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",function(data){
 				for(var i = 0;i<data.length;i++){
 					$("#county").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
-				}				
+				}
 			});
 			$("#county").change(function(){
 				var id = $("#county").val();
 				$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",{id:id},function(data){
 					for(var i = 0;i<data.length;i++){
 						$("#street").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
-					}				
+					}
 				});
 			});
-			
+
 			$("#street").change(function(){
 				var id = $("#street").val();
 				$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",{id:id},function(data){
 					for(var i = 0;i<data.length;i++){
 						$("#community").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
-					}				
+					}
 				});
 			});
 		});
-		
+
+		//限制语音大小
+		function validate_excel(excel) {
+			if (((excel.files[0].size).toFixed(2)) >= (473*1024)) {
+				alert("请上传小于473k的语音");
+				return false;
+			}
+		}
 	</script>
 
 

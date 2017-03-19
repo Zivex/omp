@@ -113,6 +113,11 @@ public final class Page<T> {
 		return pageCount;
 	}
 
+
+	public void setCount(int count) {
+		this.count = count;
+	}
+
 	public int getCurrentPage() {
 		return currentPage;
 	}
@@ -141,5 +146,5 @@ public final class Page<T> {
 		this.list = list;
 	}
 
-	
+
 }
