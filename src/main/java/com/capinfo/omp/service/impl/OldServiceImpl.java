@@ -223,17 +223,20 @@ public class OldServiceImpl extends
 		// }
 		// 查询用户区域
 		String rname = "";
-		switch (user.getLeave()) {
-		case 2:
-			rname = " and i.HOUSEHOLD_COUNTY_ID = " + user.getRid();
-			break;
-		case 3:
-			rname = " and i.HOUSEHOLD_STREET_ID = " + user.getRid();
-			break;
-		case 4:
-			rname = " and i.HOUSEHOLD_COMMUNITY_ID = " + user.getRid();
-			break;
+		if(user.getAccount_type()=="g"){
+			switch (user.getLeave()) {
+			case 2:
+				rname = " and i.HOUSEHOLD_COUNTY_ID = " + user.getRid();
+				break;
+			case 3:
+				rname = " and i.HOUSEHOLD_STREET_ID = " + user.getRid();
+				break;
+			case 4:
+				rname = " and i.HOUSEHOLD_COMMUNITY_ID = " + user.getRid();
+				break;
+			}
 		}
+		
 
 		if (name != null && !StringUtils.isEmpty(name)) {
 			name = " AND I.NAME  LIKE  '%" + name + "%'";
@@ -1572,6 +1575,19 @@ public class OldServiceImpl extends
 		ColFooterCell colFooterCell = new ColFooterCell();
 		colFooterCell.setCellName(totalStr);
 		return colFooterCell;
+	}
+
+	@Override
+	public List getCuser(SystemUser user) {
+//		String sql = "";
+//		if (user.getJi() == 0) {
+//			sql = "select t.id from composition t where t.cid=" + user.getId();
+//		} else {
+//			sql = "select t.id from composition t where t.prient_id="
+//					+ user.getJi();
+//		}
+//		List<Map<String, Object>> queryForList = JdbcTemplate.queryForList(sql);
+		return null;
 	}
 
 }

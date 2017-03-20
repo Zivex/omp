@@ -13,6 +13,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.capinfo.common.model.SystemUser;
 import com.capinfo.framework.service.GeneralService;
+import com.capinfo.omp.model.Composition;
 import com.capinfo.omp.model.Enterprise;
 import com.capinfo.omp.parameter.EnterpriseParameter;
 import com.capinfo.omp.service.EnterpriseService;
@@ -63,6 +64,14 @@ public class EnterpriseController {
 	public List<Enterprise> queryEnterprise(
 			@ModelAttribute("eccomm_admin") SystemUser user,EnterpriseParameter parameter ) {
 		List<Enterprise> list = enterpriseService.getListByName(parameter);
+		return list;
+		
+	}
+	//下拉追加
+	@RequestMapping("/ajaxEnterprise.shtml")
+	@ResponseBody
+	public List<Composition> ajaxEnterprise(int uid ,Integer lv,Integer upId) {
+		List<Composition> list = enterpriseService.getListByid(uid,lv,upId);
 		return list;
 		
 	}

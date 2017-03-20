@@ -82,18 +82,34 @@
 								</div>
 
 								<div class="form-group">
-									<label class="col-md-2 control-label"> <form:radiobutton
-											path="entity.account_type" value="g" onchange="addRegion()" />
-										政府
-									</label> <label class="col-md-2 control-label"> <form:radiobutton
-											path="entity.account_type" value="b" onclick="addb('b')" />
-										银行
-									</label> <label class="col-md-2 control-label"> <form:radiobutton
-											path="entity.account_type" value="m" onclick="addm('m')" />
-										商户
-									</label>
+									<c:if test="${sessionScope.eccomm_admin.account_type ==  'b'}">
+										<label class="col-md-2 control-label"> <form:radiobutton
+												path="entity.account_type" value="b"
+												onclick="addSystem(${sessionScope.eccomm_admin.id})" /> 银行
+										</label>
+									</c:if>
+									<c:if test="${sessionScope.eccomm_admin.account_type ==  'm'}">
+										<label class="col-md-2 control-label"> <form:radiobutton
+												path="entity.account_type" value="m"
+												onclick="addSystem(${sessionScope.eccomm_admin.id})" /> 商户
+										</label>
+									</c:if>
+									<c:if test="${sessionScope.eccomm_admin.logonName ==  'admin'}">
+										<label class="col-md-2 control-label"> <form:radiobutton
+												path="entity.account_type" value="g" onchange="addRegion()" />
+											政府
+										</label>
+										<label class="col-md-2 control-label"> <form:radiobutton
+												path="entity.account_type" value="b" onclick="addb('b')" />
+											银行
+										</label>
+										<label class="col-md-2 control-label"> <form:radiobutton
+												path="entity.account_type" value="m" onclick="addm('m')" />
+											商户
+										</label>
+									</c:if>
 								</div>
-								<div class="form-group" ><label class="checkbox-inline" id="level"></label>
+								<div class="form-group" ><label class="selectt-inline" id="level"></label>
 
 							</div>
 							</form:form>
@@ -203,7 +219,7 @@
 		//银行		
 		function addb(type){
 			purge();
-			divshow.append('企业名称: <select id="addEnterprise" name="entity.type_id" class="{required:true}"> <option value="0">--请选择--</option> </select> ');
+			divshow.append('企业名称: <select  id="addEnterprise" name="entity.type_id" class="{required:true}"> <option value="0">--请选择--</option> </select> ');
 			$.post("<%=request.getContextPath() %>/enterprise/queryEnterprise.shtml",{type:type},function(data){
 				for(var i = 0;i<data.length;i++){
 					$("#addEnterprise").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
@@ -219,6 +235,79 @@
 		function purge(){
 			var divshow = $("#level");
 			divshow.text("");// 清空数据
+		}
+		
+		function addSystem(uid){
+			var lv = 1;
+			var flg = 0;
+			divshow.text("");
+			divshow.append('&nbsp;<select  id="yiji" name="yiji" > <option value="0">--请选择--</option>  </select>');
+			for(;lv<10;lv++){
+				$.post("<%=request.getContextPath() %>/enterprise/ajaxEnterprise.shtml",{uid:uid,lv:lv},function(data){
+					if(data != null){
+						var flg = 1;
+						for(var i = 0;i<data.length;i++){
+							$("#yiji").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
+						}
+					}
+				
+				});
+				if(flg=1){
+					break;
+				}
+			}
+			
+			$("#yiji").change(function(){
+				$("#erji").remove();
+				$("#sjji").remove();
+				$("#siji").remove();
+				if(this.value==0){
+					return ;
+				}
+				lv=0;
+				divshow.append('&nbsp;<select id="erji" name="erji" > <option value="0">--请选择--</option> </select>');
+				$.post("<%=request.getContextPath() %>/enterprise/ajaxEnterprise.shtml",{uid:uid,lv:lv,upId:this.value},function(data){
+					if(data.length >0){
+						for(var i = 0;i<data.length;i++){
+							$("#erji").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
+						}
+					}
+				});
+				
+				$("#erji").change(function(){
+					$("#sjji").remove();
+					$("#siji").remove();
+					if(this.value==0){
+						return ;
+					}
+					lv=0;
+					$.post("<%=request.getContextPath() %>/enterprise/ajaxEnterprise.shtml",{uid:uid,lv:lv,upId:this.value},function(data){
+						if(data.length >0){
+							divshow.append('&nbsp;<select id="sjji"   name="sjji" onchange="sjjis(this,'+uid+')" > <option value="0">--请选择--</option> </select>');
+							for(var i = 0;i<data.length;i++){
+								$("#sjji").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
+							}
+						} 
+					});
+				});
+			});
+		};		
+		
+		
+		function sjjis(upId,uid){
+			$("#siji").remove();
+			if(upId.value==0){
+				return ;
+			}
+			lv=0;
+			$.post("<%=request.getContextPath() %>/enterprise/ajaxEnterprise.shtml",{uid:uid,lv:lv,upId:upId.value},function(data){
+				if(data.length >0){
+				divshow.append('&nbsp;<select  id="siji" name="siji" > <option value="0">--请选择--</option>  </select>');
+					for(var i = 0;i<data.length;i++){
+						$("#siji").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
+					}
+				} 
+			});
 		}
 	</script>
 

@@ -70,7 +70,16 @@ public class SystemUser implements SecureUser<SystemUser, Role> {
 	// 企业名称
 	private Long type_id;
 	private Enterprise enterprise;
-
+	
+	
+	
+	//区域关系
+	private Integer yiji;
+	private Integer erji;
+	private Integer sjji;
+	private Integer siji;
+	
+	
 
 	@Id
 	// @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq")
@@ -211,8 +220,39 @@ public class SystemUser implements SecureUser<SystemUser, Role> {
 		this.encoding = encoding;
 	}
 	
-	
-	
+	@Column(name = "yiji")
+	public Integer getYiji() {
+		return yiji;
+	}
+
+	public void setYiji(Integer yiji) {
+		this.yiji = yiji;
+	}
+	@Column(name = "erji")
+	public Integer getErji() {
+		return erji;
+	}
+
+	public void setErji(Integer erji) {
+		this.erji = erji;
+	}
+	@Column(name = "sjji")
+	public Integer getSjji() {
+		return sjji;
+	}
+
+	public void setSjji(Integer sjji) {
+		this.sjji = sjji;
+	}
+	@Column(name = "siji")
+	public Integer getSiji() {
+		return siji;
+	}
+
+	public void setSiji(Integer siji) {
+		this.siji = siji;
+	}
+
 	@Column(name = "type_id")
 	public Long getType_id() {
 		return type_id;

@@ -5,9 +5,11 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
+
 import com.capinfo.framework.dao.SearchCriteriaBuilder;
 import com.capinfo.framework.dao.impl.restriction.RestrictionExpression;
 import com.capinfo.framework.web.service.impl.CommonsDataOperationServiceImpl;
+import com.capinfo.omp.model.Composition;
 import com.capinfo.omp.model.Enterprise;
 import com.capinfo.omp.parameter.EnterpriseParameter;
 import com.capinfo.omp.service.EnterpriseService;
@@ -30,6 +32,24 @@ public class EnterpriseServiceImpl extends
 				Enterprise.class);
 		SearchCriteriaBuilder<Enterprise> builder = searchCriteriaBuilder.addQueryCondition("type", RestrictionExpression.EQUALS_OP,parameter.getType());
 		List<Enterprise> list = getGeneralService().getObjects(builder.build());
+		return list;
+	}
+
+
+
+	@Override
+	public List<Composition> getListByid(int uid,Integer lv,Integer upId) {
+		SearchCriteriaBuilder<Composition> searchCriteriaBuilder = new SearchCriteriaBuilder<Composition>(
+				Composition.class);
+		searchCriteriaBuilder.addQueryCondition("cid", RestrictionExpression.EQUALS_OP,uid);
+		if(lv != null && lv !=0){
+		searchCriteriaBuilder.addQueryCondition("levelid", RestrictionExpression.EQUALS_OP,lv);
+		}
+		if(upId != null && upId !=0){
+			searchCriteriaBuilder.addQueryCondition("prient_id", RestrictionExpression.EQUALS_OP,upId);
+		}
+		
+		List<Composition> list = getGeneralService().getObjects(searchCriteriaBuilder.build());
 		return list;
 	}
 

@@ -44,11 +44,11 @@
 								action="${queryForm}" method="post">
 								<%-- 								action="${queryForm}" method="post"> --%>
 								<input id="pageNo" name="current" type="hidden" value="1">
+								<input id="pageSizes" name="pageSize" type="hidden" value="10">
 								<table class="table">
 									<tr>
 										<td>姓名：</td>
 										<td><input type="text" id="name" name="name" /></td>
-										<%-- <td><form:input path="entity.name"  id="name" /></td> --%>
 										<td>身份证号码：</td>
 										<td><input type="text" value="${idCard }" id="idCard"
 											name="idCard" /></td>
@@ -64,8 +64,6 @@
 										</select></td>
 									</tr>
 									<tr>
-										<!-- <td>申请时间：</td>
-											<td><input type="text" id="creationTime" name="creationTime" value="" /></td> -->
 										<td>个性类型：</td>
 										<td><select id="isindividuation" name="isindividuation">
 												<option value="${isindividuation }">--请选择--</option>
@@ -270,15 +268,14 @@
 			$("#street").change(function(){
 				var id = $("#street").val();
 				$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",{id : id},function(data) {
-										for (var i = 0; i < data.length; i++) {
-											$("#community").append("<option value='"+data[i].id+"'>"+ data[i].name+ "</option>");
-										}
-									});
+						for (var i = 0; i < data.length; i++) {
+							$("#community").append("<option value='"+data[i].id+"'>"+ data[i].name+ "</option>");
+						}
+					});
 				});
 						});
 
 		function hxBackClick() {
-
 			$("#displayDiv1").hide();
 			$("#displayDiv").show();
 			$("#backButton").hide();

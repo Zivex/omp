@@ -96,9 +96,6 @@ public class OldForController {
 			String creationTime, Integer call_id,
 			@ModelAttribute("eccomm_admin") SystemUser user) {
 		ModelAndView mv = new ModelAndView("/omp/old/list");
-		// oldService.getOldContextList(page, name, idCard, zjNumber, county,
-		// street, community, isGenerationOrder, isindividuation, user);
-
 		getList(mv, current, name, idCard, zjNumber, county, street, community,
 				isGenerationOrder, isindividuation, creationTime, user,pageSize);
 		// LogRecord.logger("2", "", "", "", "2");
@@ -119,7 +116,8 @@ public class OldForController {
 		if (StringUtils.isEmpty(pageSize)) {
 			pageSize = "10";
 		}
-
+		//查询下级
+		List userList = oldService.getCuser(user);
 		int count = oldService.getCount(name, idCard, zjNumber, county, street,
 				community, isGenerationOrder, isindividuation, user);
 		// count = count == 0 ? 1 : count;

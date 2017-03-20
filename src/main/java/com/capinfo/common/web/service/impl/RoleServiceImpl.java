@@ -25,22 +25,13 @@ public class RoleServiceImpl extends CommonsDataOperationServiceImpl<Role, RoleP
 		return searchCriteriaBuilder;
 	}
 
-	@SuppressWarnings("null")
 	@Override
 	public List<Role> getAllRoles(SystemUser user) {
-		List<Role> listNew = null;
+		//List<Role> listNew = null;
 		try {
 			 List<Role> list = getGeneralService().getAllObjects(Role.class);
-			 if(user.getLeave()!=0){
-				 for (Role role : list) {
-					 if(role.getId()!=1 || role.getId()!=2){
-						 listNew.add(role);
-					 }
-				}
-			 }else {
-				 listNew = list;
-			}
-			 return listNew;
+			
+			 return list;
 		} catch (RuntimeException e) {
 			LOGGER.debug(e.getMessage(), e);
 			return null;

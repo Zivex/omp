@@ -31,10 +31,9 @@
 						<th width="12%" style="text-align: center;">社区</th>
 						<th width="10%" style="text-align: center;">座机号</th>
 						<th width="10%" style="text-align: center;">身份证号</th>
-						<!-- 						<th width="10%" style="text-align: center;">联系电话</th> -->
 						<th width="10%" style="text-align: center;">话机类型</th>
 						<c:if test="${sys == 'admin'}">
-							<th width="10%" style="text-align: center;">名称</th>
+							<th width="10%" style="text-align: center;">所属账户</th>
 						</c:if>
 						<th width="10%" style="text-align: center;">来电显示</th>
 						<th width="8%" style="text-align: center;">个性化</th>
@@ -52,7 +51,6 @@
 							<td style="text-align: center;">${old.household_community.name}</td>
 							<td style="text-align: center;">${old.zjnumber}</td>
 							<td style="text-align: center;">${old.certificates_number}</td>
-							<%-- 							<td style="text-align: center;">${old.phone}</td> --%>
 							<td style="text-align: center;">${old.teltype}</td>
 							<c:if test="${sys == 'admin'}">
 								<td style="text-align: center;">${old.user_name}</td>
@@ -87,9 +85,7 @@
 										<li><a href="###" onclick="deleteUser(${old.id},this);">删除</a></li>
 										<c:if test="${sys ==  'admin'}">
 											<li><a onclick="ompKeyModify(${old.id} )">指令个性化</a></li>
-											<%-- 											<li><a onclick="ompKeyModify(${old.id},${old.typeid} )">指令个性化</a></li> --%>
 										</c:if>
-										<%-- <li><a onclick="tocreOrder(${old.id})">生成指令</a></li> --%>
 									</ul>
 								</div>
 							</td>
@@ -103,7 +99,7 @@
 			<thead>
 				<tr>
 					<td align="left">共<span class="text-danger"><strong>${DataTotalCount}</strong></span>条记录（每页<span
-						class="text-info"><strong> <select id="pageSize" name="pageSize" onchange="pageS(this)">
+						class="text-info"><strong> <select id="pageSize" name="pageSs" onchange="pageS(this)">
 									<option value="10"
 										<c:if test="${PerPieceSize == '10'}">selected</c:if> >10</option>
 									<option value="20"
@@ -169,19 +165,7 @@
 		});
 	}
 	function pageS(num){
-		var isindividuation = $("#isindividuation").val();
-		var name = $("#name").val();
-		var creationTime = $("#creationTime").val();
-		var idCard = $("#idCard").val();
-		var zjNumber = $("#zjNumber").val();
-		var county = $("#county").val();
-		var street = $("#street").val();
-		var community = $("#community").val();
-		var isGenerationOrder = $("#isGenerationOrder").val();
-
-
-
-		window.location.href="${pageContext.request.contextPath}/old/oldMatch/list.shtml?pageSize="+num.value+"&name="+name+"&idCard="+idCard+"&zjNumber="+zjNumber+"&county="+county+"&street="+county+"&community="+community+"&isGenerationOrder="+isGenerationOrder+"&isindividuation="+isindividuation;
+		$("#pageSizes").val(num.value);
 	}
 
 </SCRIPT>

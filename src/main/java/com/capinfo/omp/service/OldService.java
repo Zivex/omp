@@ -112,5 +112,7 @@ public interface OldService extends CommonsDataOperationService<Omp_Old_Info, Or
 
 	String getIdByComCod(String community, int i);
 
+	List getCuser(SystemUser user);
+
 
 }

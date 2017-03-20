@@ -31,6 +31,47 @@ public class SystemUserParameter extends DataListParameter<SystemUser> {
 	private  String encode;
 	
 	
+	
+	//区域关系
+	private Integer yiji;
+	private Integer erji;
+	private Integer sjji;
+	private Integer siji;
+	
+	
+
+	public Integer getYiji() {
+		return yiji;
+	}
+
+	public void setYiji(Integer yiji) {
+		this.yiji = yiji;
+	}
+
+	public Integer getErji() {
+		return erji;
+	}
+
+	public void setErji(Integer erji) {
+		this.erji = erji;
+	}
+
+	public Integer getSjji() {
+		return sjji;
+	}
+
+	public void setSjji(Integer sjji) {
+		this.sjji = sjji;
+	}
+
+	public Integer getSiji() {
+		return siji;
+	}
+
+	public void setSiji(Integer siji) {
+		this.siji = siji;
+	}
+
 	public String getEncode() {
 		return encode;
 	}
