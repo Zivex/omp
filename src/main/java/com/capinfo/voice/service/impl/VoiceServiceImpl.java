@@ -37,12 +37,11 @@ public class VoiceServiceImpl implements VoiceService {
 	@Override
 	public List<Map<String, Object>> getOldContextList(Page page, String name,
 			String idCard, String zjNumber, String county, String street,
-			String community) {
-		String userName = SecurityContextHolder.getContext()
-				.getAuthentication().getName();
+			String community,SystemUser user) {
+		
 		String uName = "";
-		if (!"admin".equals(userName)) {
-			uName = " AND I.agent_id  =  '" + userName + "'";
+		if (!"admin".equals(user.getLogonName())) {
+			uName = " AND I.agent_id  =  '" + user.getId() + "'";
 		}
 		if (!StringUtils.isEmpty(name)) {
 			name = " AND I.`NAME` LIKE '%" + name + "%'";
@@ -227,13 +226,11 @@ public class VoiceServiceImpl implements VoiceService {
 	@Override
 	public List<Map<String, Object>> getOldList(Page page, String name,
 			String idCard, String zjNumber, String county, String street,
-			String community, String send_flag, String execute_flag) {
-		String userName = SecurityContextHolder.getContext()
-				.getAuthentication().getName();
+			String community, String send_flag, String execute_flag,SystemUser user) {
 		String uName = "";
-		if (!"admin".equals(userName)) {
-			uName = " AND o.agent_id  =  '" + userName + "'";
-		}
+//		if (!"admin".equals(user.getLogonName())) {
+//			uName = " AND o.agent_id  =  '" + user.getId() + "'";
+//		}
 		if (!StringUtils.isEmpty(name)) {
 			name = " AND oldo.`NAME` LIKE '%" + name + "%'";
 		}
@@ -279,7 +276,7 @@ public class VoiceServiceImpl implements VoiceService {
 	@Override
 	public int getOlCount(String name, String idCard, String zjNumber,
 			String county, String street, String community, String send_flag,
-			String execute_flag) {
+			String execute_flag,SystemUser user) {
 		if (!StringUtils.isEmpty(name)) {
 			name = " AND oldo.`NAME` LIKE '%" + name + "%'";
 		}

@@ -62,6 +62,14 @@ public class Omp_Old_Info extends CardPersonMessageBack implements BaseEntity {
 	private String account_type;
 	// 用户名称
 	private String user_name;
+	
+	
+	private Integer yiji;
+	private Integer erji;
+	private Integer sjji;
+	private Integer siji;
+	
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ID", unique = true, nullable = false, precision = 12, scale = 0)
@@ -358,7 +366,40 @@ public class Omp_Old_Info extends CardPersonMessageBack implements BaseEntity {
 	public void setUser_name(String user_name) {
 		this.user_name = user_name;
 	}
+	@Column(name = "yiji")
+	public Integer getYiji() {
+		return yiji;
+	}
 
+	public void setYiji(Integer yiji) {
+		this.yiji = yiji;
+	}
+	@Column(name = "erji")
+	public Integer getErji() {
+		return erji;
+	}
 
+	public void setErji(Integer erji) {
+		this.erji = erji;
+	}
+	@Column(name = "sjji")
+	public Integer getSjji() {
+		return sjji;
+	}
+
+	public void setSjji(Integer sjji) {
+		this.sjji = sjji;
+	}
+	@Column(name = "siji")
+	public Integer getSiji() {
+		return siji;
+	}
+
+	public void setSiji(Integer siji) {
+		this.siji = siji;
+	}
+
+	
+	
 
 }

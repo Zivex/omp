@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
+import com.capinfo.common.model.SystemUser;
 import com.capinfo.framework.web.service.CommonsDataOperationService;
 import com.capinfo.omp.model.Omp_Old_Info;
 import com.capinfo.omp.parameter.OrderParameter;
@@ -15,10 +16,10 @@ import com.capinfo.omp.ws.model.ImKey;
 public interface OrderService {
 
 	int getOrderCount(String name, String idCard, String zjNumber, String county, String street, String community,
-			String send_flag, String execute_flag);
+			String send_flag, String execute_flag,SystemUser user);
 
 	List<Map<String, Object>> getOrderList(Page page, String name, String idCard, String zjNumber, String county,
-			String street, String community, String send_flag, String execute_flag);
+			String street, String community, String send_flag, String execute_flag,SystemUser user);
 	
 	String sendOrder(String id);
 	

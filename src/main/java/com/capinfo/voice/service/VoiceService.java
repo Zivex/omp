@@ -29,7 +29,7 @@ public interface VoiceService {
 	 */
 	List<Map<String, Object>> getOldContextList(Page page, String name,
 			String idCard, String zjNumber, String county, String street,
-			String community);
+			String community,SystemUser user);
 
 	int getCount(String name, String idCard, String zjNumber, String county,
 			String street, String community);
@@ -54,9 +54,9 @@ public interface VoiceService {
 	
 	String checkDeBatchSendInstructions();
 	
-	List<Map<String, Object>> getOldList(Page page, String name, String idCard, String zjNumber, String county, String street, String community,String send_flag,String execute_flag);
+	List<Map<String, Object>> getOldList(Page page, String name, String idCard, String zjNumber, String county, String street, String community,String send_flag,String execute_flag, SystemUser user);
 
-	int getOlCount(String name, String idCard, String zjNumber, String county, String street, String community,String send_flag,String execute_flag);
+	int getOlCount(String name, String idCard, String zjNumber, String county, String street, String community,String send_flag,String execute_flag, SystemUser user);
 	
 	void uploadMiddle(String id);
 	

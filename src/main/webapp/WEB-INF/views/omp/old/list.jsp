@@ -24,13 +24,13 @@
 				<thead>
 					<tr class="active">
 						<th width="5%"><input type="checkbox" onclick="check()" /></th>
-						<th width="10%" style="text-align: center;">编号</th>
 						<th width="5%" style="text-align: center;">姓名</th>
+						<th width="10%" style="text-align: center;">座机号</th>
+						<th width="10%" style="text-align: center;">身份证号</th>
 						<th width="5%" style="text-align: center;">区域</th>
 						<th width="5%" style="text-align: center;">街道</th>
 						<th width="12%" style="text-align: center;">社区</th>
-						<th width="10%" style="text-align: center;">座机号</th>
-						<th width="10%" style="text-align: center;">身份证号</th>
+						<th width="10%" style="text-align: center;">编号</th>
 						<th width="10%" style="text-align: center;">话机类型</th>
 						<c:if test="${sys == 'admin'}">
 							<th width="10%" style="text-align: center;">所属账户</th>
@@ -44,13 +44,13 @@
 					<c:forEach var="old" items="${dataList}" varStatus="sta">
 						<tr>
 							<td><input type="checkbox" class="ids" value="${old.id}" /></td>
-							<td style="text-align: center;">${old.account_type}</td>
 							<td><a id="viewItem" onclick="hxtoOldInfo(${old.id});">${old.name}</a></td>
+							<td style="text-align: center;">${old.zjnumber}</td>
+							<td style="text-align: center;">${old.certificates_number}</td>
 							<td style="text-align: center;">${old.household_county.name}</td>
 							<td style="text-align: center;">${old.household_street.name}</td>
 							<td style="text-align: center;">${old.household_community.name}</td>
-							<td style="text-align: center;">${old.zjnumber}</td>
-							<td style="text-align: center;">${old.certificates_number}</td>
+							<td style="text-align: center;">${old.account_type}</td>
 							<td style="text-align: center;">${old.teltype}</td>
 							<c:if test="${sys == 'admin'}">
 								<td style="text-align: center;">${old.user_name}</td>
@@ -83,9 +83,9 @@
 										<li><a
 											onclick="see('${old.certificates_number}',${old.id})">查看</a></li>
 										<li><a href="###" onclick="deleteUser(${old.id},this);">删除</a></li>
-										<c:if test="${sys ==  'admin'}">
+<%-- 										<c:if test="${sys ==  'admin'}"> --%>
 											<li><a onclick="ompKeyModify(${old.id} )">指令个性化</a></li>
-										</c:if>
+<%-- 										</c:if> --%>
 									</ul>
 								</div>
 							</td>

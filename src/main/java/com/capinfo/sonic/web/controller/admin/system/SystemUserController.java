@@ -153,6 +153,8 @@ public class SystemUserController extends AuthenticationSuccessHandlerImpl {
 					nList.add(role);
 				}
 			}
+		}else{
+			nList=allRoles;
 		}
 		mv.addObject("command", parameter);
 		mv.addObject("roleList", nList);
@@ -223,13 +225,8 @@ public class SystemUserController extends AuthenticationSuccessHandlerImpl {
 
 						}
 					}
-					// 账户类型
-					// account_type = account_type+standardNo;
-					// parameter.getEntity().setAccount_type(account_type);
-					// 账户等级
 					OmpRegion region = systemUserService.getbiRegoinid(Long
 							.parseLong(r));
-					// String standardNo = region.getStandardNo();
 					entity.setLeave(leave);
 					Long id = region.getId();
 					Long parentid = region.getParentid();
@@ -242,31 +239,29 @@ public class SystemUserController extends AuthenticationSuccessHandlerImpl {
 					Integer siji = parameter.getSiji();
 					int leave = 1;
 					// 区域
-				//	Integer r = 0;
 					if (siji != null && siji != 0) {
 						leave = 5;
-						entity.setSiji(siji);
-
 					} else {
 						Integer sjji = parameter.getSjji();
 						if (sjji != null && sjji != 0) {
 							leave = 4;
-							entity.setSjji(sjji);
 						} else {
 							Integer erji = parameter.getErji();
 							if (erji != null && erji != 0) {
 								leave = 3;
-								entity.setErji(erji);
 							} else {
 								Integer yiji = parameter.getYiji();
 								if (yiji != null && yiji != 0) {
 									leave = 2;
-									entity.setYiji(yiji);
 								}
 							}
 
 						}
 					}
+					entity.setYiji(parameter.getYiji());
+					entity.setErji(parameter.getErji());
+					entity.setSjji(parameter.getSjji());
+					entity.setSiji(parameter.getSiji());
 					entity.setLeave(leave);
 				}
 
@@ -297,8 +292,22 @@ public class SystemUserController extends AuthenticationSuccessHandlerImpl {
 					.getEntity().getId());
 			parameter.setEntity(user);
 		}
+		SystemUser entity = parameter.getEntity();
+		List<Role> allRoles = roleService.getAllRoles(entity);
+		List<Role>  nList = new ArrayList<Role>();
+		if(entity.getLeave()!=0){
+			for (Role role : allRoles) {
+				if(role.getId()!=1 && role.getId()!=2){
+					nList.add(role);
+				}
+			}
+		}else{
+			nList=allRoles;
+		}
+		
+		
 		mv.addObject("command", parameter);
-		mv.addObject("roleList", roleService.getAllRoles(parameter.getEntity()));
+		mv.addObject("roleList", nList);
 
 		return mv;
 	}

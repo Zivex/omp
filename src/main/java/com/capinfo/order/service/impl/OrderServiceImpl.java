@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
+import com.capinfo.common.model.SystemUser;
 import com.capinfo.framework.dao.SearchCriteriaBuilder;
 import com.capinfo.framework.model.BaseEntity;
 import com.capinfo.framework.model.system.User;
@@ -40,8 +41,43 @@ public class OrderServiceImpl  implements
 	@Override
 	public int getOrderCount(String name, String idCard, String zjNumber,
 			String county, String street, String community, String send_flag,
-			String execute_flag) {
-		// TODO Auto-generated method stub
+			String execute_flag,SystemUser user) {
+		// 查询用户区域
+		String rname = "";
+		if("g".equals(user.getAccount_type())){
+			switch (user.getLeave()) {
+			case 3:
+				rname = " and i.HOUSEHOLD_COUNTY_ID = " + user.getRid();
+				break;
+			case 4:
+				rname = " and i.HOUSEHOLD_STREET_ID = " + user.getRid();
+				break;
+			case 5:
+				rname = " and i.HOUSEHOLD_COMMUNITY_ID = " + user.getRid();
+				break;
+			}
+		}
+		String ji = "";
+		if("m".equals(user.getAccount_type()) || "b".equals(user.getAccount_type())){
+			switch (user.getLeave()) {
+			case 1: String idSsql = "select t.id from composition t where t.prient_id is null and t.cid="+user.getId();
+			int id = jdbcTemplate.queryForInt(idSsql);
+			ji = " and i.yiji = " + id;
+			break;
+			case 2:
+				ji = " and i.yiji = " + user.getYiji();
+				break;
+			case 3:
+				ji = " and i.erji = " + user.getErji();
+				break;
+			case 4:
+				ji = " and i.sjji = " + user.getSjji();
+				break;
+			case 5:
+				ji = " and i.siji = " + user.getSiji();
+				break;
+			}
+		}
 		if (!StringUtils.isEmpty(name)) {
 			name = " AND oldo.`NAME` LIKE '%" + name + "%'";
 		}
@@ -73,7 +109,7 @@ public class OrderServiceImpl  implements
 				+ " county,r3.`NAME` street,i.ZJNUMBER FROM omp_old_info i,omp_region r1,omp_region r2,"
 				+ "omp_region r3	WHERE	i.HOUSEHOLD_COMMUNITY_ID = r1.ID"
 				+ " AND i.HOUSEHOLD_COUNTY_ID = r2.ID	AND i.HOUSEHOLD_STREET_ID = r3.ID "
-				+ county + street + community + ") old"
+				+ county + street + community + ji + rname + ") old"
 				+ "	WHERE	o.oldId = old.id) oldo WHERE 1=1 " + name + idCard
 				+ zjNumber + send_flag + execute_flag;
 		int forInt = jdbcTemplate.queryForInt(sql);
@@ -83,8 +119,47 @@ public class OrderServiceImpl  implements
 	@Override
 	public List<Map<String, Object>> getOrderList(Page page, String name,
 			String idCard, String zjNumber, String county, String street,
-			String community, String send_flag, String execute_flag) {
+			String community, String send_flag, String execute_flag,SystemUser user) {
 		// TODO Auto-generated method stub
+		// 查询用户区域
+		String rname = "";
+		if("g".equals(user.getAccount_type())){
+			switch (user.getLeave()) {
+			case 3:
+				rname = " and i.HOUSEHOLD_COUNTY_ID = " + user.getRid();
+				break;
+			case 4:
+				rname = " and i.HOUSEHOLD_STREET_ID = " + user.getRid();
+				break;
+			case 5:
+				rname = " and i.HOUSEHOLD_COMMUNITY_ID = " + user.getRid();
+				break;
+			}
+		}
+		String ji = "";
+		if("m".equals(user.getAccount_type()) || "b".equals(user.getAccount_type())){
+			switch (user.getLeave()) {
+			case 1: String idSsql = "select t.id from composition t where t.prient_id is null and t.cid="+user.getId();
+			int id = jdbcTemplate.queryForInt(idSsql);
+			ji = " and i.yiji = " + id;
+			break;
+			case 2:
+				ji = " and i.yiji = " + user.getYiji();
+				break;
+			case 3:
+				ji = " and i.erji = " + user.getErji();
+				break;
+			case 4:
+				ji = " and i.sjji = " + user.getSjji();
+				break;
+			case 5:
+				ji = " and i.siji = " + user.getSiji();
+				break;
+			}
+		}
+		
+		
+		
 		if (!StringUtils.isEmpty(name)) {
 			name = " AND oldo.`NAME` LIKE '%" + name + "%'";
 		}
@@ -116,7 +191,7 @@ public class OrderServiceImpl  implements
 				+ " county,r3.`NAME` street,i.ZJNUMBER FROM omp_old_info i,omp_region r1,omp_region r2,"
 				+ "omp_region r3	WHERE	i.HOUSEHOLD_COMMUNITY_ID = r1.ID"
 				+ " AND i.HOUSEHOLD_COUNTY_ID = r2.ID	AND i.HOUSEHOLD_STREET_ID = r3.ID "
-				+ county + street + community + ") old"
+				+ county + street + community + ji + rname + ") old"
 				+ "	WHERE	o.oldId = old.id) oldo WHERE 1=1" + name + idCard
 				+ zjNumber + send_flag + execute_flag + " LIMIT "
 				+ (page.getCurrentPage() - 1) * page.getPageSize() + ", "

@@ -74,20 +74,50 @@ public class OldServiceImpl extends
 		searchCriteriaBuilder.addLimitCondition(
 				(page.getCurrentPage() - 1) * page.getPageSize(),  page.getPageSize());
 		if (user.getLeave() > 1) {
+			if("g".equals(user.getAccount_type())){
 			String rname = "";
 			switch (user.getLeave()) {
-			case 2:
+			case 3:
 				rname = "household_county_id";
 				break;
-			case 3:
+			case 4:
 				rname = "household_street_id";
 				break;
-			case 4:
+			case 5:
 				rname = "household_community_id";
 				break;
 			}
 			searchCriteriaBuilder.addQueryCondition(rname,
 					RestrictionExpression.EQUALS_OP, user.getRid());
+			}else if("m".equals(user.getAccount_type()) || "b".equals(user.getAccount_type())){
+				String ji = "";
+				Integer uJi=0;
+				switch (user.getLeave()) {
+				case 1: String idSsql = "select t.id from composition t where t.prient_id is null and t.cid="+user.getId();
+				int id = JdbcTemplate.queryForInt(idSsql);
+				ji = "yiji";
+				uJi = id;
+				break;
+				case 2:
+					ji = "yiji";
+					uJi = user.getYiji();
+					break;
+				case 3:
+					ji = "erji";
+					uJi = user.getErji();
+					break;
+				case 4:
+					ji = "sjji";
+					uJi = user.getSjji();
+					break;
+				case 5:
+					ji = "siji";
+					uJi = user.getSiji();
+					break;
+				}
+				searchCriteriaBuilder.addQueryCondition(ji,
+						RestrictionExpression.EQUALS_OP, uJi);
+				}
 		}
 		String sql = "";
 		// sql +=
@@ -111,9 +141,14 @@ public class OldServiceImpl extends
 		ompOldInfo.setSync(0L);
 		ompOldInfo.setNum(0L);
 		ompOldInfo.setIsindividuation(0);
-
+		if("b".equals(user.getAccount_type())|| "m".equals(user.getAccount_type())){
+			ompOldInfo.setYiji(user.getYiji());
+			ompOldInfo.setErji(user.getErji());
+			ompOldInfo.setSjji(user.getSjji());
+			ompOldInfo.setSiji(user.getSiji());
+		}
+		
 		getGeneralService().saveOrUpdate(ompOldInfo);
-
 		Long autoIncId = ompOldInfo.getId();
 
 		if (autoIncId > 0) {
@@ -212,31 +247,48 @@ public class OldServiceImpl extends
 		return i;
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public int getCount(String name, String idCard, String zjNumber,
 			String county, String street, String community,
 			String isGenerationOrder, String isindividuation, SystemUser user) {
 
-		// String uName = "";
-		// if (!"admin".equals(user.getName())) {
-		// uName = " AND I.agent_id  =  '" + user.getName() + "'";
-		// }
 		// 查询用户区域
 		String rname = "";
-		if(user.getAccount_type()=="g"){
+		if("g".equals(user.getAccount_type())){
 			switch (user.getLeave()) {
-			case 2:
+			case 3:
 				rname = " and i.HOUSEHOLD_COUNTY_ID = " + user.getRid();
 				break;
-			case 3:
+			case 4:
 				rname = " and i.HOUSEHOLD_STREET_ID = " + user.getRid();
 				break;
-			case 4:
+			case 5:
 				rname = " and i.HOUSEHOLD_COMMUNITY_ID = " + user.getRid();
 				break;
 			}
 		}
-		
+		String ji = "";
+		if("m".equals(user.getAccount_type()) || "b".equals(user.getAccount_type())){
+			switch (user.getLeave()) {
+			case 1: String idSsql = "select t.id from composition t where t.prient_id is null and t.cid="+user.getId();
+			int id = JdbcTemplate.queryForInt(idSsql);
+			ji = " and i.yiji = " + id;
+			break;
+			case 2:
+				ji = " and i.yiji = " + user.getYiji();
+				break;
+			case 3:
+				ji = " and i.erji = " + user.getErji();
+				break;
+			case 4:
+				ji = " and i.sjji = " + user.getSjji();
+				break;
+			case 5:
+				ji = " and i.siji = " + user.getSiji();
+				break;
+			}
+		}
 
 		if (name != null && !StringUtils.isEmpty(name)) {
 			name = " AND I.NAME  LIKE  '%" + name + "%'";
@@ -274,6 +326,7 @@ public class OldServiceImpl extends
 		 */
 		String sql = "SELECT count(i.ID) FROM	OMP_OLD_INFO i WHERE i.STATE = 1 "
 				+ rname
+				+ ji
 				+ name
 				+ idCard
 				+ zjNumber
@@ -1579,14 +1632,15 @@ public class OldServiceImpl extends
 
 	@Override
 	public List getCuser(SystemUser user) {
-//		String sql = "";
-//		if (user.getJi() == 0) {
-//			sql = "select t.id from composition t where t.cid=" + user.getId();
-//		} else {
-//			sql = "select t.id from composition t where t.prient_id="
-//					+ user.getJi();
-//		}
-//		List<Map<String, Object>> queryForList = JdbcTemplate.queryForList(sql);
+		int lv = user.getLeave();
+		Long id = user.getId();
+		/**
+		 * lv=2 -->yiji
+		 * lv=3 -->erji
+		 * lv=4 -->sjji
+		 * lv=5 -->siji
+		 */
+		System.out.println("用户当前的级别"+lv+user.getYiji()+user.getErji()+user.getSjji()+user.getSiji());
 		return null;
 	}
 

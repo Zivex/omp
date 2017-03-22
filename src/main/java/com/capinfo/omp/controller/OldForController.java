@@ -116,8 +116,7 @@ public class OldForController {
 		if (StringUtils.isEmpty(pageSize)) {
 			pageSize = "10";
 		}
-		//查询下级
-		List userList = oldService.getCuser(user);
+		
 		int count = oldService.getCount(name, idCard, zjNumber, county, street,
 				community, isGenerationOrder, isindividuation, user);
 		// count = count == 0 ? 1 : count;
@@ -241,30 +240,25 @@ public class OldForController {
 		Workbook workbook = WorkbookFactory.create(fis);
 		Sheet sheetAt0 = workbook.getSheetAt(0);
 		Row row3 = sheetAt0.getRow(3);
-		// 市区
-		String area = getCellValue(row3.getCell(0));
-		// 街道
-		String street = getCellValue(row3.getCell(3));
-		// 社区
-		String community = getCellValue(row3.getCell(6));
-		// 根据市区名称查询市区ID
-		String countyId = oldService.getIdByName(area, 3);
-		// 根据街道名称查询街道ID
-		String streetId = oldService.getIdByName(street, 4);
-		// 根据社区名称查询社区ID
-		String communityId = oldService.getIdByName(community, 5);
-		//查询社区编码
-		String comNUm = oldService.getIdByComCod(community, 5);
-		Row row6 = sheetAt0.getRow(6);
-		// 姓名
-		String workername = getCellValue(row6.getCell(1));
-		String workertel = row6.getCell(4).getStringCellValue();
+		// 工作人员姓名
+		String workername = getCellValue(row3.getCell(1));
+		String workertel = row3.getCell(7).getStringCellValue();
 		int rowNum = sheetAt0.getLastRowNum();
-
-		for (int i = 10; i < rowNum + 1; i++) {
+		for (int i = 7; i < rowNum + 1; i++) {
 			Row row = sheetAt0.getRow(i);
-
-			String call_id = getCellValue(row.getCell(9));
+			String call_id = getCellValue(row.getCell(12));
+			String area = getCellValue(row.getCell(1));
+			String street = getCellValue(row.getCell(2));
+			String community = getCellValue(row.getCell(3));
+			 //根据市区名称查询市区ID
+			String countyId = oldService.getIdByName(area, 3);
+			// 根据街道名称查询街道ID
+			String streetId = oldService.getIdByName(street, 4);
+			// 根据社区名称查询社区ID
+			String communityId = oldService.getIdByName(community, 5);
+			//查询社区编码
+			String comNUm = oldService.getIdByComCod(community, 5);
+			
 			Long callId = 0l;
 			if ("是".equals(call_id)) {
 				callId = 1l;
@@ -275,14 +269,14 @@ public class OldForController {
 			old_info.setHousehold_community_id(communityId);
 			old_info.setWorkername(workername);
 			old_info.setWorkertel(workertel);
-			old_info.setName(getCellValue(row.getCell(1)));
-			old_info.setCertificates_number(getCellValue(row.getCell(2)));
-			old_info.setZjnumber(getCellValue(row.getCell(3)));
-			old_info.setPhone(getCellValue(row.getCell(4)));
-			old_info.setEmergencycontact(getCellValue(row.getCell(5)));
-			old_info.setEmergencycontacttle(getCellValue(row.getCell(6)));
-			old_info.setTeltype(getCellValue(row.getCell(7)));
-			old_info.setAddress(getCellValue(row.getCell(8)));
+			old_info.setName(getCellValue(row.getCell(4)));
+			old_info.setCertificates_number(getCellValue(row.getCell(5)));
+			old_info.setZjnumber(getCellValue(row.getCell(6)));
+			old_info.setPhone(getCellValue(row.getCell(7)));
+			old_info.setEmergencycontact(getCellValue(row.getCell(8)));
+			old_info.setEmergencycontacttle(getCellValue(row.getCell(9)));
+			old_info.setTeltype(getCellValue(row.getCell(10)));
+			old_info.setAddress(getCellValue(row.getCell(11)));
 			old_info.setCall_id(callId);
 			old_info.setAccount_type(acc+comNUm);
 			infos.add(old_info);

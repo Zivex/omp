@@ -45,27 +45,27 @@ public class VoiceController {
 	private JdbcTemplate jdbcTemplate;
 
 	@RequestMapping("/voiceManage/initial.shtml")
-	public ModelAndView initial(String current, String name, String idCard, String zjNumber, String county, String street, String community, String isGenerationOrder, String creationTime) {
+	public ModelAndView initial(String current, String name, String idCard, String zjNumber, String county, String street, String community, String isGenerationOrder, String creationTime,@ModelAttribute("eccomm_admin") SystemUser user) {
 		ModelAndView mv = new ModelAndView("/omp/voice/initial");
-		getList(mv, current, name, idCard, zjNumber, county, street, community);
+		getList(mv, current, name, idCard, zjNumber, county, street, community,user);
 		return mv;
 	}
 
 	@RequestMapping("/voiceManage/list.shtml")
-	public ModelAndView listt(String current, String name, String idCard, String zjNumber, String county, String street, String community) {
+	public ModelAndView listt(String current, String name, String idCard, String zjNumber, String county, String street, String community,@ModelAttribute("eccomm_admin") SystemUser user) {
 		ModelAndView mv = new ModelAndView("/omp/voice/list");
-		getList(mv, current, name, idCard, zjNumber, county, street, community);
+		getList(mv, current, name, idCard, zjNumber, county, street, community,user);
 		return mv;
 	}
 
-	public void getList(ModelAndView mv, String current, String name, String idCard, String zjNumber, String county, String street, String community) {
+	public void getList(ModelAndView mv, String current, String name, String idCard, String zjNumber, String county, String street, String community,SystemUser user) {
 		if (StringUtils.isEmpty(current)) {
 			current = "1";
 		}
 		int count = voiceService.getCount(name, idCard, zjNumber, county, street, community);
 		count = count == 0 ? 1 : count;
 		Page<Object> page = new Page<>(current, count, "10");
-		List<Map<String, Object>> entities = voiceService.getOldContextList(page, name, idCard, zjNumber, county, street, community);
+		List<Map<String, Object>> entities = voiceService.getOldContextList(page, name, idCard, zjNumber, county, street, community,user);
 		List<Map<String, Object>> enList = voiceService.getshell();
 
 		mv.addObject("enList", enList);
@@ -328,27 +328,27 @@ public class VoiceController {
 	}
 
 	@RequestMapping("/voiceManage/initial2.shtml")
-	public ModelAndView initial2(String current, String name, String idCard, String zjNumber, String county, String street, String community, String send_flag, String execute_flag) {
+	public ModelAndView initial2(String current, String name, String idCard, String zjNumber, String county, String street, String community, String send_flag, String execute_flag,@ModelAttribute("eccomm_admin") SystemUser user) {
 		ModelAndView mv = new ModelAndView("/omp/voice/initial2");
-		getList(mv, current, name, idCard, zjNumber, county, street, community, send_flag, execute_flag);
+		getList(mv, current, name, idCard, zjNumber, county, street, community, send_flag, execute_flag,user);
 		return mv;
 	}
 
 	@RequestMapping("/voiceManage/list2.shtml")
-	public ModelAndView listt2(String current, String name, String idCard, String zjNumber, String county, String street, String community, String send_flag, String execute_flag) {
+	public ModelAndView listt2(String current, String name, String idCard, String zjNumber, String county, String street, String community, String send_flag, String execute_flag,@ModelAttribute("eccomm_admin") SystemUser user) {
 		ModelAndView mv = new ModelAndView("/omp/voice/list2");
-		getList(mv, current, name, idCard, zjNumber, county, street, community, send_flag, execute_flag);
+		getList(mv, current, name, idCard, zjNumber, county, street, community, send_flag, execute_flag,user);
 		return mv;
 	}
 
-	public void getList(ModelAndView mv, String current, String name, String idCard, String zjNumber, String county, String street, String community, String send_flag, String execute_flag) {
+	public void getList(ModelAndView mv, String current, String name, String idCard, String zjNumber, String county, String street, String community, String send_flag, String execute_flag,SystemUser user) {
 		if (StringUtils.isEmpty(current)) {
 			current = "1";
 		}
-		int count = voiceService.getOlCount(name, idCard, zjNumber, county, street, community, send_flag, execute_flag);
+		int count = voiceService.getOlCount(name, idCard, zjNumber, county, street, community, send_flag, execute_flag,user);
 		count = count == 0 ? 1 : count;
 		Page<Object> page = new Page<>(current, count, "10");
-		List<Map<String, Object>> voiceOl = voiceService.getOldList(page, name, idCard, zjNumber, county, street, community, send_flag, execute_flag);
+		List<Map<String, Object>> voiceOl = voiceService.getOldList(page, name, idCard, zjNumber, county, street, community, send_flag, execute_flag,user);
 		mv.addObject("voiceOl", voiceOl);
 		mv.addObject("DataTotalCount", count);
 		mv.addObject("CurrentPieceNum", page.getCurrentPage());

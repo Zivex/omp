@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.capinfo.common.model.SystemUser;
+import com.capinfo.omp.model.Omp_Old_Info;
 import com.capinfo.omp.service.OldService;
 import com.capinfo.omp.utils.JsonUtil;
 import com.capinfo.omp.utils.Page;
@@ -43,29 +44,34 @@ public class OrderController {
 	private OldService oldService;
 
 	@RequestMapping("/orderManage/initial.shtml")
-	public ModelAndView initial(String current, String name, String idCard, String zjNumber, String county, String street, String community, String send_flag, String execute_flag) {
+	public ModelAndView initial(String current, String name, String idCard, String zjNumber, String county, String street, String community, String send_flag, String execute_flag,@ModelAttribute("eccomm_admin") SystemUser user) {
 		ModelAndView mv = new ModelAndView("/omp/order/initial");
 
-		getList(mv, current, name, idCard, zjNumber, county, street, community, send_flag, execute_flag);
+		getList(mv, current, name, idCard, zjNumber, county, street, community, send_flag, execute_flag,user);
 		return mv;
 	}
 
 	@RequestMapping("/orderManage/list.shtml")
-	public ModelAndView listt(String current, String name, String idCard, String zjNumber, String county, String street, String community, String send_flag, String execute_flag) {
+	public ModelAndView listt(String current, String name, String idCard, String zjNumber, String county, String street, String community, String send_flag, String execute_flag,@ModelAttribute("eccomm_admin") SystemUser user) {
 		ModelAndView mv = new ModelAndView("/omp/order/list");
 		
-		getList(mv, current, name, idCard, zjNumber, county, street, community, send_flag, execute_flag);
+		getList(mv, current, name, idCard, zjNumber, county, street, community, send_flag, execute_flag,user);
 		return mv;
 	}
 
-	public void getList(ModelAndView mv, String current, String name, String idCard, String zjNumber, String county, String street, String community, String send_flag, String execute_flag) {
+	public void getList(ModelAndView mv, String current, String name, String idCard, String zjNumber, String county, String street, String community, String send_flag, String execute_flag,SystemUser user) {
 		if (StringUtils.isEmpty(current)) {
 			current = "1";
 		}
-		int count = orderService.getOrderCount(name, idCard, zjNumber, county, street, community, send_flag, execute_flag);
-		count = count == 0 ? 1 : count;
-		Page page = new Page<>(current, count, "10");
-		List<Map<String, Object>> entities = orderService.getOrderList(page, name, idCard, zjNumber, county, street, community, send_flag, execute_flag);
+		
+		
+		int count = orderService.getOrderCount(name, idCard, zjNumber, county, street, community, send_flag, execute_flag,user);
+		//count = count == 0 ? 1 : count;
+		String pageSize = "10";
+		Page page = new Page<>(current, count, pageSize);
+		List<Map<String, Object>> entities = orderService.getOrderList(page, name, idCard, zjNumber, county, street, community, send_flag, execute_flag,user);
+		
+		
 		mv.addObject("dataList", entities);
 		mv.addObject("DataTotalCount", count);
 		mv.addObject("CurrentPieceNum", page.getCurrentPage());
