@@ -8,12 +8,12 @@ import com.capinfo.common.model.SystemUser;
 import com.capinfo.framework.web.service.CommonsDataOperationService;
 import com.capinfo.omp.model.OmpOldMatch;
 import com.capinfo.omp.model.Omp_Old_Info;
-import com.capinfo.omp.parameter.OrderParameter;
+import com.capinfo.omp.parameter.OldParameter;
 import com.capinfo.omp.utils.Page;
 import com.capinfo.omp.utils.excel.ExcelBuilder;
 
 
-public interface OldService extends CommonsDataOperationService<Omp_Old_Info, OrderParameter>  {
+public interface OldService extends CommonsDataOperationService<Omp_Old_Info, OldParameter>  {
 
 	/**
 	 * 查询
@@ -108,7 +108,7 @@ public interface OldService extends CommonsDataOperationService<Omp_Old_Info, Or
 
 	List<Map<String, Object>> getPerson(String cardIds);
 
-	ExcelBuilder exportExcel(OrderParameter parameter, SystemUser user);
+	ExcelBuilder exportExcel(OldParameter parameter, SystemUser user);
 
 	String getIdByComCod(String community, int i);
 

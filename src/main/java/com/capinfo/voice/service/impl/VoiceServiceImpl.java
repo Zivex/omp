@@ -17,7 +17,11 @@ import org.springframework.stereotype.Service;
 import com.capinfo.common.model.SystemUser;
 import com.capinfo.framework.model.system.User;
 import com.capinfo.framework.service.GeneralService;
+import com.capinfo.omp.model.Omp_Old_Info;
+import com.capinfo.omp.model.Omp_old_order;
 import com.capinfo.omp.service.OldService;
+import com.capinfo.omp.service.OrderService;
+import com.capinfo.omp.service.impl.OldServiceImpl;
 import com.capinfo.omp.utils.Page;
 import com.capinfo.omp.ws.model.ImKey;
 import com.capinfo.voice.parameter.UserInfoParameter;
@@ -31,52 +35,21 @@ public class VoiceServiceImpl implements VoiceService {
 
 	@Autowired
 	private OldService oldService;
+	
+	
 	@Autowired
-	private GeneralService generalService;
+	private OrderService order;
+	
+	
+	
 
 	@Override
-	public List<Map<String, Object>> getOldContextList(Page page, String name,
+	public List<Omp_Old_Info> getOldContextList(Page page, String name,
 			String idCard, String zjNumber, String county, String street,
 			String community,SystemUser user) {
 		
-		String uName = "";
-		if (!"admin".equals(user.getLogonName())) {
-			uName = " AND I.agent_id  =  '" + user.getId() + "'";
-		}
-		if (!StringUtils.isEmpty(name)) {
-			name = " AND I.`NAME` LIKE '%" + name + "%'";
-		}
-		if (!StringUtils.isEmpty(idCard)) {
-			idCard = " AND I.CERTIFICATES_NUMBER = '" + idCard + "'";
-		}
-		if (!StringUtils.isEmpty(zjNumber)) {
-			zjNumber = "  AND I.ZJNUMBER = '" + zjNumber + "'";
-		}
-		if (!StringUtils.isEmpty(county)) {
-			county = " AND I.HOUSEHOLD_COUNTY_ID = '" + county + "'";
-		}
-		if (!StringUtils.isEmpty(street)) {
-			street = " AND I.HOUSEHOLD_STREET_ID = '" + street + "'";
-		}
-		if (!StringUtils.isEmpty(community)) {
-			community = " AND I.HOUSEHOLD_COMMUNITY_ID = '" + community + "'";
-		}
-		String sql = "select i.id,i.`NAME`,i.ZJNUMBER,i.PHONE,i.TELTYPE,r2.`NAME` q,r3.`NAME` j,r1.`NAME` s,i.address,i.CERTIFICATES_NUMBER from omp_region r1,omp_region r2,omp_region r3,omp_old_info i "
-				+ "where STATE = 1 "
-				+ name
-				+ idCard
-				+ zjNumber
-				+ uName
-				+ county
-				+ street
-				+ community
-				+ " and  r1.id = i.HOUSEHOLD_COMMUNITY_ID and r2.id = i.HOUSEHOLD_COUNTY_ID and r3.ID = i.HOUSEHOLD_STREET_ID LIMIT "
-				+ (page.getCurrentPage() - 1)
-				* page.getPageSize()
-				+ ", "
-				+ page.getPageSize();
-		List<Map<String, Object>> queryForList = JdbcTemplate.queryForList(sql);
-		return queryForList;
+		List<Omp_Old_Info> oldlist = oldService.getOldContextList(page, name, idCard, zjNumber, county, street, community, null, null, user);
+		return oldlist;
 	}
 
 	@Override
@@ -224,53 +197,59 @@ public class VoiceServiceImpl implements VoiceService {
 	}
 
 	@Override
-	public List<Map<String, Object>> getOldList(Page page, String name,
+	public List<Omp_old_order> getOldList(Page page, String name,
 			String idCard, String zjNumber, String county, String street,
 			String community, String send_flag, String execute_flag,SystemUser user) {
-		String uName = "";
-//		if (!"admin".equals(user.getLogonName())) {
-//			uName = " AND o.agent_id  =  '" + user.getId() + "'";
+		
+		List<Omp_old_order> orderList = order.getOrderList(page, name, idCard, zjNumber, county, street, community, send_flag, execute_flag, user);
+		
+//		
+//		
+//		
+//		String uName = "";
+////		if (!"admin".equals(user.getLogonName())) {
+////			uName = " AND o.agent_id  =  '" + user.getId() + "'";
+////		}
+//		if (!StringUtils.isEmpty(name)) {
+//			name = " AND oldo.`NAME` LIKE '%" + name + "%'";
 //		}
-		if (!StringUtils.isEmpty(name)) {
-			name = " AND oldo.`NAME` LIKE '%" + name + "%'";
-		}
-		if (!StringUtils.isEmpty(idCard)) {
-			idCard = " AND oldo.idCard = '" + idCard + "'";
-		}
-		if (!StringUtils.isEmpty(zjNumber)) {
-			zjNumber = " AND oldo.ZJNUMBER = '" + zjNumber + "'";
-		}
-		if (!StringUtils.isEmpty(county)) {
-			county = " AND i.HOUSEHOLD_COUNTY_ID = '" + county + "'";
-		}
-		if (!StringUtils.isEmpty(street)) {
-			street = " AND i.HOUSEHOLD_STREET_ID = '" + street + "'";
-		}
-		if (!StringUtils.isEmpty(community)) {
-			community = " AND i.HOUSEHOLD_COMMUNITY_ID = '" + community + "'";
-		}
-		if (!StringUtils.isEmpty(send_flag)) {
-			send_flag = " AND oldo.send_flag = '" + send_flag + "'";
-		}
-		if (!StringUtils.isEmpty(execute_flag)) {
-			execute_flag = " AND oldo.execute_flag = '" + execute_flag + "'";
-		}
-		String sql = "SELECT oldo.* FROM "
-				+ "(SELECT o.startTime,old.id,o.id orderId,old.`NAME`,old.idcard,old.community,old.county,old.street,"
-				+ "old.ZJNUMBER,o.send_flag,o.execute_flag FROM omp_voice_order o,"
-				+ "(SELECT i.id,i.`NAME`,i.CERTIFICATES_NUMBER idcard,r1.`NAME` community,r2.`NAME`"
-				+ " county,r3.`NAME` street,i.ZJNUMBER FROM omp_old_info i,omp_region r1,omp_region r2,"
-				+ "omp_region r3	WHERE	i.HOUSEHOLD_COMMUNITY_ID = r1.ID"
-				+ " AND i.HOUSEHOLD_COUNTY_ID = r2.ID	AND i.HOUSEHOLD_STREET_ID = r3.ID "
-				+ county + street + community + ") old"
-				+ "	WHERE	o.oldId = old.id " + uName
-				+ "AND o.send_flag = 1 ) oldo WHERE 1=1"
-				+ name + idCard + zjNumber + send_flag + execute_flag
-				+" order BY oldo.startTime deSC"
-				+ " LIMIT " + (page.getCurrentPage() - 1) * page.getPageSize()
-				+ ", " + page.getPageSize();
-		List<Map<String, Object>> list = JdbcTemplate.queryForList(sql);
-		return list;
+//		if (!StringUtils.isEmpty(idCard)) {
+//			idCard = " AND oldo.idCard = '" + idCard + "'";
+//		}
+//		if (!StringUtils.isEmpty(zjNumber)) {
+//			zjNumber = " AND oldo.ZJNUMBER = '" + zjNumber + "'";
+//		}
+//		if (!StringUtils.isEmpty(county)) {
+//			county = " AND i.HOUSEHOLD_COUNTY_ID = '" + county + "'";
+//		}
+//		if (!StringUtils.isEmpty(street)) {
+//			street = " AND i.HOUSEHOLD_STREET_ID = '" + street + "'";
+//		}
+//		if (!StringUtils.isEmpty(community)) {
+//			community = " AND i.HOUSEHOLD_COMMUNITY_ID = '" + community + "'";
+//		}
+//		if (!StringUtils.isEmpty(send_flag)) {
+//			send_flag = " AND oldo.send_flag = '" + send_flag + "'";
+//		}
+//		if (!StringUtils.isEmpty(execute_flag)) {
+//			execute_flag = " AND oldo.execute_flag = '" + execute_flag + "'";
+//		}
+//		String sql = "SELECT oldo.* FROM "
+//				+ "(SELECT o.startTime,old.id,o.id orderId,old.`NAME`,old.idcard,old.community,old.county,old.street,"
+//				+ "old.ZJNUMBER,o.send_flag,o.execute_flag FROM omp_voice_order o,"
+//				+ "(SELECT i.id,i.`NAME`,i.CERTIFICATES_NUMBER idcard,r1.`NAME` community,r2.`NAME`"
+//				+ " county,r3.`NAME` street,i.ZJNUMBER FROM omp_old_info i,omp_region r1,omp_region r2,"
+//				+ "omp_region r3	WHERE	i.HOUSEHOLD_COMMUNITY_ID = r1.ID"
+//				+ " AND i.HOUSEHOLD_COUNTY_ID = r2.ID	AND i.HOUSEHOLD_STREET_ID = r3.ID "
+//				+ county + street + community + ") old"
+//				+ "	WHERE	o.oldId = old.id " + uName
+//				+ "AND o.send_flag = 1 ) oldo WHERE 1=1"
+//				+ name + idCard + zjNumber + send_flag + execute_flag
+//				+" order BY oldo.startTime deSC"
+//				+ " LIMIT " + (page.getCurrentPage() - 1) * page.getPageSize()
+//				+ ", " + page.getPageSize();
+//		List<Map<String, Object>> list = JdbcTemplate.queryForList(sql);
+		return orderList;
 	}
 
 	@Override

@@ -22,7 +22,7 @@ import com.capinfo.region.model.OmpRegion;
  */
 @Entity
 @Table(name = "omp_old_info")
-public class Omp_Old_Info extends CardPersonMessageBack implements BaseEntity {
+public class Omp_Old_Info  implements BaseEntity {
 
 	private static final long serialVersionUID = 1L;
 	private Long id;

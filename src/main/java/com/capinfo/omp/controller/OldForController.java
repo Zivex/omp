@@ -34,7 +34,7 @@ import com.capinfo.common.model.SystemUser;
 import com.capinfo.framework.util.DateUtils;
 import com.capinfo.omp.model.Omp_Old_Info;
 import com.capinfo.omp.parameter.CompositionParameter;
-import com.capinfo.omp.parameter.OrderParameter;
+import com.capinfo.omp.parameter.OldParameter;
 import com.capinfo.omp.service.OldService;
 import com.capinfo.omp.utils.JsonUtil;
 import com.capinfo.omp.utils.Page;
@@ -625,7 +625,7 @@ public class OldForController {
 	 */
 	@RequestMapping("/oldMatch/exportExcel.shtml")
 	public void exportExcel(NativeWebRequest request,
-			HttpServletResponse response, OrderParameter parameter,@ModelAttribute("eccomm_admin") SystemUser user) {
+			HttpServletResponse response, OldParameter parameter,@ModelAttribute("eccomm_admin") SystemUser user) {
 		try {
 			OutputStream stream = response.getOutputStream();
 			response.setContentType("application/msexcel;charset=UTF-8");

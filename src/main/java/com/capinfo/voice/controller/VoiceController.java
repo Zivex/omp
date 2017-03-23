@@ -26,6 +26,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.capinfo.common.model.SystemUser;
 import com.capinfo.framework.model.system.User;
+import com.capinfo.omp.model.Omp_Old_Info;
+import com.capinfo.omp.model.Omp_old_order;
 import com.capinfo.omp.utils.Page;
 import com.capinfo.omp.utils.PropertiesUtil;
 import com.capinfo.omp.ws.client.ClientGetVoiceDataService;
@@ -65,7 +67,7 @@ public class VoiceController {
 		int count = voiceService.getCount(name, idCard, zjNumber, county, street, community);
 		count = count == 0 ? 1 : count;
 		Page<Object> page = new Page<>(current, count, "10");
-		List<Map<String, Object>> entities = voiceService.getOldContextList(page, name, idCard, zjNumber, county, street, community,user);
+		List<Omp_Old_Info> entities = voiceService.getOldContextList(page, name, idCard, zjNumber, county, street, community,user);
 		List<Map<String, Object>> enList = voiceService.getshell();
 
 		mv.addObject("enList", enList);
@@ -348,8 +350,10 @@ public class VoiceController {
 		int count = voiceService.getOlCount(name, idCard, zjNumber, county, street, community, send_flag, execute_flag,user);
 		count = count == 0 ? 1 : count;
 		Page<Object> page = new Page<>(current, count, "10");
-		List<Map<String, Object>> voiceOl = voiceService.getOldList(page, name, idCard, zjNumber, county, street, community, send_flag, execute_flag,user);
-		mv.addObject("voiceOl", voiceOl);
+		List<Omp_old_order> oldList = voiceService.getOldList(page, name,
+				idCard, zjNumber, county, street, community, send_flag,
+				execute_flag, user);
+		mv.addObject("voiceOl", oldList);
 		mv.addObject("DataTotalCount", count);
 		mv.addObject("CurrentPieceNum", page.getCurrentPage());
 		mv.addObject("PerPieceSize", "10");

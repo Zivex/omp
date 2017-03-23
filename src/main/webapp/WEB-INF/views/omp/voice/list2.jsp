@@ -34,32 +34,32 @@
 					</tr>
 				</thead>
 				<tbody>
-					<c:forEach var="old" items="${voiceOl}" varStatus="sta">
+					<c:forEach var="order" items="${voiceOl}" varStatus="sta">
 						<c:set value="0" var="i"></c:set>
 						<tr>
 
-							<td><input type="checkbox" class="ids" value="${old.id}" /></td>
+							<td><input type="checkbox" class="ids" value="${order.old.id}" /></td>
 							<td><a id="viewItem" href="###"
-								onclick="showDetails(${old.id});">${old.name}</a></td>
-							<td>${old.county}</td>
-							<td>${old.street}</td>
-							<td>${old.community}</td>
-							<td>${old.zjnumber}</td>
-							<c:if test="${old.send_flag==1}">
+								onclick="showDetails(${order.old.id});">${order.old.name}</a></td>
+										<td>${order.old.household_county.name}</td>
+							<td>${order.old.household_street.name}</td>
+							<td>${order.old.household_community.name}</td>
+							<td>${order.old.zjnumber}</td>							
+							<c:if test="${order.send_flag==1}">
 								<td style="color: green;">已发送</td>
 							</c:if>
-							<c:if test="${old.execute_flag== 3}">
+							<c:if test="${order.execute_flag== 3}">
 								<td style="color: blue;">未接听</td>
 							</c:if>
-							<c:if test="${old.execute_flag== 1}">
+							<c:if test="${order.execute_flag== 1}">
 								<td style="color: green;">执行成功</td>
 							</c:if>
-							<c:if test="${old.execute_flag== 0}">
+							<c:if test="${order.execute_flag== 0}">
 								<td style="color: red;">执行失败</td>
 							</c:if>
-							<c:if test="${old.execute_flag== null}">
-								<td style="color: red;">未返回</td>
-							</c:if>
+<%-- 							<c:if test="${order.execute_flag== null}"> --%>
+<!-- 								<td style="color: red;">未返回</td> -->
+<%-- 							</c:if> --%>
 							<td>${old.startTime}</td>
 							<%-- 							<td>${old.address}</td> --%>
 							<%-- 							<td>${old.workername}</td> --%>
@@ -73,9 +73,9 @@
 										操作 <span class="caret"></span>
 									</button>
 									<ul class="dropdown-menu" role="menu">
-										<li><a onclick="toupd(${old.orderId})">重新发送</a></li>
+										<li><a onclick="toupd(${order.old.id})">重新发送</a></li>
 										<c:if test="${sys == 'admin'}">
-											<li><a href="###" onclick="deleteUser(${old.id},this);">删除</a></li>
+											<li><a href="###" onclick="deleteUser(${order.old.id},this);">删除</a></li>
 										</c:if>
 									</ul>
 								</div>

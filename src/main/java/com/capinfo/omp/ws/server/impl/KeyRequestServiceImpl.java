@@ -15,9 +15,9 @@ import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 
+import com.capinfo.omp.service.OrderService;
 import com.capinfo.omp.ws.model.KeyCount;
 import com.capinfo.omp.ws.server.service.KeyRequestService;
-import com.capinfo.order.service.OrderService;
 import com.google.gson.Gson;
 
 @WebService(endpointInterface = "com.capinfo.omp.ws.server.service.KeyRequestService", serviceName = "KeyRequestService")

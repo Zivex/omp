@@ -20,14 +20,15 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.capinfo.common.model.SystemUser;
 import com.capinfo.omp.model.Omp_Old_Info;
+import com.capinfo.omp.model.Omp_old_order;
 import com.capinfo.omp.service.OldService;
+import com.capinfo.omp.service.OrderService;
+import com.capinfo.omp.service.impl.OrderServiceImpl;
 import com.capinfo.omp.utils.JsonUtil;
 import com.capinfo.omp.utils.Page;
 import com.capinfo.omp.ws.client.ClientGetDataService;
 import com.capinfo.omp.ws.client.ClientGetVoiceDataService;
 import com.capinfo.omp.ws.model.ImKey;
-import com.capinfo.order.service.OrderService;
-import com.capinfo.order.service.impl.OrderServiceImpl;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -69,7 +70,7 @@ public class OrderController {
 		//count = count == 0 ? 1 : count;
 		String pageSize = "10";
 		Page page = new Page<>(current, count, pageSize);
-		List<Map<String, Object>> entities = orderService.getOrderList(page, name, idCard, zjNumber, county, street, community, send_flag, execute_flag,user);
+		List<Omp_old_order> entities = orderService.getOrderList(page, name, idCard, zjNumber, county, street, community, send_flag, execute_flag,user);
 		
 		
 		mv.addObject("dataList", entities);

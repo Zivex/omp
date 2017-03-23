@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 
 import com.capinfo.common.model.SystemUser;
 import com.capinfo.framework.model.system.User;
+import com.capinfo.omp.model.Omp_Old_Info;
+import com.capinfo.omp.model.Omp_old_order;
 import com.capinfo.omp.utils.Page;
 import com.capinfo.omp.ws.model.ImKey;
 import com.capinfo.voice.parameter.UserInfoParameter;
@@ -27,7 +29,7 @@ public interface VoiceService {
 	 * 
 	 * @return
 	 */
-	List<Map<String, Object>> getOldContextList(Page page, String name,
+	List<Omp_Old_Info> getOldContextList(Page page, String name,
 			String idCard, String zjNumber, String county, String street,
 			String community,SystemUser user);
 
@@ -54,7 +56,7 @@ public interface VoiceService {
 	
 	String checkDeBatchSendInstructions();
 	
-	List<Map<String, Object>> getOldList(Page page, String name, String idCard, String zjNumber, String county, String street, String community,String send_flag,String execute_flag, SystemUser user);
+	List<Omp_old_order> getOldList(Page page, String name, String idCard, String zjNumber, String county, String street, String community,String send_flag,String execute_flag, SystemUser user);
 
 	int getOlCount(String name, String idCard, String zjNumber, String county, String street, String community,String send_flag,String execute_flag, SystemUser user);
 	

@@ -38,9 +38,9 @@
 							<td><input type="checkbox" class="ids" value="${old.id}" /></td>
 							<td><a id="viewItem" href="###"
 								onclick="showDetails(${old.id});">${old.name}</a></td>
-							<td>${old.q}</td>
-							<td>${old.j}</td>
-							<td>${old.s}</td>
+							<td>${old.household_county.name}</td>
+							<td>${old.household_street.name}</td>
+							<td>${old.household_community.name}</td>
 							<td>${old.zjnumber}</td>
 						
 							<%-- 							<td>${old.address}</td> --%>

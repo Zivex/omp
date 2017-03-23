@@ -26,7 +26,7 @@ import com.capinfo.framework.model.BaseEntity;
 import com.capinfo.framework.web.service.impl.CommonsDataOperationServiceImpl;
 import com.capinfo.omp.model.CardPerson;
 import com.capinfo.omp.model.Omp_Old_Info;
-import com.capinfo.omp.parameter.OrderParameter;
+import com.capinfo.omp.parameter.OldParameter;
 import com.capinfo.omp.service.OldService;
 import com.capinfo.omp.utils.Page;
 import com.capinfo.omp.utils.excel.ColFooterCell;
@@ -41,7 +41,7 @@ import com.capinfo.omp.utils.excel.Theme;
 @SuppressWarnings("rawtypes")
 @Service
 public class OldServiceImpl extends
-		CommonsDataOperationServiceImpl<Omp_Old_Info, OrderParameter> implements
+		CommonsDataOperationServiceImpl<Omp_Old_Info, OldParameter> implements
 		OldService {
 
 	@Autowired
@@ -73,52 +73,11 @@ public class OldServiceImpl extends
 				RestrictionExpression.EQUALS_OP, isindividuation);
 		searchCriteriaBuilder.addLimitCondition(
 				(page.getCurrentPage() - 1) * page.getPageSize(),  page.getPageSize());
-		if (user.getLeave() > 1) {
-			if("g".equals(user.getAccount_type())){
-			String rname = "";
-			switch (user.getLeave()) {
-			case 3:
-				rname = "household_county_id";
-				break;
-			case 4:
-				rname = "household_street_id";
-				break;
-			case 5:
-				rname = "household_community_id";
-				break;
-			}
-			searchCriteriaBuilder.addQueryCondition(rname,
-					RestrictionExpression.EQUALS_OP, user.getRid());
-			}else if("m".equals(user.getAccount_type()) || "b".equals(user.getAccount_type())){
-				String ji = "";
-				Integer uJi=0;
-				switch (user.getLeave()) {
-				case 1: String idSsql = "select t.id from composition t where t.prient_id is null and t.cid="+user.getId();
-				int id = JdbcTemplate.queryForInt(idSsql);
-				ji = "yiji";
-				uJi = id;
-				break;
-				case 2:
-					ji = "yiji";
-					uJi = user.getYiji();
-					break;
-				case 3:
-					ji = "erji";
-					uJi = user.getErji();
-					break;
-				case 4:
-					ji = "sjji";
-					uJi = user.getSjji();
-					break;
-				case 5:
-					ji = "siji";
-					uJi = user.getSiji();
-					break;
-				}
-				searchCriteriaBuilder.addQueryCondition(ji,
-						RestrictionExpression.EQUALS_OP, uJi);
-				}
-		}
+		
+		
+		
+		
+		
 		String sql = "";
 		// sql +=
 		// "and this_.CREATE_CARD_SUCCESS = 1 and this_.has_pushed = 1 and this_.residence_county_id !=31381";
@@ -883,7 +842,7 @@ public class OldServiceImpl extends
 	 * 导出
 	 */
 	@Override
-	public ExcelBuilder exportExcel(OrderParameter parameter, SystemUser user) {
+	public ExcelBuilder exportExcel(OldParameter parameter, SystemUser user) {
 		List<CardPerson> cardPersontList = new ArrayList<CardPerson>();
 
 		SearchCriteriaBuilder<Omp_Old_Info> searchCriteriaBuilder = super

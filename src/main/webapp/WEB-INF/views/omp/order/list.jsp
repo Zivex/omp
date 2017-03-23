@@ -36,28 +36,25 @@
 					</tr>
 				</thead>
 				<tbody>
-					<c:forEach var="old" items="${dataList}" varStatus="sta">
+					<c:forEach var="order" items="${dataList}" varStatus="sta">
 						<tr>
-							<td><input type="checkbox" class="ids pzl" value="${old.id}"/></td>
+							<td><input type="checkbox" class="ids pzl" value="${order.old.id}"/></td>
 
 							<td>
-							    <a id="viewItem" href="###"  onclick="xiangqing(${old.id}),this">${old.name}</a>
-
+							    <a id="viewItem" href="###"  onclick="xiangqing(${order.old.id}),this">${order.old.name}</a>
 							</td>
-
-
-							<td>${old.county}</td>
-							<td>${old.street}</td>
-							<td>${old.community}</td>
-							<td>${old.zjnumber}</td>
+							<td>${order.old.household_county.name}</td>
+							<td>${order.old.household_street.name}</td>
+							<td>${order.old.household_community.name}</td>
+							<td>${order.old.zjnumber}</td>
 							<td>
-								<c:if test="${old.send_flag==1}"><font color="green">已发送</font></c:if>
-								<c:if test="${old.send_flag!=1}"><font color="red">待发送</font></c:if>
+								<c:if test="${order.send_flag==1}"><font color="green">已发送</font></c:if>
+								<c:if test="${order.send_flag!=1}"><font color="red">待发送</font></c:if>
 							</td>
 							<td>
-							<c:if test="${old.execute_flag==1}"><font color="green">成功</font></c:if>
-								<c:if test="${old.execute_flag==0}"><font color="red">失败</font></c:if>
-								<c:if test="${old.execute_flag==3}"><font color="blue">未执行</font></c:if>
+							<c:if test="${order.execute_flag==1}"><font color="green">成功</font></c:if>
+								<c:if test="${order.execute_flag==0}"><font color="red">失败</font></c:if>
+								<c:if test="${order.execute_flag==3}"><font color="blue">未执行</font></c:if>
 							</td>
 						
 <%-- 							<td>${old.address}</td> --%>
@@ -68,9 +65,9 @@
 										操作 <span class="caret"></span>
 									</button>
 									<ul class="dropdown-menu" role="menu">
-										<li><a onclick="toupd(${old.id})">发送</a></li>
-										<c:if test="${old.logonName ne 'admin'}">
-											<li><a href="###" onclick="deleteUser(${old.id},this);">删除</a></li>
+										<li><a onclick="toupd(${order.old.id})">发送</a></li>
+										<c:if test="${sys ==  'admin'}">
+											<li><a href="###" onclick="deleteUser(${order.old.id},this);">删除</a></li>
 										</c:if>
 									</ul>
 								</div>

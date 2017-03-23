@@ -1,4 +1,4 @@
-package com.capinfo.order.service.impl;
+package com.capinfo.omp.service.impl;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -16,20 +16,25 @@ import org.springframework.stereotype.Service;
 
 import com.capinfo.common.model.SystemUser;
 import com.capinfo.framework.dao.SearchCriteriaBuilder;
+import com.capinfo.framework.dao.impl.restriction.RestrictionExpression;
 import com.capinfo.framework.model.BaseEntity;
 import com.capinfo.framework.model.system.User;
 import com.capinfo.framework.service.GeneralService;
 import com.capinfo.framework.web.service.impl.CommonsDataOperationServiceImpl;
 import com.capinfo.omp.model.Omp_Old_Info;
+import com.capinfo.omp.model.Omp_old_order;
+import com.capinfo.omp.model.Omp_voice_order;
+import com.capinfo.omp.parameter.OldParameter;
 import com.capinfo.omp.parameter.OrderParameter;
 import com.capinfo.omp.service.OldService;
+import com.capinfo.omp.service.OrderService;
 import com.capinfo.omp.utils.Page;
 import com.capinfo.omp.ws.client.ClientGetDataService;
 import com.capinfo.omp.ws.model.ImKey;
-import com.capinfo.order.service.OrderService;
 
 @Service
-public class OrderServiceImpl  implements
+public class OrderServiceImpl extends
+CommonsDataOperationServiceImpl<Omp_old_order, OrderParameter>  implements
 		OrderService {
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
@@ -37,7 +42,6 @@ public class OrderServiceImpl  implements
 	@Autowired
 	private OldService oldService;
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public int getOrderCount(String name, String idCard, String zjNumber,
 			String county, String street, String community, String send_flag,
@@ -117,87 +121,37 @@ public class OrderServiceImpl  implements
 	}
 
 	@Override
-	public List<Map<String, Object>> getOrderList(Page page, String name,
+	public List<Omp_old_order> getOrderList(Page page, String name,
 			String idCard, String zjNumber, String county, String street,
 			String community, String send_flag, String execute_flag,SystemUser user) {
-		// TODO Auto-generated method stub
-		// 查询用户区域
-		String rname = "";
-		if("g".equals(user.getAccount_type())){
-			switch (user.getLeave()) {
-			case 3:
-				rname = " and i.HOUSEHOLD_COUNTY_ID = " + user.getRid();
-				break;
-			case 4:
-				rname = " and i.HOUSEHOLD_STREET_ID = " + user.getRid();
-				break;
-			case 5:
-				rname = " and i.HOUSEHOLD_COMMUNITY_ID = " + user.getRid();
-				break;
-			}
+		
+		List<Omp_Old_Info> oldList = oldService.getOldContextList(page, name, idCard, zjNumber, county, street, community, null, null, user);
+		
+		SearchCriteriaBuilder<Omp_old_order> searchCriteriaBuilder = new SearchCriteriaBuilder<Omp_old_order>(
+				Omp_old_order.class);
+		
+		searchCriteriaBuilder.addQueryCondition("send_flag",
+				RestrictionExpression.EQUALS_OP, send_flag);
+		searchCriteriaBuilder.addQueryCondition("execute_flag",
+				RestrictionExpression.EQUALS_OP, execute_flag);
+		
+		String ids = "";
+		for (Omp_Old_Info old : oldList) {
+			ids+=old.getId()+",";
 		}
-		String ji = "";
-		if("m".equals(user.getAccount_type()) || "b".equals(user.getAccount_type())){
-			switch (user.getLeave()) {
-			case 1: String idSsql = "select t.id from composition t where t.prient_id is null and t.cid="+user.getId();
-			int id = jdbcTemplate.queryForInt(idSsql);
-			ji = " and i.yiji = " + id;
-			break;
-			case 2:
-				ji = " and i.yiji = " + user.getYiji();
-				break;
-			case 3:
-				ji = " and i.erji = " + user.getErji();
-				break;
-			case 4:
-				ji = " and i.sjji = " + user.getSjji();
-				break;
-			case 5:
-				ji = " and i.siji = " + user.getSiji();
-				break;
-			}
+		ids = ids.substring(0,ids.length() - 1);
+		System.out.println(ids);
+		String sql = "";
+		 sql +=" oldId In ("+ids+")";
+
+		if (!"".equals(sql)) {
+			searchCriteriaBuilder.addAdditionalRestrictionSql(sql);
 		}
 		
-		
-		
-		if (!StringUtils.isEmpty(name)) {
-			name = " AND oldo.`NAME` LIKE '%" + name + "%'";
-		}
-		if (!StringUtils.isEmpty(idCard)) {
-			idCard = " AND oldo.idCard = '" + idCard + "'";
-		}
-		if (!StringUtils.isEmpty(zjNumber)) {
-			zjNumber = " AND oldo.ZJNUMBER = '" + zjNumber + "'";
-		}
-		if (!StringUtils.isEmpty(county)) {
-			county = " AND i.HOUSEHOLD_COUNTY_ID = '" + county + "'";
-		}
-		if (!StringUtils.isEmpty(street)) {
-			street = " AND i.HOUSEHOLD_STREET_ID = '" + street + "'";
-		}
-		if (!StringUtils.isEmpty(community)) {
-			community = " AND i.HOUSEHOLD_COMMUNITY_ID = '" + community + "'";
-		}
-		if (!StringUtils.isEmpty(send_flag)) {
-			send_flag = " AND oldo.send_flag = '" + send_flag + "'";
-		}
-		if (!StringUtils.isEmpty(execute_flag)) {
-			execute_flag = " AND oldo.execute_flag = '" + execute_flag + "'";
-		}
-		String sql = "SELECT oldo.* FROM "
-				+ "(SELECT old.id,old.`NAME`,old.idcard,old.community,old.county,old.street,"
-				+ "old.ZJNUMBER,o.send_flag,o.execute_flag FROM omp_old_order o,"
-				+ "(SELECT i.id,i.`NAME`,i.CERTIFICATES_NUMBER idcard,r1.`NAME` community,r2.`NAME`"
-				+ " county,r3.`NAME` street,i.ZJNUMBER FROM omp_old_info i,omp_region r1,omp_region r2,"
-				+ "omp_region r3	WHERE	i.HOUSEHOLD_COMMUNITY_ID = r1.ID"
-				+ " AND i.HOUSEHOLD_COUNTY_ID = r2.ID	AND i.HOUSEHOLD_STREET_ID = r3.ID "
-				+ county + street + community + ji + rname + ") old"
-				+ "	WHERE	o.oldId = old.id) oldo WHERE 1=1" + name + idCard
-				+ zjNumber + send_flag + execute_flag + " LIMIT "
-				+ (page.getCurrentPage() - 1) * page.getPageSize() + ", "
-				+ page.getPageSize();
-		List<Map<String, Object>> list = jdbcTemplate.queryForList(sql);
-		return list;
+		List<Omp_old_order> orderList = getGeneralService().getObjects(
+				searchCriteriaBuilder.build());
+
+		return orderList;
 	}
 
 	@Override
