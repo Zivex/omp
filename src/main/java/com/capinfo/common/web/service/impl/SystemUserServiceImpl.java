@@ -10,6 +10,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.capinfo.common.model.Resource;
@@ -35,6 +36,8 @@ public class SystemUserServiceImpl extends CommonsDataOperationServiceImpl<Syste
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
+	@Autowired
+	private JdbcTemplate jdbcTemplate;
 
 	public SearchCriteriaBuilder<SystemUser> getSearchCriteriaBuilder(SystemUserParameter parameter) {
 		SearchCriteriaBuilder<SystemUser> searchCriteriaBuilder = super.getSearchCriteriaBuilder(parameter);
@@ -227,5 +230,25 @@ public class SystemUserServiceImpl extends CommonsDataOperationServiceImpl<Syste
 		resources = getGeneralService().getObjects(searchCriteriaBuilder.build());
 		return resources;
 	}
+	
+	
+	@Override
+	public boolean validationMechanism(long rid,String f ) {
+		boolean flag = false;
+		int i = 0;
+		if("g".equals(f)){
+			String sql ="select count(*) from users t where t.rid="+rid;
+			i = jdbcTemplate.queryForInt(sql);
+		}else{
+			String sql ="select count(*) from users t where t.ji="+rid;
+			i = jdbcTemplate.queryForInt(sql);
+		}
+		if(i>0){
+			flag = true;	//机构已存在
+		}
+		
+		return flag;
+	}
+	
 
 }

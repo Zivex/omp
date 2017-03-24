@@ -4,11 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
-
 import javax.validation.Valid;
-
 import net.sf.json.JSONObject;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomCollectionEditor;
@@ -24,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
-
 import com.capinfo.common.model.Role;
 import com.capinfo.common.model.SystemUser;
 import com.capinfo.common.security.authentication.AuthenticationSuccessHandlerImpl;
@@ -64,26 +60,20 @@ public class SystemUserController extends AuthenticationSuccessHandlerImpl {
 	 * @return
 	 */
 	@RequestMapping("/initial.shtml")
-	public ModelAndView index(SystemUserParameter parameter,
-			@ModelAttribute("eccomm_admin") SystemUser user) {
+	public ModelAndView index(SystemUserParameter parameter, @ModelAttribute("eccomm_admin") SystemUser user) {
 		ModelAndView mv = new ModelAndView("/admin/sys/user/initial");
 		List<SystemUser> entities = new ArrayList<SystemUser>();
-		if (user.getLeave() == 1
-				&& ("b".equals(user.getAccount_type()) || "m".equals(user
-						.getAccount_type()))) {
+		if (user.getLeave() == 1 && ("b".equals(user.getAccount_type()) || "m".equals(user.getAccount_type()))) {
 			String account_type = user.getAccount_type();
 			parameter.setEncode(account_type);
 			parameter.getEntity().setEncoding(user.getEncoding());
 		}
 		int totalCount = this.systemUserService.getTotalCount(parameter);
 		if (totalCount > 0) {
-			entities = systemUserService.getList(parameter, totalCount,
-					parameter.getCurrentPieceNum());
+			entities = systemUserService.getList(parameter, totalCount, parameter.getCurrentPieceNum());
 		}
 		mv.addObject("roleList", roleService.getAllRoles(user));
-		mv.addAllObjects(new DataListViewModel<SystemUser>("dataList",
-				entities, totalCount, this.systemUserService, parameter)
-				.buildViewModel());
+		mv.addAllObjects(new DataListViewModel<SystemUser>("dataList", entities, totalCount, this.systemUserService, parameter).buildViewModel());
 		return mv;
 	}
 
@@ -94,26 +84,20 @@ public class SystemUserController extends AuthenticationSuccessHandlerImpl {
 	 * @return
 	 */
 	@RequestMapping("/list.shtml")
-	public ModelAndView userList(SystemUserParameter parameter,
-			@ModelAttribute("eccomm_admin") SystemUser user) {
+	public ModelAndView userList(SystemUserParameter parameter, @ModelAttribute("eccomm_admin") SystemUser user) {
 		ModelAndView mv = new ModelAndView("/admin/sys/user/list");
 		List<SystemUser> entities = new ArrayList<SystemUser>();
-		if (user.getLeave() == 1
-				&& ("b".equals(user.getAccount_type()) || "m".equals(user
-						.getAccount_type()))) {
+		if (user.getLeave() == 1 && ("b".equals(user.getAccount_type()) || "m".equals(user.getAccount_type()))) {
 			String account_type = user.getAccount_type();
 			parameter.setEncode(account_type);
 			parameter.getEntity().setEncoding(user.getEncoding());
 		}
 		int totalCount = this.systemUserService.getTotalCount(parameter);
 		if (totalCount > 0) {
-			entities = systemUserService.getList(parameter, totalCount,
-					parameter.getCurrentPieceNum());
+			entities = systemUserService.getList(parameter, totalCount, parameter.getCurrentPieceNum());
 		}
 		mv.addObject("roleList", roleService.getAllRoles(user));
-		mv.addAllObjects(new DataListViewModel<SystemUser>("dataList",
-				entities, totalCount, this.systemUserService, parameter)
-				.buildViewModel());
+		mv.addAllObjects(new DataListViewModel<SystemUser>("dataList", entities, totalCount, this.systemUserService, parameter).buildViewModel());
 		return mv;
 	}
 
@@ -127,8 +111,7 @@ public class SystemUserController extends AuthenticationSuccessHandlerImpl {
 	public ModelAndView detail(SystemUserParameter parameter) {
 		ModelAndView mv = new ModelAndView("/admin/sys/user/detail");
 		if (parameter.getEntity().getId() != null) {
-			SystemUser user = systemUserService.getUserById(parameter
-					.getEntity().getId());
+			SystemUser user = systemUserService.getUserById(parameter.getEntity().getId());
 			parameter.setEntity(user);
 		}
 		mv.addObject("user", parameter.getEntity());
@@ -142,19 +125,18 @@ public class SystemUserController extends AuthenticationSuccessHandlerImpl {
 	 * @return
 	 */
 	@RequestMapping(value = "/form.shtml", method = RequestMethod.GET)
-	public ModelAndView saveUserInto(SystemUserParameter parameter,
-			@ModelAttribute("eccomm_admin") SystemUser user) {
+	public ModelAndView saveUserInto(SystemUserParameter parameter, @ModelAttribute("eccomm_admin") SystemUser user) {
 		ModelAndView mv = new ModelAndView("/admin/sys/user/form");
 		List<Role> allRoles = roleService.getAllRoles(user);
-		List<Role>  nList = new ArrayList<Role>();
-		if(user.getLeave()!=0){
+		List<Role> nList = new ArrayList<Role>();
+		if (user.getLeave() != 0) {
 			for (Role role : allRoles) {
-				if(role.getId()!=1 && role.getId()!=2){
+				if (role.getId() ==3 ) {
 					nList.add(role);
 				}
 			}
-		}else{
-			nList=allRoles;
+		} else {
+			nList = allRoles;
 		}
 		mv.addObject("command", parameter);
 		mv.addObject("roleList", nList);
@@ -173,10 +155,7 @@ public class SystemUserController extends AuthenticationSuccessHandlerImpl {
 	 */
 	@RequestMapping(value = "/save.shtml", method = RequestMethod.POST)
 	@ResponseBody
-	public JSONObject saveUser(
-			@Valid @ModelAttribute("command") SystemUserParameter parameter,
-			BindingResult result,
-			@ModelAttribute("eccomm_admin") SystemUser user) {
+	public JSONObject saveUser(@Valid @ModelAttribute("command") SystemUserParameter parameter, BindingResult result, @ModelAttribute("eccomm_admin") SystemUser user) {
 		Messages messages = new Messages();
 		SystemUser entity = parameter.getEntity();
 		// 基本验证
@@ -185,8 +164,7 @@ public class SystemUserController extends AuthenticationSuccessHandlerImpl {
 			messages.setMessage("操作失败,验证未通过！");
 		} else {
 			// 用户名验证
-			boolean exist = systemUserService.isExistUser(parameter.getEntity()
-					.getLogonName());
+			boolean exist = systemUserService.isExistUser(parameter.getEntity().getLogonName());
 			if (exist) {
 				messages.setSuccess(false);
 				messages.setMessage("登录名已存在,添加用户失败！");
@@ -225,8 +203,17 @@ public class SystemUserController extends AuthenticationSuccessHandlerImpl {
 
 						}
 					}
-					OmpRegion region = systemUserService.getbiRegoinid(Long
-							.parseLong(r));
+					boolean b = false;
+					if ("" != r) {
+						b = systemUserService.validationMechanism(Long.parseLong(r), "g");
+					}
+					if (b) {
+						messages.setSuccess(false);
+						messages.setMessage("此机构存在,添加用户失败！");
+						JSONObject json = JSONObject.fromObject(messages);
+						return json;
+					}
+					OmpRegion region = systemUserService.getbiRegoinid(Long.parseLong(r));
 					entity.setLeave(leave);
 					Long id = region.getId();
 					Long parentid = region.getParentid();
@@ -238,30 +225,48 @@ public class SystemUserController extends AuthenticationSuccessHandlerImpl {
 					// 判断用户等级
 					Integer siji = parameter.getSiji();
 					int leave = 1;
+					Integer j = null;
 					// 区域
 					if (siji != null && siji != 0) {
 						leave = 5;
+						j = siji;
 					} else {
 						Integer sjji = parameter.getSjji();
 						if (sjji != null && sjji != 0) {
 							leave = 4;
+							j = sjji;
 						} else {
 							Integer erji = parameter.getErji();
 							if (erji != null && erji != 0) {
 								leave = 3;
+								j = erji;
 							} else {
 								Integer yiji = parameter.getYiji();
 								if (yiji != null && yiji != 0) {
 									leave = 2;
+									j = yiji;
 								}
 							}
 
 						}
 					}
+
+					boolean b = false;
+					if (null != j) {
+						b = systemUserService.validationMechanism(j, "other");
+					}
+					if (b) {
+						messages.setSuccess(false);
+						messages.setMessage("此机构存在,添加用户失败！");
+						JSONObject json = JSONObject.fromObject(messages);
+						return json;
+					}
+
 					entity.setYiji(parameter.getYiji());
 					entity.setErji(parameter.getErji());
 					entity.setSjji(parameter.getSjji());
 					entity.setSiji(parameter.getSiji());
+					entity.setJi(j);
 					entity.setLeave(leave);
 				}
 
@@ -288,24 +293,22 @@ public class SystemUserController extends AuthenticationSuccessHandlerImpl {
 	public ModelAndView updateUserInto(SystemUserParameter parameter) {
 		ModelAndView mv = new ModelAndView("/admin/sys/user/edit");
 		if (parameter.getEntity().getId() != null) {
-			SystemUser user = systemUserService.getUserById(parameter
-					.getEntity().getId());
+			SystemUser user = systemUserService.getUserById(parameter.getEntity().getId());
 			parameter.setEntity(user);
 		}
 		SystemUser entity = parameter.getEntity();
 		List<Role> allRoles = roleService.getAllRoles(entity);
-		List<Role>  nList = new ArrayList<Role>();
-		if(entity.getLeave()!=0){
+		List<Role> nList = new ArrayList<Role>();
+		if (entity.getLeave() != 0) {
 			for (Role role : allRoles) {
-				if(role.getId()!=1 && role.getId()!=2){
+				if (role.getId() != 1 && role.getId() != 2) {
 					nList.add(role);
 				}
 			}
-		}else{
-			nList=allRoles;
+		} else {
+			nList = allRoles;
 		}
-		
-		
+
 		mv.addObject("command", parameter);
 		mv.addObject("roleList", nList);
 
@@ -325,9 +328,7 @@ public class SystemUserController extends AuthenticationSuccessHandlerImpl {
 	 */
 	@RequestMapping(value = "/update.shtml", method = RequestMethod.POST)
 	@ResponseBody
-	public JSONObject updateUser(Model model,
-			@Valid @ModelAttribute("command") SystemUserParameter parameter,
-			BindingResult result) {
+	public JSONObject updateUser(Model model, @Valid @ModelAttribute("command") SystemUserParameter parameter, BindingResult result) {
 		Messages messages = new Messages();
 		// 基本验证
 		if (parameter.getEntity().getId() == null) {
@@ -406,8 +407,7 @@ public class SystemUserController extends AuthenticationSuccessHandlerImpl {
 	 * @return
 	 */
 	@RequestMapping(value = "/change_password_form.shtml", method = RequestMethod.GET)
-	public ModelAndView changePasswordForm(SystemUserParameter parameter,
-			@ModelAttribute("eccomm_admin") SystemUser user) {
+	public ModelAndView changePasswordForm(SystemUserParameter parameter, @ModelAttribute("eccomm_admin") SystemUser user) {
 		ModelAndView mv = new ModelAndView("/admin/sys/user/password");
 		parameter.setEntity(user);
 		if (null == user.getId()) {
@@ -424,14 +424,10 @@ public class SystemUserController extends AuthenticationSuccessHandlerImpl {
 
 	@RequestMapping(value = "/change_password.shtml", method = RequestMethod.POST)
 	@ResponseBody
-	public JSONObject changePassword(SystemUserParameter parameter,
-			@ModelAttribute("eccomm_admin") SystemUser user) {
+	public JSONObject changePassword(SystemUserParameter parameter, @ModelAttribute("eccomm_admin") SystemUser user) {
 		Messages messages = new Messages();
-		if (null != parameter.getEntity().getId()
-				&& StringUtils.isNotBlank(parameter.getEntity().getPassword())
-				&& StringUtils.isNotBlank(parameter.getOldPassword())) {
-			boolean isUserPassword = systemUserService
-					.isUserPassword(parameter);
+		if (null != parameter.getEntity().getId() && StringUtils.isNotBlank(parameter.getEntity().getPassword()) && StringUtils.isNotBlank(parameter.getOldPassword())) {
+			boolean isUserPassword = systemUserService.isUserPassword(parameter);
 			if (isUserPassword) {
 				boolean suc = systemUserService.changePassword(parameter);
 				String info = suc == true ? "修改密码成功！" : "修改密码失败！";
@@ -458,11 +454,9 @@ public class SystemUserController extends AuthenticationSuccessHandlerImpl {
 	 * @return
 	 */
 	@RequestMapping(value = "/change_userinfo_form.shtml", method = RequestMethod.GET)
-	public ModelAndView changeFingerprintForm(SystemUserParameter parameter,
-			@ModelAttribute("eccomm_admin") SystemUser user) {
+	public ModelAndView changeFingerprintForm(SystemUserParameter parameter, @ModelAttribute("eccomm_admin") SystemUser user) {
 		ModelAndView mv = new ModelAndView("/admin/sys/user/changeUserinfo");
-		SystemUser sys = generalService.getObjectById(SystemUser.class,
-				user.getId());
+		SystemUser sys = generalService.getObjectById(SystemUser.class, user.getId());
 		parameter.setEntity(sys);
 		if (null == user.getId()) {
 			String info = "参数不全，操作失败！";
@@ -478,27 +472,24 @@ public class SystemUserController extends AuthenticationSuccessHandlerImpl {
 
 	@InitBinder
 	protected void initBinder(WebDataBinder binder) {
-		binder.registerCustomEditor(Set.class, "entity.roles",
-				new CustomCollectionEditor(Set.class) {
-					@Override
-					protected Object convertElement(Object element) {
-						Long id = null;
-						if (element instanceof String
-								&& !((String) element).equals("")) {
-							try {
-								id = Long.parseLong((String) element);
-							} catch (NumberFormatException e) {
-								System.out.println("Element was "
-										+ ((String) element));
-								id = null;
-							}
-						} else if (element instanceof Long) {
-							// From the database 'element' will be a Long
-							id = (Long) element;
-						}
-						return id != null ? new Role(id) : null;
+		binder.registerCustomEditor(Set.class, "entity.roles", new CustomCollectionEditor(Set.class) {
+			@Override
+			protected Object convertElement(Object element) {
+				Long id = null;
+				if (element instanceof String && !((String) element).equals("")) {
+					try {
+						id = Long.parseLong((String) element);
+					} catch (NumberFormatException e) {
+						System.out.println("Element was " + ((String) element));
+						id = null;
 					}
-				});
+				} else if (element instanceof Long) {
+					// From the database 'element' will be a Long
+					id = (Long) element;
+				}
+				return id != null ? new Role(id) : null;
+			}
+		});
 	}
 
 	private void refreshUserCache(Long id) {
@@ -545,16 +536,12 @@ public class SystemUserController extends AuthenticationSuccessHandlerImpl {
 	 * @return
 	 */
 	@RequestMapping(value = "/saveComposition.shtml")
-	public ModelAndView saveComposition(
-			@ModelAttribute("eccomm_admin") SystemUser user,
-			CompositionParameter parameter) {
+	public ModelAndView saveComposition(@ModelAttribute("eccomm_admin") SystemUser user, CompositionParameter parameter) {
 		ModelAndView mv = new ModelAndView("/admin/sys/user/composition");
 		Composition entity = parameter.getEntity();
-		Composition entityC = generalService.getObjectById(Composition.class,
-				entity.getId());
+		Composition entityC = generalService.getObjectById(Composition.class, entity.getId());
 		if (entity.getPrient_id() != 0) {
-			Composition entityP = generalService.getObjectById(
-					Composition.class, entity.getPrient_id());
+			Composition entityP = generalService.getObjectById(Composition.class, entity.getPrient_id());
 			if (entityP.getLevelid() != null) {
 				entityC.setLevelid(entityP.getLevelid() + 1);
 				entityC.setPrient_id(entityP.getId());
@@ -576,9 +563,7 @@ public class SystemUserController extends AuthenticationSuccessHandlerImpl {
 	 */
 	@RequestMapping(value = "addComposition.shtml")
 	@ResponseBody
-	public String addComposition(
-			@ModelAttribute("eccomm_admin") SystemUser user,
-			CompositionParameter parameter, String name) {
+	public String addComposition(@ModelAttribute("eccomm_admin") SystemUser user, CompositionParameter parameter, String name) {
 		parameter.getEntity().setName(name);
 		systemUserService.addMechanism(parameter.getEntity(), user);
 		return "添加成功";
@@ -592,10 +577,9 @@ public class SystemUserController extends AuthenticationSuccessHandlerImpl {
 	 */
 	@RequestMapping(value = "selectComposition.shtml")
 	@ResponseBody
-	public List<Composition> selectComposition(
-			@ModelAttribute("eccomm_admin") SystemUser user) {
-		List<Composition> compositionList = systemUserService
-				.getCompositionList(user);
+	public List<Composition> selectComposition(@ModelAttribute("eccomm_admin") SystemUser user) {
+		List<Composition> compositionList = systemUserService.getCompositionList(user);
 		return compositionList;
 	}
+
 }

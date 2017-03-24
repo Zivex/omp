@@ -32,9 +32,9 @@
 						<th width="12%" style="text-align: center;">社区</th>
 						<th width="10%" style="text-align: center;">编号</th>
 						<th width="10%" style="text-align: center;">话机类型</th>
-						<c:if test="${sys == 'admin'}">
+<%-- 						<c:if test="${sys == 'admin'}"> --%>
 							<th width="10%" style="text-align: center;">所属账户</th>
-						</c:if>
+<%-- 						</c:if> --%>
 						<th width="10%" style="text-align: center;">来电显示</th>
 						<th width="8%" style="text-align: center;">个性化</th>
 						<th width="10%" style="text-align: center;">操作</th>

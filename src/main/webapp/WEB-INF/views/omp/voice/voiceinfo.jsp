@@ -26,7 +26,7 @@
 			<table class="table table-hover table-middle" role="grid">
 				<thead>
 					<tr class="active">
-						<th width="10%"><input type="checkbox" onclick="check()" /></th>
+						<th width="3%"><input type="checkbox" onclick="check()" /></th>
 						<th width="10%">语音名</th>
 						<th width="10%">语音创建时间</th>
 						<th width="10%">语音备注</th>

@@ -19,13 +19,13 @@
 			<table class="table table-hover table-middle" role="grid">
 				<thead>
 					<tr class="active">
-						<th width="10%"><input type="checkbox" onclick="check()" /></th>
+						<th width="3%"><input type="checkbox" onclick="check()" /></th>
 						<th width="10%">姓名</th>
 						<th width="10%">区域</th>
 						<th width="10%">街道</th>
 						<th width="10%">社区</th>
 						<th width="10%">座机号</th>
-						<th width="10%">操作</th>
+<!-- 						<th width="10%">操作</th> -->
 						<!-- 						<th width="10%">居住地址</th> -->
 						<!-- 						<th width="10%">录入员</th> -->
 					</tr>
@@ -47,22 +47,22 @@
 							<%-- 							<td>${old.workername}</td> --%>
 
 							<%-- <td>${old.ex}</td> --%>
-							<td>
-								<div class="btn-group">
-									<button type="button"
-										class="btn btn-default btn-sm dropdown-toggle"
-										data-toggle="dropdown">
-										操作 <span class="caret"></span>
-									</button>
-									<ul class="dropdown-menu" role="menu">
-										<li><a onclick="toupd(${old.id})">发送</a></li>
-										<c:if test="${sys == 'admin'}">
-											<li><a href="###" onclick="deleteUser(${old.id},this);">删除</a></li>
-										</c:if>
-									</ul>
-								</div>
+<!-- 							<td> -->
+<!-- 								<div class="btn-group"> -->
+<!-- 									<button type="button" -->
+<!-- 										class="btn btn-default btn-sm dropdown-toggle" -->
+<!-- 										data-toggle="dropdown"> -->
+<!-- 										操作 <span class="caret"></span> -->
+<!-- 									</button> -->
+<!-- 									<ul class="dropdown-menu" role="menu"> -->
+<%-- 										<li><a onclick="toupd(${old.id})">发送</a></li> --%>
+<%-- 										<c:if test="${sys == 'admin'}"> --%>
+<%-- 											<li><a href="###" onclick="deleteUser(${old.id},this);">删除</a></li> --%>
+<%-- 										</c:if> --%>
+<!-- 									</ul> -->
+<!-- 								</div> -->
 
-							</td>
+<!-- 							</td> -->
 						</tr>
 					</c:forEach>
 				</tbody>

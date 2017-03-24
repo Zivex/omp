@@ -50,10 +50,10 @@
 						<th width="20%">登录名</th>
 						<th width="20%">账户名</th>
 						<th width="20%">用户类型</th>
-<!-- 						<th width="20%">所属区域</th> -->
-						<!-- 						<th width="20%">用户等级</th> -->
 						<th width="20%">操作</th>
-						<th width="20%">充值操作</th>
+						<c:if test="${sessionScope.eccomm_admin.logonName == 'admin'}">
+							<th width="20%">充值操作</th>
+						</c:if>
 					</tr>
 				</thead>
 				<tbody>
@@ -62,13 +62,10 @@
 							<td><a id="viewItem" href="###"
 								onclick="showDetails(${item.id});">${item.logonName}</a></td>
 							<td>${item.name}</td>
-							<td>
-								<c:if test="${item.account_type=='g'}">政府</c:if>
-								<c:if test="${item.account_type=='b'}">银行</c:if>
-								<c:if test="${item.account_type=='m'}">商户</c:if>
-								<c:if test="${item.account_type=='ADMIN'}">管理员</c:if>
-<%-- 							<td>${item.regionName}</td> --%>
-							<%-- 							<td>${item.leavel}</td> --%>
+							<td><c:if test="${item.account_type=='g'}">政府</c:if> <c:if
+									test="${item.account_type=='b'}">银行</c:if> <c:if
+									test="${item.account_type=='m'}">商户</c:if> <c:if
+									test="${item.account_type=='ADMIN'}">管理员</c:if>
 							<td>
 								<div class="btn-group">
 									<button type="button"
@@ -79,17 +76,18 @@
 									<ul class="dropdown-menu" role="menu">
 										<li><a
 											href='<c:url value="/admin/sys/user/edit.shtml?entity.id=${item.id}"/>'>修改</a></li>
-										<c:if test="${item.logonName ne sessionScope.eccomm_admin.logonName}">
+										<c:if
+											test="${item.logonName ne sessionScope.eccomm_admin.logonName}">
 											<li><a href="###" onclick="deleteUser(${item.id});">删除</a></li>
 											<li><a href="###" onclick="restePass(${item.id});">重置密码</a></li>
 										</c:if>
 									</ul>
 								</div>
 							</td>
-							<td>
-							<a class="btn btn-success" href="#" role="button" onclick="showm(${item.rid})">充值</a>
-								<!-- 								data-target="#recharge" style="font-size: 12px; padding: 4px;"> -->
-								<!-- 									 </a></td> -->
+							<c:if test="${sessionScope.eccomm_admin.logonName == 'admin'}">
+								<td><a class="btn btn-success" href="#" role="button"
+									onclick="showm(${item.rid})">充值</a></td>
+							</c:if>
 						</tr>
 					</c:forEach>
 				</tbody>
@@ -156,7 +154,7 @@ function showm(id){
 
 function recharge(){
 	var money = $("#rmb").val();
-	var sure=confirm("确认要充"+money+"元吗？");
+	var sure=confirm("确认要充"+money+"条吗？");
 	if(sure){
 		$.post("/admin/sys/user/recharge.shtml",{money:money,id:rechargeId},function(data){
 			alert(data);

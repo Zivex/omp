@@ -1,4 +1,4 @@
-package com.capinfo.voice.service;
+package com.capinfo.omp.service;
 
 import java.util.List;
 import java.util.Map;
@@ -7,14 +7,17 @@ import org.springframework.stereotype.Service;
 
 import com.capinfo.common.model.SystemUser;
 import com.capinfo.framework.model.system.User;
+import com.capinfo.framework.web.service.CommonsDataOperationService;
 import com.capinfo.omp.model.Omp_Old_Info;
 import com.capinfo.omp.model.Omp_old_order;
+import com.capinfo.omp.model.Omp_voice_order;
+import com.capinfo.omp.parameter.OrderParameter;
+import com.capinfo.omp.parameter.UserInfoParameter;
 import com.capinfo.omp.utils.Page;
 import com.capinfo.omp.ws.model.ImKey;
-import com.capinfo.voice.parameter.UserInfoParameter;
 
 @Service
-public interface VoiceService {
+public interface VoiceService extends CommonsDataOperationService<Omp_voice_order, UserInfoParameter> {
 	/**
 	 * 查询
 	 * 
@@ -34,7 +37,7 @@ public interface VoiceService {
 			String community,SystemUser user);
 
 	int getCount(String name, String idCard, String zjNumber, String county,
-			String street, String community);
+			String street, String community,SystemUser user);
 
 	String sendOrder(String id);
 
@@ -48,9 +51,9 @@ public interface VoiceService {
 	 * List<Map<String, Object>> voicequery(String name);
 	 */
 
-	List<Map<String, Object>> getvoicelist(Page page, String name);
+	List<Map<String, Object>> getvoicelist(Page page, String name,SystemUser user);
 
-	int getvoicelist(String name);
+	int getvoicelist(String name,SystemUser user);
 	
 	int SenVoice(String vid,String cid);
 	

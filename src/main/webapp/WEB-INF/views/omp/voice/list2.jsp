@@ -60,11 +60,7 @@
 <%-- 							<c:if test="${order.execute_flag== null}"> --%>
 <!-- 								<td style="color: red;">未返回</td> -->
 <%-- 							</c:if> --%>
-							<td>${old.startTime}</td>
-							<%-- 							<td>${old.address}</td> --%>
-							<%-- 							<td>${old.workername}</td> --%>
-
-							<%-- <td>${old.ex}</td> --%>
+							<td>${order.startTime}</td>
 							<td>
 								<div class="btn-group">
 									<button type="button"

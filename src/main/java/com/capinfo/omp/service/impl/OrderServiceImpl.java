@@ -124,9 +124,9 @@ CommonsDataOperationServiceImpl<Omp_old_order, OrderParameter>  implements
 	public List<Omp_old_order> getOrderList(Page page, String name,
 			String idCard, String zjNumber, String county, String street,
 			String community, String send_flag, String execute_flag,SystemUser user) {
-		
+		List<Omp_old_order> orderList = null;
 		List<Omp_Old_Info> oldList = oldService.getOldContextList(page, name, idCard, zjNumber, county, street, community, null, null, user);
-		
+		if(oldList.size()>0){
 		SearchCriteriaBuilder<Omp_old_order> searchCriteriaBuilder = new SearchCriteriaBuilder<Omp_old_order>(
 				Omp_old_order.class);
 		
@@ -134,7 +134,6 @@ CommonsDataOperationServiceImpl<Omp_old_order, OrderParameter>  implements
 				RestrictionExpression.EQUALS_OP, send_flag);
 		searchCriteriaBuilder.addQueryCondition("execute_flag",
 				RestrictionExpression.EQUALS_OP, execute_flag);
-		
 		String ids = "";
 		for (Omp_Old_Info old : oldList) {
 			ids+=old.getId()+",";
@@ -143,14 +142,12 @@ CommonsDataOperationServiceImpl<Omp_old_order, OrderParameter>  implements
 		System.out.println(ids);
 		String sql = "";
 		 sql +=" oldId In ("+ids+")";
-
 		if (!"".equals(sql)) {
 			searchCriteriaBuilder.addAdditionalRestrictionSql(sql);
 		}
-		
-		List<Omp_old_order> orderList = getGeneralService().getObjects(
+		orderList = getGeneralService().getObjects(
 				searchCriteriaBuilder.build());
-
+		}
 		return orderList;
 	}
 

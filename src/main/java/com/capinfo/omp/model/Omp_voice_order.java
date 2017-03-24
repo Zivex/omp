@@ -11,6 +11,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import com.capinfo.assistant.platform.ws.card.model.CardPersonMessageBack;
 import com.capinfo.framework.model.BaseEntity;
@@ -22,6 +24,10 @@ import com.capinfo.region.model.OmpRegion;
  * @author zx
  * 
  */
+/**
+ * @author Rivex
+ *
+ */
 @Entity
 @Table(name = "omp_voice_order")
 public class Omp_voice_order implements BaseEntity {
@@ -32,17 +38,22 @@ public class Omp_voice_order implements BaseEntity {
 
 	private Long oldId;
 	private Omp_Old_Info old;
-	private Date phoneName;
-	private Date executionTime;
-	private Long communityOrderId;
-	private String keyPointMessage;
-	private Long isIndividuality;
+	
+	
+	private Long executeType;
+	private Date startTime;
+	private Date endTime;
+	private Long voiceFIleId;
+	private String voiceFileAddress;
 	private Long send_flag;
 
+	private Long upload_flag;
 	private Long execute_flag;
+	private Long voiceId;
 	private String errorMessage;
+	private Long number;
+	private String agent_id;
 
-	private String test;
 	
 	
 	@Id
@@ -64,46 +75,7 @@ public class Omp_voice_order implements BaseEntity {
 	public void setOldId(Long oldId) {
 		this.oldId = oldId;
 	}
-	@Column(name = "phoneName")
-	public Date getPhoneName() {
-		return phoneName;
-	}
 
-	public void setPhoneName(Date phoneName) {
-		this.phoneName = phoneName;
-	}
-	@Column(name = "executionTime")
-	public Date getExecutionTime() {
-		return executionTime;
-	}
-
-	public void setExecutionTime(Date executionTime) {
-		this.executionTime = executionTime;
-	}
-	@Column(name = "communityOrderId")
-	public Long getCommunityOrderId() {
-		return communityOrderId;
-	}
-	
-	public void setCommunityOrderId(Long communityOrderId) {
-		this.communityOrderId = communityOrderId;
-	}
-	@Column(name = "keyPointMessage")
-	public String getKeyPointMessage() {
-		return keyPointMessage;
-	}
-
-	public void setKeyPointMessage(String keyPointMessage) {
-		this.keyPointMessage = keyPointMessage;
-	}
-	@Column(name = "isIndividuality")
-	public Long getIsIndividuality() {
-		return isIndividuality;
-	}
-
-	public void setIsIndividuality(Long isIndividuality) {
-		this.isIndividuality = isIndividuality;
-	}
 	@Column(name = "send_flag")
 	public Long getSend_flag() {
 		return send_flag;
@@ -128,14 +100,6 @@ public class Omp_voice_order implements BaseEntity {
 	public void setErrorMessage(String errorMessage) {
 		this.errorMessage = errorMessage;
 	}
-	@Column(name = "test")
-	public String getTest() {
-		return test;
-	}
-
-	public void setTest(String test) {
-		this.test = test;
-	}
 
 	@ManyToOne(targetEntity = Omp_Old_Info.class, fetch = FetchType.LAZY)
 	@JoinColumn(name = "oldId", insertable = false, updatable = false)
@@ -145,5 +109,97 @@ public class Omp_voice_order implements BaseEntity {
 	public void setOld(Omp_Old_Info old) {
 		this.old = old;
 	}
+
+	@Column(name = "executeType")
+	public Long getExecuteType() {
+		return executeType;
+	}
+
+
+	public void setExecuteType(Long executeType) {
+		this.executeType = executeType;
+	}
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "startTime")
+	public Date getStartTime() {
+		return startTime;
+	}
+
+
+	public void setStartTime(Date startTime) {
+		this.startTime = startTime;
+	}
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "endTime")
+	public Date getEndTime() {
+		return endTime;
+	}
+
+
+	public void setEndTime(Date endTime) {
+		this.endTime = endTime;
+	}
+
+	@Column(name = "voiceFIleId")
+	public Long getVoiceFIleId() {
+		return voiceFIleId;
+	}
+
+
+	public void setVoiceFIleId(Long voiceFIleId) {
+		this.voiceFIleId = voiceFIleId;
+	}
+
+	@Column(name = "voiceFileAddress")
+	public String getVoiceFileAddress() {
+		return voiceFileAddress;
+	}
+
+
+	public void setVoiceFileAddress(String voiceFileAddress) {
+		this.voiceFileAddress = voiceFileAddress;
+	}
+
+	@Column(name = "upload_flag")
+	public Long getUpload_flag() {
+		return upload_flag;
+	}
+
+
+	public void setUpload_flag(Long upload_flag) {
+		this.upload_flag = upload_flag;
+	}
+
+	@Column(name = "voiceId")
+	public Long getVoiceId() {
+		return voiceId;
+	}
+
+
+	public void setVoiceId(Long voiceId) {
+		this.voiceId = voiceId;
+	}
+
+	@Column(name = "number")
+	public Long getNumber() {
+		return number;
+	}
+
+
+	public void setNumber(Long number) {
+		this.number = number;
+	}
+	@Column(name = "agent_id")
+
+	public String getAgent_id() {
+		return agent_id;
+	}
+
+
+	public void setAgent_id(String agent_id) {
+		this.agent_id = agent_id;
+	}
+	
+	
 
 }

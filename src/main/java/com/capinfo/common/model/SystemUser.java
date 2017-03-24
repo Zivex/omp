@@ -30,6 +30,8 @@ import com.capinfo.region.model.OmpRegion;
 // "SEQ_USERS")
 public class SystemUser implements SecureUser<SystemUser, Role> {
 
+	private static final long serialVersionUID = 1L;
+
 	private Long id;
 
 	private Long parentid;
@@ -79,6 +81,7 @@ public class SystemUser implements SecureUser<SystemUser, Role> {
 	private Integer sjji;
 	private Integer siji;
 	
+	private Integer ji;
 	
 
 	@Id
@@ -261,6 +264,17 @@ public class SystemUser implements SecureUser<SystemUser, Role> {
 	public void setType_id(Long type_id) {
 		this.type_id = type_id;
 	}
+	
+	
+	@Column(name = "ji")
+	public Integer getJi() {
+		return ji;
+	}
+
+	public void setJi(Integer ji) {
+		this.ji = ji;
+	}
+
 	@ManyToOne(targetEntity = Enterprise.class, fetch = FetchType.LAZY)
 	@JoinColumn(name = "type_id", insertable = false, updatable = false)
 	public Enterprise getEnterprise() {

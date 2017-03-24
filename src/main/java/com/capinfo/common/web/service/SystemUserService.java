@@ -81,6 +81,7 @@ public interface SystemUserService extends CommonsDataOperationService<SystemUse
 	public void addMechanism (Composition composition,SystemUser user);
 
 	public List<Composition> getCompositionList(SystemUser user);
-
+	//检测
+	public boolean validationMechanism(long rid,String f);
 
 }

@@ -1,6 +1,12 @@
-package com.capinfo.voice.parameter;
+package com.capinfo.omp.parameter;
 
-public class UserInfoParameter {
+import com.capinfo.framework.web.parameter.DataListParameter;
+import com.capinfo.omp.model.Omp_old_order;
+import com.capinfo.omp.model.Omp_voice_order;
+
+public class UserInfoParameter extends DataListParameter<Omp_voice_order> {
+	private Omp_voice_order entity = new Omp_voice_order();
+	private Class<Omp_voice_order> entityClazz = Omp_voice_order.class;
 	private int sendSuccess;
 	
 	private int sendFail;
@@ -85,6 +91,27 @@ public class UserInfoParameter {
 	public void setNotReturn(int notReturn) {
 		this.notReturn = notReturn;
 	}
+
+	public Omp_voice_order getEntity() {
+		return entity;
+	}
+
+	public void setEntity(Omp_voice_order entity) {
+		this.entity = entity;
+	}
+
+	public Class<Omp_voice_order> getEntityClazz() {
+		return entityClazz;
+	}
+
+	public void setEntityClazz(Class<Omp_voice_order> entityClazz) {
+		this.entityClazz = entityClazz;
+	}
+
+
+
+
+	
 	
 	
 	

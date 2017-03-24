@@ -28,12 +28,12 @@ import com.capinfo.common.model.SystemUser;
 import com.capinfo.framework.model.system.User;
 import com.capinfo.omp.model.Omp_Old_Info;
 import com.capinfo.omp.model.Omp_old_order;
+import com.capinfo.omp.parameter.UserInfoParameter;
+import com.capinfo.omp.service.VoiceService;
 import com.capinfo.omp.utils.Page;
 import com.capinfo.omp.utils.PropertiesUtil;
 import com.capinfo.omp.ws.client.ClientGetVoiceDataService;
 import com.capinfo.omp.ws.model.ImKey;
-import com.capinfo.voice.parameter.UserInfoParameter;
-import com.capinfo.voice.service.VoiceService;
 
 @Controller
 @RequestMapping("/voice")
@@ -64,8 +64,8 @@ public class VoiceController {
 		if (StringUtils.isEmpty(current)) {
 			current = "1";
 		}
-		int count = voiceService.getCount(name, idCard, zjNumber, county, street, community);
-		count = count == 0 ? 1 : count;
+		int count = voiceService.getCount(name, idCard, zjNumber, county, street, community,user);
+		//count = count == 0 ? 1 : count;
 		Page<Object> page = new Page<>(current, count, "10");
 		List<Omp_Old_Info> entities = voiceService.getOldContextList(page, name, idCard, zjNumber, county, street, community,user);
 		List<Map<String, Object>> enList = voiceService.getshell();
@@ -229,9 +229,9 @@ public class VoiceController {
 	}
 
 	@RequestMapping("/voiceManage/listVoice.shtml")
-	public ModelAndView listVoice(String current, String name) {
+	public ModelAndView listVoice(String current, String name,@ModelAttribute("eccomm_admin") SystemUser user) {
 		ModelAndView mv = new ModelAndView("/omp/voice/voiceinfo");
-		getVoList(mv, current, name);
+		getVoList(mv, current, name,user);
 		return mv;
 	}
 
@@ -240,19 +240,19 @@ public class VoiceController {
 		ModelAndView mv = new ModelAndView("/omp/voice/voice");
 		//查询用户信息
 		UserInfoParameter userInfo = voiceService.getUserInfo(user);
-		getVoList(mv, current, name);
+		getVoList(mv, current, name,user);
 		mv.addObject("userINfo",userInfo);
 		return mv;
 	}
 
-	public void getVoList(ModelAndView mv, String current, String name) {
+	public void getVoList(ModelAndView mv, String current, String name,SystemUser user) {
 		if (StringUtils.isEmpty(current)) {
 			current = "1";
 		}
-		int count = voiceService.getvoicelist(name);
-		count = count == 0 ? 1 : count;
+		int count = voiceService.getvoicelist(name,user);
+		//count = count == 0 ? 1 : count;
 		Page page = new Page(current, count, "10");
-		List<Map<String, Object>> entities = voiceService.getvoicelist(page, name);
+		List<Map<String, Object>> entities = voiceService.getvoicelist(page, name,user);
 
 		mv.addObject("entities", entities);
 		// mv.addObject("dataList",entities);
@@ -348,11 +348,11 @@ public class VoiceController {
 			current = "1";
 		}
 		int count = voiceService.getOlCount(name, idCard, zjNumber, county, street, community, send_flag, execute_flag,user);
-		count = count == 0 ? 1 : count;
 		Page<Object> page = new Page<>(current, count, "10");
 		List<Omp_old_order> oldList = voiceService.getOldList(page, name,
 				idCard, zjNumber, county, street, community, send_flag,
 				execute_flag, user);
+		
 		mv.addObject("voiceOl", oldList);
 		mv.addObject("DataTotalCount", count);
 		mv.addObject("CurrentPieceNum", page.getCurrentPage());

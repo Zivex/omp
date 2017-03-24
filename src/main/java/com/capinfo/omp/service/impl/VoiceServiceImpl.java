@@ -1,4 +1,4 @@
-package com.capinfo.voice.service.impl;
+package com.capinfo.omp.service.impl;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -15,20 +15,21 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.capinfo.common.model.SystemUser;
-import com.capinfo.framework.model.system.User;
+import com.capinfo.framework.dao.SearchCriteriaBuilder;
+import com.capinfo.framework.dao.impl.restriction.RestrictionExpression;
 import com.capinfo.framework.service.GeneralService;
+import com.capinfo.framework.web.service.impl.CommonsDataOperationServiceImpl;
 import com.capinfo.omp.model.Omp_Old_Info;
 import com.capinfo.omp.model.Omp_old_order;
+import com.capinfo.omp.model.Omp_voice_order;
+import com.capinfo.omp.parameter.UserInfoParameter;
 import com.capinfo.omp.service.OldService;
-import com.capinfo.omp.service.OrderService;
-import com.capinfo.omp.service.impl.OldServiceImpl;
+import com.capinfo.omp.service.VoiceService;
 import com.capinfo.omp.utils.Page;
 import com.capinfo.omp.ws.model.ImKey;
-import com.capinfo.voice.parameter.UserInfoParameter;
-import com.capinfo.voice.service.VoiceService;
 
 @Service
-public class VoiceServiceImpl implements VoiceService {
+public class VoiceServiceImpl extends CommonsDataOperationServiceImpl<Omp_voice_order, UserInfoParameter> implements VoiceService {
 
 	@Autowired
 	private JdbcTemplate JdbcTemplate;
@@ -36,48 +37,45 @@ public class VoiceServiceImpl implements VoiceService {
 	@Autowired
 	private OldService oldService;
 	
-	
-	@Autowired
-	private OrderService order;
-	
-	
-	
 
 	@Override
 	public List<Omp_Old_Info> getOldContextList(Page page, String name,
 			String idCard, String zjNumber, String county, String street,
 			String community,SystemUser user) {
-		
 		List<Omp_Old_Info> oldlist = oldService.getOldContextList(page, name, idCard, zjNumber, county, street, community, null, null, user);
 		return oldlist;
 	}
 
 	@Override
 	public int getCount(String name, String idCard, String zjNumber,
-			String county, String street, String community) {
-		if (!StringUtils.isEmpty(name)) {
-			name = " AND I.`NAME` LIKE '%" + name + "%'";
-		}
-		if (!StringUtils.isEmpty(idCard)) {
-			idCard = " AND I.CERTIFICATES_NUMBER = '" + idCard + "'";
-		}
-		if (!StringUtils.isEmpty(zjNumber)) {
-			zjNumber = "  AND I.ZJNUMBER = '" + zjNumber + "'";
-		}
-		if (!StringUtils.isEmpty(county)) {
-			county = " AND I.HOUSEHOLD_COUNTY_ID = '" + county + "'";
-		}
-		if (!StringUtils.isEmpty(street)) {
-			street = " AND I.HOUSEHOLD_STREET_ID = '" + street + "'";
-		}
-		if (!StringUtils.isEmpty(community)) {
-			community = " AND I.HOUSEHOLD_COMMUNITY_ID = '" + community + "'";
-		}
-
-		String sql = "SELECT count(i.ID) FROM	OMP_OLD_INFO i WHERE i.STATE = 1 "
-				+ name + idCard + zjNumber + county + street + community;
-		int maxRows = JdbcTemplate.queryForInt(sql);
-		return maxRows;
+			String county, String street, String community,SystemUser user) {
+		int count = oldService.getCount(name, idCard, zjNumber, county, street, community, null, null, user);
+		
+		
+		
+//		if (!StringUtils.isEmpty(name)) {
+//			name = " AND I.`NAME` LIKE '%" + name + "%'";
+//		}
+//		if (!StringUtils.isEmpty(idCard)) {
+//			idCard = " AND I.CERTIFICATES_NUMBER = '" + idCard + "'";
+//		}
+//		if (!StringUtils.isEmpty(zjNumber)) {
+//			zjNumber = "  AND I.ZJNUMBER = '" + zjNumber + "'";
+//		}
+//		if (!StringUtils.isEmpty(county)) {
+//			county = " AND I.HOUSEHOLD_COUNTY_ID = '" + county + "'";
+//		}
+//		if (!StringUtils.isEmpty(street)) {
+//			street = " AND I.HOUSEHOLD_STREET_ID = '" + street + "'";
+//		}
+//		if (!StringUtils.isEmpty(community)) {
+//			community = " AND I.HOUSEHOLD_COMMUNITY_ID = '" + community + "'";
+//		}
+//
+//		String sql = "SELECT count(i.ID) FROM	OMP_OLD_INFO i WHERE i.STATE = 1 "
+//				+ name + idCard + zjNumber + county + street + community;
+//		int maxRows = JdbcTemplate.queryForInt(sql);
+		return count;
 	}
 
 	@Override
@@ -121,14 +119,12 @@ public class VoiceServiceImpl implements VoiceService {
 	}
 
 	@Override
-	public List<Map<String, Object>> getvoicelist(Page page, String name) {
-		String userName = SecurityContextHolder.getContext()
-				.getAuthentication().getName();
+	public List<Map<String, Object>> getvoicelist(Page page, String name,SystemUser user) {
+		
 		String uName = "";
-		if (!"admin".equals(userName)) {
-			uName = " AND v.agent_id  =  '" + userName + "'";
+		if (!"admin".equals(user.getLogonName())) {
+			uName = " AND v.agent_id  =  '" + user.getLogonName() + "'";
 		}
-
 		if (!StringUtils.isEmpty(name)) {
 			name = " AND v.`voiceName` LIKE '%" + name + "%'";
 		} else {
@@ -148,9 +144,14 @@ public class VoiceServiceImpl implements VoiceService {
 	}
 
 	@Override
-	public int getvoicelist(String name) {
+	public int getvoicelist(String name,SystemUser user) {
 		if (!StringUtils.isEmpty(name)) {
 			name = " AND v.`voiceName` LIKE '%" + name + "%'";
+		} else {
+			name = "";
+		}
+		if (!StringUtils.isEmpty(user.getLogonName()) && !"admin".equals(user.getLogonName())) {
+			name = " AND v.`agent_id` LIKE '%" + user.getLogonName() + "%'";
 		} else {
 			name = "";
 		}
@@ -200,8 +201,41 @@ public class VoiceServiceImpl implements VoiceService {
 	public List<Omp_old_order> getOldList(Page page, String name,
 			String idCard, String zjNumber, String county, String street,
 			String community, String send_flag, String execute_flag,SystemUser user) {
+		List<Omp_old_order> orderList = null;
+		List<Omp_Old_Info> oldList = oldService.getOldContextList(page, name, idCard, zjNumber, county, street, community, null, null, user);
+
+		if (oldList.size() > 0) {
+		SearchCriteriaBuilder<Omp_voice_order> searchCriteriaBuilder = new SearchCriteriaBuilder<Omp_voice_order>(
+				Omp_voice_order.class);
 		
-		List<Omp_old_order> orderList = order.getOrderList(page, name, idCard, zjNumber, county, street, community, send_flag, execute_flag, user);
+		searchCriteriaBuilder.addQueryCondition("send_flag",
+				RestrictionExpression.EQUALS_OP, send_flag);
+		searchCriteriaBuilder.addQueryCondition("execute_flag",
+				RestrictionExpression.EQUALS_OP, execute_flag);
+
+		String sql = "";
+			String ids = "";
+			for (Omp_Old_Info old : oldList) {
+				ids += old.getId() + ",";
+			}
+			ids = ids.substring(0, ids.length() - 1);
+			System.out.println(ids);
+			sql += " oldId In (" + ids + ")";
+			if (!"".equals(sql)) {
+				searchCriteriaBuilder.addAdditionalRestrictionSql(sql);
+			}
+			GeneralService g = getGeneralService();
+			
+			orderList = g.getObjects(
+					searchCriteriaBuilder.build());
+		}
+
+		return orderList;
+		
+		
+		
+		
+		
 		
 //		
 //		
@@ -249,52 +283,87 @@ public class VoiceServiceImpl implements VoiceService {
 //				+ " LIMIT " + (page.getCurrentPage() - 1) * page.getPageSize()
 //				+ ", " + page.getPageSize();
 //		List<Map<String, Object>> list = JdbcTemplate.queryForList(sql);
-		return orderList;
+		//return orderList;
 	}
 
 	@Override
 	public int getOlCount(String name, String idCard, String zjNumber,
 			String county, String street, String community, String send_flag,
 			String execute_flag,SystemUser user) {
-		if (!StringUtils.isEmpty(name)) {
-			name = " AND oldo.`NAME` LIKE '%" + name + "%'";
-		}
-		if (!StringUtils.isEmpty(idCard)) {
-			idCard = " AND oldo.idCard = '" + idCard + "'";
-		}
-		if (!StringUtils.isEmpty(zjNumber)) {
-			zjNumber = " AND oldo.ZJNUMBER = '" + zjNumber + "'";
-		}
-		if (!StringUtils.isEmpty(county)) {
-			county = " AND i.HOUSEHOLD_COUNTY_ID = '" + county + "'";
-		}
-		if (!StringUtils.isEmpty(street)) {
-			street = " AND i.HOUSEHOLD_STREET_ID = '" + street + "'";
-		}
-		if (!StringUtils.isEmpty(community)) {
-			community = " AND i.HOUSEHOLD_COMMUNITY_ID = '" + community + "'";
-		}
-		if (!StringUtils.isEmpty(send_flag)) {
-			send_flag = " AND oldo.send_flag = '" + send_flag + "'";
-		}
-		if (!StringUtils.isEmpty(execute_flag)) {
-			execute_flag = " AND oldo.execute_flag = '" + execute_flag + "'";
-		}
-		String sql = "SELECT count(oldo.id) FROM "
-				+ "(SELECT old.id,old.`NAME`,old.idcard,old.community,old.county,old.street,"
-				+ "old.ZJNUMBER,o.send_flag,o.execute_flag FROM omp_voice_order o,"
-				+ "(SELECT i.id,i.`NAME`,i.CERTIFICATES_NUMBER idcard,r1.`NAME` community,r2.`NAME`"
-				+ " county,r3.`NAME` street,i.ZJNUMBER FROM omp_old_info i,omp_region r1,omp_region r2,"
-				+ "omp_region r3	WHERE	i.HOUSEHOLD_COMMUNITY_ID = r1.ID"
-				+ " AND i.HOUSEHOLD_COUNTY_ID = r2.ID	AND i.HOUSEHOLD_STREET_ID = r3.ID "
-				+ county
-				+ street
-				+ community
-				+ ") old"
-				+ "	WHERE	o.oldId = old.id AND o.send_flag = 1) oldo WHERE 1=1 "
-				+ name + idCard + zjNumber + send_flag + execute_flag;
-		int forInt = JdbcTemplate.queryForInt(sql);
-		return forInt;
+		int count = 0;
+		List<Omp_Old_Info> oldList = oldService.getOldContextList(null, name, idCard, zjNumber, county, street, community, null, null, user);
+
+		if (oldList.size() > 0) {
+			SearchCriteriaBuilder<Omp_voice_order> searchCriteriaBuilder = new SearchCriteriaBuilder<Omp_voice_order>(
+					Omp_voice_order.class);
+			
+			searchCriteriaBuilder.addQueryCondition("send_flag",
+					RestrictionExpression.EQUALS_OP, send_flag);
+			searchCriteriaBuilder.addQueryCondition("execute_flag",
+					RestrictionExpression.EQUALS_OP, execute_flag);
+
+			String sql = "";
+				String ids = "";
+				for (Omp_Old_Info old : oldList) {
+					ids += old.getId() + ",";
+				}
+				ids = ids.substring(0, ids.length() - 1);
+				System.out.println(ids);
+				sql += " oldId In (" + ids + ")";
+				if (!"".equals(sql)) {
+					searchCriteriaBuilder.addAdditionalRestrictionSql(sql);
+				}
+				GeneralService g = getGeneralService();
+				
+				count = g.getCount(searchCriteriaBuilder.build());
+			}
+
+		
+		
+		
+		
+		
+//		
+//		
+//		if (!StringUtils.isEmpty(name)) {
+//			name = " AND oldo.`NAME` LIKE '%" + name + "%'";
+//		}
+//		if (!StringUtils.isEmpty(idCard)) {
+//			idCard = " AND oldo.idCard = '" + idCard + "'";
+//		}
+//		if (!StringUtils.isEmpty(zjNumber)) {
+//			zjNumber = " AND oldo.ZJNUMBER = '" + zjNumber + "'";
+//		}
+//		if (!StringUtils.isEmpty(county)) {
+//			county = " AND i.HOUSEHOLD_COUNTY_ID = '" + county + "'";
+//		}
+//		if (!StringUtils.isEmpty(street)) {
+//			street = " AND i.HOUSEHOLD_STREET_ID = '" + street + "'";
+//		}
+//		if (!StringUtils.isEmpty(community)) {
+//			community = " AND i.HOUSEHOLD_COMMUNITY_ID = '" + community + "'";
+//		}
+//		if (!StringUtils.isEmpty(send_flag)) {
+//			send_flag = " AND oldo.send_flag = '" + send_flag + "'";
+//		}
+//		if (!StringUtils.isEmpty(execute_flag)) {
+//			execute_flag = " AND oldo.execute_flag = '" + execute_flag + "'";
+//		}
+//		String sql = "SELECT count(oldo.id) FROM "
+//				+ "(SELECT old.id,old.`NAME`,old.idcard,old.community,old.county,old.street,"
+//				+ "old.ZJNUMBER,o.send_flag,o.execute_flag FROM omp_voice_order o,"
+//				+ "(SELECT i.id,i.`NAME`,i.CERTIFICATES_NUMBER idcard,r1.`NAME` community,r2.`NAME`"
+//				+ " county,r3.`NAME` street,i.ZJNUMBER FROM omp_old_info i,omp_region r1,omp_region r2,"
+//				+ "omp_region r3	WHERE	i.HOUSEHOLD_COMMUNITY_ID = r1.ID"
+//				+ " AND i.HOUSEHOLD_COUNTY_ID = r2.ID	AND i.HOUSEHOLD_STREET_ID = r3.ID "
+//				+ county
+//				+ street
+//				+ community
+//				+ ") old"
+//				+ "	WHERE	o.oldId = old.id AND o.send_flag = 1) oldo WHERE 1=1 "
+//				+ name + idCard + zjNumber + send_flag + execute_flag;
+//		int forInt = JdbcTemplate.queryForInt(sql);
+		return count;
 	}
 
 	@Override
