@@ -52,9 +52,9 @@
 							<td style="text-align: center;">${old.household_community.name}</td>
 							<td style="text-align: center;">${old.account_type}</td>
 							<td style="text-align: center;">${old.teltype}</td>
-							<c:if test="${sys == 'admin'}">
+<%-- 							<c:if test="${sys == 'admin'}"> --%>
 								<td style="text-align: center;">${old.user_name}</td>
-							</c:if>
+<%-- 							</c:if> --%>
 
 							<c:if test="${old.call_id == 1}">
 								<td style="text-align: center; color: green">是</td>
