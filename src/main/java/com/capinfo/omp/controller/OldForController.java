@@ -250,6 +250,8 @@ public class OldForController {
 			String area = getCellValue(row.getCell(1));
 			String street = getCellValue(row.getCell(2));
 			String community = getCellValue(row.getCell(3));
+			String tel_type = getCellValue(row.getCell(10));
+			
 			 //根据市区名称查询市区ID
 			String countyId = oldService.getIdByName(area, 3);
 			// 根据街道名称查询街道ID
@@ -259,6 +261,7 @@ public class OldForController {
 			//查询社区编码
 			String comNUm = oldService.getIdByComCod(community, 5);
 			
+			int tel_num = oldService.getTel_type(tel_type);
 			Long callId = 0l;
 			if ("是".equals(call_id)) {
 				callId = 1l;
@@ -275,7 +278,10 @@ public class OldForController {
 			old_info.setPhone(getCellValue(row.getCell(7)));
 			old_info.setEmergencycontact(getCellValue(row.getCell(8)));
 			old_info.setEmergencycontacttle(getCellValue(row.getCell(9)));
-			old_info.setTeltype(getCellValue(row.getCell(10)));
+			//话机类型
+			if(i != 0){
+				old_info.setTeltype(getCellValue(row.getCell(10)));
+			}
 			old_info.setAddress(getCellValue(row.getCell(11)));
 			old_info.setCall_id(callId);
 			old_info.setAccount_type(acc+comNUm);

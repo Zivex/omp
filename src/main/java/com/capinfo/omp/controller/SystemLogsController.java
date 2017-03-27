@@ -40,14 +40,16 @@ public class SystemLogsController extends AuthenticationSuccessHandlerImpl {
 	}
 	
 	
-//	@RequestMapping("/ReportFrom/list.shtml")
-//	public ModelAndView formlist() {
-//		ModelAndView mv = new ModelAndView("/admin/initial");
-//		List<Map<String, Object>> showcout = systemLogs.getlistCount();
-//		return mv.addObject("showcout",showcout);
-//	}
-	
-	
+	/**
+	 * 呼叫服务统计查询
+	 * @param county
+	 * @param street
+	 * @param community
+	 * @param otype
+	 * @param stime
+	 * @param etime
+	 * @return
+	 */
 	
 	@RequestMapping("/ReportFrom/list.shtml")
 	public ModelAndView list(String county, String street, String community,String otype,Date stime,Date etime) {
@@ -55,13 +57,55 @@ public class SystemLogsController extends AuthenticationSuccessHandlerImpl {
 		listget(mv, county, street, community, otype, stime, etime);
 		return mv;
 	}
-	
+	/**
+	 * 呼叫服务统计初始化
+	 * @param county
+	 * @param street
+	 * @param community
+	 * @param otype
+	 * @param stime
+	 * @param etime
+	 * @return
+	 */
 	@RequestMapping("/ReportFrom/initial.shtml")
 	public ModelAndView initial(String county, String street, String community,String otype,Date stime,Date etime) {
 		ModelAndView mv = new ModelAndView("/admin/initial");
 		listget(mv, county, street, community, otype, stime, etime);;
 		return mv;
 	}
+	/**
+	 * 快捷键修改次数统计
+	 * @param county
+	 * @param street
+	 * @param community
+	 * @param otype
+	 * @param stime
+	 * @param etime
+	 * @return
+	 */
+	@RequestMapping("/ReportFrom/keyboardUpdateCount.shtml")
+	public ModelAndView keyboardUpdateCount(String county, String street, String community,String otype,Date stime,Date etime) {
+		ModelAndView mv = new ModelAndView("/admin/initial");
+		SimpleDateFormat fromg = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");// 设置日期格式
+		String stimes = "";
+		String etimes = "";
+		if (stime==null) {
+			stimes = "";
+		}else {
+			stimes = fromg.format(stime.getTime());
+		}
+		if (etime==null) {
+			etimes = "";
+		}else {
+			etimes = fromg.format(etime.getTime());
+		}
+		List<Map<String, Object>> list = systemLogs.getKeyboardUpdateCount(county,street,community,otype,stimes,etimes);
+		return mv;
+	}
+	
+	
+	
+	
 	@RequestMapping("/Report/sendVoice.shtml")
 	public ModelAndView  sendVoice(String county, String street, String community,String otype,Date stime,Date etime){
 		ModelAndView mv = new ModelAndView("/admin/initial");

@@ -114,5 +114,7 @@ public interface OldService extends CommonsDataOperationService<Omp_Old_Info, Ol
 
 	List getCuser(SystemUser user);
 
+	int getTel_type(String tel_type);
+
 
 }

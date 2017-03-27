@@ -71,9 +71,9 @@
 											<td>
 												<select id="otype" name="otype">
 												  <option value="">--请选择--</option>	
-												  <option value ="居家型">居家型</option>
-												  <option value ="失能型">失能型</option>
-												  <option value="农商型">农商型</option> 
+												  <option value ="1">居家型</option>
+												  <option value ="2">失能型</option>
+												  <option value="3">农商型</option> 
 												</select> 
 											</td>
 											<td><button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#myModal" onclick="quety()">查询</button></td>

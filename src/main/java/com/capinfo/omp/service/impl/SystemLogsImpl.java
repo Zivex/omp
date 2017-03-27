@@ -25,39 +25,25 @@ public class SystemLogsImpl implements SystemLogs {
 	}
 
 	@Override
-	public List<Map<String, Object>> getlistCount(String county, String street,
-			String community, String otype, String stimes, String etimes) {
+	public List<Map<String, Object>> getlistCount(String county, String street, String community, String otype, String stimes, String etimes) {
+		String querySql = "";
 
-		if (county != null && !StringUtils.isEmpty(county)) {
-			county = " AND I.HOUSEHOLD_COUNTY_ID = '" + county + "'";
-		}
-		if (street != null && !StringUtils.isEmpty(street)) {
-			street = " AND I.HOUSEHOLD_STREET_ID = '" + street + "'";
-		}
-		if (community != null && !StringUtils.isEmpty(community)) {
-			community = "  AND I.HOUSEHOLD_COMMUNITY_ID = '" + community + "'";
-
-		}
-		if (otype != null && otype != null && !StringUtils.isEmpty(otype)) {
-			otype = " AND I.TELTYPE = '" + otype + "'";
-		}
-		if (stimes != null && !StringUtils.isEmpty(stimes)) {
-			stimes = " AND k.commitTime > '" + stimes + "'";
-		}
-		if (etimes != null && !StringUtils.isEmpty(etimes)) {
-			etimes = " AND k.commitTime <= '" + etimes + "'";
-		}
-		String sql = "SELECT k.keyPointMessage 'key',SUM(k.keyPointCount) AS nbr,r1.`NAME` community,r2.`NAME` county,r3.`NAME` street FROM omp_old_info i,omp_keymapping_statistical k,omp_region r1,omp_region r2,omp_region r3 WHERE k.landLineNumber = i.ZJNUMBER AND i.HOUSEHOLD_COMMUNITY_ID = r1.ID AND i.HOUSEHOLD_COUNTY_ID = r2.ID AND i.HOUSEHOLD_STREET_ID = r3.ID "
-				+ county
-				+ street
-				+ community
-				+ otype
-				+ stimes
-				+ etimes
-				+ " GROUP BY k.keyPointMessage ORDER BY k.id";
+		String resutSql = getSql(county, street, community, otype, stimes, etimes, querySql);
+		
+//		String sql = "SELECT k.keyPointMessage 'key',SUM(k.keyPointCount) AS nbr,r1.`NAME` community,r2.`NAME` county,r3.`NAME` street FROM omp_old_info i,omp_keymapping_statistical k,omp_region r1,omp_region r2,omp_region r3 WHERE k.landLineNumber = i.ZJNUMBER AND i.HOUSEHOLD_COMMUNITY_ID = r1.ID AND i.HOUSEHOLD_COUNTY_ID = r2.ID AND i.HOUSEHOLD_STREET_ID = r3.ID "
+//				+ county
+//				+ street
+//				+ community
+//				+ otype
+//				+ stimes
+//				+ etimes
+//				+ " GROUP BY k.keyPointMessage ORDER BY k.id";
+		String sql = "SELECT t.serviceName sname, SUM(s.keyPointCount) count FROM omp_keymapping_statistical s INNER JOIN omp_old_info i ON s.landLineNumber = i.ZJNUMBER INNER JOIN omp_key k ON k.`key` = s.keyPointMessage INNER JOIN omp_service_type t on t.id = k.stId WHERE  1=1" + resutSql + " and k.pyId=i.TELTYPE GROUP BY s.keyPointMessage";
 		List<Map<String, Object>> showList = jdbcTemplate.queryForList(sql);
 		return showList;
 	}
+
+
 
 	@Override
 	public void getsendService(String street, String community, String otype,
@@ -80,4 +66,41 @@ public class SystemLogsImpl implements SystemLogs {
 				+ "GROUP BY r.name ,r.id ORDER BY r.id";
 
 	}
+
+	@Override
+	public List<Map<String, Object>> getKeyboardUpdateCount(String county, String street, String community, String otype, String stime, String etime) {
+		String querySql = "";
+		String resutSql = getSql(county, street, community, otype, stime, etime, querySql);
+		
+		
+		
+		return null;
+	}
+	
+	
+	
+	private String getSql(String county, String street, String community, String otype, String stimes, String etimes, String querySql) {
+		if (county != null && !StringUtils.isEmpty(county)) {
+			querySql+= " AND I.HOUSEHOLD_COUNTY_ID = '" + county + "'";
+		}
+		if (street != null && !StringUtils.isEmpty(street)) {
+			querySql+= " AND I.HOUSEHOLD_STREET_ID = '" + street + "'";
+		}
+		if (community != null && !StringUtils.isEmpty(community)) {
+			querySql+= "  AND I.HOUSEHOLD_COMMUNITY_ID = '" + community + "'";
+
+		}
+		if (otype != null && !StringUtils.isEmpty(otype)) {
+			querySql+= " AND I.TELTYPE = '" + otype + "'";
+		}
+		if (stimes != null && !StringUtils.isEmpty(stimes)) {
+			querySql+= " AND s.commitTime > '" + stimes + "'";
+		}
+		if (etimes != null && !StringUtils.isEmpty(etimes)) {
+			querySql+= " AND s.commitTime <= '" + etimes + "'";
+		}
+		return querySql;
+	}
+	
+	
 }
