@@ -15,5 +15,5 @@ public interface SystemLogs {
 
 	void getsendService(String street, String community,String otype,Date stime,Date etime);
 
-	List<Map<String, Object>> getKeyboardUpdateCount(String county, String street, String community, String otype, String stime, String etime);
+	List<Map<String, Object>> getKeyboardUpdateCount(String county, String street, String community, String otype, String stime, String etime,int sata);
 }

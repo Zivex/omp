@@ -68,13 +68,47 @@ public class SystemLogsImpl implements SystemLogs {
 	}
 
 	@Override
-	public List<Map<String, Object>> getKeyboardUpdateCount(String county, String street, String community, String otype, String stime, String etime) {
-		String querySql = "";
-		String resutSql = getSql(county, street, community, otype, stime, etime, querySql);
+	public List<Map<String, Object>> getKeyboardUpdateCount(String county, String street, String community, String otype, String stime, String etime,int stat) {
+		String num ="";
 		
+		String r ="";
 		
+		String region = "";
+		String type = "";
+		if(otype != null && !"".equals(otype)){
+			type = " and i.TELTYPE = "+otype;
+		}
 		
-		return null;
+		if(community != null && !"".equals(community)){
+			r = "rrr";
+			region = "RIGHT  JOIN omp_region "+r+" ON i.HOUSEHOLD_COMMUNITY_ID = "+r+".ID ";
+			num = " and "+r+".id="+community+" AND "+r+".USE_FLAG = 1";
+		}else if(street != null && !"".equals(street)){
+			r = "rrr";
+			region = "RIGHT  JOIN omp_region "+r+" ON i.HOUSEHOLD_COMMUNITY_ID = "+r+".ID ";
+			num = " and "+r+".PARENTID="+street+" AND "+r+".USE_FLAG = 1";
+		}else if(county != null && !"".equals(county)){
+			r = "rr";
+			region = "RIGHT  JOIN omp_region "+r+" ON i.HOUSEHOLD_STREET_ID = "+r+".ID  ";
+			num = " and "+r+".PARENTID="+county+" AND "+r+".USE_FLAG = 1";
+		}else{
+			r = "r";
+			region = "RIGHT JOIN omp_region "+r+" on i.HOUSEHOLD_COUNTY_ID = "+r+".ID ";
+			num = "and "+r+".LEVELID=3 AND "+r+".USE_FLAG = 1";
+		}
+		String rSql = " SELECT "+r+".id, "+r+".`NAME` name, count(n.id) count FROM omp_old_info i "+region+" LEFT JOIN omp_order_number n ON n.oid = i.ID AND n.returntype = "+stat+" "+type+" WHERE 1 = 1 "+num+" GROUP BY "+r+".id";
+		String success = " SELECT "+r+".id, "+r+".`NAME` name, count(n.id) count FROM omp_old_info i "+region+" LEFT JOIN omp_order_number n ON n.oid = i.ID AND n.returntype = "+stat+" "+type+" and n.execute_flag = 1 WHERE 1 = 1 "+num+" GROUP BY "+r+".id";
+		String fail = " SELECT "+r+".id, "+r+".`NAME` name, count(n.id) count FROM omp_old_info i "+region+" LEFT JOIN omp_order_number n ON n.oid = i.ID AND n.returntype = "+stat+" "+type+" and n.execute_flag = 0 WHERE 1 = 1 "+num+" GROUP BY "+r+".id";
+		
+		List<Map<String,Object>> queryForList = jdbcTemplate.queryForList(rSql);
+		List<Map<String,Object>> suc = jdbcTemplate.queryForList(success);
+		List<Map<String,Object>> fai = jdbcTemplate.queryForList(fail);
+		for (int i = 0; i < queryForList.size(); i++) {
+			queryForList.get(i).put("suc", suc.get(i).get("count"));
+			queryForList.get(i).put("fai", fai.get(i).get("count"));
+		}
+		
+		return queryForList;
 	}
 	
 	

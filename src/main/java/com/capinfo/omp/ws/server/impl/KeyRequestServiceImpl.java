@@ -122,7 +122,7 @@ public class KeyRequestServiceImpl implements KeyRequestService {
 			return jsonArr.toString();
 		}
 		if (result == 1) {
-		String sql = "SELECT CASE WHEN f.updNumber = 0 THEN '1' ELSE  '2' END 'instructionsType',0 'changeType',f.ZJNUMBER 'landLineNumber',f.`NAME` 'name',f.HOUSEHOLD_COMMUNITY_ID 'residenceCommunity',CASE WHEN f.TELTYPE = '失能型' THEN '1' WHEN f.TELTYPE = '农商型' THEN '2' WHEN f.TELTYPE = '居家型' THEN '3' END 'userType',f.updNumber 'changeTimes',o.keyPointMessage 'keyPointMessage' FROM omp_old_info f,omp_old_order o WHERE o.oldId = f.ID AND f.ZJNUMBER = '"+KeyRequest+"'";
+		String sql = "SELECT CASE WHEN f.updNumber = 0 THEN '1' ELSE  '2' END 'instructionsType',0 'changeType',f.ZJNUMBER 'landLineNumber',f.`NAME` 'name',f.HOUSEHOLD_COMMUNITY_ID 'residenceCommunity',CASE WHEN f.TELTYPE = '2' THEN '1' WHEN f.TELTYPE = '3' THEN '2' WHEN f.TELTYPE = '1' THEN '3' END 'userType',f.updNumber 'changeTimes',o.keyPointMessage 'keyPointMessage' FROM omp_old_info f,omp_old_order o WHERE o.oldId = f.ID AND f.ZJNUMBER = '"+KeyRequest+"'";
 		// TODO Auto-generated method stub
 		//Map<String, Object> map = jdbcTemplate.queryForMap(sql);
 		Map<String, Object> list1 = jdbcTemplate.queryForMap(sql);

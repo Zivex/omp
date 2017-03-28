@@ -32,15 +32,9 @@
 					<div class="header-underline"></div>
 					<div id="displayDiv">
 						<div class="operatorDiv">
-							<c:url var="queryForm" value="/syslog/ReportFrom/list.shtml" />
+							<c:url var="queryForm" value="/syslog/ReportFrom/VoiceCount.shtml" />
 							<form:form id="command" role="form" class="form-inline" action="${queryForm}" method="post">
 							<input id="pageNo" name="current" type="hidden" value="1">
-<!-- 								&nbsp; -->
-<!-- 									<a role="button" class="btn btn-primary" onclick="DeAuditInformation()">未生成指令</a> -->
-<!-- 								&nbsp; -->
-<!-- 								&nbsp; -->
-<!-- 									<a role="button" class="btn btn-primary" onclick="DeAuditInformation()">*已生成指令*</a> -->
-<!-- 								&nbsp; -->
 								<table class="table" >
 										<tr>
 											<td>区域：</td>
@@ -87,7 +81,7 @@
 							<div id="message" class="alert"></div>
 						</div>
 						<div id="resultDiv">
-							<%@ include file="/WEB-INF/views/admin/list.jsp"%>
+							<%@ include file="/WEB-INF/views/admin/sendVoce.jsp"%>
 						</div>
 					</div>
 				</div>
@@ -122,7 +116,7 @@
 		
 		$(document).ready(function() {
 			initalizeSiderBar();
-			selectMenu("o_wordbooks");
+			selectMenu("o_voice");
 			initQueryForm();
 			$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",function(data){
 				for(var i = 0;i<data.length;i++){

@@ -32,7 +32,7 @@
 					<div class="header-underline"></div>
 					<div id="displayDiv">
 						<div class="operatorDiv">
-							<c:url var="queryForm" value="/syslog/ReportFrom/list.shtml" />
+							<c:url var="queryForm" value="/syslog/ReportFrom/queryKeyboard.shtml" />
 							<form:form id="command" role="form" class="form-inline" action="${queryForm}" method="post">
 							<input id="pageNo" name="current" type="hidden" value="1">
 <!-- 								&nbsp; -->
@@ -87,7 +87,7 @@
 							<div id="message" class="alert"></div>
 						</div>
 						<div id="resultDiv">
-							<%@ include file="/WEB-INF/views/admin/list.jsp"%>
+							<%@ include file="/WEB-INF/views/admin/keyboardUpdateCount.jsp"%>
 						</div>
 					</div>
 				</div>
@@ -122,7 +122,7 @@
 		
 		$(document).ready(function() {
 			initalizeSiderBar();
-			selectMenu("o_wordbooks");
+			selectMenu("o_keyboard");
 			initQueryForm();
 			$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",function(data){
 				for(var i = 0;i<data.length;i++){
@@ -130,7 +130,6 @@
 				}				
 			});
 			$("#county").change(function(){
-			//	$("#county").find("option:not(:first)").remove();
 				$("#street").find("option:not(:first)").remove();
 				$("#community").find("option:not(:first)").remove();
 				
@@ -146,7 +145,6 @@
 			});
 			
 			$("#street").change(function(){
-				//$("#street").find("option:not(:first)").remove();
 				$("#community").find("option:not(:first)").remove();
 				var id = $("#street").val();
 				$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",{id:id},function(data){

@@ -70,11 +70,12 @@ public class SystemLogsController extends AuthenticationSuccessHandlerImpl {
 	@RequestMapping("/ReportFrom/initial.shtml")
 	public ModelAndView initial(String county, String street, String community,String otype,Date stime,Date etime) {
 		ModelAndView mv = new ModelAndView("/admin/initial");
-		listget(mv, county, street, community, otype, stime, etime);;
+		
+		listget(mv, county, street, community, otype, stime, etime);
 		return mv;
 	}
 	/**
-	 * 快捷键修改次数统计
+	 * 快捷键修改次数统计(初始化)
 	 * @param county
 	 * @param street
 	 * @param community
@@ -84,22 +85,66 @@ public class SystemLogsController extends AuthenticationSuccessHandlerImpl {
 	 * @return
 	 */
 	@RequestMapping("/ReportFrom/keyboardUpdateCount.shtml")
+	public ModelAndView initialKey(String county, String street, String community,String otype,Date stime,Date etime) {
+		ModelAndView mv = new ModelAndView("/admin/initialKey");
+		int sata = 1;
+		listKeyGet(mv, county, street, community, otype, stime, etime,sata);
+		return mv;
+	}
+	
+	/**
+	 * 快捷键修改次数统计 (查询)
+	 * @param county
+	 * @param street
+	 * @param community
+	 * @param otype
+	 * @param stime
+	 * @param etime
+	 * @return
+	 */
+	@RequestMapping("/ReportFrom/queryKeyboard.shtml")
 	public ModelAndView keyboardUpdateCount(String county, String street, String community,String otype,Date stime,Date etime) {
-		ModelAndView mv = new ModelAndView("/admin/initial");
-		SimpleDateFormat fromg = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");// 设置日期格式
-		String stimes = "";
-		String etimes = "";
-		if (stime==null) {
-			stimes = "";
-		}else {
-			stimes = fromg.format(stime.getTime());
-		}
-		if (etime==null) {
-			etimes = "";
-		}else {
-			etimes = fromg.format(etime.getTime());
-		}
-		List<Map<String, Object>> list = systemLogs.getKeyboardUpdateCount(county,street,community,otype,stimes,etimes);
+		ModelAndView mv = new ModelAndView("/admin/keyboardUpdateCount");
+		int sata = 1;
+		listKeyGet(mv, county, street, community, otype, stime, etime,sata);
+		return mv;
+	}
+	
+	
+	
+	/**
+	 * 语音发送次数(初始化)
+	 * @param county
+	 * @param street
+	 * @param community
+	 * @param otype
+	 * @param stime
+	 * @param etime
+	 * @return
+	 */
+	@RequestMapping("/ReportFrom/initialVoice.shtml")
+	public ModelAndView initialVoice(String county, String street, String community,String otype,Date stime,Date etime) {
+		ModelAndView mv = new ModelAndView("/admin/initialVoice");
+		int sata = 2;
+		listKeyGet(mv, county, street, community, otype, stime, etime,sata);
+		return mv;
+	}
+	
+	/**
+	 * 语音发送次数 (查询)
+	 * @param county
+	 * @param street
+	 * @param community
+	 * @param otype
+	 * @param stime
+	 * @param etime
+	 * @return
+	 */
+	@RequestMapping("/ReportFrom/VoiceCount.shtml")
+	public ModelAndView VoiceCount(String county, String street, String community,String otype,Date stime,Date etime) {
+		ModelAndView mv = new ModelAndView("/admin/sendVoce");
+		int sata = 2;
+		listKeyGet(mv, county, street, community, otype, stime, etime,sata);
 		return mv;
 	}
 	
@@ -109,7 +154,6 @@ public class SystemLogsController extends AuthenticationSuccessHandlerImpl {
 	@RequestMapping("/Report/sendVoice.shtml")
 	public ModelAndView  sendVoice(String county, String street, String community,String otype,Date stime,Date etime){
 		ModelAndView mv = new ModelAndView("/admin/initial");
-		systemLogs.getsendService(street,community,otype,stime,etime);
 		return mv;
 	}
 	
@@ -127,8 +171,39 @@ public class SystemLogsController extends AuthenticationSuccessHandlerImpl {
 		}else {
 			etimes = fromg.format(etime.getTime());
 		}
+		
+		
+		
 		List<Map<String, Object>> showcout = systemLogs.getlistCount(county, street, community, otype, stimes, etimes);
 		mv.addObject("showcout",showcout);
+		mv.addObject("county", county);
+		mv.addObject("street", street);
+		mv.addObject("community", community);
+		mv.addObject("otype", otype);
+		mv.addObject("stimes", stimes);
+		mv.addObject("etimes", etimes);
+	}
+	
+	
+	
+	public void listKeyGet(ModelAndView mv,String county, String street, String community,String otype,Date stime,Date etime,int sata) {
+		SimpleDateFormat fromg = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");// 设置日期格式
+		String stimes = "";
+		String etimes = "";
+		if (stime==null) {
+			stimes = "";
+		}else {
+			stimes = fromg.format(stime.getTime());
+		}
+		if (etime==null) {
+			etimes = "";
+		}else {
+			etimes = fromg.format(etime.getTime());
+		}
+		
+		
+		List<Map<String, Object>> list = systemLogs.getKeyboardUpdateCount(county,street,community,otype,stimes,etimes,sata);
+		mv.addObject("keyCount",list);
 		mv.addObject("county", county);
 		mv.addObject("street", street);
 		mv.addObject("community", community);
