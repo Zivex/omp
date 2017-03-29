@@ -279,9 +279,7 @@ public class OldForController {
 			old_info.setEmergencycontact(getCellValue(row.getCell(8)));
 			old_info.setEmergencycontacttle(getCellValue(row.getCell(9)));
 			//话机类型
-			if(i != 0){
-				old_info.setTeltype(getCellValue(row.getCell(10)));
-			}
+			old_info.setTeltype(String.valueOf(tel_num));
 			old_info.setAddress(getCellValue(row.getCell(11)));
 			old_info.setCall_id(callId);
 			old_info.setAccount_type(acc+comNUm);

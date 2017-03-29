@@ -1688,7 +1688,7 @@ public class OldServiceImpl extends
 	@Override
 	public int getTel_type(String tel_type) {
 		int i = 0;
-		if(tel_type != null && "".equals(tel_type)){
+		if(tel_type != null && !"".equals(tel_type)){
 			String sql = "select t.id from omp_phone_type t where t.phoneType like '%"+tel_type+"%'";
 			 i = jdbcTemplate.queryForInt(sql);
 			

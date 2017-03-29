@@ -51,7 +51,7 @@
 							<td style="text-align: center;">${old.household_street.name}</td>
 							<td style="text-align: center;">${old.household_community.name}</td>
 							<td style="text-align: center;">${old.account_type}</td>
-							<td style="text-align: center;">${old.teltype}</td>
+							<td style="text-align: center;">${old.phoneType.phoneType}</td>
 <%-- 							<c:if test="${sys == 'admin'}"> --%>
 								<td style="text-align: center;">${old.user_name}</td>
 <%-- 							</c:if> --%>

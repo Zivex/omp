@@ -47,6 +47,7 @@ public class Omp_Old_Info  implements BaseEntity {
 	private String emergencycontacttle;
 	private String tel;
 	private String teltype;
+	private Omp_phone_type phoneType;
 	private String usertype;
 	private Long state;
 	private Long ispersonalized;
@@ -358,6 +359,18 @@ public class Omp_Old_Info  implements BaseEntity {
 	public void setHousehold_community(OmpRegion household_community) {
 		this.household_community = household_community;
 	}
+	
+	
+	@ManyToOne(targetEntity = Omp_phone_type.class, fetch = FetchType.LAZY)
+	@JoinColumn(name = "teltype", insertable = false, updatable = false)
+	public Omp_phone_type getPhoneType() {
+		return phoneType;
+	}
+
+	public void setPhoneType(Omp_phone_type phoneType) {
+		this.phoneType = phoneType;
+	}
+
 	@Column(name = "user_name", length = 11)
 	public String getUser_name() {
 		return user_name;

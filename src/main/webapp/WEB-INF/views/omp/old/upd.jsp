@@ -50,9 +50,9 @@
 			<tr>
 				<td>话机类型：</td>
 				<td><select id="teltype" name="teltype">
-					<option value="居家型"<c:if test="${detaMap.teltype=='居家型' }">selected="selected"</c:if>>居家型</option>
-					<option value="农行型"<c:if test="${detaMap.teltype=='农行型' }">selected="selected"</c:if>>农行型</option>
-					<option value="失能型"<c:if test="${detaMap.teltype=='失能型' }">selected="selected"</c:if>>失能型</option>
+					<option value="1"<c:if test="${detaMap.teltype=='1' }">selected="selected"</c:if>>居家型</option>
+					<option value="3"<c:if test="${detaMap.teltype=='3' }">selected="selected"</c:if>>农商型</option>
+					<option value="2"<c:if test="${detaMap.teltype=='2' }">selected="selected"</c:if>>失能型</option>
 				</select></td>
 			</tr>
 			<tr>
