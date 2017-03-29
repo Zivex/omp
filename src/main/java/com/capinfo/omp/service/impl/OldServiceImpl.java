@@ -97,19 +97,19 @@ public class OldServiceImpl extends
 		Map<String, Object> maps = getCommunityInfo(CommunityId);
 		String sqlString = "";
 		if (!"".equals(ompOldInfo.getTeltype())
-				&& "居家型".equals(ompOldInfo.getTeltype())) {
+				&& "1".equals(ompOldInfo.getTeltype())) {
 			if (maps.get("jt") != null) {
 				sqlString = maps.get("jt").toString();
 			}
 		}
 		if (!"".equals(ompOldInfo.getTeltype())
-				&& "农商型".equals(ompOldInfo.getTeltype())) {
+				&& "3".equals(ompOldInfo.getTeltype())) {
 			if (maps.get("nt") != null) {
 				sqlString = maps.get("nt").toString();
 			}
 		}
 		if (!"".equals(ompOldInfo.getTeltype())
-				&& "失能型".equals(ompOldInfo.getTeltype())) {
+				&& "2".equals(ompOldInfo.getTeltype())) {
 			if (maps.get("nt") != null) {
 				sqlString = maps.get("nt").toString();
 			}

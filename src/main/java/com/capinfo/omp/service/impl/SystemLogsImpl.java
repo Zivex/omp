@@ -38,7 +38,7 @@ public class SystemLogsImpl implements SystemLogs {
 //				+ stimes
 //				+ etimes
 //				+ " GROUP BY k.keyPointMessage ORDER BY k.id";
-		String sql = "SELECT t.serviceName sname, SUM(s.keyPointCount) count FROM omp_keymapping_statistical s INNER JOIN omp_old_info i ON s.landLineNumber = i.ZJNUMBER INNER JOIN omp_key k ON k.`key` = s.keyPointMessage INNER JOIN omp_service_type t on t.id = k.stId WHERE  1=1" + resutSql + " and k.pyId=i.TELTYPE GROUP BY s.keyPointMessage";
+		String sql = "SELECT t.serviceName sname, FORMAT(SUM(s.keyPointCount),0) count FROM omp_keymapping_statistical s INNER JOIN omp_old_info i ON s.landLineNumber = i.ZJNUMBER INNER JOIN omp_key k ON k.`key` = s.keyPointMessage INNER JOIN omp_service_type t on t.id = k.stId WHERE  1=1" + resutSql + " and k.pyId=i.TELTYPE GROUP BY s.keyPointMessage";
 		List<Map<String, Object>> showList = jdbcTemplate.queryForList(sql);
 		return showList;
 	}

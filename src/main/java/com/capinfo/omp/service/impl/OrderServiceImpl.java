@@ -153,7 +153,7 @@ CommonsDataOperationServiceImpl<Omp_old_order, OrderParameter>  implements
 
 	@Override
 	public String sendOrder(String id) {
-		String sql = "SELECT CASE WHEN f.updNumber = 0 THEN '1' ELSE  '2' END 'instructionsType',0 'changeType',f.ZJNUMBER 'landLineNumber',f.`NAME` 'name',f.HOUSEHOLD_COMMUNITY_ID 'residenceCommunity',CASE WHEN f.TELTYPE = '失能型' THEN '1' WHEN f.TELTYPE = '农商型' THEN '2' WHEN f.TELTYPE = '居家型' THEN '3' END 'userType',f.updNumber 'changeTimes',o.keyPointMessage 'keyPointMessage' FROM omp_old_info f,omp_old_order o WHERE o.oldId = f.ID AND f.ID = '"
+		String sql = "SELECT CASE WHEN f.updNumber = 0 THEN '1' ELSE  '2' END 'instructionsType',0 'changeType',f.ZJNUMBER 'landLineNumber',f.`NAME` 'name',f.HOUSEHOLD_COMMUNITY_ID 'residenceCommunity',CASE WHEN f.TELTYPE = '2' THEN '1' WHEN f.TELTYPE = '3' THEN '2' WHEN f.TELTYPE = '1' THEN '3' END 'userType',f.updNumber 'changeTimes',o.keyPointMessage 'keyPointMessage' FROM omp_old_info f,omp_old_order o WHERE o.oldId = f.ID AND f.ID = '"
 				+ id + "'";
 		// TODO Auto-generated method stub
 		Map<String, Object> map = jdbcTemplate.queryForMap(sql);
@@ -226,7 +226,7 @@ CommonsDataOperationServiceImpl<Omp_old_order, OrderParameter>  implements
 		int result = 0;
 		ClientGetDataService c = new ClientGetDataService();
 		StringBuffer insert = null;
-		String sql = "SELECT CASE WHEN f.updNumber = 0 THEN '1' ELSE  '2' END 'instructionsType',0 'changeType',f.ZJNUMBER 'landLineNumber',f.`NAME` 'name',f.HOUSEHOLD_COMMUNITY_ID 'residenceCommunity',CASE WHEN f.TELTYPE = '失能型' THEN '1' WHEN f.TELTYPE = '农商型' THEN '2' WHEN f.TELTYPE = '居家型' THEN '3' END 'userType',f.updNumber 'changeTimes',o.keyPointMessage 'keyPointMessage' FROM omp_old_info f,omp_old_order o WHERE o.oldId = f.ID AND o.communityOrderId = '"
+		String sql = "SELECT CASE WHEN f.updNumber = 0 THEN '1' ELSE  '2' END 'instructionsType',0 'changeType',f.ZJNUMBER 'landLineNumber',f.`NAME` 'name',f.HOUSEHOLD_COMMUNITY_ID 'residenceCommunity',CASE WHEN f.TELTYPE = '2' THEN '1' WHEN f.TELTYPE = '3' THEN '2' WHEN f.TELTYPE = '1' THEN '3' END 'userType',f.updNumber 'changeTimes',o.keyPointMessage 'keyPointMessage' FROM omp_old_info f,omp_old_order o WHERE o.oldId = f.ID AND o.communityOrderId = '"
 				+ id + "'";
 		List<Map<String, Object>> map = jdbcTemplate.queryForList(sql);
 		for (int i = 0; i < map.size(); i++) {
