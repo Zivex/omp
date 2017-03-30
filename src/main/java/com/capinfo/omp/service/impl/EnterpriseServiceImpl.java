@@ -1,6 +1,8 @@
 package com.capinfo.omp.service.impl;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -8,73 +10,152 @@ import org.springframework.stereotype.Service;
 
 import com.capinfo.framework.dao.SearchCriteriaBuilder;
 import com.capinfo.framework.dao.impl.restriction.RestrictionExpression;
+import com.capinfo.framework.model.BaseEntity;
 import com.capinfo.framework.web.service.impl.CommonsDataOperationServiceImpl;
 import com.capinfo.omp.model.Composition;
 import com.capinfo.omp.model.Enterprise;
+import com.capinfo.omp.model.ServiceProvider;
 import com.capinfo.omp.parameter.EnterpriseParameter;
+import com.capinfo.omp.parameter.ServiceProviderParameter;
 import com.capinfo.omp.service.EnterpriseService;
-
+import com.capinfo.omp.utils.Page;
 
 @Service
 public class EnterpriseServiceImpl extends
 		CommonsDataOperationServiceImpl<Enterprise, EnterpriseParameter>
 		implements EnterpriseService {
 
-
 	@Autowired
 	private JdbcTemplate JdbcTemplate;
-	
-	
-	
+
 	@Override
 	public List<Enterprise> getListByName(EnterpriseParameter parameter) {
 		SearchCriteriaBuilder<Enterprise> searchCriteriaBuilder = new SearchCriteriaBuilder<Enterprise>(
 				Enterprise.class);
-		SearchCriteriaBuilder<Enterprise> builder = searchCriteriaBuilder.addQueryCondition("type", RestrictionExpression.EQUALS_OP,parameter.getType());
+		SearchCriteriaBuilder<Enterprise> builder = searchCriteriaBuilder
+				.addQueryCondition("type", RestrictionExpression.EQUALS_OP,
+						parameter.getType());
 		List<Enterprise> list = getGeneralService().getObjects(builder.build());
 		return list;
 	}
 
-
-
 	@Override
-	public List<Composition> getListByid(int uid,Integer lv,Integer upId) {
+	public List<Composition> getListByid(int uid, Integer lv, Integer upId) {
 		SearchCriteriaBuilder<Composition> searchCriteriaBuilder = new SearchCriteriaBuilder<Composition>(
 				Composition.class);
-		searchCriteriaBuilder.addQueryCondition("cid", RestrictionExpression.EQUALS_OP,uid);
-		if(lv != null && lv !=0){
-		searchCriteriaBuilder.addQueryCondition("levelid", RestrictionExpression.EQUALS_OP,lv);
+		searchCriteriaBuilder.addQueryCondition("cid",
+				RestrictionExpression.EQUALS_OP, uid);
+		if (lv != null && lv != 0) {
+			searchCriteriaBuilder.addQueryCondition("levelid",
+					RestrictionExpression.EQUALS_OP, lv);
 		}
-		if(upId != null && upId !=0){
-			searchCriteriaBuilder.addQueryCondition("prient_id", RestrictionExpression.EQUALS_OP,upId);
+		if (upId != null && upId != 0) {
+			searchCriteriaBuilder.addQueryCondition("prient_id",
+					RestrictionExpression.EQUALS_OP, upId);
 		}
-		
-		List<Composition> list = getGeneralService().getObjects(searchCriteriaBuilder.build());
+
+		List<Composition> list = getGeneralService().getObjects(
+				searchCriteriaBuilder.build());
 		return list;
 	}
-
-
 
 	@SuppressWarnings("deprecation")
 	@Override
 	public Long getServiceTypeId(String serviceType) {
-		String sql = "select t.id from omp_service_type t where t.serviceName = '"+serviceType+"'";
-		long id = JdbcTemplate.queryForLong(sql);
+		long id = 0L;
+		String checksql = "select count(*) from omp_service_type t where t.serviceName = '"
+				+ serviceType + "'";
+		int check = JdbcTemplate.queryForInt(checksql);
+		if (check > 0) {
+			String sql = "select t.id from omp_service_type t where t.serviceName = '"
+					+ serviceType + "'";
+			id = JdbcTemplate.queryForLong(sql);
+		}
 		return id;
 	}
 
-
+	@SuppressWarnings("deprecation")
+	@Override
+	public String getRegionId(String city, int i, String pid) {
+		String psql = "";
+		String sql = "";
+		long id = 0L;
+		if (!"0".equals(pid)) {
+			psql = " and PARENTID = " + pid;
+		}
+		String checksql = "select count(*)from omp_region t where t.name = '"
+				+ city + "' and levelid=0" + i + psql + " and USE_FLAG = 1";
+		int check = JdbcTemplate.queryForInt(checksql);
+		if (check > 0) {
+			sql = "select t.id from omp_region t where t.name = '" + city
+					+ "' and levelid=0" + i + psql + " and USE_FLAG = 1";
+			id = JdbcTemplate.queryForLong(sql);
+		}
+		return String.valueOf(id);
+	}
 
 	@Override
-	public String getRegionId(String city, int i,String pid) {
-		String psql = "";
-		if(!"0".equals(pid)){
-			psql= " and PARENTID = "+pid;
+	public Map<String, Object> getMerchantsList(
+			ServiceProviderParameter parameter) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		SearchCriteriaBuilder<ServiceProvider> searchCriteriaBuilder = new SearchCriteriaBuilder<ServiceProvider>(
+				ServiceProvider.class);
+
+		searchCriteriaBuilder.addQueryCondition("serviceName",
+				RestrictionExpression.LIKE_OP, parameter.getEntity()
+						.getServiceName());
+		searchCriteriaBuilder.addQueryCondition("serviceTell",
+				RestrictionExpression.EQUALS_OP, parameter.getEntity()
+						.getServiceTell());
+		searchCriteriaBuilder.addQueryCondition("serviceTypeId",
+				RestrictionExpression.EQUALS_OP, parameter.getEntity()
+						.getServiceTypeId());
+		searchCriteriaBuilder.addQueryCondition("verify",
+				RestrictionExpression.EQUALS_OP, parameter.getEntity()
+						.getVerify());
+		searchCriteriaBuilder.addQueryCondition("contact",
+				RestrictionExpression.EQUALS_OP, parameter.getEntity()
+						.getContact());
+		searchCriteriaBuilder.addQueryCondition("contactPhone",
+				RestrictionExpression.EQUALS_OP, parameter.getEntity()
+						.getContactPhone());
+		int count = getGeneralService().getCount(searchCriteriaBuilder.build());
+		map.put("count", count);
+		if (parameter.getPageSize() == 0) {
+			parameter.setPageSize(10);
 		}
-		String sql = "select t.id from omp_region t where t.name = '"+city+"' and levelid=0"+i+psql+" and USE_FLAG = 1";
-		@SuppressWarnings("deprecation")
-		long id = JdbcTemplate.queryForLong(sql);
-		return String.valueOf(id);
+		searchCriteriaBuilder.addLimitCondition((parameter.getCurrent() - 1)* parameter.getPageSize(), parameter.getPageSize());
+		List<ServiceProvider> list = getGeneralService().getObjects(searchCriteriaBuilder.build());
+		map.put("list", list);
+		return map;
+	}
+
+	@Override
+	public int getMerchantsCount(ServiceProviderParameter parameter) {
+		SearchCriteriaBuilder<ServiceProvider> searchCriteriaBuilder = new SearchCriteriaBuilder<ServiceProvider>(
+				ServiceProvider.class);
+		searchCriteriaBuilder.addQueryCondition("serviceName",
+				RestrictionExpression.LIKE_OP, parameter.getEntity()
+						.getServiceName());
+		searchCriteriaBuilder.addQueryCondition("serviceTell",
+				RestrictionExpression.EQUALS_OP, parameter.getEntity()
+						.getServiceTell());
+		searchCriteriaBuilder.addQueryCondition("serviceTypeId",
+				RestrictionExpression.EQUALS_OP, parameter.getEntity()
+						.getServiceTypeId());
+		searchCriteriaBuilder.addQueryCondition("verify",
+				RestrictionExpression.EQUALS_OP, parameter.getEntity()
+						.getVerify());
+		searchCriteriaBuilder.addQueryCondition("contact",
+				RestrictionExpression.EQUALS_OP, parameter.getEntity()
+						.getContact());
+		searchCriteriaBuilder.addQueryCondition("contactPhone",
+				RestrictionExpression.EQUALS_OP, parameter.getEntity()
+						.getContactPhone());
+
+		int count = getGeneralService().getCount(searchCriteriaBuilder.build());
+
+		return count;
 	}
 
 }

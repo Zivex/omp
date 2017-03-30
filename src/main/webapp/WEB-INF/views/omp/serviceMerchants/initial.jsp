@@ -40,25 +40,23 @@
 					<div id="displayDiv">
 						<div class="operatorDiv">
 							<c:url var="queryForm"
-								value="/admin/omp/ServiceProvider/lists.shtml" />
-							<form:form id="command" role="form" class="form-inline"
-								action="${queryForm }" method="post">
-								<input id="pageNo" name="current" type="hidden" value="1">
-								<!-- 								<input id="pageNo" name="currentPieceNum" type="hidden" value="1"> -->
+								value="/enterprise/list.shtml" />
+							<form:form  method="post" action='${queryForm}' class="form-horizontal"
+								role="form">
 								<a role="button" class="btn btn-primary"
-									href='<c:url value="/admin/omp/ServiceProvider/list.shtml"/>'>服务商信息展示</a>
+									href='<c:url value="/admin/omp/serviceMerchants/list.shtml"/>'>服务商信息展示</a>
 								<a role="button" class="btn btn-primary"
-									href='<c:url value="/admin/omp/ServiceProvider/export.shtml"/>'>服务商信息导出</a>
+									href='<c:url value="/admin/omp/serviceMerchants/export.shtml"/>'>服务商信息导出</a>
 								<a role="button" class="btn btn-primary"
 									onclick="importInformation()">服务商信息导入</a>
 								<table class="table">
 									<tr>
 										<td>服务商名称：</td>
-										<td><input type="text"  id="serviceName"
-											name="entity.serviceName" /></td>
+										<td><form:input path="entity.serviceName"
+												class="form-control" /></td>
 										<td>服务商电话：</td>
-										<td><input type="text"  id="serviceTell"
-											name="entity.serviceTell" /></td>
+										<td><form:input path="entity.serviceTell"
+												class="form-control" /></td>
 										<td>服务类型：</td>
 										<td><select name="entity.serviceTypeId" id="serviceTypeId">
 												<option value="">--请选择--</option>
@@ -75,7 +73,7 @@
 												<option value="2">未审核</option>
 
 										</select></td>
-										
+
 									</tr>
 									<tr>
 										<td>联系人：</td>
@@ -86,22 +84,18 @@
 											name="entity.contactPhone" /></td>
 									</tr>
 									<tr>
-										<td><input type="button" value="查询" onclick="quety()" /></td>
+										<td><button>查询</button></td>
 										<td><input type="reset" /></td>
 									</tr>
 								</table>
 							</form:form>
 						</div>
-
-
-
-
 						<hr>
 						<div id="borad" style="display: none">
 							<div id="message" class="alert"></div>
 						</div>
 						<div id="resultDiv">
-							<%@ include file="/WEB-INF/views/omp/serviceProvider/list.jsp"%>
+							<%@ include file="/WEB-INF/views/omp/serviceMerchants/list.jsp"%>
 						</div>
 					</div>
 					<div id="displayDiv1"></div>
@@ -134,8 +128,8 @@
 // 			}
 // 			showDynamicModal(url);
 // 		}
-		
-		
+
+
 				/**
 		* 导入信息
 		**/
@@ -143,13 +137,13 @@
 			var url = '<c:url value="serviceMerchants/toImport.shtml"/>';
 			showDynamicModal(url);
 		}
-		
+
 $(function(){
 		$("#displayDiv1").hide();
 		$("#displayDiv").show();
 		$("#backButton").hide();
 	});
-	
+
 function hxBackClick(){
 
 	$("#displayDiv1").hide();
@@ -170,8 +164,8 @@ function hxBackClick(){
 			selectMenu("o_serviceMerchants");
 			initQueryForm();
 		});
-		
-		
+
+
 		/**
 		 *老人信息查询
 		 */
@@ -204,9 +198,9 @@ function hxBackClick(){
 				$("#resultDiv").html(data);
 			})
 		};
-		
-		
-		
+
+
+
 		function hxtoServerInfo(id){
 			/* alert("asa"); */
 			$.post("${pageContext.request.contextPath}/admin/omp/ServiceProvider/serverInfo.shtml",

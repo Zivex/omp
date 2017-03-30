@@ -53,13 +53,13 @@ import com.capinfo.omp.ws.client.ClientGetLandNumberService;
 @RequestMapping("/enterprise")
 @SessionAttributes("eccomm_admin")
 public class EnterpriseController {
-	
+
 	@Autowired
 	private GeneralService generalService;
 	@Autowired
 	private EnterpriseService enterpriseService;
-	
-	
+
+
 	//资源页面
 	@RequestMapping("/initialize.shtml")
 	public ModelAndView initialize(
@@ -75,13 +75,13 @@ public class EnterpriseController {
 		ModelAndView mv = new ModelAndView("/omp/enterprise/initialize");
 		Enterprise entity = parameter.getEntity();
 		entity.setUse_flag(1l);
-		entity.setCreatedate(new Date()); 
+		entity.setCreatedate(new Date());
 		generalService.saveOrUpdate(parameter.getEntity());
 		mv.addObject("command", parameter);
 		mv.addObject("msg", 1);
 		return mv;
 	}
-	
+
 	//查询企业名称
 	@RequestMapping("/queryEnterprise.shtml")
 	@ResponseBody
@@ -89,7 +89,7 @@ public class EnterpriseController {
 			@ModelAttribute("eccomm_admin") SystemUser user,EnterpriseParameter parameter ) {
 		List<Enterprise> list = enterpriseService.getListByName(parameter);
 		return list;
-		
+
 	}
 	//下拉追加
 	@RequestMapping("/ajaxEnterprise.shtml")
@@ -97,10 +97,10 @@ public class EnterpriseController {
 	public List<Composition> ajaxEnterprise(int uid ,Integer lv,Integer upId) {
 		List<Composition> list = enterpriseService.getListByid(uid,lv,upId);
 		return list;
-		
+
 	}
-	
-	
+
+
 	/**
 	 * 服务商导入
 	 *
@@ -109,26 +109,31 @@ public class EnterpriseController {
 	 * @return
 	 * @throws Exception
 	 */
-	
+
 	@RequestMapping("/ServiceProvider.shtml")
 	@ResponseBody
 	public String importServiceProvider(HttpServletRequest request, @RequestParam("excelFile") MultipartFile excelFile, @ModelAttribute("eccomm_admin") SystemUser user) throws Exception {
 		String errorstr = "";
+		Map<String, Object> map = null;
 		if (excelFile != null && !"".equals(excelFile)) {
 			InputStream fis = excelFile.getInputStream();
-			Map<String, Object> map = importEmployeeByPoi(fis, user.getAccount_type(), errorstr);
-			List<ServiceProvider> list = (List<ServiceProvider>) map.get("infos");
-			for (ServiceProvider serviceProvider : list) {
-				// 保存服务商
-				generalService.saveOrUpdate(serviceProvider);
+			map = importEmployeeByPoi(fis, user.getAccount_type(), errorstr);
+			int c = (int) map.get("count");
+			if(c<1){
+				List<ServiceProvider> list = (List<ServiceProvider>) map.get("infos");
+				for (ServiceProvider serviceProvider : list) {
+					// 保存服务商
+					generalService.saveOrUpdate(serviceProvider);
+				}
+				return "添加成功";
 			}
 		}
-		return "添加成功";
+		return (String) map.get("errorstr");
 	}
 
 	/**
 	 * POI:解析Excel文件中的数据并把每行数据封装成一个实体
-	 * 
+	 *
 	 * @param fis
 	 *            文件输入流
 	 * @param string
@@ -145,17 +150,22 @@ public class EnterpriseController {
 		Workbook workbook = WorkbookFactory.create(fis);
 		// sheet
 		Sheet sheetAt0 = workbook.getSheetAt(0);
-
+		int srrorLine = 0;
+		int count = 0;
+		errorstr +="错误信息 \n";
 		String num = "";
 		int rowNum = sheetAt0.getLastRowNum();
 		for (int i = 1; i < rowNum + 1; i++) {
+			srrorLine++;
 			Row row1 = sheetAt0.getRow(i);
 			// 所属市
 			String city = getCellValue(row1.getCell(0));
+
 			// 所属区县
 			String county = getCellValue(row1.getCell(1));
 			// 所属街道
 			String street = getCellValue(row1.getCell(2));
+
 			// 服务单位名称
 			String serviceName = getCellValue(row1.getCell(3));
 			// 营业执照名称
@@ -238,23 +248,117 @@ public class EnterpriseController {
 
 			// 查询区域
 			String cityId = enterpriseService.getRegionId(city, 2, "0");
+
 			String countyId = enterpriseService.getRegionId(county, 3, cityId);
 			String streetId = enterpriseService.getRegionId(street, 4, countyId);
+			Long serviceTypeId = enterpriseService.getServiceTypeId(serviceType);
 
-			
 			String serviceCountyId = "";
 			String serviceStreetId = "";
 			String serviceCommunityId = "";
 			if(!"".equals(serviceCounty) && serviceCounty != null){
 				serviceCountyId = enterpriseService.getRegionId(serviceCounty, 3, "0");
+				if("0".equals(serviceCountyId)){
+					count++;
+					errorstr+="第"+srrorLine+"行,服务区县不存在; \n";
+				}
 				if(!"".equals(serviceStreet) && serviceStreet != null){
 					serviceStreetId = enterpriseService.getRegionId(serviceStreet, 4, serviceCountyId);
+					if("0".equals(serviceStreetId)){
+						count++;
+						errorstr+="第"+srrorLine+"行,服务街道不存在; \n";
+					}
 					if(!"".equals(serviceCommunity) && serviceCommunity != null){
 						serviceCommunityId = enterpriseService.getRegionId(serviceCommunity, 5, serviceStreetId);
+						if("0".equals(serviceCommunityId)){
+							count++;
+							errorstr+="第"+srrorLine+"行,服务社区不存在; \n";
+						}
 					}
 				}
 			}
-			
+			//验证
+			if("".equals(city)){
+				count++;
+				errorstr+="第"+srrorLine+"行,所属市不能为空; \n";
+			}
+			if("0".equals(cityId)){
+				count++;
+				errorstr+="第"+srrorLine+"行,所属市不存在; \n";
+			}
+			if("".equals(county)){
+				count++;
+				errorstr+="第"+srrorLine+"行,所属区不能为空; \n";
+			}
+			if("0".equals(countyId)){
+				count++;
+				errorstr+="第"+srrorLine+"行,所属区不存在; \n";
+			}
+			if("".equals(street)){
+				count++;
+				errorstr+="第"+srrorLine+"行,所属街道不能为空; \n";
+			}
+			if("0".equals(streetId)){
+				count++;
+				errorstr+="第"+srrorLine+"行,所属街道不存在; \n";
+			}
+			if("".equals(serviceName)){
+				count++;
+				errorstr+="第"+srrorLine+"行,服务单位名称不能为空; \n";
+			}
+			if("".equals(charterName)){
+				count++;
+				errorstr+="第"+srrorLine+"行,营业执照名称不能为空; \n";
+			}
+			if("".equals(charterNumber)){
+				count++;
+				errorstr+="第"+srrorLine+"行,营业执照编码不能为空; \n";
+			}
+			if("".equals(serviceAddress)){
+				count++;
+				errorstr+="第"+srrorLine+"行,服务地址不能为空; \n";
+			}
+			if("".equals(serviceType)){
+				count++;
+				errorstr+="第"+srrorLine+"行,服务类型名称不能为空; \n";
+			}
+			//检测服务类型
+			if(serviceTypeId == 0L){
+				count++;
+				errorstr+="第"+srrorLine+"行,服务类型不存在; \n";
+			}
+			if("".equals(addressDescribe)){
+				count++;
+				errorstr+="第"+srrorLine+"行,服务区域描述不能为空; \n";
+			}
+			if("".equals(serviceTell)){
+				count++;
+				errorstr+="第"+srrorLine+"行,服务电话不能为空; \n";
+			}
+			if("".equals(contact)){
+				count++;
+				errorstr+="第"+srrorLine+"行,联系人不能为空; \n";
+			}
+			if("".equals(contactPhone)){
+				count++;
+				errorstr+="第"+srrorLine+"行,联系人手机号不能为空; \n";
+			}
+			if("".equals(email)){
+				count++;
+				errorstr+="第"+srrorLine+"行,邮箱不能为空; \n";
+			}
+			if("".equals(aftermarketPerson)){
+				count++;
+				errorstr+="第"+srrorLine+"行,售后对接人不能为空; \n";
+			}
+			if("".equals(aftermarketPhone)){
+				count++;
+				errorstr+="第"+srrorLine+"行,后电话不能为空; \n";
+			}
+			if("".equals(serviceContent)){
+				count++;
+				errorstr+="第"+srrorLine+"行,服务内容不能为空; \n";
+			}
 			// 创建服务商
 			ServiceProvider serviceProvider = new ServiceProvider();
 			serviceProvider.setCity_id(Long.parseLong(cityId));
@@ -279,7 +383,7 @@ public class EnterpriseController {
 			serviceProvider.setPrincipal(principal);
 			serviceProvider.setPrincipalPhone(principalPhone);
 			serviceProvider.setServiceAddress(serviceAddress);
-			serviceProvider.setServiceName(superiorServiceName);
+			serviceProvider.setServiceName(serviceName);
 			// serviceProvider.setServiceState(serviceState);
 
 			// 判断是否有区号
@@ -290,7 +394,7 @@ public class EnterpriseController {
 				serviceProvider.setServiceTell(serviceTell);
 			}
 			// 查询服务类型id
-			Long serviceTypeId = enterpriseService.getServiceTypeId(serviceType);
+
 			serviceProvider.setServiceTypeId(serviceTypeId);
 			serviceProvider.setSigningDate(new Date());
 			serviceProvider.setSuperiorServiceName(superiorServiceName);
@@ -300,14 +404,16 @@ public class EnterpriseController {
 		}
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("infos", infos);
+		map.put("count", count);
 		map.put("failure", failure);
+		map.put("errorstr", errorstr);
 		return map;
 	}
 
 	// 判断从Excel文件中解析出来数据的格式
 	public static String getCellValue(Cell cell) {
 		String value = null;
-		
+
 		// 简单的查检列类型
 		if(cell != null){
 		switch (cell.getCellType()) {
@@ -357,8 +463,11 @@ public class EnterpriseController {
 		mv.addObject("command", parameter);
 		List<ServiceType> typeList = generalService.getAllObjects(ServiceType.class);
 		mv.addObject("typeList",typeList);
-		
-		
+		@SuppressWarnings("unchecked")
+		Map<String, Object> map = enterpriseService.getMerchantsList(parameter);
+		mv.addObject("mList",map.get("list"));
+		mv.addObject("DataTotalCount",map.get("count"));
+		mv.addObject("PerPieceSize",parameter.getPageSize());
 		return mv;
 	}
 	/**
@@ -370,40 +479,16 @@ public class EnterpriseController {
 	@RequestMapping("/list.shtml")
 	public ModelAndView dicSortList(HttpServletRequest request,ServiceProviderParameter parameter) {
 		ModelAndView mv = new ModelAndView("/omp/serviceMerchants/initial");
-		//getSortList(parameter.getCurrent(), mv, "");
-		return mv;
+	mv.addObject("command", parameter);
+	List<ServiceType> typeList = generalService.getAllObjects(ServiceType.class);
+	mv.addObject("typeList",typeList);
+	@SuppressWarnings("unchecked")
+	Map<String, Object> map = enterpriseService.getMerchantsList(parameter);
+	mv.addObject("mList",map.get("list"));
+	mv.addObject("DataTotalCount",map.get("count"));
+	mv.addObject("PerPieceSize",parameter.getPageSize());
+	return mv;
 	}
-	/**
-	 * 服务商管理列表
-	 *
-	 * @param mv
-	 *
-	 * @param parameter
-	 * @param mv
-	 * @return
-	 */
-//	private void getSortList(String current, ModelAndView mv, String QSql) {
-//		if (StringUtils.isEmpty(current)) {
-//			current = "1";
-//		}
-//		int count = ompOldMatchService.getCountWithSql(QSql);
-//		
-//		
-//		Page page = new Page(current, count, "10");
-//		List<Map<String, Object>> list = ompOldMatchService.getListWithSql(page, QSql);
-//		for (Map<String, Object> map : list) {
-//			String id = map.get("SCOPE_DELIVERY").toString();
-//			if (!StringUtils.isEmpty(id)) {
-//				// String name = ompOldMatchService.getregion(id);
-//				map.put("SCOPE_DELIVERY", id);
-//			}
-//		}
-//		mv.addObject("DataTotalCount", count);
-//		mv.addObject("PerPieceSize", 10);
-//		mv.addObject("command", list);
-//		mv.addObject("CurrentPieceNum", page.getCurrentPage());
-//		mv.addObject("QSql", QSql);
-//	}
     /**
      * 导入
      * @return

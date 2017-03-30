@@ -10,12 +10,19 @@ public class ServiceProviderParameter extends DataListParameter<ServiceProvider>
 
 	private ServiceProvider entity = new ServiceProvider();
 	private Class<ServiceProvider> entityClazz = ServiceProvider.class;
-	private String current;
-	
-	public String getCurrent() {
+	private int current;
+	private int pageSize;
+
+	public int getPageSize() {
+		return pageSize;
+	}
+	public void setPageSize(int pageSize) {
+		this.pageSize = pageSize;
+	}
+	public int getCurrent() {
 		return current;
 	}
-	public void setCurrent(String current) {
+	public void setCurrent(int current) {
 		this.current = current;
 	}
 	public ServiceProvider getEntity() {

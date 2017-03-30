@@ -20,9 +20,9 @@ import com.capinfo.region.model.OmpRegion;
 
 /**
  * 用户信息
- * 
+ *
  * @author zx
- * 
+ *
  */
 /**
  * @author Rivex
@@ -34,7 +34,7 @@ public class ServiceProvider implements BaseEntity {
 
 	private static final long serialVersionUID = 1L;
 	private Long id;
-	
+
 	//市
 	private Long city_id;
 	private OmpRegion city;
@@ -57,14 +57,14 @@ public class ServiceProvider implements BaseEntity {
 //	private Long serviceTell;
 	//服务地址
 	private String serviceAddress;
-	
+
 	//服务类型
 	private Long serviceTypeId;
 	private ServiceType serviceType;
-	
+
 	//服务区域描述
 	private String addressDescribe;
-	
+
 //	private Long serviceCity_id;
 //	private OmpRegion serviceCity;
 	private String serviceCounty_id;
@@ -73,43 +73,43 @@ public class ServiceProvider implements BaseEntity {
 	private OmpRegion serviceStreet;
 	private String serviceCommunity_id;
 	private OmpRegion serviceCommunity;
-	
+
 	//渠道发展来源
 	private String channels;
-	
+
 	//服务电话
 	private String serviceTell;
-	
+
 	//联系人
 	private String contact;
-	
+
 	//联系人手机号
 	private String contactPhone;
-	
+
 	/**
-	 * 是否能刷养老卡 
+	 * 是否能刷养老卡
 	 *0:否  1:是
 	 */
 	private int is_pensionCard;
-	
+
 	/**
 	 *是否能刷跨年
 	 *0:否  1:是
 	 */
 	private int is_AcrossYears;
-	
+
 	/**
 	 *是否能刷失能
 	 *0:否  1:是
 	 */
 	private int is_anergy;
-	
+
 	//上级服务单位名称
 	private String superiorServiceName;
-	
+
 	//总负责人
 	private String principal;
-	
+
 	//总负责人联系电话
 	private String principalPhone;
 	//售后对接人
@@ -149,7 +149,7 @@ public class ServiceProvider implements BaseEntity {
 		return id;
 	}
 
-	
+
 	public void setId(Long id) {
 		this.id = id;
 	}
@@ -264,8 +264,8 @@ public class ServiceProvider implements BaseEntity {
 	public void setServiceTypeId(Long serviceTypeId) {
 		this.serviceTypeId = serviceTypeId;
 	}
-
-	@Column(name = "serviceType")
+	@ManyToOne(targetEntity = ServiceType.class, fetch = FetchType.LAZY)
+	@JoinColumn(name = "serviceTypeId", insertable = false, updatable = false)
 	public ServiceType getServiceType() {
 		return serviceType;
 	}
@@ -526,8 +526,8 @@ public class ServiceProvider implements BaseEntity {
 	}
 
 
-	
-	
+
+
 	@Column(name = "email")
 	public String getEmail() {
 		return email;
@@ -537,10 +537,10 @@ public class ServiceProvider implements BaseEntity {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	
-	
-	
-	
-	
+
+
+
+
+
 
 }

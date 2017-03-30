@@ -26,36 +26,35 @@
 				<thead>
 					<tr class="active">
 						<th width="10%">ID</th>
-						<th width="20%">店名</th>
-						<th width="10%">服务地区</th>
+						<th width="20%">服务商名称</th>
+						<th width="10%">服务电话</th>
 						<th width="15%">服务类型</th>
-						<th width="15%">服务电话</th>
-						<th width="10%">是否有效</th>
-						<th width="15%">操作</th>
+<!-- 						<th width="15%">服务区域</th> -->
+						<th width="10%">联系人</th>
+						<th width="15%">联系方式</th>
+						<th width="15%">审核状态</th>
 					</tr>
 				</thead>
 				<tbody>
-					<c:forEach var="item" items="${command}" varStatus="sta">
+					<c:forEach var="m" items="${mList}" >
 						<tr>
-							<td>${item.id}</td>
-							<td>${item.SERVER_NAME}</td>
-							<td>${item.SCOPE_DELIVERY}</td>
-							<td>${item.SERVER_TYPE}</td>
-							<td>${item.SERVER_TEL}</td>
-							<c:if test="${item.IS_VALID == 1 }"><td style="color: green;">是</td></c:if>
-							<c:if test="${item.IS_VALID == 0 }"><td style="color: red;">否</td></c:if>
-							<%-- <td><a onclick="hxtoServerInfo(${item.id})">详情</a></td> --%>
+							<td>${m.id}</td>
+							<td>${m.serviceName}</td>
+							<td>${m.serviceTell}</td>
+							<td>${m.serviceType.serviceName}</td>
+							<td>${m.contact}</td>
+							<td>${m.contactPhone}</td>
+							<c:if test="${m.verify == 0 }"><td style="color: red;">无效</td></c:if>
+							<c:if test="${m.verify == 1 }"><td style="color: green;">有效</td></c:if>
+							<c:if test="${m.verify == 2 }"><td style="color: gray;">未审核</td></c:if>
 							<td style="text-align: center;">
 								<div class="btn-group">
 									<button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
 										操作 <span class="caret"></span>
 									</button>
 									<ul class="dropdown-menu" role="menu">
-										<li><a onclick="hxtoServerInfo(${item.id})">详情</a></li>
-										<c:if test="${sys == 'admin'}">
+										<li><a onclick="hxtoServerInfo(${m.id})">详情</a></li>
 											<li><a href="###" onclick="deleteService(${item.id},this);">删除</a></li>
-										</c:if>
-										<%-- <li><a onclick="tocreOrder(${old.id})">生成指令</a></li> --%>
 									</ul>
 								</div>
 							</td>
@@ -85,7 +84,7 @@
 <SCRIPT type="text/javascript">
 
 $(document).ready(function() {
-	
+
 	initListForm();
 	<c:if test="${DataTotalCount!=null&&DataTotalCount>0}">
 	initPagination(<c:out value="${DataTotalCount}"/>,<c:out value="${PerPieceSize}"/>,<c:out value="${CurrentPieceNum}"/>);
@@ -107,10 +106,10 @@ function serverPro(id){
 function deleteService(uid,tr){
 	var sure=confirm("删除操作是不可逆的，确认删除该信息吗？");
 	if(sure){
-		
+
 		location.href = "deleteService.shtml?id="+uid;
 		alert("删除成功！");
-		location.replace() 
+		location.replace()
 		//window.location.href="${pageContext.request.contextPath}/old/oldMatch/list.shtml?name=&idCard=&zjNumber=&county=&street=&community=&isGenerationOrder=&isindividuation=";
 // 		$("#item_entity_id").val(uid);
 // 		$("#listForm").attr("action", '<c:url value="/old/oldMatch/delete.shtml"/>');
