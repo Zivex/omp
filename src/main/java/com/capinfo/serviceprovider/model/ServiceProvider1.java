@@ -17,7 +17,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Table(name = "SERVICE_PROVIDER")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 //@SequenceGenerator(name = "OldMatch", sequenceName = "SEQ_OMP_OLD_MATCH", allocationSize = 1)
-public class ServiceProvider implements Serializable{
+public class ServiceProvider1 implements Serializable{
 	
 	private static final long serialVersionUID = 8723112805122184479L;
 
@@ -67,11 +67,11 @@ public class ServiceProvider implements Serializable{
 		this.serviceManager = serviceManager;
 	}
 
-	public ServiceProvider() {
+	public ServiceProvider1() {
 		super();
 	}
 	
-	public ServiceProvider(Long id) {
+	public ServiceProvider1(Long id) {
 		super();
 		this.id = id;
 	}

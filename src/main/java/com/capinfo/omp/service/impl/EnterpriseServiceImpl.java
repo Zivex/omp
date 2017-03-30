@@ -53,4 +53,28 @@ public class EnterpriseServiceImpl extends
 		return list;
 	}
 
+
+
+	@SuppressWarnings("deprecation")
+	@Override
+	public Long getServiceTypeId(String serviceType) {
+		String sql = "select t.id from omp_service_type t where t.serviceName = '"+serviceType+"'";
+		long id = JdbcTemplate.queryForLong(sql);
+		return id;
+	}
+
+
+
+	@Override
+	public String getRegionId(String city, int i,String pid) {
+		String psql = "";
+		if(!"0".equals(pid)){
+			psql= " and PARENTID = "+pid;
+		}
+		String sql = "select t.id from omp_region t where t.name = '"+city+"' and levelid=0"+i+psql+" and USE_FLAG = 1";
+		@SuppressWarnings("deprecation")
+		long id = JdbcTemplate.queryForLong(sql);
+		return String.valueOf(id);
+	}
+
 }

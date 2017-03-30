@@ -14,6 +14,10 @@ public interface EnterpriseService extends CommonsDataOperationService<Enterpris
 
 	List<Composition> getListByid(int uid,Integer lv,Integer upId);
 
+	Long getServiceTypeId(String serviceType);
+
+	String getRegionId(String city, int i, String cityId);
+
 
 
 }

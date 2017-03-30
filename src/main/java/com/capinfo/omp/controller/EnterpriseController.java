@@ -10,6 +10,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -27,13 +28,17 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.capinfo.common.model.SystemUser;
+import com.capinfo.framework.model.BaseEntity;
 import com.capinfo.framework.service.GeneralService;
 import com.capinfo.omp.model.Composition;
 import com.capinfo.omp.model.Enterprise;
 import com.capinfo.omp.model.Omp_Old_Info;
 import com.capinfo.omp.model.ServiceProvider;
+import com.capinfo.omp.model.ServiceType;
 import com.capinfo.omp.parameter.EnterpriseParameter;
+import com.capinfo.omp.parameter.ServiceProviderParameter;
 import com.capinfo.omp.service.EnterpriseService;
+import com.capinfo.omp.utils.Page;
 import com.capinfo.omp.ws.client.ClientGetLandNumberService;
 
 
@@ -53,6 +58,7 @@ public class EnterpriseController {
 	private GeneralService generalService;
 	@Autowired
 	private EnterpriseService enterpriseService;
+	
 	
 	//资源页面
 	@RequestMapping("/initialize.shtml")
@@ -103,84 +109,26 @@ public class EnterpriseController {
 	 * @return
 	 * @throws Exception
 	 */
-//	@RequestMapping("/ServiceProvider.shtml")
-//	@ResponseBody
-//	public String importServiceProvider(HttpServletRequest request,
-//			@RequestParam("excelFile") MultipartFile excelFile,
-//			@ModelAttribute("eccomm_admin") SystemUser user) throws Exception {
-//		System.out.println(excelFile);
-//		String errorstr = "错误行数为: \n";
-//		String linkNbr = "";
-//		String num = "";
-//		if (excelFile != null && !"".equals(excelFile)) {
-//			InputStream fis = excelFile.getInputStream();
-//			Map<String, Object> map = importEmployeeByPoi(fis,user.getAccount_type());
-//			
-//			
-//			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");// 设置日期格式
-//			String format = df.format(new Date());// new Date()为获取当前系统时间
-//			String zjNumber = "{'landLineNumber':'";// 导入成功后将座机号码同步到中航
-//			int nb = 10;
-//			int enb = 0;
-//			List<Omp_Old_Info> list = (List<Omp_Old_Info>) map.get("infos");
-//			for (Omp_Old_Info ompOldInfo : list) {
-//				// 判断是否以010开头
-//				CharSequence subSequence = ompOldInfo.getZjnumber()
-//						.subSequence(0, 1);
-//				if (!subSequence.equals("0")) {
-//					nb++;
-//					errorstr = errorstr + "第" + nb + "行:大座机缺少区号 \n";
-//					enb++;
-//				} else {
-//					nb++;
-//					// 通过座机号，身份证号判断是否存在老人 1大座机号已存在 2身份证号已存在 0不存在
-//					int t = oldService.checkOldIsHave(ompOldInfo.getZjnumber(),
-//							ompOldInfo.getCertificates_number());
-//					if (t == 3) {
-//						errorstr = errorstr + "第" + nb + "行:身份证号和大座机号重复 \n";
-//						enb++;
-//
-//					} else if (t == 1) {
-//						errorstr = errorstr + "第" + nb + "行:大座机号重复 \n ";
-//						enb++;
-//					} else if (t == 2) {
-//						errorstr = errorstr + "第" + nb + "行:身份证号重复 \n";
-//						enb++;
-//					}
-//					if (enb == 0) {
-//						linkNbr = ompOldInfo.getZjnumber();
-//						// 判断
-//						num = linkNbr.substring(0, 3);
-//						if ("010".equals(num)) {
-//							ompOldInfo.setZjnumber(linkNbr.substring(3));
-//						}
-//						zjNumber = zjNumber + linkNbr.substring(3) + ",";
-//						oldService.addOld(ompOldInfo, user);
-//					}
-//
-//				}
-//			}
-//			zjNumber = zjNumber.substring(0, zjNumber.length() - 1) + "'}";
-//			System.out.println("获得的座机号码：" + zjNumber);
-//			// 调用webService接口发送信息
-//			ClientGetLandNumberService.getZjnumber(zjNumber);
-//			fis.close();
-//			if (enb > 0) {
-//				errorstr = errorstr + "  总共导入失败：" + enb + "个";
-//			} else {
-//				return "1";
-//			}
-//
-//			// mv.addObject("failure", map.get("failure"));
-//			System.out.println(errorstr);
-//			// mv.addObject("errorstr", errorstr);
-//		}
-//
-//		return errorstr;
-//	}
+	
+	@RequestMapping("/ServiceProvider.shtml")
+	@ResponseBody
+	public String importServiceProvider(HttpServletRequest request, @RequestParam("excelFile") MultipartFile excelFile, @ModelAttribute("eccomm_admin") SystemUser user) throws Exception {
+		String errorstr = "";
+		if (excelFile != null && !"".equals(excelFile)) {
+			InputStream fis = excelFile.getInputStream();
+			Map<String, Object> map = importEmployeeByPoi(fis, user.getAccount_type(), errorstr);
+			List<ServiceProvider> list = (List<ServiceProvider>) map.get("infos");
+			for (ServiceProvider serviceProvider : list) {
+				// 保存服务商
+				generalService.saveOrUpdate(serviceProvider);
+			}
+		}
+		return "添加成功";
+	}
+
 	/**
 	 * POI:解析Excel文件中的数据并把每行数据封装成一个实体
-	 *
+	 * 
 	 * @param fis
 	 *            文件输入流
 	 * @param string
@@ -190,97 +138,280 @@ public class EnterpriseController {
 	 * @return List<ServiceProvider> Excel中数据封装实体的集合
 	 * @throws Exception
 	 */
-//	public Map<String, Object> importEmployeeByPoi(InputStream fis, String acc)
-//			throws Exception {
-//
-//		List<ServiceProvider> infos = new ArrayList<ServiceProvider>();
-//		List<ServiceProvider> failure = new ArrayList<ServiceProvider>();
-//		Workbook workbook = WorkbookFactory.create(fis);
-//		//sheet
-//		Sheet sheetAt0 = workbook.getSheetAt(0);
-//		
-//		Row row3 = sheetAt0.getRow(3);
-//		// 工作人员姓名
-//		String workername = getCellValue(row3.getCell(1));
-//		String workertel = row3.getCell(7).getStringCellValue();
-//		int rowNum = sheetAt0.getLastRowNum();
-//		for (int i = 7; i < rowNum + 1; i++) {
-//			Row row = sheetAt0.getRow(i);
-//			String call_id = getCellValue(row.getCell(12));
-//			String area = getCellValue(row.getCell(1));
-//			String street = getCellValue(row.getCell(2));
-//			String community = getCellValue(row.getCell(3));
-//			String tel_type = getCellValue(row.getCell(10));
-//			
-//			 //根据市区名称查询市区ID
-//			String countyId = oldService.getIdByName(area, 3);
-//			// 根据街道名称查询街道ID
-//			String streetId = oldService.getIdByName(street, 4);
-//			// 根据社区名称查询社区ID
-//			String communityId = oldService.getIdByName(community, 5);
-//			//查询社区编码
-//			String comNUm = oldService.getIdByComCod(community, 5);
-//			
-//			int tel_num = oldService.getTel_type(tel_type);
-//			Long callId = 0l;
-//			if ("是".equals(call_id)) {
-//				callId = 1l;
-//			}
-//			Omp_Old_Info old_info = new Omp_Old_Info();
-//			old_info.setHousehold_county_id(countyId);
-//			old_info.setHousehold_street_id(streetId);
-//			old_info.setHousehold_community_id(communityId);
-//			old_info.setWorkername(workername);
-//			old_info.setWorkertel(workertel);
-//			old_info.setName(getCellValue(row.getCell(4)));
-//			old_info.setCertificates_number(getCellValue(row.getCell(5)));
-//			old_info.setZjnumber(getCellValue(row.getCell(6)));
-//			old_info.setPhone(getCellValue(row.getCell(7)));
-//			old_info.setEmergencycontact(getCellValue(row.getCell(8)));
-//			old_info.setEmergencycontacttle(getCellValue(row.getCell(9)));
-//			//话机类型
-//			old_info.setTeltype(String.valueOf(tel_num));
-//			old_info.setAddress(getCellValue(row.getCell(11)));
-//			old_info.setCall_id(callId);
-//			old_info.setAccount_type(acc+comNUm);
-//			infos.add(old_info);
-//
-//		}
-//		Map<String, Object> map = new HashMap<String, Object>();
-//		map.put("infos", infos);
-//		map.put("failure", failure);
-//		return map;
-//	}
-//
-//	// 判断从Excel文件中解析出来数据的格式
-//	public static String getCellValue(Cell cell) {
-//		String value = null;
-//		// 简单的查检列类型
-//		switch (cell.getCellType()) {
-//		case HSSFCell.CELL_TYPE_STRING:// 字符串
-//			value = cell.getRichStringCellValue().getString();
-//			break;
-//		case HSSFCell.CELL_TYPE_NUMERIC:// 数字
-//			long dd = (long) cell.getNumericCellValue();
-//			value = dd + "";
-//			break;
-//		case HSSFCell.CELL_TYPE_BLANK:
-//			value = "";
-//			break;
-//		case HSSFCell.CELL_TYPE_FORMULA:
-//			value = String.valueOf(cell.getCellFormula());
-//			break;
-//		case HSSFCell.CELL_TYPE_BOOLEAN:// boolean型值
-//			value = String.valueOf(cell.getBooleanCellValue());
-//			break;
-//		case HSSFCell.CELL_TYPE_ERROR:
-//			value = String.valueOf(cell.getErrorCellValue());
-//			break;
-//		default:
-//			break;
-//		}
-//		return value;
-//	}
+	public Map<String, Object> importEmployeeByPoi(InputStream fis, String acc, String errorstr) throws Exception {
 
+		List<ServiceProvider> infos = new ArrayList<ServiceProvider>();
+		List<ServiceProvider> failure = new ArrayList<ServiceProvider>();
+		Workbook workbook = WorkbookFactory.create(fis);
+		// sheet
+		Sheet sheetAt0 = workbook.getSheetAt(0);
+
+		String num = "";
+		int rowNum = sheetAt0.getLastRowNum();
+		for (int i = 1; i < rowNum + 1; i++) {
+			Row row1 = sheetAt0.getRow(i);
+			// 所属市
+			String city = getCellValue(row1.getCell(0));
+			// 所属区县
+			String county = getCellValue(row1.getCell(1));
+			// 所属街道
+			String street = getCellValue(row1.getCell(2));
+			// 服务单位名称
+			String serviceName = getCellValue(row1.getCell(3));
+			// 营业执照名称
+			String charterName = getCellValue(row1.getCell(4));
+			// 营业执照编码
+			String charterNumber = getCellValue(row1.getCell(5));
+			// 服务地址
+			String serviceAddress = getCellValue(row1.getCell(6));
+			// 服务类型
+			String serviceType = getCellValue(row1.getCell(7));
+			// 服务区域描述
+			String addressDescribe = getCellValue(row1.getCell(8));
+
+			String serviceCounty = getCellValue(row1.getCell(9));
+			String serviceStreet = getCellValue(row1.getCell(10));
+			String serviceCommunity = getCellValue(row1.getCell(11));
+			// 渠道发展来源
+			// String channels = getCellValue(row1.getCell(12));
+			// 服务电话
+			String serviceTell = getCellValue(row1.getCell(12));
+			// 联系人
+			String contact = getCellValue(row1.getCell(13));
+			// 联系人手机号
+			String contactPhone = getCellValue(row1.getCell(14));
+
+			// 邮箱
+			String email = getCellValue(row1.getCell(15));
+
+			/**
+			 * 是否能刷养老卡 0:否 1:是
+			 */
+			String is_pensionCard = getCellValue(row1.getCell(16));
+
+			/**
+			 * 是否能刷跨年 0:否 1:是
+			 */
+			String is_AcrossYears = getCellValue(row1.getCell(17));
+			/**
+			 * 是否能刷失能 0:否 1:是
+			 */
+
+			String is_anergy = getCellValue(row1.getCell(18));
+
+			// 上级服务单位名称
+
+			String superiorServiceName = getCellValue(row1.getCell(19));
+
+			// 总负责人
+			String principal = getCellValue(row1.getCell(20));
+
+			// 总负责人联系电话
+			String principalPhone = getCellValue(row1.getCell(21));
+
+			// 售后对接人
+			String aftermarketPerson = getCellValue(row1.getCell(22));
+
+			// 售后电话
+			String aftermarketPhone = getCellValue(row1.getCell(23));
+
+			// 服务内容
+			String serviceContent = getCellValue(row1.getCell(24));
+			/**
+			 * 折扣信息 0:否 1:是
+			 */
+
+			String discountInfo = getCellValue(row1.getCell(25));
+
+			/**
+			 * 核实状态 2:未审核 0:无效 1:有效
+			 */
+			// String verify = getCellValue(row1.getCell(26));
+			/**
+			 * 是否签约 0:否 1:是
+			 */
+			// String is_signing = getCellValue(row1.getCell(27));
+			// 签约时间
+			// String signingDate = getCellValue(row1.getCell(28));
+			// serviceState
+			// String serviceState = getCellValue(row1.getCell(29));
+
+			// 查询区域
+			String cityId = enterpriseService.getRegionId(city, 2, "0");
+			String countyId = enterpriseService.getRegionId(county, 3, cityId);
+			String streetId = enterpriseService.getRegionId(street, 4, countyId);
+
+			
+			String serviceCountyId = "";
+			String serviceStreetId = "";
+			String serviceCommunityId = "";
+			if(!"".equals(serviceCounty) && serviceCounty != null){
+				serviceCountyId = enterpriseService.getRegionId(serviceCounty, 3, "0");
+				if(!"".equals(serviceStreet) && serviceStreet != null){
+					serviceStreetId = enterpriseService.getRegionId(serviceStreet, 4, serviceCountyId);
+					if(!"".equals(serviceCommunity) && serviceCommunity != null){
+						serviceCommunityId = enterpriseService.getRegionId(serviceCommunity, 5, serviceStreetId);
+					}
+				}
+			}
+			
+			// 创建服务商
+			ServiceProvider serviceProvider = new ServiceProvider();
+			serviceProvider.setCity_id(Long.parseLong(cityId));
+			serviceProvider.setCounty_id(Long.parseLong(countyId));
+			serviceProvider.setStreet_id(Long.parseLong(streetId));
+			serviceProvider.setServiceCounty_id(String.valueOf(serviceCountyId));
+			serviceProvider.setServiceStreet_id(String.valueOf(serviceStreetId));
+			serviceProvider.setServiceCommunity_id(String.valueOf(serviceCommunityId));
+			serviceProvider.setAddressDescribe(addressDescribe);
+			serviceProvider.setAftermarketPerson(aftermarketPerson);
+			serviceProvider.setAftermarketPhone(aftermarketPhone);
+			// serviceProvider.setChannels(channels);
+			serviceProvider.setCharterName(charterName);
+			serviceProvider.setCharterNumber(charterNumber);
+			serviceProvider.setContact(contactPhone);
+			serviceProvider.setContactPhone(contactPhone);
+			serviceProvider.setEmail(email);
+			serviceProvider.setIs_AcrossYears(ShiConvertZero(is_AcrossYears));
+			serviceProvider.setIs_anergy(ShiConvertZero(is_anergy));
+			serviceProvider.setIs_pensionCard(ShiConvertZero(is_pensionCard));
+			// serviceProvider.setIs_signing(is_signing);
+			serviceProvider.setPrincipal(principal);
+			serviceProvider.setPrincipalPhone(principalPhone);
+			serviceProvider.setServiceAddress(serviceAddress);
+			serviceProvider.setServiceName(superiorServiceName);
+			// serviceProvider.setServiceState(serviceState);
+
+			// 判断是否有区号
+			num = serviceTell.substring(0, 1);
+			if ("0".equals(num)) {
+				serviceProvider.setServiceTell(serviceTell.substring(3));
+			} else {
+				serviceProvider.setServiceTell(serviceTell);
+			}
+			// 查询服务类型id
+			Long serviceTypeId = enterpriseService.getServiceTypeId(serviceType);
+			serviceProvider.setServiceTypeId(serviceTypeId);
+			serviceProvider.setSigningDate(new Date());
+			serviceProvider.setSuperiorServiceName(superiorServiceName);
+			serviceProvider.setDiscountInfo(ShiConvertZero(discountInfo));
+			infos.add(serviceProvider);
+
+		}
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("infos", infos);
+		map.put("failure", failure);
+		return map;
+	}
+
+	// 判断从Excel文件中解析出来数据的格式
+	public static String getCellValue(Cell cell) {
+		String value = null;
+		
+		// 简单的查检列类型
+		if(cell != null){
+		switch (cell.getCellType()) {
+		case HSSFCell.CELL_TYPE_STRING:// 字符串
+			value = cell.getRichStringCellValue().getString();
+			break;
+		case HSSFCell.CELL_TYPE_NUMERIC:// 数字
+			long dd = (long) cell.getNumericCellValue();
+			value = dd + "";
+			break;
+		case HSSFCell.CELL_TYPE_BLANK:
+			value = "";
+			break;
+		case HSSFCell.CELL_TYPE_FORMULA:
+			value = String.valueOf(cell.getCellFormula());
+			break;
+		case HSSFCell.CELL_TYPE_BOOLEAN:// boolean型值
+			value = String.valueOf(cell.getBooleanCellValue());
+			break;
+		case HSSFCell.CELL_TYPE_ERROR:
+			value = String.valueOf(cell.getErrorCellValue());
+			break;
+		default:
+			break;
+		}
+		}
+		return value;
+	}
+
+	public int ShiConvertZero(String shi) {
+		int yn = 0;
+		if ("是".equals(shi)) {
+			yn = 1;
+		}
+		return yn;
+
+	}
+	/**
+	 * 服务商初始化
+	 * @param request
+	 * @param current
+	 * @return
+	 */
+	@RequestMapping("/initial.shtml")
+	public ModelAndView initial(HttpServletRequest request, ServiceProviderParameter parameter) {
+		ModelAndView mv = new ModelAndView("/omp/serviceMerchants/initial");
+		mv.addObject("command", parameter);
+		List<ServiceType> typeList = generalService.getAllObjects(ServiceType.class);
+		mv.addObject("typeList",typeList);
+		
+		
+		return mv;
+	}
+	/**
+	 * 服务商管理列表
+	 *
+	 * @param parameter
+	 * @return
+	 */
+	@RequestMapping("/list.shtml")
+	public ModelAndView dicSortList(HttpServletRequest request,ServiceProviderParameter parameter) {
+		ModelAndView mv = new ModelAndView("/omp/serviceMerchants/initial");
+		//getSortList(parameter.getCurrent(), mv, "");
+		return mv;
+	}
+	/**
+	 * 服务商管理列表
+	 *
+	 * @param mv
+	 *
+	 * @param parameter
+	 * @param mv
+	 * @return
+	 */
+//	private void getSortList(String current, ModelAndView mv, String QSql) {
+//		if (StringUtils.isEmpty(current)) {
+//			current = "1";
+//		}
+//		int count = ompOldMatchService.getCountWithSql(QSql);
+//		
+//		
+//		Page page = new Page(current, count, "10");
+//		List<Map<String, Object>> list = ompOldMatchService.getListWithSql(page, QSql);
+//		for (Map<String, Object> map : list) {
+//			String id = map.get("SCOPE_DELIVERY").toString();
+//			if (!StringUtils.isEmpty(id)) {
+//				// String name = ompOldMatchService.getregion(id);
+//				map.put("SCOPE_DELIVERY", id);
+//			}
+//		}
+//		mv.addObject("DataTotalCount", count);
+//		mv.addObject("PerPieceSize", 10);
+//		mv.addObject("command", list);
+//		mv.addObject("CurrentPieceNum", page.getCurrentPage());
+//		mv.addObject("QSql", QSql);
+//	}
+    /**
+     * 导入
+     * @return
+     */
+	@RequestMapping("/serviceMerchants/toImport.shtml")
+	public ModelAndView toImport() {
+		ModelAndView mv = new ModelAndView("/omp/serviceMerchants/Import");
+		return mv;
+	}
 
 }

@@ -67,18 +67,18 @@ public class ServiceProvider implements BaseEntity {
 	
 //	private Long serviceCity_id;
 //	private OmpRegion serviceCity;
-	private Long serviceCounty_id;
+	private String serviceCounty_id;
 	private OmpRegion serviceCounty;
-	private Long serviceStreet_id;
+	private String serviceStreet_id;
 	private OmpRegion serviceStreet;
-	private Long serviceCommunity_id;
+	private String serviceCommunity_id;
 	private OmpRegion serviceCommunity;
 	
 	//渠道发展来源
 	private String channels;
 	
 	//服务电话
-	private Long serviceTell;
+	private String serviceTell;
 	
 	//联系人
 	private String contact;
@@ -139,6 +139,8 @@ public class ServiceProvider implements BaseEntity {
 	private Date signingDate;
 	//服务状态
 	private String serviceState;
+	//邮箱
+	private String email;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -161,8 +163,8 @@ public class ServiceProvider implements BaseEntity {
 	public void setCity_id(Long city_id) {
 		this.city_id = city_id;
 	}
-
-	@Column(name = "city")
+	@ManyToOne(targetEntity = OmpRegion.class, fetch = FetchType.LAZY)
+	@JoinColumn(name = "city_id", insertable = false, updatable = false)
 	public OmpRegion getCity() {
 		return city;
 	}
@@ -181,8 +183,8 @@ public class ServiceProvider implements BaseEntity {
 	public void setCounty_id(Long county_id) {
 		this.county_id = county_id;
 	}
-
-	@Column(name = "county")
+	@ManyToOne(targetEntity = OmpRegion.class, fetch = FetchType.LAZY)
+	@JoinColumn(name = "county_id", insertable = false, updatable = false)
 	public OmpRegion getCounty() {
 		return county;
 	}
@@ -202,7 +204,8 @@ public class ServiceProvider implements BaseEntity {
 		this.street_id = street_id;
 	}
 
-	@Column(name = "street")
+	@ManyToOne(targetEntity = OmpRegion.class, fetch = FetchType.LAZY)
+	@JoinColumn(name = "street_id", insertable = false, updatable = false)
 	public OmpRegion getStreet() {
 		return street;
 	}
@@ -283,16 +286,16 @@ public class ServiceProvider implements BaseEntity {
 	}
 
 	@Column(name = "serviceCounty_id")
-	public Long getServiceCounty_id() {
+	public String getServiceCounty_id() {
 		return serviceCounty_id;
 	}
 
 
-	public void setServiceCounty_id(Long serviceCounty_id) {
+	public void setServiceCounty_id(String serviceCounty_id) {
 		this.serviceCounty_id = serviceCounty_id;
 	}
-
-	@Column(name = "serviceCounty")
+	@ManyToOne(targetEntity = OmpRegion.class, fetch = FetchType.LAZY)
+	@JoinColumn(name = "serviceCounty_id", insertable = false, updatable = false)
 	public OmpRegion getServiceCounty() {
 		return serviceCounty;
 	}
@@ -303,16 +306,16 @@ public class ServiceProvider implements BaseEntity {
 	}
 
 	@Column(name = "serviceStreet_id")
-	public Long getServiceStreet_id() {
+	public String getServiceStreet_id() {
 		return serviceStreet_id;
 	}
 
 
-	public void setServiceStreet_id(Long serviceStreet_id) {
+	public void setServiceStreet_id(String serviceStreet_id) {
 		this.serviceStreet_id = serviceStreet_id;
 	}
-
-	@Column(name = "serviceStreet")
+	@ManyToOne(targetEntity = OmpRegion.class, fetch = FetchType.LAZY)
+	@JoinColumn(name = "serviceStreet_id", insertable = false, updatable = false)
 	public OmpRegion getServiceStreet() {
 		return serviceStreet;
 	}
@@ -323,16 +326,16 @@ public class ServiceProvider implements BaseEntity {
 	}
 
 	@Column(name = "serviceCommunity_id")
-	public Long getServiceCommunity_id() {
+	public String getServiceCommunity_id() {
 		return serviceCommunity_id;
 	}
 
 
-	public void setServiceCommunity_id(Long serviceCommunity_id) {
+	public void setServiceCommunity_id(String serviceCommunity_id) {
 		this.serviceCommunity_id = serviceCommunity_id;
 	}
-
-	@Column(name = "serviceCommunity")
+	@ManyToOne(targetEntity = OmpRegion.class, fetch = FetchType.LAZY)
+	@JoinColumn(name = "serviceCommunity_id", insertable = false, updatable = false)
 	public OmpRegion getServiceCommunity() {
 		return serviceCommunity;
 	}
@@ -353,12 +356,12 @@ public class ServiceProvider implements BaseEntity {
 	}
 
 	@Column(name = "serviceTell")
-	public Long getServiceTell() {
+	public String getServiceTell() {
 		return serviceTell;
 	}
 
 
-	public void setServiceTell(Long serviceTell) {
+	public void setServiceTell(String serviceTell) {
 		this.serviceTell = serviceTell;
 	}
 
@@ -520,6 +523,19 @@ public class ServiceProvider implements BaseEntity {
 
 	public void setServiceState(String serviceState) {
 		this.serviceState = serviceState;
+	}
+
+
+	
+	
+	@Column(name = "email")
+	public String getEmail() {
+		return email;
+	}
+
+
+	public void setEmail(String email) {
+		this.email = email;
 	}
 	
 	
