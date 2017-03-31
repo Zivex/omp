@@ -44,16 +44,16 @@
 							<td>${m.serviceType.serviceName}</td>
 							<td>${m.contact}</td>
 							<td>${m.contactPhone}</td>
-							<c:if test="${m.verify == 0 }"><td style="color: red;">无效</td></c:if>
-							<c:if test="${m.verify == 1 }"><td style="color: green;">有效</td></c:if>
-							<c:if test="${m.verify == 2 }"><td style="color: gray;">未审核</td></c:if>
+							<c:if test="${m.verify == 2 }"><td style="color: red;">无效</td></c:if>
+							<c:if test="${m.verify == 3 }"><td style="color: green;">有效</td></c:if>
+							<c:if test="${m.verify == 1 }"><td style="color: gray;">未审核</td></c:if>
 							<td style="text-align: center;">
 								<div class="btn-group">
 									<button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
 										操作 <span class="caret"></span>
 									</button>
 									<ul class="dropdown-menu" role="menu">
-										<li><a onclick="hxtoServerInfo(${m.id})">详情</a></li>
+										<li><a onclick="see(${m.id})">查看详情</a></li>
 											<li><a href="###" onclick="deleteService(${item.id},this);">删除</a></li>
 									</ul>
 								</div>

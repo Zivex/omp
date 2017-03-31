@@ -10,6 +10,9 @@
 <meta name="description" content="Capinfo System" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=7; IE=EDGE"> 
+
+
+
 <link rel=stylesheet type=text/css href="<c:url value="/resources/css/bootstrap.css"/>" media="screen">
 <%-- <link rel=stylesheet type=text/css href="<c:url value="/resources/css/bootstrap-theme.css"/>" media="screen"> --%>
 

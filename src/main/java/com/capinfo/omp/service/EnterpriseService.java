@@ -10,6 +10,7 @@ import com.capinfo.omp.model.ServiceProvider;
 import com.capinfo.omp.parameter.EnterpriseParameter;
 import com.capinfo.omp.parameter.ServiceProviderParameter;
 import com.capinfo.omp.utils.Page;
+import com.capinfo.region.model.OmpRegion;
 
 
 public interface EnterpriseService extends CommonsDataOperationService<Enterprise, EnterpriseParameter>  {
@@ -25,6 +26,8 @@ public interface EnterpriseService extends CommonsDataOperationService<Enterpris
 	Map getMerchantsList(ServiceProviderParameter parameter);
 
 	int getMerchantsCount(ServiceProviderParameter parameter);
+
+	List<OmpRegion> queryRegions(String ids);
 
 
 

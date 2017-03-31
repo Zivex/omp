@@ -70,21 +70,21 @@
 <!-- 	</div> -->
 </div>
 
-<div style="float: left;height: 300px;width: 165px;overflow:auto;border:1px solid black;clear:both;" >
-<ul id="tree" class="easyui-tree" data-options="lines:true">
-	<c:forEach items="${dataList }" var="item" >
+<div
+	style="float: left; height: 300px; width: 165px; overflow: auto; border: 1px solid black; clear: both;">
+	<ul id="tree" class="easyui-tree" data-options="lines:true">
+		<c:forEach items="${dataList }" var="item">
 			<li id="${item.ID}" state="closed"><span>${item.TEXT }</span>
 				<ul id="${item.TEXT}">
-					<c:forEach items="${street }" var="street" >
+					<c:forEach items="${street }" var="street">
 						<c:if test="${item.id==street.pid }">
 							<li id="${street.ID}" state="closed"><span>${street.TEXT }</span>
 						</c:if>
 					</c:forEach>
-				</ul>
-			</li>
-	</c:forEach>
-</ul>
-<ul id = "ss"></ul>
+				</ul></li>
+		</c:forEach>
+	</ul>
+	<ul id="ss"></ul>
 </div>
 <div style="float: left;height: 300px;width: 55px;padding-left: 55px;padding-top: 145px;"><input type="button" onclick="del()" value="删除"/></div>
 <div style="float: left;height: 300px;width: 165px;overflow:auto;border:1px solid black;margin-left: 100px" >
