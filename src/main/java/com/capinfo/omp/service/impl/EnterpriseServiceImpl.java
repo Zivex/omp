@@ -154,8 +154,34 @@ public class EnterpriseServiceImpl extends
 	@Override
 	public List<OmpRegion> queryRegions(String ids) {
 		SearchCriteriaBuilder<OmpRegion> searchCriteriaBuilder = new SearchCriteriaBuilder<OmpRegion>(OmpRegion.class);
-		searchCriteriaBuilder.addQueryCondition("id", RestrictionExpression.IN, ids);
+		String sql = "this_.id in("+ids+") ";
+		if (!"".equals(sql)) {
+			searchCriteriaBuilder.addAdditionalRestrictionSql(sql);
+		}
 		List<OmpRegion> list = getGeneralService().getObjects(searchCriteriaBuilder.build());
+		return list;
+	}
+
+	@Override
+	public List<OmpRegion> queryCounty(long id) {
+		SearchCriteriaBuilder<OmpRegion> searchCriteriaBuilder = new SearchCriteriaBuilder<OmpRegion>(OmpRegion.class);
+		String sql ="";
+		if(id==0L){
+			sql= " USE_FLAG=1 and LEVELID=2  ";
+		}else {
+			sql=" USE_FLAG=1 and PARENTID="+id;
+		}
+		if (!"".equals(sql)) {
+			searchCriteriaBuilder.addAdditionalRestrictionSql(sql);
+		}
+		List<OmpRegion> list = getGeneralService().getObjects(searchCriteriaBuilder.build());
+		return list;
+	}
+
+	@Override
+	public List<Map<String,Object>> queryAllRegions(int i) {
+		String sql = "select t.id id,t.name name,t.PARENTID pid from omp_region t where t.USE_FLAG=1 and t.LEVELID="+i;
+		List<Map<String,Object>> list = JdbcTemplate.queryForList(sql);
 		return list;
 	}
 

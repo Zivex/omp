@@ -43,10 +43,6 @@
 							<c:url var="queryForm" value="/enterprise/list.shtml" />
 							<form:form id="parameter" name="parameter" method="post"  action='${queryForm}' >
 								<a role="button" class="btn btn-primary"
-									href='<c:url value="/admin/omp/serviceMerchants/list.shtml"/>'>服务商信息展示</a>
-								<a role="button" class="btn btn-primary"
-									href='<c:url value="/admin/omp/serviceMerchants/export.shtml"/>'>服务商信息导出</a>
-								<a role="button" class="btn btn-primary"
 									onclick="importInformation()">服务商信息导入</a>
 								<table class="table">
 									<tr>
@@ -81,7 +77,7 @@
 										<td><input type="reset" /></td>
 									</tr>
 								</table>
-							</form:form> 
+							</form:form>
 						</div>
 						<hr>
 						<div id="borad" style="display: none">
@@ -114,15 +110,15 @@
 			var url = '<c:url value="serviceMerchants/toImport.shtml"/>';
 			showDynamicModal(url);
 		}
-		
+
 		$(function(){
 				$("#displayDiv1").hide();
 				$("#displayDiv").show();
 				$("#backButton").hide();
 			});
-		
+
 		function hxBackClick(){
-		
+
 			$("#displayDiv1").hide();
 			$("#displayDiv").show();
 			$("#backButton").hide();
@@ -143,6 +139,14 @@
 
 		function see(id){
 			$.post("${pageContext.request.contextPath}/enterprise/serviceMerchants/ServiceInfo.shtml",
+					{id:id},
+					function(data){
+				$("#resultDiv").html(data);
+			});
+		}
+		function update(id){
+
+			$.post("${pageContext.request.contextPath}/enterprise/serviceMerchants/Serviceupdate.shtml",
 					{id:id},
 					function(data){
 				$("#resultDiv").html(data);

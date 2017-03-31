@@ -29,6 +29,10 @@ public interface EnterpriseService extends CommonsDataOperationService<Enterpris
 
 	List<OmpRegion> queryRegions(String ids);
 
+	List<OmpRegion> queryCounty(long l);
+
+	List<Map<String,Object>> queryAllRegions(int i);
+
 
 
 }

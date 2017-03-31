@@ -54,7 +54,8 @@
 									</button>
 									<ul class="dropdown-menu" role="menu">
 										<li><a onclick="see(${m.id})">查看详情</a></li>
-											<li><a href="###" onclick="deleteService(${item.id},this);">删除</a></li>
+<%-- 											<li><a href="###" onclick="deleteService(${item.id},this);">删除</a></li> --%>
+											<li><a href="###" onclick="update(${m.id});">修改</a></li>
 									</ul>
 								</div>
 							</td>

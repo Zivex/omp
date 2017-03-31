@@ -118,7 +118,7 @@ public class EnterpriseController {
 			map = importEmployeeByPoi(fis, user.getAccount_type(), errorstr);
 			int c = (int) map.get("count");
 			if(c<1){
-				List<ServiceProvider> list = (List<ServiceProvider>) map.get("infos"); 
+				List<ServiceProvider> list = (List<ServiceProvider>) map.get("infos");
 				for (ServiceProvider serviceProvider : list) {
 					// 保存服务商
 					generalService.saveOrUpdate(serviceProvider);
@@ -497,7 +497,7 @@ public class EnterpriseController {
 		ModelAndView mv = new ModelAndView("/omp/serviceMerchants/Import");
 		return mv;
 	}
-	
+
 	/**
 	 * 服务商详情
 	 * @param id
@@ -511,9 +511,6 @@ public class EnterpriseController {
 		String serviceCommunity_id = serviceProvider.getServiceCommunity_id();
 		String serviceCounty_id = serviceProvider.getServiceCounty_id();
 		String serviceStreet_id = serviceProvider.getServiceStreet_id();
-		System.out.println(serviceCommunity_id);
-		System.out.println(serviceCounty_id);
-		System.out.println(serviceStreet_id);
 		if(!"".equals(serviceCounty_id)){
 			List<OmpRegion> countyList = enterpriseService.queryRegions(serviceCounty_id);
 			mv.addObject("countyList",countyList);
@@ -529,6 +526,98 @@ public class EnterpriseController {
 		mv.addObject("serviceProvider",serviceProvider);
 		return mv;
 	}
-	
+
+
+	/**
+	 * 服务商修改
+	 * @param id
+	 * @return
+	 */
+	@RequestMapping("/serviceMerchants/Serviceupdate.shtml")
+	@ResponseBody
+	public ModelAndView serviceupdate(int id,ServiceProviderParameter parameter) {
+		ModelAndView mv = new ModelAndView("/omp/serviceMerchants/serverupdate");
+		ServiceProvider serviceProvider = generalService.getObjectById(ServiceProvider.class, (long) id);
+		String serviceCommunity_id = serviceProvider.getServiceCommunity_id();
+		String serviceCounty_id = serviceProvider.getServiceCounty_id();
+		String serviceStreet_id = serviceProvider.getServiceStreet_id();
+		List<ServiceType> typeList = generalService.getAllObjects(ServiceType.class);
+		mv.addObject("typeList",typeList);
+
+		List<Map<String,Object>> countyAllList = enterpriseService.queryAllRegions(3);
+		List<Map<String,Object>> streetAllList = enterpriseService.queryAllRegions(4);
+		List<Map<String,Object>> communityAllList = enterpriseService.queryAllRegions(5);
+		String[] countys = serviceCounty_id.split(",");
+		String[] streets = serviceStreet_id.split(",");
+		String[] communitys = serviceCommunity_id.split(",");
+		for (String string : countys) {
+			if(!"".equals(string)){
+				for (Map<String, Object> map : countyAllList) {
+					if ((Integer) map.get("id") == Integer.parseInt(string)) {
+						map.put("checked", 1);
+					}
+
+				}
+			}
+		}
+		for (String string : streets) {
+			if(!"".equals(string)){
+				for (Map<String, Object> map : streetAllList) {
+					if((Integer) map.get("id")==Integer.parseInt(string)){
+						map.put("checked", 1);
+					}
+				}
+			}
+		}
+		for (String string : communitys) {
+			if(!"".equals(string)){
+				for (Map<String, Object> map : communityAllList) {
+					if((Integer) map.get("id")==Integer.parseInt(string)){
+						map.put("checked", 1);
+					}
+				}
+			}else {
+
+			}
+		}
+
+			mv.addObject("countyList",countyAllList);
+			mv.addObject("streetList",streetAllList);
+			mv.addObject("communityList",communityAllList);
+
+//		if(!"".equals(serviceCounty_id)){
+//			List<OmpRegion> countyList = enterpriseService.queryRegions(serviceCounty_id);
+//		}
+//		if(!"".equals(serviceStreet_id)){
+//			List<OmpRegion> streetList = enterpriseService.queryRegions(serviceStreet_id);
+//		}
+//		if(!"".equals(serviceCommunity_id)){
+//			List<OmpRegion> communityList = enterpriseService.queryRegions(serviceCommunity_id);
+//		}
+
+		List<OmpRegion> cityS = enterpriseService.queryCounty(0L);
+		List<OmpRegion> countyS = enterpriseService.queryCounty(serviceProvider.getCity_id());
+		List<OmpRegion> streeS = enterpriseService.queryCounty(serviceProvider.getCounty_id());
+		parameter.setEntity(serviceProvider);
+		mv.addObject("serviceProvider",serviceProvider);
+		mv.addObject("command", parameter);
+		mv.addObject("countyS", countyS);
+		mv.addObject("streeS", streeS);
+		mv.addObject("cityS", cityS);
+		return mv;
+	}
+	/**
+	 * 服务商修改
+	 * @param id
+	 * @return
+	 */
+	@RequestMapping("/serviceMerchants/ServiceupdateDo.shtml")
+	@ResponseBody
+	public ModelAndView serviceupdateDo(ServiceProviderParameter parameter) {
+		ModelAndView mv = new ModelAndView("/omp/serviceMerchants/serverupdate");
+
+		return mv;
+	}
+
 
 }
