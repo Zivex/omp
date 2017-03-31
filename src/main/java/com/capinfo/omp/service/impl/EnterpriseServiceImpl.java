@@ -100,25 +100,17 @@ public class EnterpriseServiceImpl extends
 		Map<String, Object> map = new HashMap<String, Object>();
 		SearchCriteriaBuilder<ServiceProvider> searchCriteriaBuilder = new SearchCriteriaBuilder<ServiceProvider>(
 				ServiceProvider.class);
+		if (parameter.getEntity().getServiceTypeId() != null  && parameter.getEntity().getServiceTypeId() != 0L ) {
+			searchCriteriaBuilder.addQueryCondition("serviceTypeId", RestrictionExpression.EQUALS_OP, parameter.getEntity().getServiceTypeId());
+		}
+		if (parameter.getEntity().getVerify() != 0) {
+			searchCriteriaBuilder.addQueryCondition("verify", RestrictionExpression.EQUALS_OP, parameter.getEntity().getVerify());
+		}
 
-		searchCriteriaBuilder.addQueryCondition("serviceName",
-				RestrictionExpression.LIKE_OP, parameter.getEntity()
-						.getServiceName());
-		searchCriteriaBuilder.addQueryCondition("serviceTell",
-				RestrictionExpression.EQUALS_OP, parameter.getEntity()
-						.getServiceTell());
-		searchCriteriaBuilder.addQueryCondition("serviceTypeId",
-				RestrictionExpression.EQUALS_OP, parameter.getEntity()
-						.getServiceTypeId());
-		searchCriteriaBuilder.addQueryCondition("verify",
-				RestrictionExpression.EQUALS_OP, parameter.getEntity()
-						.getVerify());
-		searchCriteriaBuilder.addQueryCondition("contact",
-				RestrictionExpression.EQUALS_OP, parameter.getEntity()
-						.getContact());
-		searchCriteriaBuilder.addQueryCondition("contactPhone",
-				RestrictionExpression.EQUALS_OP, parameter.getEntity()
-						.getContactPhone());
+		searchCriteriaBuilder.addQueryCondition("serviceName", RestrictionExpression.LIKE_OP, parameter.getEntity().getServiceName());
+		searchCriteriaBuilder.addQueryCondition("serviceTell", RestrictionExpression.EQUALS_OP, parameter.getEntity().getServiceTell());
+		searchCriteriaBuilder.addQueryCondition("contact", RestrictionExpression.EQUALS_OP, parameter.getEntity().getContact());
+		searchCriteriaBuilder.addQueryCondition("contactPhone", RestrictionExpression.EQUALS_OP, parameter.getEntity().getContactPhone());
 		int count = getGeneralService().getCount(searchCriteriaBuilder.build());
 		map.put("count", count);
 		if (parameter.getPageSize() == 0) {

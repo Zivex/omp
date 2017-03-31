@@ -125,9 +125,9 @@ public class ServiceProvider implements BaseEntity {
 	private int discountInfo;
 	/**
 	 * 核实状态
-	 * 2:未审核
-	 * 0:无效
-	 * 1:有效
+	 * 1:未审核
+	 * 2:无效
+	 * 3:有效
 	 */
 	private int verify;
 	/**

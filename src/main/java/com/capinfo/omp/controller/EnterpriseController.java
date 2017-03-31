@@ -1,7 +1,6 @@
 package com.capinfo.omp.controller;
 
 import java.io.InputStream;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -10,13 +9,13 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.hibernate.id.IdentityGenerator.GetGeneratedKeysDelegate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -32,14 +31,11 @@ import com.capinfo.framework.model.BaseEntity;
 import com.capinfo.framework.service.GeneralService;
 import com.capinfo.omp.model.Composition;
 import com.capinfo.omp.model.Enterprise;
-import com.capinfo.omp.model.Omp_Old_Info;
 import com.capinfo.omp.model.ServiceProvider;
 import com.capinfo.omp.model.ServiceType;
 import com.capinfo.omp.parameter.EnterpriseParameter;
 import com.capinfo.omp.parameter.ServiceProviderParameter;
 import com.capinfo.omp.service.EnterpriseService;
-import com.capinfo.omp.utils.Page;
-import com.capinfo.omp.ws.client.ClientGetLandNumberService;
 
 
 /**
@@ -110,6 +106,7 @@ public class EnterpriseController {
 	 * @throws Exception
 	 */
 
+	@SuppressWarnings("unchecked")
 	@RequestMapping("/ServiceProvider.shtml")
 	@ResponseBody
 	public String importServiceProvider(HttpServletRequest request, @RequestParam("excelFile") MultipartFile excelFile, @ModelAttribute("eccomm_admin") SystemUser user) throws Exception {
@@ -120,7 +117,7 @@ public class EnterpriseController {
 			map = importEmployeeByPoi(fis, user.getAccount_type(), errorstr);
 			int c = (int) map.get("count");
 			if(c<1){
-				List<ServiceProvider> list = (List<ServiceProvider>) map.get("infos");
+				List<ServiceProvider> list = (List<ServiceProvider>) map.get("infos"); 
 				for (ServiceProvider serviceProvider : list) {
 					// 保存服务商
 					generalService.saveOrUpdate(serviceProvider);
@@ -234,7 +231,7 @@ public class EnterpriseController {
 			String discountInfo = getCellValue(row1.getCell(25));
 
 			/**
-			 * 核实状态 2:未审核 0:无效 1:有效
+			 * 核实状态 1:未审核2:无效 3:有效
 			 */
 			// String verify = getCellValue(row1.getCell(26));
 			/**
@@ -373,7 +370,7 @@ public class EnterpriseController {
 			// serviceProvider.setChannels(channels);
 			serviceProvider.setCharterName(charterName);
 			serviceProvider.setCharterNumber(charterNumber);
-			serviceProvider.setContact(contactPhone);
+			serviceProvider.setContact(contact);
 			serviceProvider.setContactPhone(contactPhone);
 			serviceProvider.setEmail(email);
 			serviceProvider.setIs_AcrossYears(ShiConvertZero(is_AcrossYears));
@@ -478,7 +475,8 @@ public class EnterpriseController {
 	 */
 	@RequestMapping("/list.shtml")
 	public ModelAndView dicSortList(HttpServletRequest request,ServiceProviderParameter parameter) {
-		ModelAndView mv = new ModelAndView("/omp/serviceMerchants/initial");
+		System.out.println("我进来了");
+		ModelAndView mv = new ModelAndView("/omp/serviceMerchants/list");
 	mv.addObject("command", parameter);
 	List<ServiceType> typeList = generalService.getAllObjects(ServiceType.class);
 	mv.addObject("typeList",typeList);
@@ -498,5 +496,16 @@ public class EnterpriseController {
 		ModelAndView mv = new ModelAndView("/omp/serviceMerchants/Import");
 		return mv;
 	}
+	
+	
+	@RequestMapping("/serviceMerchants/ServiceInfo.shtml")
+	@ResponseBody
+	public ModelAndView serviceInfo(int id) {
+		ModelAndView mv = new ModelAndView("/omp/serviceMerchants/serverInfo");
+		ServiceProvider serviceProvider = generalService.getObjectById(ServiceProvider.class, (long) id);
+		mv.addObject("serviceProvider",serviceProvider);
+		return mv;
+	}
+	
 
 }
