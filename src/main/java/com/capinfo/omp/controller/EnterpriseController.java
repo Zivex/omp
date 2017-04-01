@@ -581,6 +581,37 @@ public class EnterpriseController {
 			}
 		}
 
+		for (Map<String, Object> map3 : communityAllList) {
+			if (map3.get("checked") != null && (Integer) map3.get("checked") == 1) {
+				for (Map<String, Object> map2 : streetAllList) {
+					if (map2.get("checked") != null && (Integer) map2.get("checked") == 1) {
+						if (((String) map3.get("pid")).equals(String.valueOf(map2.get("id")))) {
+							map2.remove("checked");
+						}
+						for (Map<String, Object> map1 : countyAllList) {
+							if (((String) map2.get("pid")).equals(String.valueOf(map1.get("id")))) {
+								map1.remove("checked");
+							}
+						}
+					}
+
+				}
+
+			}
+			for (Map<String, Object> map2 : streetAllList) {
+				if (map2.get("checked") != null && (Integer) map2.get("checked") == 1) {
+					for (Map<String, Object> map1 : countyAllList) {
+						if (((String) map2.get("pid")).equals(String.valueOf(map1.get("id")))) {
+							map1.remove("checked");
+						}
+					}
+				}
+
+			}
+		}
+		
+		
+
 			mv.addObject("countyList",countyAllList);
 			mv.addObject("streetList",streetAllList);
 			mv.addObject("communityList",communityAllList);

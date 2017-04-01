@@ -22,9 +22,7 @@
 	src="${pageContext.request.contextPath}/resources/easyUIjs/sys.js"
 	rel="stylesheet"></script>
 <script type="text/javascript">
-	$(document).ready(function() {
-		expandAll();
-	});
+
 </script>
 
 <div class="panel panel-default">
@@ -264,8 +262,10 @@
 				}
 			});
 	}
+	
 	function submit() {
-		alert($('#listForm').serialize());
+		getChecked();
+		//alert($('#listForm').serialize());
 
 		/* $.ajax({
 				cache : true,
@@ -280,6 +280,20 @@
 					$("#commonLayout_appcreshi").parent().html(data);
 				}
 		}); */
+	}
+	
+	
+	function getChecked(){
+// 		var lv = $('#tree').treegrid('getLevel',4);	
+// 		alert(lv );
+		var nodes = $('#tree').tree('getChecked');
+	    var s = '';
+	    alert(nodes);
+	    for(var i=0; i<nodes.length; i++){
+	        if (s != '') s += ',';
+	        s += nodes[i].children;
+	    }
+	    alert(s);
 	}
 </script>
 
