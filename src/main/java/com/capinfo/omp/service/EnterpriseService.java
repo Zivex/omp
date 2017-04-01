@@ -33,6 +33,8 @@ public interface EnterpriseService extends CommonsDataOperationService<Enterpris
 
 	List<Map<String,Object>> queryAllRegions(int i);
 
+	int queryLv(String string);
+
 
 
 }

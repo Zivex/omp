@@ -4,6 +4,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -382,6 +384,7 @@ public class EnterpriseController {
 			serviceProvider.setPrincipalPhone(principalPhone);
 			serviceProvider.setServiceAddress(serviceAddress);
 			serviceProvider.setServiceName(serviceName);
+			serviceProvider.setVerify(1);
 			// serviceProvider.setServiceState(serviceState);
 
 			// 判断是否有区号
@@ -581,6 +584,37 @@ public class EnterpriseController {
 			}
 		}
 
+		for (Map<String, Object> map3 : communityAllList) {
+			if (map3.get("checked") != null && (Integer) map3.get("checked") == 1) {
+				for (Map<String, Object> map2 : streetAllList) {
+					if (map2.get("checked") != null && (Integer) map2.get("checked") == 1) {
+						if (((String) map3.get("pid")).equals(String.valueOf(map2.get("id")))) {
+							map2.remove("checked");
+						}
+						for (Map<String, Object> map1 : countyAllList) {
+							if (((String) map2.get("pid")).equals(String.valueOf(map1.get("id")))) {
+								map1.remove("checked");
+							}
+						}
+					}
+
+				}
+
+			}
+			for (Map<String, Object> map2 : streetAllList) {
+				if (map2.get("checked") != null && (Integer) map2.get("checked") == 1) {
+					for (Map<String, Object> map1 : countyAllList) {
+						if (((String) map2.get("pid")).equals(String.valueOf(map1.get("id")))) {
+							map1.remove("checked");
+						}
+					}
+				}
+
+			}
+		}
+
+
+
 			mv.addObject("countyList",countyAllList);
 			mv.addObject("streetList",streetAllList);
 			mv.addObject("communityList",communityAllList);
@@ -613,11 +647,52 @@ public class EnterpriseController {
 	 */
 	@RequestMapping("/serviceMerchants/ServiceupdateDo.shtml")
 	@ResponseBody
-	public ModelAndView serviceupdateDo(ServiceProviderParameter parameter) {
-		ModelAndView mv = new ModelAndView("/omp/serviceMerchants/serverupdate");
+	public String serviceupdateDo(ServiceProviderParameter parameter) {
+		//ModelAndView mv = new ModelAndView("/omp/serviceMerchants/serverupdate");
+		String r1 = "";
+		String r2 = "";
+		String r3 = "";
+		String[] regions = parameter.getRegionIds().split(",");
+		for (String id : regions) {
+			OmpRegion entity = generalService.getObjectById(OmpRegion.class, Long.parseLong(id));
+			if(entity.getLevelid()==3){
+				r1+=entity.getId()+",";
 
-		return mv;
+			}else if (entity.getLevelid()==4) {
+				r2+=entity.getId()+",";
+				r1+=entity.getParentid()+",";
+			}else if (entity.getLevelid()==5) {
+				r3+=entity.getId()+",";
+				r2+=entity.getParentid()+",";
+				OmpRegion entityP = generalService.getObjectById(OmpRegion.class, entity.getParentid());
+				r1+=entityP.getParentid()+",";
+			}
+		}
+		r1 = uniq(r1);
+		r2 = uniq(r2);
+		r3 = uniq(r3);
+
+		ServiceProvider serviceProvider = parameter.getEntity();
+		serviceProvider.setServiceCounty_id(r1);
+		serviceProvider.setServiceStreet_id(r2);
+		serviceProvider.setServiceCommunity_id(r3);
+		generalService.saveOrUpdate(serviceProvider);
+		return "成功";
 	}
 
+	public String uniq(String r){
+	    String aaArray[] = r.split(",");
+	    String rn="";
+        HashSet<String> hs = new HashSet<String>();
+        for(String s : aaArray){
+            hs.add(s);
+        }
+        Iterator<String> it = hs.iterator();
+        if(it.hasNext()){
+            rn= hs.toString().replace("[", "").replace("]", "");//去除相同项的字符串
+            System.out.println(rn);
+        }
+		return rn;
+	}
 
 }

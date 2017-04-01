@@ -185,4 +185,10 @@ public class EnterpriseServiceImpl extends
 		return list;
 	}
 
+	@Override
+	public int queryLv(String string) {
+
+		return 0;
+	}
+
 }

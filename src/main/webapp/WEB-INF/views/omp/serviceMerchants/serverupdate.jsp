@@ -22,9 +22,7 @@
 	src="${pageContext.request.contextPath}/resources/easyUIjs/sys.js"
 	rel="stylesheet"></script>
 <script type="text/javascript">
-	$(document).ready(function() {
-		expandAll();
-	});
+
 </script>
 
 <div class="panel panel-default">
@@ -264,22 +262,40 @@
 				}
 			});
 	}
-	function submit() {
-		alert($('#listForm').serialize());
 
-		/* $.ajax({
+	function submit() {
+		var regionIds = "&regionIds="+getChecked();
+		//alert($('#listForm').serialize());
+ 		alert(regionIds);
+
+		  $.ajax({
 				cache : true,
 				type : "POST",
 				url : '${pageContext.request.contextPath}/enterprise/serviceMerchants/ServiceupdateDo.shtml',
-				data : $('#listForm').serialize(),// 你的formid
+				data : $('#listForm').serialize()+regionIds,// 你的formid
 				async : false,
 				error : function(request) {
 					alert("Connection error");
 				},
 				success : function(data) {
-					$("#commonLayout_appcreshi").parent().html(data);
+					alert(data);
+					//$("#commonLayout_appcreshi").parent().html(data);
 				}
-		}); */
+		});
+	}
+
+
+	function getChecked(){
+// 		var lv = $('#tree').treegrid('getLevel',4);
+// 		alert(lv );
+		var nodes = $('#tree').tree('getChecked');
+	    var s = '';
+	    for(var i=0; i<nodes.length; i++){
+	        if (s != '') s += ',';
+	        s += nodes[i].id;
+	    }
+		alert(s)
+	    return s;
 	}
 </script>
 

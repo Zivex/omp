@@ -12,7 +12,15 @@ public class ServiceProviderParameter extends DataListParameter<ServiceProvider>
 	private Class<ServiceProvider> entityClazz = ServiceProvider.class;
 	private int current;
 	private int pageSize;
+	private String regionIds;
 
+
+	public String getRegionIds() {
+		return regionIds;
+	}
+	public void setRegionIds(String regionIds) {
+		this.regionIds = regionIds;
+	}
 	public int getPageSize() {
 		return pageSize;
 	}
