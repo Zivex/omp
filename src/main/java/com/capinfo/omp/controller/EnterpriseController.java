@@ -613,8 +613,6 @@ public class EnterpriseController {
 			}
 		}
 
-
-
 			mv.addObject("countyList",countyAllList);
 			mv.addObject("streetList",streetAllList);
 			mv.addObject("communityList",communityAllList);

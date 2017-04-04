@@ -297,5 +297,19 @@
 		alert(s)
 	    return s;
 	}
+
+
+	function getChecked(){
+// 		var lv = $('#tree').treegrid('getLevel',4);
+// 		alert(lv );
+		var nodes = $('#tree').tree('getChecked');
+	    var s = '';
+	    alert(nodes);
+	    for(var i=0; i<nodes.length; i++){
+	        if (s != '') s += ',';
+	        s += nodes[i].children;
+	    }
+	    alert(s);
+	}
 </script>
 
