@@ -112,6 +112,12 @@ public class EnterpriseServiceImpl extends
 		searchCriteriaBuilder.addQueryCondition("serviceTell", RestrictionExpression.EQUALS_OP, parameter.getEntity().getServiceTell());
 		searchCriteriaBuilder.addQueryCondition("contact", RestrictionExpression.EQUALS_OP, parameter.getEntity().getContact());
 		searchCriteriaBuilder.addQueryCondition("contactPhone", RestrictionExpression.EQUALS_OP, parameter.getEntity().getContactPhone());
+		
+		searchCriteriaBuilder.addQueryCondition("serviceCounty_id", RestrictionExpression.LIKE_OP, parameter.getCounty());
+		searchCriteriaBuilder.addQueryCondition("serviceStreet_id", RestrictionExpression.LIKE_OP, parameter.getStreet());
+		searchCriteriaBuilder.addQueryCondition("serviceCommunity_id", RestrictionExpression.LIKE_OP, parameter.getCommunity());
+		
+		
 		int count = getGeneralService().getCount(searchCriteriaBuilder.build());
 		map.put("count", count);
 		if (parameter.getPageSize() == 0) {

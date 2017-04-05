@@ -49,11 +49,16 @@
 			</tr>
 			<tr>
 				<td>话机类型：</td>
-				<td><select id="teltype" name="teltype">
-					<option value="1"<c:if test="${detaMap.teltype=='1' }">selected="selected"</c:if>>居家型</option>
-					<option value="3"<c:if test="${detaMap.teltype=='3' }">selected="selected"</c:if>>农商型</option>
-					<option value="2"<c:if test="${detaMap.teltype=='2' }">selected="selected"</c:if>>失能型</option>
-				</select></td>
+				<td><c:if test="${sys == 'admin'}">
+						<select id="teltype" name="teltype">
+							<option value="1"
+								<c:if test="${detaMap.teltype=='1' }">selected="selected"</c:if>>居家型</option>
+							<option value="3"
+								<c:if test="${detaMap.teltype=='3' }">selected="selected"</c:if>>农商型</option>
+							<option value="2"
+								<c:if test="${detaMap.teltype=='2' }">selected="selected"</c:if>>失能型</option>
+						</select>
+					</c:if></td>
 			</tr>
 			<tr>
 				<td colspan="2"><input type="button" onclick="submit()" value="修改"/></td>

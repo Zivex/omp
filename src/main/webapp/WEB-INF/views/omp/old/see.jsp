@@ -12,21 +12,15 @@
 		</tr>
 		<tr>
 			<td>区县：</td>
-			<td><c:forEach items="${Region.county }" var="county">
-					<c:if test="${county.id==detaMap.household_county_id }">${county.name}</c:if>
-				</c:forEach></td>
+			<td>${detaMap.household_county.name }</td>
 		</tr>
 		<tr>
 			<td>街道：</td>
-			<td><c:forEach items="${Region.street }" var="street">
-					<c:if test="${street.id==detaMap.household_street_id }">${street.name}</c:if>
-				</c:forEach></td>
+			<td>${detaMap.household_street.name }</td>
 		</tr>
 		<tr>
 			<td>社区：</td>
-			<td><c:forEach items="${Region.community }" var="community">
-					<c:if test="${community.id==detaMap.household_community_id }">${community.name}</c:if>
-				</c:forEach></td>
+			<td>${detaMap.household_community.name }</td>
 		</tr>
 		<tr>
 			<td>座机号：</td>
@@ -50,7 +44,7 @@
 		</tr>
 		<tr>
 			<td>话机类型：</td>
-			<td>${detaMap.teltype }</td>
+			<td>${detaMap.phoneType.phoneType }</td>
 		</tr>
 	</table>
 </div>

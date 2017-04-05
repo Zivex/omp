@@ -72,7 +72,7 @@ public class OldServiceImpl extends
 		ompOldInfo.setState(1l);
 		ompOldInfo.setSync(0L);
 		ompOldInfo.setNum(0L);
-		ompOldInfo.setIsindividuation(0);
+		ompOldInfo.setIspersonalized(0L);
 		if("b".equals(user.getAccount_type())|| "m".equals(user.getAccount_type())){
 			ompOldInfo.setYiji(user.getYiji());
 			ompOldInfo.setErji(user.getErji());
@@ -442,7 +442,7 @@ public class OldServiceImpl extends
 				+ "  select t.ID,t.TELTYPE,t.HOUSEHOLD_COMMUNITY_ID,'" + json
 				+ "' from omp_old_info t WHERE t.ID = " + id;
 		int update = jdbcTemplate.update(sql);
-		setOldisIndividuation(id, 1);
+		//setOldisIndividuation(id, 1);
 		return (update == 1);
 	}
 

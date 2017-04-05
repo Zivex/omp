@@ -31,6 +31,8 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.capinfo.common.model.SystemUser;
+import com.capinfo.framework.model.BaseEntity;
+import com.capinfo.framework.service.GeneralService;
 import com.capinfo.framework.util.DateUtils;
 import com.capinfo.omp.model.Omp_Old_Info;
 import com.capinfo.omp.parameter.CompositionParameter;
@@ -59,6 +61,9 @@ public class OldForController {
 
 	@Autowired
 	private OldService oldService;
+	
+	@Autowired
+	private GeneralService generalService;
 
 	@RequestMapping("/oldMatch/list.shtml")
 	public ModelAndView list(@ModelAttribute("eccomm_admin") SystemUser user,String pageSize,
@@ -350,16 +355,25 @@ public class OldForController {
 	@ResponseBody
 	public ModelAndView seePerson(String id, String cardId) {
 		ModelAndView mv = new ModelAndView("/omp/old/see");
-		List<Map<String, Object>> list = oldService.getOldById(id);
-		Map<String, Object> map = list.get(0);
+		Omp_Old_Info old = generalService.getObjectById(Omp_Old_Info.class, Long.parseLong(id));
 		List<Map<String, Object>> person = oldService.getPerson(cardId);
 		if (person.size() != 0) {
 			Map<String, Object> mapPreson = person.get(0);
 			mv.addObject("mapPreson", mapPreson);
 		}
-		Map Region = oldService.getRegionList(map);
-		mv.addObject("Region", Region);
-		mv.addObject("detaMap", map);
+//		
+//		
+//		
+//		List<Map<String, Object>> list = oldService.getOldById(id);
+//		Map<String, Object> map = list.get(0);
+//		List<Map<String, Object>> person = oldService.getPerson(cardId);
+//		if (person.size() != 0) {
+//			Map<String, Object> mapPreson = person.get(0);
+//			mv.addObject("mapPreson", mapPreson);
+//		}
+//		Map Region = oldService.getRegionList(map);
+//		mv.addObject("Region", Region);
+		mv.addObject("detaMap", old);
 		return mv;
 	}
 

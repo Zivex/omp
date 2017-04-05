@@ -28,11 +28,11 @@
 <div class="panel panel-default">
 	<div class="container">
 		<form:form id="listForm" name="listForm" method="post"
-			action="${pageContext.request.contextPath}/enterprise/serviceMerchants/ServiceupdateDo.shtml"
+			action="${pageContext.request.contextPath}/enterprise/serviceMerchants/ServiceAddDo.shtml"
 			role="form">
 			<form:hidden path="entity.id" />
 			<table class="table table-hover table-middle">
-				<caption>服务商详情</caption>
+				<caption>添加服务商</caption>
 				<tr>
 					<td width="25%">所属市</td>
 					<td>
@@ -84,31 +84,6 @@
 				<tr>
 					<td width="25%">服务区域描述</td>
 					<td><form:input path="entity.addressDescribe" /></td>
-				</tr>
-				<tr>
-					<td width="25%">服务区域</td>
-					<td>
-						<ul id="tree" class="easyui-tree" data-options="lines:true" checkbox="true">
-							<c:forEach items="${countyList }" var="item">
-								<li id="${item.id}" state="closed" <c:if test="${item.checked == 1}">checked</c:if> ><span>${item.name }</span>
-									<ul id="${item.id}">
-										<c:forEach items="${streetList }" var="street">
-											<c:if test="${item.id==street.pid }">
-												<li id="${street.id}" <c:if test="${street.checked == 1}">checked</c:if> state="closed"><span>${street.name }</span>
-													<ul id="${street.id}">
-														<c:forEach items="${communityList }" var="community">
-															<c:if test="${street.id==community.pid }">
-																<li id="${community.id}" <c:if test="${community.checked == 1}">checked</c:if> state="closed"><span>${community.name }</span>
-															</c:if>
-														</c:forEach>
-													</ul></li>
-											</c:if>
-										</c:forEach>
-									</ul></li>
-							</c:forEach>
-						</ul>
-						<ul id="ss"></ul>
-					</td>
 				</tr>
 				<tr>
 					<td width="25%">渠道发展来源</td>
@@ -190,10 +165,10 @@
 							<form:option value="0">否</form:option>
 						</form:select></td>
 				</tr>
-				<tr>
-					<td width="25%">服务状态</td>
-					<td><form:input path="entity.serviceState" /></td>
-				</tr>
+<!-- 				<tr> -->
+<!-- 					<td width="25%">服务状态</td> -->
+<%-- 					<td><form:input path="entity.serviceState" /></td> --%>
+<!-- 				</tr> -->
 				<tr>
 					<td width="25%">邮箱</td>
 					<td><form:input path="entity.email" /></td>
@@ -201,7 +176,7 @@
 				<tr>
 					<td colspan="2">
 						<a class="btn btn-default" href="#" class="btn btn-success"
-											onclick="submit()" >修改</a>
+											onclick="submit()" >添加</a>
 						</td>
 					<td colspan="2"><input type="reset" class="btn btn-warning" /></td>
 				</tr>

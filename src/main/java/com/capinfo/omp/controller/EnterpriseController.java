@@ -8,6 +8,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -575,12 +577,11 @@ public class EnterpriseController {
 		for (String string : communitys) {
 			if(!"".equals(string)){
 				for (Map<String, Object> map : communityAllList) {
-					if((Integer) map.get("id")==Integer.parseInt(string)){
+					Set<Entry<String,Object>> set = map.entrySet( );
+					if(Integer.parseInt(map.get("id").toString())==Integer.parseInt(string)){
 						map.put("checked", 1);
 					}
 				}
-			}else {
-
 			}
 		}
 
@@ -616,17 +617,6 @@ public class EnterpriseController {
 			mv.addObject("countyList",countyAllList);
 			mv.addObject("streetList",streetAllList);
 			mv.addObject("communityList",communityAllList);
-
-//		if(!"".equals(serviceCounty_id)){
-//			List<OmpRegion> countyList = enterpriseService.queryRegions(serviceCounty_id);
-//		}
-//		if(!"".equals(serviceStreet_id)){
-//			List<OmpRegion> streetList = enterpriseService.queryRegions(serviceStreet_id);
-//		}
-//		if(!"".equals(serviceCommunity_id)){
-//			List<OmpRegion> communityList = enterpriseService.queryRegions(serviceCommunity_id);
-//		}
-
 		List<OmpRegion> cityS = enterpriseService.queryCounty(0L);
 		List<OmpRegion> countyS = enterpriseService.queryCounty(serviceProvider.getCity_id());
 		List<OmpRegion> streeS = enterpriseService.queryCounty(serviceProvider.getCounty_id());
@@ -687,10 +677,32 @@ public class EnterpriseController {
         }
         Iterator<String> it = hs.iterator();
         if(it.hasNext()){
-            rn= hs.toString().replace("[", "").replace("]", "");//去除相同项的字符串
+            rn= hs.toString().replace("[", "").replace("]", "");
             System.out.println(rn);
         }
-		return rn;
+		return rn.replaceAll(" ", "");
 	}
+	
+	
+	/**
+	 * 服务商修改
+	 * @param id
+	 * @return
+	 */
+	@RequestMapping("/serviceMerchants/ServiceAdd.shtml")
+	@ResponseBody
+	public ModelAndView serviceAdd(ServiceProviderParameter parameter) {
+		ModelAndView mv = new ModelAndView("/omp/serviceMerchants/serverAdd");
+		List<ServiceType> typeList = generalService.getAllObjects(ServiceType.class);
+		mv.addObject("typeList",typeList);
+
+		List<OmpRegion> cityS = enterpriseService.queryCounty(0L);
+		mv.addObject("command", parameter);
+		mv.addObject("cityS", cityS);
+		return mv;
+	}
+	
+	
+	
 
 }

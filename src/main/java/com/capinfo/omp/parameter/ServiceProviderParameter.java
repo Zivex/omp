@@ -14,7 +14,30 @@ public class ServiceProviderParameter extends DataListParameter<ServiceProvider>
 	private int pageSize;
 	private String regionIds;
 
+	
+	private String county;
+	private String street;
+	private String community;
 
+	
+	public String getCounty() {
+		return county;
+	}
+	public void setCounty(String county) {
+		this.county = county;
+	}
+	public String getStreet() {
+		return street;
+	}
+	public void setStreet(String street) {
+		this.street = street;
+	}
+	public String getCommunity() {
+		return community;
+	}
+	public void setCommunity(String community) {
+		this.community = community;
+	}
 	public String getRegionIds() {
 		return regionIds;
 	}

@@ -44,6 +44,8 @@
 							<form:form id="parameter" name="parameter" method="post"  action='${queryForm}' >
 								<a role="button" class="btn btn-primary"
 									onclick="importInformation()">服务商信息导入</a>
+								<a role="button" class="btn btn-primary"
+									onclick="addService()">添加服务商</a>
 								<table class="table">
 									<tr>
 										<td>服务商名称：</td>
@@ -71,9 +73,27 @@
 
 										<td>联系方式：</td>
 										<td><form:input path="entity.contactPhone"  /></td>
+										<td>服务区域：</td>
+											<td>
+												<select id="countyinit" name="county">
+													<option value="${county }">--请选择--</option>		
+												</select>
+											</td>
+											<td>服务街道：</td>
+											<td>
+												<select id="streetinit" name="street">
+													<option value="${street }">--请选择--</option>		
+												</select>
+											</td>
+											<td>服务社区：</td>
+											<td>
+												<select id="communityinit" name="community">
+													<option value="${community }">--请选择--</option>		
+												</select>
+											</td>
 									</tr>
 									<tr>
-										<td><input  type="submit" value="查询"></td>
+										<td><input  type="button" onclick="query()" value="查询"></td>
 										<td><input type="reset" /></td>
 									</tr>
 								</table>
@@ -135,11 +155,49 @@
 			initalizeSiderBar();
 			selectMenu("o_serviceMerchants");
 			initQueryForm();
+			$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",function(data){
+				for(var i = 0;i<data.length;i++){
+					$("#countyinit").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
+				}				
+			});
+			$("#countyinit").change(function(){
+			//	$("#county").find("option:not(:first)").remove();
+				$("#streetinit").find("option:not(:first)").remove();
+				$("#communityinit").find("option:not(:first)").remove();
+				
+				
+				
+				var id = $("#countyinit").val();
+				
+				$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",{id:id},function(data){
+					for(var i = 0;i<data.length;i++){
+						$("#streetinit").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
+					}				
+				});
+			});
+			
+			$("#streetinit").change(function(){
+				//$("#street").find("option:not(:first)").remove();
+				$("#communityinit").find("option:not(:first)").remove();
+				var id = $("#streetinit").val();
+				$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",{id:id},function(data){
+					for(var i = 0;i<data.length;i++){
+						$("#communityinit").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
+					}				
+				});
+			});
 		});
 
 		function see(id){
 			$.post("${pageContext.request.contextPath}/enterprise/serviceMerchants/ServiceInfo.shtml",
 					{id:id},
+					function(data){
+				$("#resultDiv").html(data);
+			});
+		}
+		function addService(){
+			$.post("${pageContext.request.contextPath}/enterprise/serviceMerchants/ServiceAdd.shtml",
+					{},
 					function(data){
 				$("#resultDiv").html(data);
 			});
@@ -164,6 +222,25 @@
 						$("#backButton").show();
 			});
 		};
+		
+		function query() {
+			  $.ajax({
+					cache : true,
+					type : "POST",
+					url : '${queryForm}',
+					data : $('#parameter').serialize(),// 你的formid
+					async : false,
+					error : function(request) {
+						alert("Connection error");
+					},
+					success : function(data) {
+						$("#resultDiv").html(data);
+					}
+			});
+		}
+		
+		
+		
 	</script>
 
 
