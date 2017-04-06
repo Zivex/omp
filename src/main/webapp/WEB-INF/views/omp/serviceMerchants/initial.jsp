@@ -155,6 +155,11 @@
 			initalizeSiderBar();
 			selectMenu("o_serviceMerchants");
 			initQueryForm();
+			initialFormValidate('command');
+			initSaveForm();
+			
+			
+			
 			$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",function(data){
 				for(var i = 0;i<data.length;i++){
 					$("#countyinit").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");

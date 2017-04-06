@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -117,6 +118,8 @@ public class EnterpriseController {
 	public String importServiceProvider(HttpServletRequest request, @RequestParam("excelFile") MultipartFile excelFile, @ModelAttribute("eccomm_admin") SystemUser user) throws Exception {
 		String errorstr = "";
 		Map<String, Object> map = null;
+		int error = 0;
+		int errorCount = 0;
 		if (excelFile != null && !"".equals(excelFile)) {
 			InputStream fis = excelFile.getInputStream();
 			map = importEmployeeByPoi(fis, user.getAccount_type(), errorstr);
@@ -124,8 +127,21 @@ public class EnterpriseController {
 			if(c<1){
 				List<ServiceProvider> list = (List<ServiceProvider>) map.get("infos");
 				for (ServiceProvider serviceProvider : list) {
+					error++;
 					// 保存服务商
-					generalService.saveOrUpdate(serviceProvider);
+					serviceProvider.setChannels(String.valueOf(user.getId()) );
+					serviceProvider.setCreateTime(new Date());
+					serviceProvider.setUser_falg(1);
+					boolean b = enterpriseService.queryForTell(serviceProvider.getServiceTell());
+					if(!b){
+						errorCount++;
+						errorstr+="第"+error+"行,服务电话已存在; \n";
+					}else{
+						generalService.saveOrUpdate(serviceProvider);
+					}
+				}
+				if(errorCount>0){
+					return errorstr;
 				}
 				return "添加成功";
 			}
@@ -157,11 +173,16 @@ public class EnterpriseController {
 		errorstr +="错误信息 \n";
 		String num = "";
 		int rowNum = sheetAt0.getLastRowNum();
-		for (int i = 1; i < rowNum + 1; i++) {
+		String pattern  ="\\s+";
+		for (int i = 1; i < rowNum +1 ; i++) {
 			srrorLine++;
 			Row row1 = sheetAt0.getRow(i);
 			// 所属市
 			String city = getCellValue(row1.getCell(0));
+			boolean isMatch = Pattern.matches(pattern, city);
+			if(isMatch){
+				break;
+			}
 
 			// 所属区县
 			String county = getCellValue(row1.getCell(1));
@@ -280,6 +301,7 @@ public class EnterpriseController {
 				}
 			}
 			//验证
+
 			if("".equals(city)){
 				count++;
 				errorstr+="第"+srrorLine+"行,所属市不能为空; \n";
@@ -355,7 +377,7 @@ public class EnterpriseController {
 			}
 			if("".equals(aftermarketPhone)){
 				count++;
-				errorstr+="第"+srrorLine+"行,后电话不能为空; \n";
+				errorstr+="第"+srrorLine+"行,售后电话不能为空; \n";
 			}
 			if("".equals(serviceContent)){
 				count++;
@@ -659,8 +681,12 @@ public class EnterpriseController {
 		r1 = uniq(r1);
 		r2 = uniq(r2);
 		r3 = uniq(r3);
-
+		boolean b = enterpriseService.queryForTell(parameter.getEntity().getServiceTell());
+		if(!b){
+			return "添加失败服务商电话已存在";
+		}
 		ServiceProvider serviceProvider = parameter.getEntity();
+		serviceProvider.setUpdateTime(new Date());
 		serviceProvider.setServiceCounty_id(r1);
 		serviceProvider.setServiceStreet_id(r2);
 		serviceProvider.setServiceCommunity_id(r3);
@@ -685,7 +711,7 @@ public class EnterpriseController {
 	
 	
 	/**
-	 * 服务商修改
+	 * 服务商添加
 	 * @param id
 	 * @return
 	 */
@@ -695,11 +721,32 @@ public class EnterpriseController {
 		ModelAndView mv = new ModelAndView("/omp/serviceMerchants/serverAdd");
 		List<ServiceType> typeList = generalService.getAllObjects(ServiceType.class);
 		mv.addObject("typeList",typeList);
-
 		List<OmpRegion> cityS = enterpriseService.queryCounty(0L);
 		mv.addObject("command", parameter);
 		mv.addObject("cityS", cityS);
 		return mv;
+	}
+	
+	/**
+	 * 服务商保存
+	 * @param id
+	 * @return
+	 */
+	@RequestMapping("/serviceMerchants/ServiceAddDo.shtml")
+	@ResponseBody
+	public String serviceAddDo(ServiceProviderParameter parameter,@ModelAttribute("eccomm_admin") SystemUser user) {
+		ServiceProvider entity = parameter.getEntity();
+		//设置发展渠道来源
+		String serviceTell = entity.getServiceTell();
+		boolean b = enterpriseService.queryForTell(serviceTell);
+		if(!b){
+			return "该服务电话已存在";
+		}
+		
+		entity.setChannels(String.valueOf(user.getId()));
+		entity.setCreateTime(new Date());
+		generalService.saveOrUpdate(entity);
+		return "添加成功";
 	}
 	
 	

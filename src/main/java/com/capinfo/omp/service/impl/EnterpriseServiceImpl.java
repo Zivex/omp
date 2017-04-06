@@ -197,4 +197,12 @@ public class EnterpriseServiceImpl extends
 		return 0;
 	}
 
+	@SuppressWarnings("deprecation")
+	@Override
+	public boolean queryForTell(String serviceTell) {
+		String sql = "select count(*) from service_provider t where t.serviceTell ='"+serviceTell+"'";
+		int i = JdbcTemplate.queryForInt(sql);
+		return i>0?false:true;
+	}
+
 }

@@ -65,8 +65,6 @@ public class ServiceProvider implements BaseEntity {
 	//服务区域描述
 	private String addressDescribe;
 
-//	private Long serviceCity_id;
-//	private OmpRegion serviceCity;
 	private String serviceCounty_id;
 	private OmpRegion serviceCounty;
 	private String serviceStreet_id;
@@ -141,6 +139,12 @@ public class ServiceProvider implements BaseEntity {
 	private String serviceState;
 	//邮箱
 	private String email;
+	
+	
+	private Date createTime;
+	private Date updateTime;
+	private int user_falg;
+	
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -504,7 +508,7 @@ public class ServiceProvider implements BaseEntity {
 	public void setIs_signing(int is_signing) {
 		this.is_signing = is_signing;
 	}
-
+	@Temporal(TemporalType.TIMESTAMP) 
 	@Column(name = "signingDate")
 	public Date getSigningDate() {
 		return signingDate;
@@ -537,7 +541,39 @@ public class ServiceProvider implements BaseEntity {
 	public void setEmail(String email) {
 		this.email = email;
 	}
+	@Temporal(TemporalType.TIMESTAMP) 
+	@Column(name = "createTime")
+	public Date getCreateTime() {
+		return createTime;
+	}
 
+
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
+	}
+	@Temporal(TemporalType.TIMESTAMP) 
+	@Column(name = "updateTime")
+	public Date getUpdateTime() {
+		return updateTime;
+	}
+
+
+	public void setUpdateTime(Date updateTime) {
+		this.updateTime = updateTime;
+	}
+
+	@Column(name = "user_falg")
+	public int getUser_falg() {
+		return user_falg;
+	}
+
+
+	public void setUser_falg(int user_falg) {
+		this.user_falg = user_falg;
+	}
+
+
+	
 
 
 

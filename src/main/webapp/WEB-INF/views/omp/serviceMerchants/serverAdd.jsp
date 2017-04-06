@@ -27,7 +27,7 @@
 
 <div class="panel panel-default">
 	<div class="container">
-		<form:form id="listForm" name="listForm" method="post"
+		<form:form  name="listForm" method="post"
 			action="${pageContext.request.contextPath}/enterprise/serviceMerchants/ServiceAddDo.shtml"
 			role="form">
 			<form:hidden path="entity.id" />
@@ -35,10 +35,9 @@
 				<caption>添加服务商</caption>
 				<tr>
 					<td width="25%">所属市</td>
-					<td>
-					<form:select id="city1"
-							path="entity.city_id" items="${cityS}" itemLabel="name"
-							itemValue="id"></form:select></td>
+					<td><form:select id="city1" path="entity.city_id" onchange="udpCity()"
+							items="${cityS}" itemLabel="name" itemValue="id">
+						</form:select></td>
 				</tr>
 				<tr>
 					<td width="25%">所属区县</td>
@@ -48,13 +47,13 @@
 				</tr>
 				<tr>
 					<td width="25%">所属街道</td>
-					<td><form:select id="street1" onchange="udpCounty()"
+					<td><form:select id="street1"  
 							path="entity.street_id" items="${streeS}" itemLabel="name"
 							itemValue="id"></form:select></td>
 				</tr>
 				<tr>
 					<td width="25%">服务单位名称</td>
-					<td><form:input style="width:300px" path="entity.serviceName" /></td>
+					<td><form:input style="width:300px" path="entity.serviceName" data-rule-required="true" /></td>
 				</tr>
 				<tr>
 					<td width="25%">营业执照名称</td>
@@ -84,10 +83,6 @@
 				<tr>
 					<td width="25%">服务区域描述</td>
 					<td><form:input path="entity.addressDescribe" /></td>
-				</tr>
-				<tr>
-					<td width="25%">渠道发展来源</td>
-					<td><form:input path="entity.channels" /></td>
 				</tr>
 				<tr>
 					<td width="25%">联系人</td>
@@ -151,14 +146,6 @@
 						</form:select></td>
 				</tr>
 				<tr>
-					<td width="25%">核实状态</td>
-					<td><form:select path="entity.verify" id="verify">
-							<form:option value="1">未审核</form:option>
-							<form:option value="2">无效</form:option>
-							<form:option value="3">有效</form:option>
-						</form:select></td>
-				</tr>
-				<tr>
 					<td width="25%">是否签约</td>
 					<td><form:select path="entity.is_signing" id="is_anergy">
 							<form:option value="1">是</form:option>
@@ -188,20 +175,43 @@
 
 </div>
 <script>
+	var city1 = $("#city1");
 	var county1 = $("#county1");
 	var street1 = $("#street1");
 	var community1 = $("#community1");
+	function udpCity(){
+		changCity(city1,county1,street1);
+	}
 	function udpCounty() {
 		changCounty(county1, street1, community1);
 	}
 	function udpStreet() {
 		changStreet(street1, community1);
 	}
+	
+	//修改市
+	function changCity(city1, county1, street1) {
+		county1.empty();
+		street1.empty();
+		street1.append("<option>请选择</option>");
+		var id = city1.val();
+		$.post(
+				"${pageContext.request.contextPath }/old/oldMatch/getRegionById.shtml",
+				{
+					id : id
+				},
+				function(data) {
+					county1.empty();
+					county1.append("<option>请选择</option>");
+					for (var i = 0; i < data.length; i++) {
+						county1.append("<option value='"+data[i].id+"'>"
+										+ data[i].name + "</option>");
+					}
 
-	//修改街道
+				});
+	}
+	//修改区县
 	function changCounty(county1, street1, community1) {
-		community1.empty();
-		community1.append("<option>请选择</option>");
 		var id = county1.val();
 		$.post(
 				"${pageContext.request.contextPath }/old/oldMatch/getRegionById.shtml",
@@ -212,63 +222,29 @@
 					street1.empty();
 					street1.append("<option>请选择</option>");
 					for (var i = 0; i < data.length; i++) {
-						street1
-								.append("<option value='"+data[i].id+"'>"
+						street1.append("<option value='"+data[i].id+"'>"
 										+ data[i].name + "</option>");
 					}
 
 				});
 	}
-	//修改社区
-	function changStreet(street1, community1) {
-		var id = street1.val();
-		$.post(
-			"${pageContext.request.contextPath }/old/oldMatch/getRegionById.shtml",
-			{
-				id : id
-			},
-			function(data) {
-				community1.empty();
-				community1.append("<option>请选择</option>");
-				for (var i = 0; i < data.length; i++) {
-					community1
-							.append("<option value='"+data[i].id+"'>"
-									+ data[i].name + "</option>");
-				}
-			});
-	}
 
 	function submit() {
-		var regionIds = "&regionIds="+getChecked();
+		alert(1)
 		  $.ajax({
 				cache : true,
 				type : "POST",
-				url : '${pageContext.request.contextPath}/enterprise/serviceMerchants/ServiceupdateDo.shtml',
-				data : $('#listForm').serialize()+regionIds,// 你的formid
+				url : '${pageContext.request.contextPath}/enterprise/serviceMerchants/ServiceAddDo.shtml',
+				data : $('#command').serialize(),// 你的formid
 				async : false,
 				error : function(request) {
 					alert("Connection error");
 				},
 				success : function(data) {
 					alert(data);
-					//$("#commonLayout_appcreshi").parent().html(data);
 				}
-		});
+		}); 
 	}
-
-
-	function getChecked(){
-// 		var lv = $('#tree').treegrid('getLevel',4);
-// 		alert(lv );
-		var nodes = $('#tree').tree('getChecked');
-	    var s = '';
-	    for(var i=0; i<nodes.length; i++){
-	        if (s != '') s += ',';
-	        s += nodes[i].id;
-	    }
-	    return s;
-	}
-
 
 </script>
 
