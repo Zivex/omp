@@ -721,8 +721,8 @@ public class EnterpriseController {
 		ModelAndView mv = new ModelAndView("/omp/serviceMerchants/serverAdd");
 		List<ServiceType> typeList = generalService.getAllObjects(ServiceType.class);
 		mv.addObject("typeList",typeList);
-		List<OmpRegion> cityS = enterpriseService.queryCounty(0L);
 		mv.addObject("command", parameter);
+		List<OmpRegion> cityS = enterpriseService.queryCounty(0L);
 		mv.addObject("cityS", cityS);
 		return mv;
 	}
