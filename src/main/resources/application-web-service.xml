@@ -13,6 +13,10 @@
 
 	<context:component-scan base-package="com.capinfo" />
 	
+	<!-- 服务体系管理 -->
+	<bean id="serviceSystemService" parent="commonsDataOperationService"
+		class="com.capinfo.omp.service.impl.ServiceSystemlmpl">
+	</bean>
 	<!-- 语音指令管理 -->
 	<bean id="voiceService" parent="commonsDataOperationService"
 		class="com.capinfo.omp.service.impl.VoiceServiceImpl">

@@ -230,7 +230,6 @@
 	}
 
 	function submit() {
-		alert(1)
 		  $.ajax({
 				cache : true,
 				type : "POST",
