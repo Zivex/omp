@@ -91,6 +91,7 @@
 						<div style="float: left; width: 50%;" >
 							<form id="architectureForm">
 								<table class="table table-bordered" id="architecture">
+<<<<<<< HEAD
 
 								</table>
 							</form>

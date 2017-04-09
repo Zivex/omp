@@ -19,7 +19,4 @@ public interface ServiceSystemService extends CommonsDataOperationService<Enterp
 
 	public List<Map<String, Object>> serchService(ServiceProviderParameter parameter);
 
-
-
-
 }

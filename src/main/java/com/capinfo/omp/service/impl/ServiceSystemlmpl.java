@@ -2,11 +2,9 @@ package com.capinfo.omp.service.impl;
 
 import java.util.List;
 import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
-
 import com.capinfo.framework.web.service.impl.CommonsDataOperationServiceImpl;
 import com.capinfo.omp.model.Enterprise;
 import com.capinfo.omp.parameter.EnterpriseParameter;
@@ -20,7 +18,6 @@ public class ServiceSystemlmpl extends
 
 	@Autowired
 	private JdbcTemplate JdbcTemplate;
-
 
 	@Override
 	public List<Map<String, Object>> getQueryarchitecture(int stId) {
