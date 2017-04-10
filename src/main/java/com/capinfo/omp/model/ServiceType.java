@@ -70,4 +70,5 @@ public class ServiceType implements BaseEntity {
 		this.status = status;
 	}
 	
+	
 }

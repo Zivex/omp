@@ -115,5 +115,14 @@ public class ServiceSystemController {
 		List<Map<String,Object>> list = serviceSystem.serchService(parameter);
 		return list;
 	}
+	//添加服务体系
+	@RequestMapping("/addServiceSystem.shtml")
+	@ResponseBody
+	public List<Map<String, Object>> addServiceSystem(
+			@ModelAttribute("eccomm_admin") SystemUser user,ServiceSystemParameter parameter) {
+		serviceSystem.addServiceSystem(parameter,user);
+		System.out.println("添加");
+		return null;
+	}
 
 }

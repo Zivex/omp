@@ -91,7 +91,6 @@
 						<div style="float: left; width: 50%;" >
 							<form id="architectureForm">
 								<table class="table table-bordered" id="architecture">
-<<<<<<< HEAD
 
 								</table>
 							</form>
@@ -165,7 +164,7 @@
 			county1.empty();
 			street1.empty();
 			community1.empty();
-			street1.append("<option>请选择</option>");
+			street1.append("<option value='0'>--请选择--</option>");
 			var id = city1.val();
 			$
 					.post(
@@ -175,7 +174,7 @@
 							},
 							function(data) {
 								county1.empty();
-								county1.append("<option>请选择</option>");
+								county1.append("<option value='0'>--请选择--</option>");
 								for (var i = 0; i < data.length; i++) {
 									county1
 											.append("<option value='"+data[i].id+"'>"
@@ -197,7 +196,7 @@
 							},
 							function(data) {
 								street1.empty();
-								street1.append("<option>请选择</option>");
+								street1.append("<option value='0'>--请选择--</option>");
 								for (var i = 0; i < data.length; i++) {
 									street1
 											.append("<option value='"+data[i].id+"'>"
@@ -219,7 +218,7 @@
 							},
 							function(data) {
 								community1.empty();
-								community1.append("<option>请选择</option>");
+								community1.append("<option value='0'>--请选择--</option>");
 								for (var i = 0; i < data.length; i++) {
 									community1
 											.append("<option value='"+data[i].id+"'>"
@@ -245,8 +244,9 @@
 						var idNum = 0;
 						for (var i = 0; i < data.length; i++) {
 							idNum++;
-							architecture.append("<tr><td><input type='radio' name='mSys' value='"+data[i].id+"'> "+data[i].key+"</td><td>"+data[i].serviceName+"</td><td><input type='hidden' name='serviceId"+idNum+"' ></td></tr>");
+							architecture.append("<tr><td><input type='radio' name='mSys' value='"+data[i].id+"'> "+data[i].key+"</td><td>"+data[i].serviceName+"</td><td><input type='hidden' class='serviceId' name='entity.s"+idNum+"'value='0' ></td></tr>");
 						}
+						architecture.append('<tr><td><a class="btn btn-default" href="#" onclick="addSystem()" role="button">搜索</a></td></tr>');
 					});
 		}
 		//providers服务商
@@ -283,11 +283,37 @@
 					});
 		}
 		function addService(){
-			var providersId = $('input[name="providers"]:checked').val();
-			var mSysId = $('input[name="mSys"]:checked').val();
-			alert(mSysId);
-			alert(providersId);
+			var spId = $('input[name="providers"]:checked').val();
+			var spName = $('input[name="providers"]:checked').parent().text();
+			
+			alert(spId);
+			var td = $('input[name="mSys"]:checked').parent().next().next();
+			td.append(spName);
+			td.children("input.serviceId")[0].value = spId;
 		}
+		
+		function addSystem(){
+			var city = $("#city").val();
+			var street = $("#street").val();
+			var county = $("#county").val();
+			var community = $("#community").val();
+			var telltype = $("#telltype").val();
+			
+		//	var addForm = $("#architectureForm").serialize()+"&city="city+"&street="street+"&county="county+"&community="community+"&serviceType="serviceType+"&city="city;
+		var addForm = $("#architectureForm").serialize()+"&"+$("#conditions").serialize();	
+			$.ajax({
+				type: "POST",
+				url: "${pageContext.request.contextPath }/serviceSystem/addServiceSystem.shtml",
+				data: addForm,
+				success: function(result) {
+					alert(result);
+					window.location.reload();
+				}
+			}); 
+			
+		}
+		
+		
 	</script>
 
 
