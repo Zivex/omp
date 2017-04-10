@@ -40,6 +40,7 @@ import com.capinfo.omp.model.Enterprise;
 import com.capinfo.omp.model.Omp_phone_type;
 import com.capinfo.omp.model.ServiceProvider;
 import com.capinfo.omp.model.ServiceType;
+import com.capinfo.omp.model.Service_System;
 import com.capinfo.omp.parameter.EnterpriseParameter;
 import com.capinfo.omp.parameter.ServiceProviderParameter;
 import com.capinfo.omp.parameter.ServiceSystemParameter;
@@ -72,9 +73,18 @@ public class ServiceSystemController {
 	//资源页面
 	@RequestMapping("/initialize.shtml")
 	public ModelAndView initialize(
-			@ModelAttribute("eccomm_admin") SystemUser user,EnterpriseParameter parameter ) {
+			@ModelAttribute("eccomm_admin") SystemUser user,ServiceSystemParameter parameter ) {
 		ModelAndView mv = new ModelAndView("/omp/serviceSystem/initialize");
+		//当前页
+		int currentPieceNum = parameter.getCurrentPieceNum();
+		//每页数量
+		int perPieceSize = parameter.getPerPieceSize();
+		
+		HashMap<String, Object> ssList = serviceSystem.getSSList(parameter);
+		mv.addObject("count",ssList.get("count"));
+		mv.addObject("list",ssList.get("list"));
 		mv.addObject("command", parameter);
+		//serviceSystem.getSSPList();
 		return mv;
 	}
 
@@ -86,7 +96,7 @@ public class ServiceSystemController {
 	 */
 	@RequestMapping("/addArchitecture.shtml")
 	public ModelAndView addArchitecture(
-			@ModelAttribute("eccomm_admin") SystemUser user,EnterpriseParameter parameter ) {
+			@ModelAttribute("eccomm_admin") SystemUser user,ServiceSystemParameter parameter ) {
 		ModelAndView mv = new ModelAndView("/omp/serviceSystem/addArchitecture");
 		mv.addObject("command", parameter);
 		List<OmpRegion> cityS = enterpriseService.queryCounty(0L);
@@ -114,6 +124,14 @@ public class ServiceSystemController {
 			@ModelAttribute("eccomm_admin") SystemUser user,ServiceProviderParameter parameter) {
 		List<Map<String,Object>> list = serviceSystem.serchService(parameter);
 		return list;
+	}
+	//添加服务体系
+	@RequestMapping("/addServiceSystem.shtml")
+	@ResponseBody
+	public String addServiceSystem(
+			@ModelAttribute("eccomm_admin") SystemUser user,ServiceSystemParameter parameter) {
+		serviceSystem.addServiceSystem(parameter,user);
+		return "添加成功";
 	}
 
 }

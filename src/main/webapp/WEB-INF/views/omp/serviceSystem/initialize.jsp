@@ -52,6 +52,18 @@
 							onclick='addsystem()'>创建服务体系</a> <a role="button"
 							class="btn btn-default" href='#' onclick='submitForm()'>创建公共服务体系</a>
 					</div>
+					<br />
+					
+					<div class="page-body">
+						<table class="table">
+							<c:forEach items="${list }" var="s">
+							<tr>
+								<td>${s.id }</td><td>${s.region.name }</td><td><a href="#" class="tooltip-test" data-toggle="tooltip" title="${s.s1Name.serviceTell } ">${s.s1Name.serviceName }</a></td>
+							</tr>
+							</c:forEach>
+						
+						</table>
+					</div>
 				</div>
 			</div>
 			<!-- ./main -->
@@ -65,8 +77,13 @@
 
 	<!-- Script	-->
 	<script type="text/javascript">
-		function addsystem(){
-			location.href="addArchitecture.shtml";
+	
+		$(function() {
+			$("[data-toggle='tooltip']").tooltip();
+		});
+
+		function addsystem() {
+			location.href = "addArchitecture.shtml";
 		}
 	</script>
 
