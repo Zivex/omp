@@ -97,12 +97,17 @@ public class OrderController {
 	@RequestMapping("/orderManage/sendOrder.shtml")
 	@ResponseBody
 	public String sendOrder(String ids,@ModelAttribute("eccomm_admin") SystemUser user) throws Exception {
+		if(!orderService.queryCount(ids)){
+			return "您发送的指令条数已超出，请充值后再行发送，充值电话：褚-84933228";
+		}
 		String username = user.getLogonName();
 		int i = 0;
 		ClientGetDataService c = new ClientGetDataService();
 		if (!StringUtils.isEmpty(ids)) {
 			String[] split = ids.split(",");
 			for (String id : split) {
+				//语音发送次数-1
+				String orderSata = orderService.numRest(id);
 				String json = orderService.sendOrder(id);
 				ImKey imKey = c.sendOrder(json);
 				if ("1".equals(imKey.getStatusCode())) {
@@ -110,13 +115,15 @@ public class OrderController {
 //					if (true) {
 					orderService.resultOrder(imKey, id,username);
 					i++;
+				}else{
+					//失败回滚
+					orderService.rollback(id,username,orderSata);
 				}
 				if (i != 0) {
 					// 全部成功后修改指令状态
 						orderService.toupdete(id,imKey);
 						
 						orderService.upMessg(imKey, id);
-                        
 					
 				}
 			}

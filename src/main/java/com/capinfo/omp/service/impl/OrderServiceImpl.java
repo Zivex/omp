@@ -12,6 +12,7 @@ import net.sf.json.JSONObject;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.capinfo.common.model.SystemUser;
@@ -310,6 +311,92 @@ CommonsDataOperationServiceImpl<Omp_old_order, OrderParameter>  implements
 		return map.get("vid").toString();
 	}
 
+	@SuppressWarnings("deprecation")
+	@Override
+	public Boolean queryCount(String ids) {
+		String userName = SecurityContextHolder.getContext()
+				.getAuthentication().getName();
+		String uName = "";
+		if ("admin".equals(userName)) {
+			return true;
+		} else {
+			uName = " AND u.USER_NAME  =  '" + userName + "'";
+		}
+
+		String sqlRest = "";
+		String sql1 = "select sum(o.ordernum) from omp_old_info o where o.id in ("
+				+ ids + ") ";
+		int i = jdbcTemplate.queryForInt(sql1);
+		String sql2 = "select count(*) from omp_old_info o where o.id in ("
+				+ ids + ") ";
+		int j = jdbcTemplate.queryForInt(sql2);
+		if (i == j) {
+			sqlRest = "update omp_old_info o set o.ordernum = 0 where o.id in ("
+					+ ids + ") ";
+			return true;
+		} else {
+			String sql3 = "select u.num from users u where 1=1  " + uName;
+			int k = jdbcTemplate.queryForInt(sql3);
+			if (i + k >= j) {
+				return true;
+			}
+			return false;
+		}
+
+	}
 	
+	@Override
+	public String numRest(String id) {
+		String sqlRest = "";
+		String count = "";
+		String userName = SecurityContextHolder.getContext()
+				.getAuthentication().getName();
+		String uName = "";
+		if ("admin".equals(userName)) {
+			return null;
+		} else {
+			uName = " AND o.user_name  =  '" + userName + "'";
+		}
+
+		count = "select sum(o.ordernum) from omp_old_info o where o.id = " + id;
+		int int1 = jdbcTemplate.queryForInt(count);
+		if (1 == int1) {
+			sqlRest = "update omp_old_info o set o.ordernum = 0 where o.id in ("
+					+ id + ") ";
+			jdbcTemplate.update(sqlRest);
+			// sata = 1;
+			// 老人
+			return "old";
+		} else {
+			sqlRest = "select sum(o.num) from users o where 1=1 " + uName;
+			int i = jdbcTemplate.queryForInt(sqlRest);
+			i = i - 1;
+			sqlRest = "update users o set o.num = " + i + " where 1=1" + uName;
+			jdbcTemplate.update(sqlRest);
+			// sata = 2;
+			// 用户
+			return Integer.toBinaryString(i);
+		}
+	}
+
+	@Override
+	public void rollback(String id, String username, String voiceSata) {
+		if (voiceSata != null) {
+			String sql = "";
+			if ("old".equals(voiceSata)) {
+				// 老人
+				sql = "update omp_old_info o set o.ordernum = 1 where o.id in ("
+						+ id + ") ";
+			} else {
+				// 客户
+				int i = Integer.parseInt(voiceSata);
+				i = i + 1;
+				sql = "update users o set o.num = " + i
+						+ " where 1=1 and o.user_name = '" + username + "'";
+			}
+			jdbcTemplate.update(sql);
+		}
+
+	}
 
 }

@@ -12,7 +12,6 @@
 	float: right;
 	margin-right: 2cm;
 }
-
 </style>
 
 </head>
@@ -39,56 +38,10 @@
 					</div>
 					<div class="header-underline"></div>
 					<div>
-						<form class="form-inline" id="conditions">
-							<div class="form-group">
-								<label for="city">市</label> <select name="city" id="city"
-									onchange="udpCity()" class="form-control">
-									<option value="0">--请选择--</option>
-									<c:forEach items="${cityS }" var="city">
-										<option value="${city.id }">${city.name }</option>
-									</c:forEach>
-								</select>
-							</div>
 
-							<div class="form-group">
-								<label for="county">区县</label> <select name="county" id="county"
-									onchange="udpCounty()" class="form-control">
-									<option value="0">--请选择--</option>
-
-								</select>
-							</div>
-
-
-							<div class="form-group">
-								<label for="street">街道</label> <select name="street" id="street"
-									onchange="udpStreet()" class="form-control">
-									<option value="0">--请选择--</option>
-
-								</select>
-							</div>
-
-
-							<div class="form-group">
-								<label for="community">社区</label> <select name="community"
-									id="community" onchange="udpCommunity()" class="form-control">
-									<option value="0">--请选择--</option>
-
-								</select>
-							</div>
-
-
-							<div class="form-group">
-								<label for="telltype">话机类型</label> <select name="telltype"
-									id="telltype" onchange="queryTellType()" class="form-control">
-									<option value="0">--请选择--</option>
-									<c:forEach items="${tellList }" var="tell">
-										<option value="${tell.id }">${tell.phoneType }</option>
-									</c:forEach>
-								</select>
-							</div>
-						</form>
 						<br>
-						<div style="float: left; width: 50%;" >
+						<div style="float: left; width: 50%;">
+						
 							<form id="architectureForm">
 								<table class="table table-bordered" id="architecture">
 
@@ -97,24 +50,66 @@
 						</div>
 
 						<div style="float: right; width: 40%;" id="providers">
-						<div>
-							<form id="providersForm"  role="form">
+							<div>
+								<form id="providersForm" role="form">
+									<div class="form-group">
+										<label for="serviceName">名称</label> <input type="text"
+											name="serviceName" class="form-control" id="serviceName"
+											placeholder="请输入服务商名称">
+									</div>
+								</form>
 								<div class="form-group">
-									<label for="serviceName">名称</label> <input type="text" name="serviceName"
-										class="form-control" id="serviceName" placeholder="请输入服务商名称">
+									<form class="form-inline" id="conditions">
+										<div class="form-group">
+											<label for="city">市</label> <select name="city" id="city"
+												onchange="udpCity()">
+												<option value="0">--请选择--</option>
+												<c:forEach items="${cityS }" var="city">
+													<option value="${city.id }">${city.name }</option>
+												</c:forEach>
+											</select>
+										</div>
+
+										<div class="form-group">
+											<label for="county">区县</label> <select name="county"
+												id="county" onchange="udpCounty()">
+												<option value="0">--请选择--</option>
+
+											</select>
+										</div>
+
+
+										<div class="form-group">
+											<label for="street">街道</label> <select name="street"
+												id="street" onchange="udpStreet()">
+												<option value="0">--请选择--</option>
+
+											</select>
+										</div>
+
+
+										<div class="form-group">
+											<label for="community">社区</label> <select name="community"
+												id="community" onchange="udpCommunity()">
+												<option value="0">--请选择--</option>
+
+											</select>
+										</div>
+										<div class="form-group">
+											<label for="telltype">话机类型</label> <select name="telltype"
+												id="telltype" onchange="queryTellType()" >
+												<option value="0">--请选择--</option>
+												<c:forEach items="${tellList }" var="tell">
+													<option value="${tell.id }">${tell.phoneType }</option>
+												</c:forEach>
+											</select>
+										</div>
+
+									</form>
 								</div>
-								<div class="form-group">
-									<label for="serviceType">服务类型</label> <select name="serviceType"
-										id="serviceType"  class="form-control">
-										<option value="0">--请选择--</option>
-										<c:forEach items="${serviceTypes }" var="st">
-											<option value="${st.id }">${st.serviceName }</option>
-										</c:forEach>
-									</select>
-								</div>
-								<a class="btn btn-default" href="#" onclick="serchService()" role="button">搜索</a>
-								<a class="btn btn-default" href="#" onclick="addService()" role="button">添加</a>
-							</form>
+								<a class="btn btn-default" href="#" onclick="serchService()"
+									role="button">搜索</a> <a class="btn btn-default" href="#"
+									onclick="addService()" role="button">添加</a>
 							</div>
 							<br>
 							<div>
@@ -122,7 +117,7 @@
 									<table class="table table-bordered" id="serviceList">
 
 									</table>
-							</form>
+								</form>
 							</div>
 						</div>
 
@@ -165,6 +160,7 @@
 			street1.empty();
 			community1.empty();
 			street1.append("<option value='0'>--请选择--</option>");
+			community1.append("<option value='0'>--请选择--</option>");
 			var id = city1.val();
 			$
 					.post(
@@ -174,7 +170,8 @@
 							},
 							function(data) {
 								county1.empty();
-								county1.append("<option value='0'>--请选择--</option>");
+								county1
+										.append("<option value='0'>--请选择--</option>");
 								for (var i = 0; i < data.length; i++) {
 									county1
 											.append("<option value='"+data[i].id+"'>"
@@ -188,6 +185,7 @@
 		function changCounty(county1, street1, community1) {
 			var id = county1.val();
 			community1.empty();
+			community1.append("<option value='0'>--请选择--</option>");
 			$
 					.post(
 							"${pageContext.request.contextPath }/old/oldMatch/getRegionById.shtml",
@@ -196,7 +194,8 @@
 							},
 							function(data) {
 								street1.empty();
-								street1.append("<option value='0'>--请选择--</option>");
+								street1
+										.append("<option value='0'>--请选择--</option>");
 								for (var i = 0; i < data.length; i++) {
 									street1
 											.append("<option value='"+data[i].id+"'>"
@@ -218,7 +217,8 @@
 							},
 							function(data) {
 								community1.empty();
-								community1.append("<option value='0'>--请选择--</option>");
+								community1
+										.append("<option value='0'>--请选择--</option>");
 								for (var i = 0; i < data.length; i++) {
 									community1
 											.append("<option value='"+data[i].id+"'>"
@@ -230,12 +230,13 @@
 		}
 
 		//查询话机类型
-		 function queryTellType(){
+		function queryTellType() {
 			var tellId = $("#telltype").val();
 			var architecture = $("#architecture");
 			architecture.empty();
 			architecture.append("<tr> <th width='10%' style='text-align: center'>键位</th> <th width='20%' style='text-align: center'>服务类型</th> <th width='70%' style='text-align: center'>服务商</th> </tr>");
-			$.post(
+			$
+			.post(
 					"${pageContext.request.contextPath }/serviceSystem/queryarchitecture.shtml",
 					{
 						stId : tellId
@@ -244,20 +245,24 @@
 						var idNum = 0;
 						for (var i = 0; i < data.length; i++) {
 							idNum++;
-							architecture.append("<tr><td><input type='radio' name='mSys' value='"+data[i].id+"'> "+data[i].key+"</td><td>"+data[i].serviceName+"</td><td><input type='hidden' class='serviceId' name='entity.m"+idNum+"'value='0' ></td></tr>");
+							architecture
+									.append("<tr><td><input type='radio' name='mSys' value='"+data[i].id+"'> "
+											+ data[i].key
+											+ "</td><td>"
+											+ data[i].serviceName
+											+ "</td><td><input type='hidden' class='serviceId' name='entity.m"+idNum+"'value='0' ></td></tr>");
 						}
-						architecture.append('<tr><td><a class="btn btn-default" href="#" onclick="addSystem()" role="button">保存</a></td></tr>');
+						architecture
+								.append('<tr><td><a class="btn btn-default" href="#" onclick="addSystem()" role="button">保存</a></td></tr>');
 					});
 		}
 		//providers服务商
 
-
-
 		//搜索服务商
-		function serchService(){
-
+		function serchService() {
 
 			var serviceList = $("#serviceList");
+			serviceList.empty();
 			//服务区域
 
 			//话机类型
@@ -274,15 +279,20 @@
 					},
 					function(data) {
 						var idNum = 0;
-						serviceList.append("<tr> <th width='70%' style='text-align: center'>服务商名称</th> <th width='30%' style='text-align: center'>服务电话</th> </tr>");
+						serviceList
+								.append("<tr> <th width='70%' style='text-align: center'>服务商名称</th> <th width='30%' style='text-align: center'>服务电话</th> </tr>");
 
 						for (var i = 0; i < data.length; i++) {
 							idNum++;
-							serviceList.append("<tr><td><input type='radio' name='providers' value='"+data[i].id+"'> "+data[i].serviceName+"</td><td>"+data[i].serviceTell+"</td></tr>");
+							serviceList.append("<tr><td><input type='radio' name='providers' value='"+data[i].id+"'> "
+											+ data[i].serviceName
+											+ "</td><td>"
+											+ data[i].serviceTell
+											+ "</td></tr>");
 						}
 					});
 		}
-		function addService(){
+		function addService() {
 			var spId = $('input[name="providers"]:checked').val();
 			var spName = $('input[name="providers"]:checked').parent().text();
 			var td = $('input[name="mSys"]:checked').parent().next().next();
@@ -290,21 +300,20 @@
 			td.children("input.serviceId")[0].value = spId;
 		}
 
-		function addSystem(){
-		var addForm = $("#architectureForm").serialize()+"&"+$("#conditions").serialize();
+		function addSystem() {
+			var addForm = $("#architectureForm").serialize() + "&"
+					+ $("#conditions").serialize();
 			$.ajax({
-				type: "POST",
-				url: "${pageContext.request.contextPath }/serviceSystem/addServiceSystem.shtml",
-				data: addForm,
-				success: function(result) {
+				type : "POST",
+				url : "${pageContext.request.contextPath }/serviceSystem/addServiceSystem.shtml",
+				data : addForm,
+				success : function(result) {
 					alert(result);
 					window.location.reload();
 				}
 			});
 
 		}
-
-
 	</script>
 
 

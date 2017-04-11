@@ -26,6 +26,7 @@ import com.capinfo.framework.model.system.SecureRole;
 import com.capinfo.framework.service.GeneralService;
 import com.capinfo.framework.web.service.impl.CommonsDataOperationServiceImpl;
 import com.capinfo.omp.model.Composition;
+import com.capinfo.omp.model.RechargeLog;
 import com.capinfo.omp.model.UserRecharge;
 import com.capinfo.omp.parameter.CompositionParameter;
 import com.capinfo.region.model.OmpRegion;
@@ -209,8 +210,21 @@ public class SystemUserServiceImpl extends CommonsDataOperationServiceImpl<Syste
 	}
 
 	@Override
-	public void recharge(Long money,Long id) {
-		UserRecharge r = new UserRecharge();
+	public void recharge(SystemUser admin, Long money,Long id) {
+		SystemUser user = getGeneralService().getObjectById(SystemUser.class, id);
+		Long holdCount = user.getNum();	//当前持有条数
+		Long afterCount = holdCount+money;	//充值后的条数
+		RechargeLog log = new RechargeLog();
+		user.setNum(afterCount);
+		log.setOldmoney(holdCount);
+		log.setNewmoney(afterCount);
+		log.setRid(user.getId());
+		log.setTime(new Date());
+		log.setSuccess_stat(1);
+		log.setUser_name(String.valueOf(admin.getId()));
+		getGeneralService().saveOrUpdate(log);
+		getGeneralService().saveOrUpdate(user);
+		
 	}
 
 	@Override

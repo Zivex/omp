@@ -59,6 +59,7 @@ public class Omp_Old_Info  implements BaseEntity {
 	private Long sync;
 	private Long agent_id;
 	private Long num;
+	private Long ordernum;
 	private Long call_id;
 	private String account_type;
 	// 用户名称
@@ -306,12 +307,24 @@ public class Omp_Old_Info  implements BaseEntity {
 	public void setNum(Long num) {
 		this.num = num;
 	}
+	@Column(name = "ordernum")
+	public Long getOrdernum() {
+		return ordernum;
+	}
+
+	public void setOrdernum(Long ordernum) {
+		this.ordernum = ordernum;
+	}
+
+	
+		
 
 	@Column(name = "call_id", length = 11)
 	public Long getCall_id() {
 		return call_id;
 	}
 
+	
 	public void setCall_id(Long call_id) {
 		this.call_id = call_id;
 	}

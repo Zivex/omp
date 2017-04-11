@@ -50,7 +50,7 @@ public class SystemUser implements SecureUser<SystemUser, Role> {
 
 	private Set<Role> roles = new HashSet<Role>();
 
-	private int num;
+	private Long num;
 
 	// 账户类型
 	private String account_type;
@@ -152,11 +152,11 @@ public class SystemUser implements SecureUser<SystemUser, Role> {
 	}
 
 	@Column(name = "num")
-	public int getNum() {
+	public Long getNum() {
 		return num;
 	}
 
-	public void setNum(int num) {
+	public void setNum(Long num) {
 		this.num = num;
 	}
 

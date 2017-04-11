@@ -75,7 +75,7 @@ public interface SystemUserService extends CommonsDataOperationService<SystemUse
 
 	public boolean deleteUser(SystemUserParameter parameter);
 
-	public void recharge(Long money, Long id);
+	public void recharge(SystemUser admin,Long money, Long id);
 
 	//添加机构
 	public void addMechanism (Composition composition,SystemUser user);

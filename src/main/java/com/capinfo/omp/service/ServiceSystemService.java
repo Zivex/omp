@@ -18,12 +18,15 @@ import com.capinfo.region.model.OmpRegion;
 
 public interface ServiceSystemService extends CommonsDataOperationService<Enterprise, EnterpriseParameter>  {
 
-	public List<Map<String, Object>> getQueryarchitecture(int stId);
+	public List<Map<String, Object>> getQueryarchitecture(SystemUser user, Long stId);
 
 	public List<Map<String, Object>> serchService(ServiceProviderParameter parameter);
 
 	public void addServiceSystem(ServiceSystemParameter parameter, SystemUser user);
 
-	public HashMap<String, Object> getSSList(ServiceSystemParameter parameter);
+	public HashMap<String, Object> getSSList(SystemUser user, ServiceSystemParameter parameter);
+
+	public void updateServiceSystem(ServiceSystemParameter parameter,
+			SystemUser user);
 
 }

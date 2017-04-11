@@ -173,6 +173,7 @@
 			initalizeSiderBar();
 			selectMenu("o_order");
 			initQueryForm();
+			
 			$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",function(data){
 				for(var i = 0;i<data.length;i++){
 					$("#county").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
@@ -181,6 +182,10 @@
 			$("#county").change(function(){
 				var id = $("#county").val();
 				$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",{id:id},function(data){
+					$("#street").empty();
+					$("#community").empty();
+					$("#street").append("<option >--请选择--</option>");
+					$("#community").append("<option >--请选择--</option>");
 					for(var i = 0;i<data.length;i++){
 						$("#street").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
 					}				
@@ -190,6 +195,8 @@
 			$("#street").change(function(){
 				var id = $("#street").val();
 				$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",{id:id},function(data){
+					$("#community").empty();
+					$("#community").append("<option >--请选择--</option>");
 					for(var i = 0;i<data.length;i++){
 						$("#community").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
 					}				

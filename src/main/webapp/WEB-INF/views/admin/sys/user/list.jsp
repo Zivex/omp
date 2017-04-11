@@ -1,4 +1,4 @@
-<%@ page language="java" pageEncoding="UTF-8" isELIgnored="false"%>
+ <%@ page language="java" pageEncoding="UTF-8" isELIgnored="false"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
@@ -22,6 +22,7 @@
 			</div>
 			<div class="modal-body">
 				<form class="form-inline">
+					<input type="hidden" id="userId" name="userId">
 					<input type="text" id="rmb" class="form-control"> &nbsp;条
 				</form>
 			</div>
@@ -86,7 +87,7 @@
 							</td>
 							<c:if test="${sessionScope.eccomm_admin.logonName == 'admin'}">
 								<td><a class="btn btn-success" href="#" role="button"
-									onclick="showm(${item.rid})">充值</a></td>
+									onclick="showm(${item.id})">充值</a></td>
 							</c:if>
 						</tr>
 					</c:forEach>
@@ -149,14 +150,15 @@ $(document).ready(function() {
 var rechargeId;
 function showm(id){
 	$('#recharge').modal('show');
-	rechargeId = id;
+	$('#userId').val(id);
 }
 
 function recharge(){
 	var money = $("#rmb").val();
+	var id = $('#userId').val();
 	var sure=confirm("确认要充"+money+"条吗？");
 	if(sure){
-		$.post("/admin/sys/user/recharge.shtml",{money:money,id:rechargeId},function(data){
+		$.post("/omp/admin/sys/user/recharge.shtml",{money:money,id:id},function(data){
 			alert(data);
 			location.reload();
 		});

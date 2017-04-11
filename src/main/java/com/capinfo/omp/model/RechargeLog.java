@@ -24,7 +24,8 @@ public class RechargeLog implements BaseEntity{
 	private static final long serialVersionUID = 1L;
 	private Long id;
 	private Long rid;
-	private Long money;
+	private Long oldmoney;
+	private Long newmoney;
 	private String user_name;
 	private Date time;
 	private int success_stat;
@@ -45,18 +46,25 @@ public class RechargeLog implements BaseEntity{
 	public void setRid(Long rid) {
 		this.rid = rid;
 	}
-	@Column(name = "money")
-	public Long getMoney() {
-		return money;
+	@Column(name = "oldmoney")
+	public Long getOldmoney() {
+		return oldmoney;
 	}
-	
-	public void setMoney(Long money) {
-		this.money = money;
+	public void setOldmoney(Long oldmoney) {
+		this.oldmoney = oldmoney;
+	}
+	@Column(name = "newmoney")
+	public Long getNewmoney() {
+		return newmoney;
+	}
+	public void setNewmoney(Long newmoney) {
+		this.newmoney = newmoney;
 	}
 	@Column(name = "user_name")
 	public String getUser_name() {
 		return user_name;
 	}
+	
 	public void setUser_name(String user_name) {
 		this.user_name = user_name;
 	}

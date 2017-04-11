@@ -15,14 +15,15 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import com.capinfo.assistant.platform.ws.card.model.CardPersonMessageBack;
+import com.capinfo.common.model.SystemUser;
 import com.capinfo.framework.model.BaseEntity;
 import com.capinfo.region.model.OmpRegion;
 
 /**
  * 用户信息
- * 
+ *
  * @author zx
- * 
+ *
  */
 /**
  * @author Rivex
@@ -31,13 +32,15 @@ import com.capinfo.region.model.OmpRegion;
 @Entity
 @Table(name = "service_system")
 public class Service_System implements BaseEntity {
-	
+
 	private static final long serialVersionUID = 1L;
 	private Long id;
 	private Long rid;
 	private OmpRegion region;
 	private Long uid;
+	private SystemUser user;
 	private Long telltype;
+	private TellType type;
 	//服务商所对应的键位
 	private Long m1;
 	private Long m2;
@@ -55,7 +58,7 @@ public class Service_System implements BaseEntity {
 	private Long m14;
 	private Long m15;
 	private Long m16;
-	
+
 	private ServiceProvider s1Name;
 	private ServiceProvider s2Name;
 	private ServiceProvider s3Name;
@@ -68,13 +71,17 @@ public class Service_System implements BaseEntity {
 	private ServiceProvider s10Name;
 	private ServiceProvider s11Name;
 	private ServiceProvider s12Name;
-	
+	private ServiceProvider s13Name;
+	private ServiceProvider s14Name;
+	private ServiceProvider s15Name;
+	private ServiceProvider s16Name;
+
 	private Date createTime;
 	private Date updateTime;
 	private Long user_falg;
-	
-	
-	
+
+
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ID", unique = true, nullable = false, precision = 12, scale = 0)
@@ -92,7 +99,7 @@ public class Service_System implements BaseEntity {
 		return uid;
 	}
 
-	
+
 	@Column(name = "rid")
 	public Long getRid() {
 		return rid;
@@ -119,7 +126,7 @@ public class Service_System implements BaseEntity {
 	}
 
 
-	@Temporal(TemporalType.TIMESTAMP) 
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "createTime")
 	public Date getCreateTime() {
 		return createTime;
@@ -129,7 +136,7 @@ public class Service_System implements BaseEntity {
 	public void setCreateTime(Date createTime) {
 		this.createTime = createTime;
 	}
-	@Temporal(TemporalType.TIMESTAMP) 
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "updateTime")
 	public Date getUpdateTime() {
 		return updateTime;
@@ -151,7 +158,7 @@ public class Service_System implements BaseEntity {
 	}
 
 
-	
+
 	@ManyToOne(targetEntity = OmpRegion.class, fetch = FetchType.LAZY)
 	@JoinColumn(name = "rid", insertable = false, updatable = false)
 	public OmpRegion getRegion() {
@@ -322,7 +329,7 @@ public class Service_System implements BaseEntity {
 	public void setM16(Long m16) {
 		this.m16 = m16;
 	}
-	
+
 	@ManyToOne(targetEntity = ServiceProvider.class, fetch = FetchType.LAZY)
 	@JoinColumn(name = "m1", insertable = false, updatable = false)
 	public ServiceProvider getS1Name() {
@@ -454,8 +461,72 @@ public class Service_System implements BaseEntity {
 	public void setS12Name(ServiceProvider s12Name) {
 		this.s12Name = s12Name;
 	}
-
-
+	@ManyToOne(targetEntity = ServiceProvider.class, fetch = FetchType.LAZY)
+	@JoinColumn(name = "m13", insertable = false, updatable = false)
+	public ServiceProvider getS13Name() {
+		return s13Name;
+	}
 	
 	
+	public void setS13Name(ServiceProvider s13Name) {
+		this.s13Name = s13Name;
+	}
+	@ManyToOne(targetEntity = ServiceProvider.class, fetch = FetchType.LAZY)
+	@JoinColumn(name = "m14", insertable = false, updatable = false)
+	public ServiceProvider getS14Name() {
+		return s14Name;
+	}
+	
+	
+	public void setS14Name(ServiceProvider s14Name) {
+		this.s14Name = s14Name;
+	}
+	@ManyToOne(targetEntity = ServiceProvider.class, fetch = FetchType.LAZY)
+	@JoinColumn(name = "m15", insertable = false, updatable = false)
+	public ServiceProvider getS15Name() {
+		return s15Name;
+	}
+	
+	
+	public void setS15Name(ServiceProvider s15Name) {
+		this.s15Name = s15Name;
+	}
+	@ManyToOne(targetEntity = ServiceProvider.class, fetch = FetchType.LAZY)
+	@JoinColumn(name = "m16", insertable = false, updatable = false)
+	public ServiceProvider getS16Name() {
+		return s16Name;
+	}
+	
+	
+	public void setS16Name(ServiceProvider s16Name) {
+		this.s16Name = s16Name;
+	}
+
+	@ManyToOne(targetEntity = TellType.class, fetch = FetchType.LAZY)
+	@JoinColumn(name = "tellType_id", insertable = false, updatable = false)
+	public TellType getType() {
+		return type;
+	}
+
+
+	public void setType(TellType type) {
+		this.type = type;
+	}
+
+	@ManyToOne(targetEntity = SystemUser.class, fetch = FetchType.LAZY)
+	@JoinColumn(name = "uid", insertable = false, updatable = false)
+	public SystemUser getUser() {
+		return user;
+	}
+
+
+	public void setUser(SystemUser user) {
+		this.user = user;
+	}
+	
+	
+
+
+
+
 }

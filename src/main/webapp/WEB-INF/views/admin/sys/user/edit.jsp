@@ -42,9 +42,9 @@
 									</div>
 								</div>
 								<div class="form-group">
-									<label for="entity.num" class="col-md-2 control-label">语音次数充值: </label>
+									<label for="entity.num" class="col-md-2 control-label">发送次数: </label>
 									<div class="col-md-4">
-									<form:input path="entity.num" class="form-control" data-rule-required="true" data-rule-maxlength="100"  />
+									<form:input path="entity.num" class="form-control" data-rule-required="true" data-rule-maxlength="100" disabled="true"  />
 									</div>
 								</div>
 										<div class="form-group">
