@@ -31,7 +31,7 @@ public class ServiceSystemlmpl extends
 	private JdbcTemplate JdbcTemplate;
 
 	@Override
-	public List<Map<String, Object>> getQueryarchitecture(int stId) {
+	public List<Map<String, Object>> getQueryarchitecture(Long stId) {
 		String sql = "select k.id, k.`key`,st.serviceName from omp_key k INNER JOIN omp_phone_type t on k.pyId = t.id INNER JOIN omp_service_type st on st.id = k.stId where k.pyId="+stId;
 		List<Map<String,Object>> list = JdbcTemplate.queryForList(sql);
 		return list;
@@ -45,17 +45,21 @@ public class ServiceSystemlmpl extends
 		String serchserviceId = "";
 		String serchserviceName = "";
 		String serchstreeId = "";
+		String sqlService = "";
 
-		if(parameter.getServiceId()!=0){
+		if((!"".equals(parameter.getId())) && parameter.getId() != null && parameter.getId()!=0){
+			sqlService=" and t.id ="+parameter.getId();
+		}
+		if( parameter.getServiceId()!=0){
 			serchserviceId=" and t.serviceTypeId ="+parameter.getServiceId();
 		}
-		if(!"".equals(parameter.getServiceName())){
+		if((!"".equals(parameter.getServiceName())) && parameter.getId() != null && parameter.getServiceName()!=null){
 			serchserviceName=" and t.serviceName like '%"+parameter.getServiceName()+"%'";
 		}
 		if(parameter.getStreetId()!=0){
 			serchstreeId=" and t.serviceStreet_id like '%"+parameter.getStreetId()+"%'";
 		}
-		String sql = "select t.id,t.serviceName,t.serviceTell from service_provider t where 1=1 "+serchserviceId+serchserviceName+serchstreeId;
+		String sql = "select t.id,t.serviceName,t.serviceTell from service_provider t where 1=1 "+serchserviceId+serchserviceName+serchstreeId+sqlService;
 		List<Map<String,Object>> list = JdbcTemplate.queryForList(sql);
 		return list;
 
@@ -75,7 +79,7 @@ public class ServiceSystemlmpl extends
 		entity.setUser_falg(1L);
 		entity.setTelltype(telltype);
 		entity.setUid(user.getId());
-		
+
 		if(community==0){
 			String sql = "select r.id from omp_region r where r.USE_FLAG = 1 and r.PARENTID="+street;
 			List<Map<String,Object>> list = JdbcTemplate.queryForList(sql);
@@ -98,8 +102,8 @@ public class ServiceSystemlmpl extends
 			entity.setRid((long) community);
 			getGeneralService().saveOrUpdate(entity);
 		}
-		
-		
+
+
 	}
 
 
@@ -110,16 +114,26 @@ public class ServiceSystemlmpl extends
 		HashMap<String, Object> map = new HashMap<String, Object>();
 		searchCriteriaBuilder.addLimitCondition((parameter.getCurrentPieceNum() - 1)
 				* parameter.getPerPieceSize(), parameter.getPerPieceSize());
-		
+
 		int count = getGeneralService().getCount(searchCriteriaBuilder.build());
 		List<Service_System> list = getGeneralService().getObjects(searchCriteriaBuilder.build());
 		map.put("count", count);
 		map.put("list", list);
 		return map;
 	}
-	
 
-	
+
+	@Override
+	public void updateServiceSystem(ServiceSystemParameter parameter,
+			SystemUser user) {
+		Service_System entity = parameter.getEntity();
+		entity.setUpdateTime(new Date());
+		getGeneralService().saveOrUpdate(entity);
+
+	}
+
+
+
 
 
 }

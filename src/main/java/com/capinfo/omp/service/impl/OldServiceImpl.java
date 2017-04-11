@@ -26,6 +26,7 @@ import com.capinfo.framework.model.BaseEntity;
 import com.capinfo.framework.web.service.impl.CommonsDataOperationServiceImpl;
 import com.capinfo.omp.model.CardPerson;
 import com.capinfo.omp.model.Omp_Old_Info;
+import com.capinfo.omp.model.Service_System;
 import com.capinfo.omp.parameter.OldParameter;
 import com.capinfo.omp.service.OldService;
 import com.capinfo.omp.utils.Page;
@@ -52,12 +53,12 @@ public class OldServiceImpl extends
 			String idCard, String zjNumber, String county, String street,
 			String community, String isGenerationOrder, String isindividuation,
 			SystemUser user) {
-		
-		
+
+
 		SearchCriteriaBuilder<Omp_Old_Info> searchCriteriaBuilder = new SearchCriteriaBuilder<Omp_Old_Info>(
 				Omp_Old_Info.class);
 		SearchCriteriaBuilder<Omp_Old_Info> selectList = selectList(searchCriteriaBuilder, page, name, idCard, zjNumber, county, street, community, isGenerationOrder, isindividuation, user);
-		
+
 		List<Omp_Old_Info> Omp_Old_InfoList = getGeneralService().getObjects(
 				selectList.build());
 
@@ -79,11 +80,12 @@ public class OldServiceImpl extends
 			ompOldInfo.setSjji(user.getSjji());
 			ompOldInfo.setSiji(user.getSiji());
 		}
-		
+
 		getGeneralService().saveOrUpdate(ompOldInfo);
 		Long autoIncId = ompOldInfo.getId();
 
 		if (autoIncId > 0) {
+			addOmpOldOrderInfo(autoIncId);
 			addOldKeyInfo(ompOldInfo, autoIncId);
 		}
 
@@ -184,15 +186,15 @@ public class OldServiceImpl extends
 	public int getCount(String name, String idCard, String zjNumber,
 			String county, String street, String community,
 			String isGenerationOrder, String isindividuation, SystemUser user) {
-		
+
 		SearchCriteriaBuilder<Omp_Old_Info> searchCriteriaBuilder = new SearchCriteriaBuilder<Omp_Old_Info>(
 				Omp_Old_Info.class);
-		
+
 		SearchCriteriaBuilder<Omp_Old_Info> selectList = selectList(searchCriteriaBuilder, null, name, idCard, zjNumber, county, street, community, isGenerationOrder, isindividuation, user);
-		
+
 		int count = getGeneralService().getCount(selectList.build());
-		
-//		
+
+//
 //		// 查询用户区域
 //		String rname = "";
 //		if("g".equals(user.getAccount_type())){
@@ -1583,7 +1585,7 @@ public class OldServiceImpl extends
 		System.out.println("用户当前的级别"+lv+user.getYiji()+user.getErji()+user.getSjji()+user.getSiji());
 		return null;
 	}
-	
+
 	/**
 	 * 查询
 	 * @param searchCriteriaBuilder
@@ -1623,7 +1625,7 @@ public class OldServiceImpl extends
 			searchCriteriaBuilder.addLimitCondition((page.getCurrentPage() - 1)
 					* page.getPageSize(), page.getPageSize());
 		}
-			
+
 			if (user.getLeave() > 1) {
 				if ("g".equals(user.getAccount_type())) {
 					String rname = "";
@@ -1680,7 +1682,7 @@ public class OldServiceImpl extends
 		if (!"".equals(sql)) {
 			searchCriteriaBuilder.addAdditionalRestrictionSql(sql);
 		}
-		
+
 		return searchCriteriaBuilder;
 	}
 
@@ -1691,9 +1693,45 @@ public class OldServiceImpl extends
 		if(tel_type != null && !"".equals(tel_type)){
 			String sql = "select t.id from omp_phone_type t where t.phoneType like '%"+tel_type+"%'";
 			 i = jdbcTemplate.queryForInt(sql);
-			
+
 		}
 		return i;
+	}
+	//匹配老人体系
+	public void addOmpOldOrderInfo(Long id){
+
+		Omp_Old_Info old = getGeneralService().getObjectById(Omp_Old_Info.class, id);
+		SearchCriteriaBuilder<Service_System> searchCriteriaBuilder = new SearchCriteriaBuilder<Service_System>(Service_System.class);
+		searchCriteriaBuilder.addQueryCondition("rid",RestrictionExpression.EQUALS_OP, old.getHousehold_community_id());
+		searchCriteriaBuilder.addQueryCondition("tellType_id",RestrictionExpression.EQUALS_OP, old.getTeltype());
+
+		Service_System ss = getGeneralService().getObjectByCriteria(searchCriteriaBuilder.build());
+
+		// [{"M1":"82660886","M2":"96003","M3":"67287180","M4":"4008331212","M5":"4008221299","M6":"56328888","M7":"13691139445","M8":"68887325","M9":"88982461","M10":"68873023","M11":"8008100032","M12":"999","M13":"84925513","M14":"84931297","M15":"8008100032","M16":"8008100032"}]
+		String json = "[{"
+				+ "\"M1\":\""+ss.getM1()+"\","
+				+ "\"M2\":\""+ss.getM2()+"\","
+				+ "\"M3\":\""+ss.getM3()+"\","
+				+ "\"M4\":\""+ss.getM4()+"\","
+				+ "\"M5\":\""+ss.getM5()+"\","
+				+ "\"M6\":\""+ss.getM6()+"\","
+				+ "\"M7\":\""+ss.getM7()+"\","
+				+ "\"M8\":\""+ss.getM8()+"\","
+				+ "\"M9\":\""+ss.getM9()+"\","
+				+ "\"M10\":\""+ss.getM10()+"\","
+				+ "\"M11\":\""+ss.getM11()+"\","
+				+ "\"M12\":\""+ss.getM12()+"\","
+				+ "\"M13\":\""+ss.getM13()+"\","
+				+ "\"M14\":\""+ss.getM14()+"\","
+				+ "\"M15\":\""+ss.getM15()+"\","
+				+ "\"M16\":\""+ss.getM16()+"\""
+				+ "}]";
+		String sql = "INSERT INTO omp_old_order ("
+				+ "oldId, phoneName, communityOrderId, keyPointMessage)"
+				+ "  select t.ID,t.TELTYPE,t.HOUSEHOLD_COMMUNITY_ID,'" + json
+				+ "' from omp_old_info t WHERE t.ID = " + id;;
+
+
 	}
 
 }

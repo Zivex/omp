@@ -20,9 +20,9 @@ import com.capinfo.region.model.OmpRegion;
 
 /**
  * 用户信息
- * 
+ *
  * @author zx
- * 
+ *
  */
 /**
  * @author Rivex
@@ -31,13 +31,14 @@ import com.capinfo.region.model.OmpRegion;
 @Entity
 @Table(name = "service_system")
 public class Service_System implements BaseEntity {
-	
+
 	private static final long serialVersionUID = 1L;
 	private Long id;
 	private Long rid;
 	private OmpRegion region;
 	private Long uid;
 	private Long telltype;
+	private TellType type;
 	//服务商所对应的键位
 	private Long m1;
 	private Long m2;
@@ -55,7 +56,7 @@ public class Service_System implements BaseEntity {
 	private Long m14;
 	private Long m15;
 	private Long m16;
-	
+
 	private ServiceProvider s1Name;
 	private ServiceProvider s2Name;
 	private ServiceProvider s3Name;
@@ -68,13 +69,13 @@ public class Service_System implements BaseEntity {
 	private ServiceProvider s10Name;
 	private ServiceProvider s11Name;
 	private ServiceProvider s12Name;
-	
+
 	private Date createTime;
 	private Date updateTime;
 	private Long user_falg;
-	
-	
-	
+
+
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ID", unique = true, nullable = false, precision = 12, scale = 0)
@@ -92,7 +93,7 @@ public class Service_System implements BaseEntity {
 		return uid;
 	}
 
-	
+
 	@Column(name = "rid")
 	public Long getRid() {
 		return rid;
@@ -119,7 +120,7 @@ public class Service_System implements BaseEntity {
 	}
 
 
-	@Temporal(TemporalType.TIMESTAMP) 
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "createTime")
 	public Date getCreateTime() {
 		return createTime;
@@ -129,7 +130,7 @@ public class Service_System implements BaseEntity {
 	public void setCreateTime(Date createTime) {
 		this.createTime = createTime;
 	}
-	@Temporal(TemporalType.TIMESTAMP) 
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "updateTime")
 	public Date getUpdateTime() {
 		return updateTime;
@@ -151,7 +152,7 @@ public class Service_System implements BaseEntity {
 	}
 
 
-	
+
 	@ManyToOne(targetEntity = OmpRegion.class, fetch = FetchType.LAZY)
 	@JoinColumn(name = "rid", insertable = false, updatable = false)
 	public OmpRegion getRegion() {
@@ -322,7 +323,7 @@ public class Service_System implements BaseEntity {
 	public void setM16(Long m16) {
 		this.m16 = m16;
 	}
-	
+
 	@ManyToOne(targetEntity = ServiceProvider.class, fetch = FetchType.LAZY)
 	@JoinColumn(name = "m1", insertable = false, updatable = false)
 	public ServiceProvider getS1Name() {
@@ -455,7 +456,18 @@ public class Service_System implements BaseEntity {
 		this.s12Name = s12Name;
 	}
 
+	@ManyToOne(targetEntity = TellType.class, fetch = FetchType.LAZY)
+	@JoinColumn(name = "tellType_id", insertable = false, updatable = false)
+	public TellType getType() {
+		return type;
+	}
 
-	
-	
+
+	public void setType(TellType type) {
+		this.type = type;
+	}
+
+
+
+
 }

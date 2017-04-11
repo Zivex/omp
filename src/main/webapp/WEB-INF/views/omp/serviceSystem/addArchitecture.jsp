@@ -285,22 +285,13 @@
 		function addService(){
 			var spId = $('input[name="providers"]:checked').val();
 			var spName = $('input[name="providers"]:checked').parent().text();
-			
-			alert(spId);
 			var td = $('input[name="mSys"]:checked').parent().next().next();
 			td.append(spName);
 			td.children("input.serviceId")[0].value = spId;
 		}
-		
+
 		function addSystem(){
-			var city = $("#city").val();
-			var street = $("#street").val();
-			var county = $("#county").val();
-			var community = $("#community").val();
-			var telltype = $("#telltype").val();
-			
-		//	var addForm = $("#architectureForm").serialize()+"&city="city+"&street="street+"&county="county+"&community="community+"&serviceType="serviceType+"&city="city;
-		var addForm = $("#architectureForm").serialize()+"&"+$("#conditions").serialize();	
+		var addForm = $("#architectureForm").serialize()+"&"+$("#conditions").serialize();
 			$.ajax({
 				type: "POST",
 				url: "${pageContext.request.contextPath }/serviceSystem/addServiceSystem.shtml",
@@ -309,11 +300,11 @@
 					alert(result);
 					window.location.reload();
 				}
-			}); 
-			
+			});
+
 		}
-		
-		
+
+
 	</script>
 
 
