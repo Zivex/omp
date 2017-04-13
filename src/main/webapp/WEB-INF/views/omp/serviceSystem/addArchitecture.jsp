@@ -41,7 +41,7 @@
 					<div>
 						<form class="form-inline" id="conditions">
 							<div class="form-group">
-								<label for="city">市</label> <select name="city" id="city"
+								<label for="city">市</label> <select name="entity.city_id" id="city"
 									onchange="udpCity()" class="form-control">
 									<option value="0">--请选择--</option>
 									<c:forEach items="${cityS }" var="city">
@@ -51,7 +51,7 @@
 							</div>
 
 							<div class="form-group">
-								<label for="county">区县</label> <select name="county" id="county"
+								<label for="county">区县</label> <select name="entity.county_id" id="county"
 									onchange="udpCounty()" class="form-control">
 									<option value="0">--请选择--</option>
 
@@ -60,7 +60,7 @@
 
 
 							<div class="form-group">
-								<label for="street">街道</label> <select name="street" id="street"
+								<label for="street">街道</label> <select name="entity.street_id" id="street"
 									onchange="udpStreet()" class="form-control">
 									<option value="0">--请选择--</option>
 
@@ -69,7 +69,7 @@
 
 
 							<div class="form-group">
-								<label for="community">社区</label> <select name="community"
+								<label for="community">社区</label> <select name="entity.community_id"
 									id="community" onchange="udpCommunity()" class="form-control">
 									<option value="0">--请选择--</option>
 
@@ -244,7 +244,7 @@
 						var idNum = 0;
 						for (var i = 0; i < data.length; i++) {
 							idNum++;
-							architecture.append("<tr><td><input type='radio' name='mSys' value='"+data[i].id+"'> "+data[i].key+"</td><td>"+data[i].serviceName+"</td><td><input type='hidden' class='serviceId' name='entity.m"+idNum+"'value='0' ></td></tr>");
+							architecture.append("<tr><td><input type='radio' name='mSys' value='"+data[i].id+"'> "+data[i].key+"</td><td>"+data[i].serviceName+"</td><td><input type='hidden' class='serviceId' name='"+data[i].key+"'value='0' ></td></tr>");
 						}
 						architecture.append('<tr><td><a class="btn btn-default" href="#" onclick="addSystem()" role="button">保存</a></td></tr>');
 					});
@@ -303,7 +303,11 @@
 			});
 
 		}
-
+		$(function() {
+			initalizeSiderBar();
+			selectMenu("o_sys");
+			initQueryForm();
+		});
 
 	</script>
 

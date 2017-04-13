@@ -150,6 +150,9 @@
 	<script type="text/javascript">
 
 		$(function() {
+			initalizeSiderBar();
+			selectMenu("o_sys");
+			initQueryForm();
 			$("[data-toggle='tooltip']").tooltip();
 		});
 

@@ -279,6 +279,9 @@
 
 	    $(function(){
 	    	queryTellType();
+			initalizeSiderBar();
+			selectMenu("o_sys");
+			initQueryForm();
 	    });
 
 
