@@ -170,9 +170,9 @@
 			});
 			$("#county").change(function(){
 				var id = $("#county").val();
+				$("#street option:not(:first)").remove();
+				$("#community option:not(:first)").remove();
 				$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",{id:id},function(data){
-					$("#street").empty();
-					$("#community").empty();
 					for(var i = 0;i<data.length;i++){
 						$("#street").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
 					}				
@@ -180,6 +180,7 @@
 			});
 			
 			$("#street").change(function(){
+				$("#community option:not(:first)").remove();
 				var id = $("#street").val();
 				$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",{id:id},function(data){
 					$("#community").empty();

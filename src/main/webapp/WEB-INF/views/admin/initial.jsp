@@ -133,7 +133,7 @@
 			//	$("#county").find("option:not(:first)").remove();
 				$("#street").find("option:not(:first)").remove();
 				$("#community").find("option:not(:first)").remove();
-				
+				S
 				
 				
 				var id = $("#county").val();

@@ -208,6 +208,8 @@
 				}				
 			});
 			$("#county").change(function(){
+				$("#street option:not(:first)").remove();
+				$("#community option:not(:first)").remove();
 				var id = $("#county").val();
 				$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",{id:id},function(data){
 					for(var i = 0;i<data.length;i++){
@@ -217,6 +219,7 @@
 			});
 			
 			$("#street").change(function(){
+				$("#community option:not(:first)").remove();
 				var id = $("#street").val();
 				$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",{id:id},function(data){
 					for(var i = 0;i<data.length;i++){

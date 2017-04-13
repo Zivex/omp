@@ -16,6 +16,7 @@ import com.capinfo.framework.model.BaseEntity;
 import com.capinfo.framework.service.GeneralService;
 import com.capinfo.framework.web.service.impl.CommonsDataOperationServiceImpl;
 import com.capinfo.omp.model.Enterprise;
+import com.capinfo.omp.model.New_Service_System;
 import com.capinfo.omp.model.Omp_Old_Info;
 import com.capinfo.omp.model.Service_System;
 import com.capinfo.omp.parameter.EnterpriseParameter;
@@ -40,7 +41,7 @@ public class ServiceSystemlmpl extends
 		}else if("g".equals(user.getAccount_type())){
 			conditions+=" and k.government=1";
 		}
-		
+
 		String sql = "select k.id, k.`key`,st.serviceName from omp_key k INNER JOIN omp_phone_type t on k.pyId = t.id INNER JOIN omp_service_type st on st.id = k.stId where k.pyId="+stId+conditions;
 		List<Map<String,Object>> list = JdbcTemplate.queryForList(sql);
 		return list;
@@ -78,55 +79,76 @@ public class ServiceSystemlmpl extends
 	@SuppressWarnings("deprecation")
 	@Override
 	public void addServiceSystem(ServiceSystemParameter parameter, SystemUser user) {
-		Service_System entity = parameter.getEntity();
-		int city = parameter.getCity();
-		int county = parameter.getCounty();
-		int street = parameter.getStreet();
-		int community = parameter.getCommunity();
+		New_Service_System entity = parameter.getEntity();
+
+
+//		Long city = parameter.getCity();
+//		Long county = parameter.getCounty();
+//		Long street = parameter.getStreet();
+//		Long community = parameter.getCommunity();
 		Long telltype = parameter.getTelltype();
 		entity.setCreateTime(new Date());
 		entity.setUser_falg(1L);
 		entity.setTelltype(telltype);
 		entity.setUid(user.getId());
 
-		if(community==0 && street!=0 ){
-			String sql = "select r.id from omp_region r where r.USE_FLAG = 1 and r.PARENTID="+street;
+		if(parameter.getEntity().getCommunity_id()!=null && parameter.getEntity().getCommunity_id()==0 && parameter.getEntity().getStreet_id()!=0 ){
+			String sql = "select r.id from omp_region r where r.USE_FLAG = 1 and r.PARENTID="+parameter.getEntity().getStreet_id();
 			List<Map<String,Object>> list = JdbcTemplate.queryForList(sql);
 			//批量
 			for (Map<String, Object> map : list) {
-				String rid =  map.get("id")+"";
-				entity.setRid(Long.parseLong(rid));
-				String sqlCheck = "select count(*) from service_system s where s.user_falg=1 and  s.rid="+rid+" and s.tellType_id= "+telltype;
-				int forInt = JdbcTemplate.queryForInt(sqlCheck);
-				if(forInt>0){
-					String getIdSql = "select s.id from service_system s where s.user_falg=1 and  s.rid="+rid+" and s.tellType_id= "+telltype;
-					long id = JdbcTemplate.queryForLong(getIdSql);
-					entity.setId(id);
-				}
-				GeneralService service = getGeneralService();
-				service.saveOrUpdate(entity);
-				service.clear();
-				entity.setId(null);
+				String rid =  map.get("id")+"";		//社区id
+				pubSavrSys(parameter, user, rid);
+//
+//				entity.setCommunity_id(Long.parseLong(rid));
+//				@SuppressWarnings("unchecked")
+//				Map<String, Long> mapKey = parameter.getMapKey();
+//				for (Map.Entry<String, Long> entry : mapKey.entrySet()) {
+//					List<Map<String,Object>> mList = getQueryarchitecture(user, parameter.getTelltype());
+//
+//				    System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
+//
+//				}
+//
+//
+//				String sqlCheck = "select count(*) from service_system s where s.user_falg=1 and  s.rid="+rid+" and s.tellType_id= "+telltype;
+//				int forInt = JdbcTemplate.queryForInt(sqlCheck);
+//				if(forInt>0){
+//					String getIdSql = "select s.id from service_system s where s.user_falg=1 and  s.rid="+rid+" and s.tellType_id= "+telltype;
+//					long id = JdbcTemplate.queryForLong(getIdSql);
+//					entity.setId(id);
+//				}
+//				GeneralService service = getGeneralService();
+//				service.saveOrUpdate(entity);
+//				service.clear();
+//				entity.setId(null);
 			}
 		}else{
-			entity.setRid((long) community);
-			String sqlCheck = "select count(*) from service_system s where s.user_falg=1 and s.uid="+user.getId()+" and  s.rid="+community+" and s.tellType_id= "+telltype;
-			int forInt = JdbcTemplate.queryForInt(sqlCheck);
-			if(forInt>0){
-				String getIdSql = "select s.id from service_system s where s.user_falg=1 and s.uid="+user.getId()+" and  s.rid="+community+" and s.tellType_id= "+telltype;
-				long id = JdbcTemplate.queryForLong(getIdSql);
-				entity.setId(id);
-			}
-			if("g".equals(user.getAccount_type())){
-				Long m11 = entity.getM11();
-				entity.setM11(null);
-				entity.setM12(m11);
-			}else if("m".equals(user.getAccount_type()) || "b".equals(user.getAccount_type())){
-				Long m10 = entity.getM9();
-				entity.setM9(null);
-				entity.setM10(m10);
-			}
-			getGeneralService().saveOrUpdate(entity);
+
+			pubSavrSys(parameter, user, "0");
+
+
+			//entity.setRid((long) community);	//社区id
+
+
+
+//			String sqlCheck = "select count(*) from service_system s where s.user_falg=1 and s.uid="+user.getId()+" and  s.rid="+community+" and s.tellType_id= "+telltype;
+//			int forInt = JdbcTemplate.queryForInt(sqlCheck);
+//			if(forInt>0){
+//				String getIdSql = "select s.id from service_system s where s.user_falg=1 and s.uid="+user.getId()+" and  s.rid="+community+" and s.tellType_id= "+telltype;
+//				long id = JdbcTemplate.queryForLong(getIdSql);
+//				entity.setId(id);
+//			}
+//			if("g".equals(user.getAccount_type())){
+//				Long m11 = entity.getM11();
+//				entity.setM11(null);
+//				entity.setM12(m11);
+//			}else if("m".equals(user.getAccount_type()) || "b".equals(user.getAccount_type())){
+//				Long m10 = entity.getM9();
+//				entity.setM9(null);
+//				entity.setM10(m10);
+//			}
+
 		}
 
 
@@ -158,22 +180,67 @@ public class ServiceSystemlmpl extends
 		searchCriteriaBuilder.addLimitCondition((parameter.getCurrentPieceNum() - 1)
 				* parameter.getPerPieceSize(), parameter.getPerPieceSize());
 
-		int count = getGeneralService().getCount(searchCriteriaBuilder.build());
+	//	int count = getGeneralService().getCount(searchCriteriaBuilder.build());
 		List<Service_System> list = getGeneralService().getObjects(searchCriteriaBuilder.build());
-		map.put("count", count);
+		for (int i = 0; i < list.size(); i++) {
+			
+		}
+
+
+	//	map.put("count", count);
 		map.put("list", list);
 		return map;
 	}
 
 
-	@Override
-	public void updateServiceSystem(ServiceSystemParameter parameter,
-			SystemUser user) {
-		Service_System entity = parameter.getEntity();
-		entity.setUpdateTime(new Date());
+//	@Override
+//	public void updateServiceSystem(ServiceSystemParameter parameter,
+//			SystemUser user) {
+//		Service_System entity = parameter.getEntity();
+//		entity.setUpdateTime(new Date());
+//		getGeneralService().saveOrUpdate(entity);
+//
+//	}
+
+//保存服务体系
+@SuppressWarnings("deprecation")
+public void pubSavrSys(ServiceSystemParameter parameter, SystemUser user,String rid){
+	Sys_key entity = parameter.getEntity();
+	if(!"0".equals(rid)){
+		entity.setCommunity_id(Long.parseLong(rid));
+	}
+	Map<String, Long> mapKeys = Permissions.mapKeys(parameter);
+	List<Map<String,Object>> mList = getQueryarchitecture(user, parameter.getTelltype());
+	for (Map<String, Object> map : mList) {
+		Long sid = mapKeys.get(map.get("key"));
+		if(sid==0){
+			sid = null;
+		}
+		entity.setSp_id(sid);
+		String key_sql = " select k.id from omp_key k where k.pyId ="+parameter.getTelltype()+" and k.`key` = '"+map.get("key")+"'";
+		Long kid = JdbcTemplate.queryForLong(key_sql);
+		entity.setKey_state(kid);
+		String sqlCheck = "select count(*) from sys_key s where s.user_falg=1 and s.uid="+user.getId()+" and  s.key_state="+kid+" and s.tellType_id= "+parameter.getTelltype()+" and s.COMMUNITY_ID ="+rid ;
+		int forInt = JdbcTemplate.queryForInt(sqlCheck);
+		if(forInt>0){
+			String getIdSql = "select s.id from sys_key s where s.user_falg=1 and s.uid="+user.getId()+" and  s.key_state="+kid+" and s.tellType_id= "+parameter.getTelltype()+" and s.COMMUNITY_ID ="+rid;
+			long id = JdbcTemplate.queryForLong(getIdSql);
+			entity.setId(id);
+		}
 		getGeneralService().saveOrUpdate(entity);
+		getGeneralService().clear();
+		entity.setId(null);
 
 	}
+}
+
+
+@Override
+public void updateServiceSystem(ServiceSystemParameter parameter,
+		SystemUser user) {
+	// TODO Auto-generated method stub
+
+}
 
 
 

@@ -117,7 +117,6 @@ function changCommunity(community1){
 
  	$(document).ready(function(){
 		$("#county").change(function(){
-			alert(1);
 			$("#community").empty();
 			$("#community").append("<option>请选择</option>")
 			var id = $("#county").val();

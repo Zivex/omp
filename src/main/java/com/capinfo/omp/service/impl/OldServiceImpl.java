@@ -54,20 +54,22 @@ public class OldServiceImpl extends
 			String community, String isGenerationOrder, String isindividuation,
 			SystemUser user) {
 
-
 		SearchCriteriaBuilder<Omp_Old_Info> searchCriteriaBuilder = new SearchCriteriaBuilder<Omp_Old_Info>(
 				Omp_Old_Info.class);
-		SearchCriteriaBuilder<Omp_Old_Info> selectList = selectList(searchCriteriaBuilder, page, name, idCard, zjNumber, county, street, community, isGenerationOrder, isindividuation, user);
+		SearchCriteriaBuilder<Omp_Old_Info> selectList = selectList(
+				searchCriteriaBuilder, page, name, idCard, zjNumber, county,
+				street, community, isGenerationOrder, isindividuation, user);
 
-		List<Omp_Old_Info> Omp_Old_InfoList = getGeneralService().getObjects(
+		List<Omp_Old_Info> omp_Old_InfoList = getGeneralService().getObjects(
 				selectList.build());
 
-		return Omp_Old_InfoList;
+		return omp_Old_InfoList;
 	}
 
 	@Override
 	public boolean addOld(Omp_Old_Info ompOldInfo, SystemUser user) {
-		SystemUser entity = getGeneralService().getObjectById(SystemUser.class, user.getId());
+		SystemUser entity = getGeneralService().getObjectById(SystemUser.class,
+				user.getId());
 		ompOldInfo.setUser_name(entity.getName());
 		ompOldInfo.setAgent_id(user.getId());
 		ompOldInfo.setState(1l);
@@ -75,7 +77,8 @@ public class OldServiceImpl extends
 		ompOldInfo.setNum(1L);
 		ompOldInfo.setOrdernum(1L);
 		ompOldInfo.setIspersonalized(0L);
-		if("b".equals(user.getAccount_type())|| "m".equals(user.getAccount_type())){
+		if ("b".equals(user.getAccount_type())
+				|| "m".equals(user.getAccount_type())) {
 			ompOldInfo.setYiji(user.getYiji());
 			ompOldInfo.setErji(user.getErji());
 			ompOldInfo.setSjji(user.getSjji());
@@ -191,92 +194,99 @@ public class OldServiceImpl extends
 		SearchCriteriaBuilder<Omp_Old_Info> searchCriteriaBuilder = new SearchCriteriaBuilder<Omp_Old_Info>(
 				Omp_Old_Info.class);
 
-		SearchCriteriaBuilder<Omp_Old_Info> selectList = selectList(searchCriteriaBuilder, null, name, idCard, zjNumber, county, street, community, isGenerationOrder, isindividuation, user);
+		SearchCriteriaBuilder<Omp_Old_Info> selectList = selectList(
+				searchCriteriaBuilder, null, name, idCard, zjNumber, county,
+				street, community, isGenerationOrder, isindividuation, user);
 
 		int count = getGeneralService().getCount(selectList.build());
 
-//
-//		// 查询用户区域
-//		String rname = "";
-//		if("g".equals(user.getAccount_type())){
-//			switch (user.getLeave()) {
-//			case 3:
-//				rname = " and i.HOUSEHOLD_COUNTY_ID = " + user.getRid();
-//				break;
-//			case 4:
-//				rname = " and i.HOUSEHOLD_STREET_ID = " + user.getRid();
-//				break;
-//			case 5:
-//				rname = " and i.HOUSEHOLD_COMMUNITY_ID = " + user.getRid();
-//				break;
-//			}
-//		}
-//		String ji = "";
-//		if("m".equals(user.getAccount_type()) || "b".equals(user.getAccount_type())){
-//			switch (user.getLeave()) {
-//			case 1: String idSsql = "select t.id from composition t where t.prient_id is null and t.cid="+user.getId();
-//			int id = jdbcTemplate.queryForInt(idSsql);
-//			ji = " and i.yiji = " + id;
-//			break;
-//			case 2:
-//				ji = " and i.yiji = " + user.getYiji();
-//				break;
-//			case 3:
-//				ji = " and i.erji = " + user.getErji();
-//				break;
-//			case 4:
-//				ji = " and i.sjji = " + user.getSjji();
-//				break;
-//			case 5:
-//				ji = " and i.siji = " + user.getSiji();
-//				break;
-//			}
-//		}
-//
-//		if (name != null && !StringUtils.isEmpty(name)) {
-//			name = " AND I.NAME  LIKE  '%" + name + "%'";
-//		} else {
-//			name = "";
-//		}
-//		if (idCard != null && !StringUtils.isEmpty(idCard)) {
-//			idCard = " AND I.CERTIFICATES_NUMBER = '" + idCard + "'";
-//		}
-//		if (zjNumber != null && !StringUtils.isEmpty(zjNumber)) {
-//			zjNumber = "  AND I.ZJNUMBER = '" + zjNumber + "'";
-//		}
-//		if (county != null && idCard != null && !StringUtils.isEmpty(county)) {
-//			county = " AND I.HOUSEHOLD_COUNTY_ID = '" + county + "'";
-//		}
-//		if (street != null && !StringUtils.isEmpty(street)) {
-//			street = " AND I.HOUSEHOLD_STREET_ID = '" + street + "'";
-//		}
-//		if (community != null && !StringUtils.isEmpty(community)) {
-//			community = " AND I.HOUSEHOLD_COMMUNITY_ID = '" + community + "'";
-//		}
-//		if (isGenerationOrder != null
-//				&& !StringUtils.isEmpty(isGenerationOrder)) {
-//			isGenerationOrder = " AND I.isGenerationOrder = '"
-//					+ isGenerationOrder + "'";
-//		}
-//
-//		if (isindividuation != null && !StringUtils.isEmpty(isindividuation)) {
-//			isindividuation = " AND I.isindividuation = '" + isindividuation
-//					+ "'";
-//		}
-//		/*
-//		 * if (!StringUtils.isEmpty(creationTime)) { creationTime =
-//		 * " AND I.creationTime like '%"+creationTime+"%'"; }
-//		 */
-//		String sql = "SELECT count(i.ID) FROM	OMP_OLD_INFO i WHERE i.STATE = 1 "
-//				+ rname
-//				+ ji
-//				+ name
-//				+ idCard
-//				+ zjNumber
-//				+ county
-//				+ street
-//				+ community + isGenerationOrder + isindividuation;
-//		int maxRows = jdbcTemplate.queryForInt(sql);
+		//
+		// // 查询用户区域
+		// String rname = "";
+		// if("g".equals(user.getAccount_type())){
+		// switch (user.getLeave()) {
+		// case 3:
+		// rname = " and i.HOUSEHOLD_COUNTY_ID = " + user.getRid();
+		// break;
+		// case 4:
+		// rname = " and i.HOUSEHOLD_STREET_ID = " + user.getRid();
+		// break;
+		// case 5:
+		// rname = " and i.HOUSEHOLD_COMMUNITY_ID = " + user.getRid();
+		// break;
+		// }
+		// }
+		// String ji = "";
+		// if("m".equals(user.getAccount_type()) ||
+		// "b".equals(user.getAccount_type())){
+		// switch (user.getLeave()) {
+		// case 1: String idSsql =
+		// "select t.id from composition t where t.prient_id is null and t.cid="+user.getId();
+		// int id = jdbcTemplate.queryForInt(idSsql);
+		// ji = " and i.yiji = " + id;
+		// break;
+		// case 2:
+		// ji = " and i.yiji = " + user.getYiji();
+		// break;
+		// case 3:
+		// ji = " and i.erji = " + user.getErji();
+		// break;
+		// case 4:
+		// ji = " and i.sjji = " + user.getSjji();
+		// break;
+		// case 5:
+		// ji = " and i.siji = " + user.getSiji();
+		// break;
+		// }
+		// }
+		//
+		// if (name != null && !StringUtils.isEmpty(name)) {
+		// name = " AND I.NAME  LIKE  '%" + name + "%'";
+		// } else {
+		// name = "";
+		// }
+		// if (idCard != null && !StringUtils.isEmpty(idCard)) {
+		// idCard = " AND I.CERTIFICATES_NUMBER = '" + idCard + "'";
+		// }
+		// if (zjNumber != null && !StringUtils.isEmpty(zjNumber)) {
+		// zjNumber = "  AND I.ZJNUMBER = '" + zjNumber + "'";
+		// }
+		// if (county != null && idCard != null && !StringUtils.isEmpty(county))
+		// {
+		// county = " AND I.HOUSEHOLD_COUNTY_ID = '" + county + "'";
+		// }
+		// if (street != null && !StringUtils.isEmpty(street)) {
+		// street = " AND I.HOUSEHOLD_STREET_ID = '" + street + "'";
+		// }
+		// if (community != null && !StringUtils.isEmpty(community)) {
+		// community = " AND I.HOUSEHOLD_COMMUNITY_ID = '" + community + "'";
+		// }
+		// if (isGenerationOrder != null
+		// && !StringUtils.isEmpty(isGenerationOrder)) {
+		// isGenerationOrder = " AND I.isGenerationOrder = '"
+		// + isGenerationOrder + "'";
+		// }
+		//
+		// if (isindividuation != null && !StringUtils.isEmpty(isindividuation))
+		// {
+		// isindividuation = " AND I.isindividuation = '" + isindividuation
+		// + "'";
+		// }
+		// /*
+		// * if (!StringUtils.isEmpty(creationTime)) { creationTime =
+		// * " AND I.creationTime like '%"+creationTime+"%'"; }
+		// */
+		// String sql =
+		// "SELECT count(i.ID) FROM	OMP_OLD_INFO i WHERE i.STATE = 1 "
+		// + rname
+		// + ji
+		// + name
+		// + idCard
+		// + zjNumber
+		// + county
+		// + street
+		// + community + isGenerationOrder + isindividuation;
+		// int maxRows = jdbcTemplate.queryForInt(sql);
 		return count;
 	}
 
@@ -301,7 +311,6 @@ public class OldServiceImpl extends
 		Object object = queryForList.get(0).get("STANDARD_NO");
 		return object.toString();
 	}
-
 
 	@Override
 	public List<Map<String, Object>> getOldById(String id) {
@@ -445,7 +454,7 @@ public class OldServiceImpl extends
 				+ "  select t.ID,t.TELTYPE,t.HOUSEHOLD_COMMUNITY_ID,'" + json
 				+ "' from omp_old_info t WHERE t.ID = " + id;
 		int update = jdbcTemplate.update(sql);
-		//setOldisIndividuation(id, 1);
+		// setOldisIndividuation(id, 1);
 		return (update == 1);
 	}
 
@@ -829,42 +838,43 @@ public class OldServiceImpl extends
 	public ExcelBuilder exportExcel(OldParameter parameter, SystemUser user) {
 		List<CardPerson> cardPersontList = new ArrayList<CardPerson>();
 
-		SearchCriteriaBuilder<Omp_Old_Info> searchCriteriaBuilder = super
-				.getSearchCriteriaBuilder(parameter);
-		// 名字
-		searchCriteriaBuilder.addQueryCondition("name",
-				RestrictionExpression.EQUALS_OP, parameter.getName());
-		searchCriteriaBuilder.addQueryCondition("certificates_number",
-				RestrictionExpression.EQUALS_OP, parameter.getIdCard());
-		searchCriteriaBuilder.addQueryCondition("zjnumber",
-				RestrictionExpression.EQUALS_OP, parameter.getZjNumber());
-		searchCriteriaBuilder.addQueryCondition("household_county_id",
-				RestrictionExpression.EQUALS_OP, parameter.getCounty());
-		searchCriteriaBuilder.addQueryCondition("household_street_id",
-				RestrictionExpression.EQUALS_OP, parameter.getStreet());
-		searchCriteriaBuilder.addQueryCondition("household_community_id",
-				RestrictionExpression.EQUALS_OP, parameter.getCommunity());
-		searchCriteriaBuilder.addQueryCondition("isGenerationOrder",
-				RestrictionExpression.EQUALS_OP,
-				parameter.getIsGenerationOrder());
-		searchCriteriaBuilder
-				.addQueryCondition("isindividuation",
-						RestrictionExpression.EQUALS_OP,
-						parameter.getIsindividuation());
+		// SearchCriteriaBuilder<Omp_Old_Info> searchCriteriaBuilder = super
+		// .getSearchCriteriaBuilder(parameter);
+		// // 名字
+		// searchCriteriaBuilder.addQueryCondition("name",
+		// RestrictionExpression.EQUALS_OP, parameter.getName());
+		// searchCriteriaBuilder.addQueryCondition("certificates_number",
+		// RestrictionExpression.EQUALS_OP, parameter.getIdCard());
+		// searchCriteriaBuilder.addQueryCondition("zjnumber",
+		// RestrictionExpression.EQUALS_OP, parameter.getZjNumber());
+		// searchCriteriaBuilder.addQueryCondition("household_county_id",
+		// RestrictionExpression.EQUALS_OP, parameter.getCounty());
+		// searchCriteriaBuilder.addQueryCondition("household_street_id",
+		// RestrictionExpression.EQUALS_OP, parameter.getStreet());
+		// searchCriteriaBuilder.addQueryCondition("household_community_id",
+		// RestrictionExpression.EQUALS_OP, parameter.getCommunity());
+		// searchCriteriaBuilder.addQueryCondition("isGenerationOrder",
+		// RestrictionExpression.EQUALS_OP,
+		// parameter.getIsGenerationOrder());
+		// searchCriteriaBuilder
+		// .addQueryCondition("isindividuation",
+		// RestrictionExpression.EQUALS_OP,
+		// parameter.getIsindividuation());
 
-		List<Omp_Old_Info> oldPersonlist = getGeneralService().getObjects(
-				searchCriteriaBuilder.build());
-		for (Omp_Old_Info omp_Old_Info : oldPersonlist) {
+		List<Omp_Old_Info> oldPersonlist = getOldContextList(null,
+				parameter.getName(), parameter.getIdCard(),
+				parameter.getZjNumber(), parameter.getCounty(),
+				parameter.getStreet(), parameter.getCommunity(),
+				parameter.getIsGenerationOrder(),
+				parameter.getIsindividuation(), user);
 
-		}
+		// List<Omp_Old_Info> oldPersonlist = getGeneralService().getObjects(
+		// searchCriteriaBuilder.build());
 		if (user.getDisplay_all() == 1) {
 			for (Omp_Old_Info old : oldPersonlist) {
 				CardPerson person = getGeneralService().getObjectById(
 						CardPerson.class, old.getId());
 				cardPersontList.add(person);
-			}
-			for (CardPerson omp_Old_Info : cardPersontList) {
-
 			}
 		}
 
@@ -925,7 +935,6 @@ public class OldServiceImpl extends
 		return schema;
 	}
 
-
 	/**
 	 * 配置excel模版(老人基本信息)
 	 */
@@ -946,11 +955,9 @@ public class OldServiceImpl extends
 		return schema;
 	}
 
-
-
 	/**
 	 * 获取（定制）表头(老人详细信息)
-	 *
+	 * 
 	 * @return
 	 */
 	private List<ColHeaderCell> getColHeaderCellList() {
@@ -976,7 +983,7 @@ public class OldServiceImpl extends
 
 	/**
 	 * 获取（定制）表头(老人基本信息)
-	 *
+	 * 
 	 * @return
 	 */
 	private List<ColHeaderCell> getColHeaderCellListOld() {
@@ -984,10 +991,10 @@ public class OldServiceImpl extends
 		ColHeaderCell colHeaderCell = null;
 		String[] headerLabels = null;
 		headerLabels = new String[] { "区域", "街道", "社区", "工作人员", "工作人员电话",
-				"老人姓名", "身份证号码", "大座机号码", "电话号码", "住址", "紧急联络人",
-				"紧急联络人电话", "电话", "电话类型", "用户类型", "状态", "是否个性化",
-				"更改指令次数", "是否生成指令", "创建时间", "更新时间", "是否个性化", "是否同步",
-				"隶属用户", "初始的语音发送数量", "来电显示", "账户类型" };
+				"老人姓名", "身份证号码", "大座机号码", "电话号码", "住址", "紧急联络人", "紧急联络人电话",
+				"电话", "电话类型", "用户类型", "状态", "是否个性化", "更改指令次数", "是否生成指令",
+				"创建时间", "更新时间", "是否个性化", "是否同步", "隶属用户", "初始的语音发送数量", "来电显示",
+				"账户类型" };
 		for (int i = 0; i < headerLabels.length; i++) {
 			colHeaderCell = new ColHeaderCell();
 			colHeaderCell.setLabel(headerLabels[i]);
@@ -998,7 +1005,7 @@ public class OldServiceImpl extends
 
 	/**
 	 * 定制每一列属性的配置信息(老人详细信息)
-	 *
+	 * 
 	 * @return
 	 */
 	private List<Column> getColumnList() {
@@ -1418,42 +1425,23 @@ public class OldServiceImpl extends
 		columnList.add(column);
 		return columnList;
 	}
+
 	/**
 	 * 定制每一列属性的配置信息(老人基本信息)
+	 * 
 	 * @return
 	 */
 	private List<Column> getColumnListOld() {
 		List<Column> columnList = new ArrayList<Column>();
 		Column column = null;
-		String[] columnNames = new String[] {
-				"household_county.name",
-				"household_street.name",
-				"household_community.name",
-				"workername",
-				"workertel",
-				"name",
-				"certificates_number",
-				"zjnumber",
-				"phone",
-				"address",
-				"emergencycontact",
-				"emergencycontacttle",
-				"tel",
-				"teltype",
-				"usertype",
-				"state",
-				"ispersonalized",
-				"updNumber",
-				"isGenerationOrder",
-				"creationTime",
-				"updateTime",
-				"isindividuation",
-				"sync",
-				"agent_id",
-				"num",
-				"call_id",
-				"account_type"
-			};
+		String[] columnNames = new String[] { "household_county.name",
+				"household_street.name", "household_community.name",
+				"workername", "workertel", "name", "certificates_number",
+				"zjnumber", "phone", "address", "emergencycontact",
+				"emergencycontacttle", "tel", "teltype", "usertype", "state",
+				"ispersonalized", "updNumber", "isGenerationOrder",
+				"creationTime", "updateTime", "isindividuation", "sync",
+				"agent_id", "num", "call_id", "account_type" };
 		int defaultWidth = 7000;
 		boolean defaultIsAutoSize = true;
 		boolean defaultIsGroupColumn = false;
@@ -1544,7 +1532,7 @@ public class OldServiceImpl extends
 
 	/**
 	 * 定制（设置）Excel中每列的属性
-	 *
+	 * 
 	 * @param columnName
 	 * @param width
 	 * @param isAutoSize
@@ -1578,17 +1566,16 @@ public class OldServiceImpl extends
 		int lv = user.getLeave();
 		Long id = user.getId();
 		/**
-		 * lv=2 -->yiji
-		 * lv=3 -->erji
-		 * lv=4 -->sjji
-		 * lv=5 -->siji
+		 * lv=2 -->yiji lv=3 -->erji lv=4 -->sjji lv=5 -->siji
 		 */
-		System.out.println("用户当前的级别"+lv+user.getYiji()+user.getErji()+user.getSjji()+user.getSiji());
+		System.out.println("用户当前的级别" + lv + user.getYiji() + user.getErji()
+				+ user.getSjji() + user.getSiji());
 		return null;
 	}
 
 	/**
 	 * 查询
+	 * 
 	 * @param searchCriteriaBuilder
 	 * @param page
 	 * @param name
@@ -1601,7 +1588,8 @@ public class OldServiceImpl extends
 	 * @param isindividuation
 	 * @param user
 	 */
-	public SearchCriteriaBuilder<Omp_Old_Info> selectList(SearchCriteriaBuilder<Omp_Old_Info> searchCriteriaBuilder,
+	public SearchCriteriaBuilder<Omp_Old_Info> selectList(
+			SearchCriteriaBuilder<Omp_Old_Info> searchCriteriaBuilder,
 			Page page, String name, String idCard, String zjNumber,
 			String county, String street, String community,
 			String isGenerationOrder, String isindividuation, SystemUser user) {
@@ -1618,63 +1606,70 @@ public class OldServiceImpl extends
 				RestrictionExpression.EQUALS_OP, street);
 		searchCriteriaBuilder.addQueryCondition("household_community_id",
 				RestrictionExpression.EQUALS_OP, community);
-		searchCriteriaBuilder.addQueryCondition("isGenerationOrder",
-				RestrictionExpression.EQUALS_OP, isGenerationOrder);
+		if (!"order".equals(isGenerationOrder)) {
+			searchCriteriaBuilder.addQueryCondition("isGenerationOrder",
+					RestrictionExpression.EQUALS_OP, isGenerationOrder);
+		} else if (user.getLeave() > 1){
+			searchCriteriaBuilder.addQueryCondition("agent_id",
+					RestrictionExpression.EQUALS_OP, user.getId());
+			searchCriteriaBuilder.addQueryCondition("call_id",
+					RestrictionExpression.EQUALS_OP, 1);
+		}
 		searchCriteriaBuilder.addQueryCondition("isindividuation",
 				RestrictionExpression.EQUALS_OP, isindividuation);
-		if(page != null){
+		if (page != null) {
 			searchCriteriaBuilder.addLimitCondition((page.getCurrentPage() - 1)
 					* page.getPageSize(), page.getPageSize());
 		}
+		if (user.getLeave() > 1) {
 
-			if (user.getLeave() > 1) {
-				if ("g".equals(user.getAccount_type())) {
-					String rname = "";
-					switch (user.getLeave()) {
-					case 3:
-						rname = "household_county_id";
-						break;
-					case 4:
-						rname = "household_street_id";
-						break;
-					case 5:
-						rname = "household_community_id";
-						break;
-					}
-					searchCriteriaBuilder.addQueryCondition(rname,
-							RestrictionExpression.EQUALS_OP, user.getRid());
-				} else if ("m".equals(user.getAccount_type())
-						|| "b".equals(user.getAccount_type())) {
-					String ji = "";
-					Integer uJi = 0;
-					switch (user.getLeave()) {
-					case 1:
-						String idSsql = "select t.id from composition t where t.prient_id is null and t.cid="
-								+ user.getId();
-						int id = jdbcTemplate.queryForInt(idSsql);
-						ji = "yiji";
-						uJi = id;
-						break;
-					case 2:
-						ji = "yiji";
-						uJi = user.getYiji();
-						break;
-					case 3:
-						ji = "erji";
-						uJi = user.getErji();
-						break;
-					case 4:
-						ji = "sjji";
-						uJi = user.getSjji();
-						break;
-					case 5:
-						ji = "siji";
-						uJi = user.getSiji();
-						break;
-					}
-					searchCriteriaBuilder.addQueryCondition(ji,
-							RestrictionExpression.EQUALS_OP, uJi);
+			if ("g".equals(user.getAccount_type())) {
+				String rname = "";
+				switch (user.getLeave()) {
+				case 3:
+					rname = "household_county_id";
+					break;
+				case 4:
+					rname = "household_street_id";
+					break;
+				case 5:
+					rname = "household_community_id";
+					break;
 				}
+				searchCriteriaBuilder.addQueryCondition(rname,
+						RestrictionExpression.EQUALS_OP, user.getRid());
+			} else if ("m".equals(user.getAccount_type())
+					|| "b".equals(user.getAccount_type())) {
+				String ji = "";
+				Integer uJi = 0;
+				switch (user.getLeave()) {
+				case 1:
+					String idSsql = "select t.id from composition t where t.prient_id is null and t.cid="
+							+ user.getId();
+					int id = jdbcTemplate.queryForInt(idSsql);
+					ji = "yiji";
+					uJi = id;
+					break;
+				case 2:
+					ji = "yiji";
+					uJi = user.getYiji();
+					break;
+				case 3:
+					ji = "erji";
+					uJi = user.getErji();
+					break;
+				case 4:
+					ji = "sjji";
+					uJi = user.getSjji();
+					break;
+				case 5:
+					ji = "siji";
+					uJi = user.getSiji();
+					break;
+				}
+				searchCriteriaBuilder.addQueryCondition(ji,
+						RestrictionExpression.EQUALS_OP, uJi);
+			}
 		}
 		String sql = "";
 		// sql +=
@@ -1691,47 +1686,48 @@ public class OldServiceImpl extends
 	@Override
 	public int getTel_type(String tel_type) {
 		int i = 0;
-		if(tel_type != null && !"".equals(tel_type)){
-			String sql = "select t.id from omp_phone_type t where t.phoneType like '%"+tel_type+"%'";
-			 i = jdbcTemplate.queryForInt(sql);
+		if (tel_type != null && !"".equals(tel_type)) {
+			String sql = "select t.id from omp_phone_type t where t.phoneType like '%"
+					+ tel_type + "%'";
+			i = jdbcTemplate.queryForInt(sql);
 
 		}
 		return i;
 	}
-	//匹配老人体系
-	public void addOmpOldOrderInfo(Long id){
 
-		Omp_Old_Info old = getGeneralService().getObjectById(Omp_Old_Info.class, id);
-		SearchCriteriaBuilder<Service_System> searchCriteriaBuilder = new SearchCriteriaBuilder<Service_System>(Service_System.class);
-		searchCriteriaBuilder.addQueryCondition("rid",RestrictionExpression.EQUALS_OP, old.getHousehold_community_id());
-		searchCriteriaBuilder.addQueryCondition("tellType_id",RestrictionExpression.EQUALS_OP, old.getTeltype());
+	// 匹配老人体系
+	public void addOmpOldOrderInfo(Long id) {
 
-		Service_System ss = getGeneralService().getObjectByCriteria(searchCriteriaBuilder.build());
+		Omp_Old_Info old = getGeneralService().getObjectById(
+				Omp_Old_Info.class, id);
+		SearchCriteriaBuilder<Service_System> searchCriteriaBuilder = new SearchCriteriaBuilder<Service_System>(
+				Service_System.class);
+		searchCriteriaBuilder.addQueryCondition("rid",
+				RestrictionExpression.EQUALS_OP,
+				old.getHousehold_community_id());
+		searchCriteriaBuilder.addQueryCondition("tellType_id",
+				RestrictionExpression.EQUALS_OP, old.getTeltype());
+
+		Service_System ss = getGeneralService().getObjectByCriteria(
+				searchCriteriaBuilder.build());
 
 		// [{"M1":"82660886","M2":"96003","M3":"67287180","M4":"4008331212","M5":"4008221299","M6":"56328888","M7":"13691139445","M8":"68887325","M9":"88982461","M10":"68873023","M11":"8008100032","M12":"999","M13":"84925513","M14":"84931297","M15":"8008100032","M16":"8008100032"}]
-		String json = "[{"
-				+ "\"M1\":\""+ss.getM1()+"\","
-				+ "\"M2\":\""+ss.getM2()+"\","
-				+ "\"M3\":\""+ss.getM3()+"\","
-				+ "\"M4\":\""+ss.getM4()+"\","
-				+ "\"M5\":\""+ss.getM5()+"\","
-				+ "\"M6\":\""+ss.getM6()+"\","
-				+ "\"M7\":\""+ss.getM7()+"\","
-				+ "\"M8\":\""+ss.getM8()+"\","
-				+ "\"M9\":\""+ss.getM9()+"\","
-				+ "\"M10\":\""+ss.getM10()+"\","
-				+ "\"M11\":\""+ss.getM11()+"\","
-				+ "\"M12\":\""+ss.getM12()+"\","
-				+ "\"M13\":\""+ss.getM13()+"\","
-				+ "\"M14\":\""+ss.getM14()+"\","
-				+ "\"M15\":\""+ss.getM15()+"\","
-				+ "\"M16\":\""+ss.getM16()+"\""
+		String json = "[{" + "\"M1\":\"" + ss.getM1() + "\"," + "\"M2\":\""
+				+ ss.getM2() + "\"," + "\"M3\":\"" + ss.getM3() + "\","
+				+ "\"M4\":\"" + ss.getM4() + "\"," + "\"M5\":\"" + ss.getM5()
+				+ "\"," + "\"M6\":\"" + ss.getM6() + "\"," + "\"M7\":\""
+				+ ss.getM7() + "\"," + "\"M8\":\"" + ss.getM8() + "\","
+				+ "\"M9\":\"" + ss.getM9() + "\"," + "\"M10\":\"" + ss.getM10()
+				+ "\"," + "\"M11\":\"" + ss.getM11() + "\"," + "\"M12\":\""
+				+ ss.getM12() + "\"," + "\"M13\":\"" + ss.getM13() + "\","
+				+ "\"M14\":\"" + ss.getM14() + "\"," + "\"M15\":\""
+				+ ss.getM15() + "\"," + "\"M16\":\"" + ss.getM16() + "\""
 				+ "}]";
 		String sql = "INSERT INTO omp_old_order ("
 				+ "oldId, phoneName, communityOrderId, keyPointMessage)"
 				+ "  select t.ID,t.TELTYPE,t.HOUSEHOLD_COMMUNITY_ID,'" + json
-				+ "' from omp_old_info t WHERE t.ID = " + id;;
-
+				+ "' from omp_old_info t WHERE t.ID = " + id;
+		;
 
 	}
 

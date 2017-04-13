@@ -126,7 +126,7 @@ CommonsDataOperationServiceImpl<Omp_old_order, OrderParameter>  implements
 			String idCard, String zjNumber, String county, String street,
 			String community, String send_flag, String execute_flag,SystemUser user) {
 		List<Omp_old_order> orderList = null;
-		List<Omp_Old_Info> oldList = oldService.getOldContextList(page, name, idCard, zjNumber, county, street, community, null, null, user);
+		List<Omp_Old_Info> oldList = oldService.getOldContextList(page, name, idCard, zjNumber, county, street, community, "order", null, user);
 		if(oldList.size()>0){
 		SearchCriteriaBuilder<Omp_old_order> searchCriteriaBuilder = new SearchCriteriaBuilder<Omp_old_order>(
 				Omp_old_order.class);

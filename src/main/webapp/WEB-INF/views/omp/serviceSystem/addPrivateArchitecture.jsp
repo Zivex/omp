@@ -41,7 +41,7 @@
 
 						<br>
 						<div style="float: left; width: 50%;">
-						
+
 							<form id="architectureForm">
 								<table class="table table-bordered" id="architecture">
 
@@ -135,6 +135,13 @@
 
 	<!-- Script	-->
 	<script type="text/javascript">
+	$(function() {
+		initalizeSiderBar();
+		selectMenu("o_sys");
+		initQueryForm();
+	});
+
+
 		function addsystem() {
 			$('#addsystem').modal({
 				backdrop : false
@@ -250,7 +257,7 @@
 											+ data[i].key
 											+ "</td><td>"
 											+ data[i].serviceName
-											+ "</td><td><input type='hidden' class='serviceId' name='entity.m"+idNum+"'value='0' ></td></tr>");
+											+ "</td><td><input type='hidden' class='serviceId' name='"+data[i].key+"'value='0' ></td></tr>");
 						}
 						architecture
 								.append('<tr><td><a class="btn btn-default" href="#" onclick="addSystem()" role="button">保存</a></td></tr>');
