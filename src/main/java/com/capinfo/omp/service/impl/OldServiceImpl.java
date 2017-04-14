@@ -59,10 +59,10 @@ public class OldServiceImpl extends
 				Omp_Old_Info.class);
 		SearchCriteriaBuilder<Omp_Old_Info> selectList = selectList(searchCriteriaBuilder, page, name, idCard, zjNumber, county, street, community, isGenerationOrder, isindividuation, user);
 
-		List<Omp_Old_Info> Omp_Old_InfoList = getGeneralService().getObjects(
+		List<Omp_Old_Info> omp_Old_InfoList = getGeneralService().getObjects(
 				selectList.build());
 
-		return Omp_Old_InfoList;
+		return omp_Old_InfoList;
 	}
 
 	@Override
@@ -829,42 +829,40 @@ public class OldServiceImpl extends
 	public ExcelBuilder exportExcel(OldParameter parameter, SystemUser user) {
 		List<CardPerson> cardPersontList = new ArrayList<CardPerson>();
 
-		SearchCriteriaBuilder<Omp_Old_Info> searchCriteriaBuilder = super
-				.getSearchCriteriaBuilder(parameter);
-		// 名字
-		searchCriteriaBuilder.addQueryCondition("name",
-				RestrictionExpression.EQUALS_OP, parameter.getName());
-		searchCriteriaBuilder.addQueryCondition("certificates_number",
-				RestrictionExpression.EQUALS_OP, parameter.getIdCard());
-		searchCriteriaBuilder.addQueryCondition("zjnumber",
-				RestrictionExpression.EQUALS_OP, parameter.getZjNumber());
-		searchCriteriaBuilder.addQueryCondition("household_county_id",
-				RestrictionExpression.EQUALS_OP, parameter.getCounty());
-		searchCriteriaBuilder.addQueryCondition("household_street_id",
-				RestrictionExpression.EQUALS_OP, parameter.getStreet());
-		searchCriteriaBuilder.addQueryCondition("household_community_id",
-				RestrictionExpression.EQUALS_OP, parameter.getCommunity());
-		searchCriteriaBuilder.addQueryCondition("isGenerationOrder",
-				RestrictionExpression.EQUALS_OP,
-				parameter.getIsGenerationOrder());
-		searchCriteriaBuilder
-				.addQueryCondition("isindividuation",
-						RestrictionExpression.EQUALS_OP,
-						parameter.getIsindividuation());
+//		SearchCriteriaBuilder<Omp_Old_Info> searchCriteriaBuilder = super
+//				.getSearchCriteriaBuilder(parameter);
+//		// 名字
+//		searchCriteriaBuilder.addQueryCondition("name",
+//				RestrictionExpression.EQUALS_OP, parameter.getName());
+//		searchCriteriaBuilder.addQueryCondition("certificates_number",
+//				RestrictionExpression.EQUALS_OP, parameter.getIdCard());
+//		searchCriteriaBuilder.addQueryCondition("zjnumber",
+//				RestrictionExpression.EQUALS_OP, parameter.getZjNumber());
+//		searchCriteriaBuilder.addQueryCondition("household_county_id",
+//				RestrictionExpression.EQUALS_OP, parameter.getCounty());
+//		searchCriteriaBuilder.addQueryCondition("household_street_id",
+//				RestrictionExpression.EQUALS_OP, parameter.getStreet());
+//		searchCriteriaBuilder.addQueryCondition("household_community_id",
+//				RestrictionExpression.EQUALS_OP, parameter.getCommunity());
+//		searchCriteriaBuilder.addQueryCondition("isGenerationOrder",
+//				RestrictionExpression.EQUALS_OP,
+//				parameter.getIsGenerationOrder());
+//		searchCriteriaBuilder
+//				.addQueryCondition("isindividuation",
+//						RestrictionExpression.EQUALS_OP,
+//						parameter.getIsindividuation());
+		
+		
+		List<Omp_Old_Info> oldPersonlist = getOldContextList(null, parameter.getName(), parameter.getIdCard(), parameter.getZjNumber(), parameter.getCounty(), parameter.getStreet(), parameter.getCommunity(), parameter.getIsGenerationOrder(), parameter.getIsindividuation(), user);
+		
 
-		List<Omp_Old_Info> oldPersonlist = getGeneralService().getObjects(
-				searchCriteriaBuilder.build());
-		for (Omp_Old_Info omp_Old_Info : oldPersonlist) {
-
-		}
+//		List<Omp_Old_Info> oldPersonlist = getGeneralService().getObjects(
+//				searchCriteriaBuilder.build());
 		if (user.getDisplay_all() == 1) {
 			for (Omp_Old_Info old : oldPersonlist) {
 				CardPerson person = getGeneralService().getObjectById(
 						CardPerson.class, old.getId());
 				cardPersontList.add(person);
-			}
-			for (CardPerson omp_Old_Info : cardPersontList) {
-
 			}
 		}
 
