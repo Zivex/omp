@@ -187,7 +187,7 @@ public class ServiceSystemlmpl extends
 		}
 
 
-		map.put("count", count);
+		//map.put("count", count);
 		map.put("list", list);
 		return map;
 	}
@@ -238,7 +238,6 @@ public void pubSavrSys(ServiceSystemParameter parameter, SystemUser user,String 
 @Override
 public void updateServiceSystem(ServiceSystemParameter parameter,
 		SystemUser user) {
-	// TODO Auto-generated method stub
 
 }
 
