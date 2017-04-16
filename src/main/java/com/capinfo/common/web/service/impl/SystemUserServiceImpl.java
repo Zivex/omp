@@ -138,8 +138,9 @@ public class SystemUserServiceImpl extends CommonsDataOperationServiceImpl<Syste
 	public boolean resetPassword(SystemUserParameter parameter) {
 		try {
 			SystemUser user = (SystemUser) getGeneralService().getObjectById(parameter.getEntityClazz(), parameter.getEntity().getId());
-			String encodePass = passwordEncoder.encode("123456");
-			user.setPassword(encodePass);
+			//String encodePass = passwordEncoder.encode("123456");
+			//user.setPassword(encodePass);
+			user.setPassword("123456");
 			getGeneralService().merge(user);
 			return true;
 		} catch (Exception ex) {
@@ -224,7 +225,7 @@ public class SystemUserServiceImpl extends CommonsDataOperationServiceImpl<Syste
 		log.setUser_name(String.valueOf(admin.getId()));
 		getGeneralService().saveOrUpdate(log);
 		getGeneralService().saveOrUpdate(user);
-		
+
 	}
 
 	@Override
@@ -244,8 +245,8 @@ public class SystemUserServiceImpl extends CommonsDataOperationServiceImpl<Syste
 		resources = getGeneralService().getObjects(searchCriteriaBuilder.build());
 		return resources;
 	}
-	
-	
+
+
 	@Override
 	public boolean validationMechanism(long rid,String f ) {
 		boolean flag = false;
@@ -260,9 +261,9 @@ public class SystemUserServiceImpl extends CommonsDataOperationServiceImpl<Syste
 		if(i>0){
 			flag = true;	//机构已存在
 		}
-		
+
 		return flag;
 	}
-	
+
 
 }

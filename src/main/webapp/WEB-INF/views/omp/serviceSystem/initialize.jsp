@@ -12,15 +12,6 @@
 	float: right;
 	margin-right: 2cm;
 }
-#modal_left {
-	f
-}
-
-#modal_right {
-
-}
-
-
 
 </style>
 
@@ -83,37 +74,16 @@
 					<br />
 						<table class="table">
 						<tr class="active">
+						<th width="6%" style="text-align: center;">企业名称</th>
 						<th width="10%" style="text-align: center;">所属账户</th>
 						<th width="6%" style="text-align: center;">话机类型</th>
-						<th width="6%" style="text-align: center;">M1</th>
-						<th width="6%" style="text-align: center;">M2</th>
-						<th width="6%" style="text-align: center;">M3</th>
-						<th width="6%" style="text-align: center;">M4</th>
-						<th width="6%" style="text-align: center;">M5</th>
-						<th width="6%" style="text-align: center;">M6</th>
-						<th width="6%" style="text-align: center;">M7</th>
-						<th width="6%" style="text-align: center;">M8</th>
-<!-- 						<th width="6%" style="text-align: center;">M9</th> -->
-<!-- 						<th width="6%" style="text-align: center;">M10</th> -->
-<!-- 						<th width="6%" style="text-align: center;">M12</th> -->
 						<th width="10%" style="text-align: center;">操作</th>
 					</tr>
 							<c:forEach items="${list }" var="s">
 								<tr>
-<%-- 									<td>${s.id }</td> --%>
+									<td style="text-align: center;">${s.user.enterprise.name }</td>
 									<td style="text-align: center;">${s.user.name }</td>
 									<td style="text-align: center;">${s.type.phoneType }</td>
-									<td style="text-align: center;"><a href="#" onclick="mod(${s.s1Name.id })" >M1</a>
-									<td style="text-align: center;"><a href="#" onclick="mod(${s.s2Name.id })" >M2</a>
-									<td style="text-align: center;"><a href="#" onclick="mod(${s.s3Name.id })" >M3</a>
-									<td style="text-align: center;"><a href="#" onclick="mod(${s.s4Name.id })" >M4</a>
-									<td style="text-align: center;"><a href="#" onclick="mod(${s.s5Name.id })" >M5</a>
-									<td style="text-align: center;"><a href="#" onclick="mod(${s.s6Name.id })" >M6</a>
-									<td style="text-align: center;"><a href="#" onclick="mod(${s.s7Name.id })" >M7</a>
-									<td style="text-align: center;"><a href="#" onclick="mod(${s.s8Name.id })" >M8</a>
-<%-- 									<td style="text-align: center;"><a href="#" onclick="mod(${s.s9Name.id })" >M9</a> --%>
-<%-- 									<td style="text-align: center;"><a href="#" onclick="mod(${s.s10Name.id })" >M10</a> --%>
-<%-- 									<td style="text-align: center;"><a href="#" onclick="mod(${s.s12Name.id })" >M11</a> --%>
 									</td>
 									<td style="text-align: center;">
 										<div class="btn-group">
@@ -123,6 +93,7 @@
 												操作 <span class="caret"></span>
 											</button>
 											<ul class="dropdown-menu" role="menu">
+												<li><a onclick="see(${s.id})">查看</a></li>
 												<li><a onclick="updateSystem(${s.id})">修改</a></li>
 												<li><a href="###" onclick="deleteSystem(${s.id})">删除</a></li>
 												<%-- 										<c:if test="${sys ==  'admin'}"> --%>
@@ -134,11 +105,25 @@
 							</c:forEach>
 
 						</table>
+
+						<div class="panel-footer">
+		<table class="table table-pagination">
+			<thead>
+				<tr>
+					<td align="left">共<span class="text-danger"><strong>${count}</strong></span>条记录（每页<span class="text-info"><strong>${command.perPieceSize}</strong></span>条记录）&emsp;
+					</td>
+					<td align="right" height="28"><div id="result_page"></div></td>
+				</tr>
+			</thead>
+		</table>
+	</div>
+
 					</div>
 				</div>
 			</div>
 			<!-- ./main -->
 		</div>
+
 	</div>
 	<!-- /container -->
 
@@ -150,10 +135,10 @@
 	<script type="text/javascript">
 
 		$(function() {
+			initPagination(<c:out value="${count}"/>,<c:out value="${command.perPieceSize}"/>,<c:out value="${command.currentPieceNum}"/>);
 			initalizeSiderBar();
 			selectMenu("o_sys");
 			initQueryForm();
-			$("[data-toggle='tooltip']").tooltip();
 		});
 
 		function addsystem() {
@@ -183,6 +168,24 @@
 		//修改体系
 		function updateSystem(sid){
 			location.href = "udpArchitecture.shtml?id="+sid;
+		}
+		//查看体系
+		function see(sid){
+			location.href = "seeArchitecture.shtml?id="+sid;
+		}
+		//查看体系
+		function deleteSystem(id){
+			$.ajax({
+				type: "POST",
+				url: "${pageContext.request.contextPath }/serviceSystem/delService.shtml",
+				async: false,
+				data: {
+					id : id
+				},
+				success: function(data) {
+					alert(data);
+				}
+			});
 		}
 
 

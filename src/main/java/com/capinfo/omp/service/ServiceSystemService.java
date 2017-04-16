@@ -8,7 +8,10 @@ import com.capinfo.common.model.SystemUser;
 import com.capinfo.framework.web.service.CommonsDataOperationService;
 import com.capinfo.omp.model.Composition;
 import com.capinfo.omp.model.Enterprise;
+import com.capinfo.omp.model.New_Service_System;
 import com.capinfo.omp.model.ServiceProvider;
+import com.capinfo.omp.model.Service_System;
+import com.capinfo.omp.model.Sys_key;
 import com.capinfo.omp.parameter.EnterpriseParameter;
 import com.capinfo.omp.parameter.ServiceProviderParameter;
 import com.capinfo.omp.parameter.ServiceSystemParameter;
@@ -28,5 +31,7 @@ public interface ServiceSystemService extends CommonsDataOperationService<Enterp
 
 	public void updateServiceSystem(ServiceSystemParameter parameter,
 			SystemUser user);
+
+	public List<Map<String, Object>> getupdateSys(Sys_key ss);
 
 }

@@ -35,12 +35,7 @@ public class Service_System implements BaseEntity {
 
 	private static final long serialVersionUID = 1L;
 	private Long id;
-	private Long rid;
-	private OmpRegion region;
-	private Long uid;
-	private SystemUser user;
-	private Long telltype;
-	private TellType type;
+	private Long skid;
 	//服务商所对应的键位
 	private Long m1;
 	private Long m2;
@@ -94,36 +89,6 @@ public class Service_System implements BaseEntity {
 		this.id = id;
 	}
 
-	@Column(name = "uid")
-	public Long getUid() {
-		return uid;
-	}
-
-
-	@Column(name = "rid")
-	public Long getRid() {
-		return rid;
-	}
-
-
-	public void setRid(Long rid) {
-		this.rid = rid;
-	}
-
-
-	public void setUid(Long uid) {
-		this.uid = uid;
-	}
-
-	@Column(name = "tellType_id")
-	public Long getTelltype() {
-		return telltype;
-	}
-
-
-	public void setTelltype(Long telltype) {
-		this.telltype = telltype;
-	}
 
 
 	@Temporal(TemporalType.TIMESTAMP)
@@ -159,16 +124,6 @@ public class Service_System implements BaseEntity {
 
 
 
-	@ManyToOne(targetEntity = OmpRegion.class, fetch = FetchType.LAZY)
-	@JoinColumn(name = "rid", insertable = false, updatable = false)
-	public OmpRegion getRegion() {
-		return region;
-	}
-
-
-	public void setRegion(OmpRegion region) {
-		this.region = region;
-	}
 
 	@Column(name = "m1")
 	public Long getM1() {
@@ -466,8 +421,8 @@ public class Service_System implements BaseEntity {
 	public ServiceProvider getS13Name() {
 		return s13Name;
 	}
-	
-	
+
+
 	public void setS13Name(ServiceProvider s13Name) {
 		this.s13Name = s13Name;
 	}
@@ -476,8 +431,8 @@ public class Service_System implements BaseEntity {
 	public ServiceProvider getS14Name() {
 		return s14Name;
 	}
-	
-	
+
+
 	public void setS14Name(ServiceProvider s14Name) {
 		this.s14Name = s14Name;
 	}
@@ -486,8 +441,8 @@ public class Service_System implements BaseEntity {
 	public ServiceProvider getS15Name() {
 		return s15Name;
 	}
-	
-	
+
+
 	public void setS15Name(ServiceProvider s15Name) {
 		this.s15Name = s15Name;
 	}
@@ -496,35 +451,24 @@ public class Service_System implements BaseEntity {
 	public ServiceProvider getS16Name() {
 		return s16Name;
 	}
-	
-	
+
+
 	public void setS16Name(ServiceProvider s16Name) {
 		this.s16Name = s16Name;
 	}
 
-	@ManyToOne(targetEntity = TellType.class, fetch = FetchType.LAZY)
-	@JoinColumn(name = "tellType_id", insertable = false, updatable = false)
-	public TellType getType() {
-		return type;
+	@Column(name = "skid")
+	public Long getSkid() {
+		return skid;
 	}
 
 
-	public void setType(TellType type) {
-		this.type = type;
-	}
-
-	@ManyToOne(targetEntity = SystemUser.class, fetch = FetchType.LAZY)
-	@JoinColumn(name = "uid", insertable = false, updatable = false)
-	public SystemUser getUser() {
-		return user;
+	public void setSkid(Long skid) {
+		this.skid = skid;
 	}
 
 
-	public void setUser(SystemUser user) {
-		this.user = user;
-	}
-	
-	
+
 
 
 

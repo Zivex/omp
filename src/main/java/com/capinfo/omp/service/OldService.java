@@ -46,7 +46,7 @@ public interface OldService extends CommonsDataOperationService<Omp_Old_Info, Ol
 	 *
 	 * @return
 	 */
-	boolean updOldById(Map<String, Object> map);
+	boolean updOldById(Omp_Old_Info newOld);
 
 	/**
 	 * 删除
@@ -60,11 +60,11 @@ public interface OldService extends CommonsDataOperationService<Omp_Old_Info, Ol
 
 	String getIdByName(String area, int i);
 
-	List<Map<String, Object>> getOldById(String id);
+	Omp_Old_Info getOldById(String id);
 
 	List<Map<String, Object>> getOldById1(String id);
 
-	Map getRegionList(Map<String, Object> map);
+	Map getRegionList(Omp_Old_Info old);
 
 	List<Map<String, Object>> getRegionById(String id);
 

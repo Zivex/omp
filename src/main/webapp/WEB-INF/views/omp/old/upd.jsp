@@ -12,7 +12,7 @@
 				<td>姓名：</td><td><input type="text" id="name" name="name" value="${detaMap.name }"/></td>
 			</tr>
 			<tr>
-				<td>区县：</td><td><select name="county" id="county1" onchange="udpCounty()" >
+				<td>区县：</td><td><select name=county id="county1" onchange="udpCounty()" >
 					<c:forEach items="${Region.county }" var="county" >
 						<option class="county" value="${county.id }"<c:if test="${county.id==detaMap.household_county_id }">selected="selected"</c:if>>${county.name}</option>
 					</c:forEach>
@@ -46,6 +46,13 @@
 			</tr>
 			<tr>
 				<td>紧急联系人电话：</td><td><input type="text" id="emergencycontacttle" name="emergencycontacttle" value="${detaMap.emergencycontacttle }"/></td>
+			</tr>
+			<tr>
+				<td>来电显示：</td><td><input type="radio"  name="call_id" value="1" <c:if test="${detaMap.call_id=='1' }">checked="checked"</c:if>/>是
+
+				<input type="radio"  name="call_id" value="0" <c:if test="${detaMap.call_id=='0' }">checked="checked"</c:if>/> 否
+
+				</td>
 			</tr>
 			<tr>
 				<td>话机类型：</td>
@@ -147,7 +154,8 @@ function changCommunity(community1){
 
 	function submit(){
 		$("#listForm").submit(function(){
-			alert("asa");
+		});
+ 	}
 			var street = $("#street").val();
 			var community = $("#community").val();
 			if(street=="" || street==undefined){
@@ -156,6 +164,4 @@ function changCommunity(community1){
 			if(community=="" || community==undefined){
 				return;
 			}
-		});
- 	}
 </SCRIPT>

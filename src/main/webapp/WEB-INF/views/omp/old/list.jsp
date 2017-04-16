@@ -79,10 +79,13 @@
 										操作 <span class="caret"></span>
 									</button>
 									<ul class="dropdown-menu" role="menu">
+									<c:if
+											test="${old.agent_id == sessionScope.eccomm_admin.id || sessionScope.eccomm_admin.id == 1 }">
 										<li><a onclick="toupd(${old.id})">修改</a></li>
+										<li><a href="###" onclick="deleteUser(${old.id},this);">删除</a></li>
+									</c:if>
 										<li><a
 											onclick="see('${old.certificates_number}',${old.id})">查看</a></li>
-										<li><a href="###" onclick="deleteUser(${old.id},this);">删除</a></li>
 <%-- 										<c:if test="${sys ==  'admin'}"> --%>
 											<li><a onclick="ompKeyModify(${old.id} )">指令个性化</a></li>
 <%-- 										</c:if> --%>

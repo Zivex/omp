@@ -35,8 +35,16 @@ public class Sys_key implements BaseEntity {
 
 	private static final long serialVersionUID = 1L;
 	private Long id;
-	private Long ssid;
-	private Long sp_id;
+	private Long county_id;
+	private OmpRegion county;
+	private Long street_id;
+	private OmpRegion street;
+	private Long community_id;
+	private OmpRegion community;
+	private Long uid;
+	private SystemUser user;
+	private Long telltype_id;
+	private TellType type;
 	private Date createTime;
 	private Date updateTime;
 	private Long user_falg;
@@ -88,30 +96,119 @@ public class Sys_key implements BaseEntity {
 		this.user_falg = user_falg;
 	}
 
-	@Column(name = "ssid")
-	public Long getSsid() {
-		return ssid;
+
+
+	@Column(name = "county_id")
+	public Long getCounty_id() {
+		return county_id;
 	}
 
 
-	public void setSsid(Long ssid) {
-		this.ssid = ssid;
+	public void setCounty_id(Long county_id) {
+		this.county_id = county_id;
 	}
 
-	@Column(name = "sp_id")
-	public Long getSp_id() {
-		return sp_id;
-	}
-
-
-	public void setSp_id(Long sp_id) {
-		this.sp_id = sp_id;
+	@ManyToOne(targetEntity = OmpRegion.class, fetch = FetchType.LAZY)
+	@JoinColumn(name = "county_id", insertable = false, updatable = false)
+	public OmpRegion getCounty() {
+		return county;
 	}
 
 
+	public void setCounty(OmpRegion county) {
+		this.county = county;
+	}
 
-	
-	
+	@Column(name = "street_id")
+	public Long getStreet_id() {
+		return street_id;
+	}
+
+
+	public void setStreet_id(Long street_id) {
+		this.street_id = street_id;
+	}
+
+	@ManyToOne(targetEntity = OmpRegion.class, fetch = FetchType.LAZY)
+	@JoinColumn(name = "street_id", insertable = false, updatable = false)
+	public OmpRegion getStreet() {
+		return street;
+	}
+
+
+	public void setStreet(OmpRegion street) {
+		this.street = street;
+	}
+
+	@Column(name = "community_id")
+	public Long getCommunity_id() {
+		return community_id;
+	}
+
+
+	public void setCommunity_id(Long community_id) {
+		this.community_id = community_id;
+	}
+
+	@ManyToOne(targetEntity = OmpRegion.class, fetch = FetchType.LAZY)
+	@JoinColumn(name = "community_id", insertable = false, updatable = false)
+	public OmpRegion getCommunity() {
+		return community;
+	}
+
+
+	public void setCommunity(OmpRegion community) {
+		this.community = community;
+	}
+
+	@Column(name = "uid")
+	public Long getUid() {
+		return uid;
+	}
+
+
+	public void setUid(Long uid) {
+		this.uid = uid;
+	}
+
+	@ManyToOne(targetEntity = SystemUser.class, fetch = FetchType.LAZY)
+	@JoinColumn(name = "uid", insertable = false, updatable = false)
+	public SystemUser getUser() {
+		return user;
+	}
+
+
+	public void setUser(SystemUser user) {
+		this.user = user;
+	}
+
+	@Column(name = "telltype_id")
+	public Long getTelltype_id() {
+		return telltype_id;
+	}
+
+
+	public void setTelltype_id(Long telltype_id) {
+		this.telltype_id = telltype_id;
+	}
+
+	@ManyToOne(targetEntity = TellType.class, fetch = FetchType.LAZY)
+	@JoinColumn(name = "telltype_id", insertable = false, updatable = false)
+	public TellType getType() {
+		return type;
+	}
+
+
+	public void setType(TellType type) {
+		this.type = type;
+	}
+
+
+
+
+
+
+
 
 
 

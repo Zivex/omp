@@ -35,7 +35,7 @@ public interface EnterpriseService extends CommonsDataOperationService<Enterpris
 
 	int queryLv(String string);
 
-	boolean queryForTell(String serviceTell);
+	boolean queryForTell(String serviceTell, Long id);
 
 
 

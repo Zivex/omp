@@ -159,19 +159,22 @@ public class OldServiceImpl extends
 	}
 
 	@Override
-	public boolean updOldById(Map<String, Object> map) {
-		// TODO Auto-generated method stub
-		String sql = "update omp_old_info " + "set NAME = '" + map.get("name")
-				+ "'," + "HOUSEHOLD_COUNTY_ID = '" + map.get("county") + "',"
-				+ "HOUSEHOLD_STREET_ID = '" + map.get("street") + "',"
-				+ "HOUSEHOLD_COMMUNITY_ID = '" + map.get("community") + "',"
-				+ "ZJNUMBER = '" + map.get("zjnumber") + "'," + "PHONE = '"
-				+ map.get("phone") + "'," + "ADDRESS = '" + map.get("address")
-				+ "'," + "EMERGENCYCONTACT = '" + map.get("emergencycontact")
-				+ "'," + "EMERGENCYCONTACTTLE = '"
-				+ map.get("emergencycontacttle") + "'," + "TELTYPE = '"
-				+ map.get("teltype") + "'" + "where id = " + map.get("id");
-		jdbcTemplate.update(sql);
+	public boolean updOldById(Omp_Old_Info newOld) {
+
+		getGeneralService().saveOrUpdate(newOld);
+
+//		// TODO Auto-generated method stub
+//		String sql = "update omp_old_info " + "set NAME = '" + map.get("name")
+//				+ "'," + "HOUSEHOLD_COUNTY_ID = '" + map.get("county") + "',"
+//				+ "HOUSEHOLD_STREET_ID = '" + map.get("street") + "',"
+//				+ "HOUSEHOLD_COMMUNITY_ID = '" + map.get("community") + "',"
+//				+ "ZJNUMBER = '" + map.get("zjnumber") + "'," + "PHONE = '"
+//				+ map.get("phone") + "'," + "ADDRESS = '" + map.get("address")
+//				+ "'," + "EMERGENCYCONTACT = '" + map.get("emergencycontact")
+//				+ "'," + "EMERGENCYCONTACTTLE = '"
+//				+ map.get("emergencycontacttle") + "'," + "TELTYPE = '"
+//				+ map.get("teltype") + "'" + "where id = " + map.get("id");
+//		jdbcTemplate.update(sql);
 		return false;
 	}
 
@@ -313,11 +316,14 @@ public class OldServiceImpl extends
 	}
 
 	@Override
-	public List<Map<String, Object>> getOldById(String id) {
-		String sql = "SELECT I.*,o.keyPointMessage Kp, R.NAME SNAME FROM OMP_OLD_INFO i,OMP_REGION r,omp_old_order o WHERE I.STATE = 1 AND I.HOUSEHOLD_COMMUNITY_ID = R.ID AND o.oldId= i.ID AND i.ID = "
-				+ id;
-		List<Map<String, Object>> list = jdbcTemplate.queryForList(sql);
-		return list;
+	public Omp_Old_Info getOldById(String id) {
+
+		Omp_Old_Info entity = getGeneralService().getObjectById(Omp_Old_Info.class, Long.parseLong(id));
+
+//		String sql = "SELECT I.*,o.keyPointMessage Kp, R.NAME SNAME FROM OMP_OLD_INFO i,OMP_REGION r,omp_old_order o WHERE I.STATE = 1 AND I.HOUSEHOLD_COMMUNITY_ID = R.ID AND o.oldId= i.ID AND i.ID = "
+//				+ id;
+//		List<Map<String, Object>> list = jdbcTemplate.queryForList(sql);
+		return entity;
 	}
 
 	@Override
@@ -329,16 +335,18 @@ public class OldServiceImpl extends
 	}
 
 	@Override
-	public Map<String, Object> getRegionList(Map<String, Object> map) {
+	public Map<String, Object> getRegionList(Omp_Old_Info old) {
 		// TODO Auto-generated method stub
 		Map<String, Object> maps = new HashMap<String, Object>();
 		String sql1 = "select r.id,r.name from Omp_Region r where r.levelid = 3";
 		List<Map<String, Object>> list1 = jdbcTemplate.queryForList(sql1);
 		String sql2 = "select r.id,r.name from Omp_Region r where r.levelid = 4 and r.parentid = "
-				+ map.get("HOUSEHOLD_COUNTY_ID");
+				+old.getHousehold_county_id();
+//				+ map.get("HOUSEHOLD_COUNTY_ID");
 		List<Map<String, Object>> list2 = jdbcTemplate.queryForList(sql2);
 		String sql3 = "select r.id,r.name from Omp_Region r where r.levelid = 5 and r.parentid = "
-				+ map.get("HOUSEHOLD_STREET_ID");
+				+old.getHousehold_street_id();
+//				+ map.get("HOUSEHOLD_STREET_ID");
 		List<Map<String, Object>> list3 = jdbcTemplate.queryForList(sql3);
 		maps.put("county", list1);
 		maps.put("street", list2);
@@ -957,7 +965,7 @@ public class OldServiceImpl extends
 
 	/**
 	 * 获取（定制）表头(老人详细信息)
-	 * 
+	 *
 	 * @return
 	 */
 	private List<ColHeaderCell> getColHeaderCellList() {
@@ -983,7 +991,7 @@ public class OldServiceImpl extends
 
 	/**
 	 * 获取（定制）表头(老人基本信息)
-	 * 
+	 *
 	 * @return
 	 */
 	private List<ColHeaderCell> getColHeaderCellListOld() {
@@ -1005,7 +1013,7 @@ public class OldServiceImpl extends
 
 	/**
 	 * 定制每一列属性的配置信息(老人详细信息)
-	 * 
+	 *
 	 * @return
 	 */
 	private List<Column> getColumnList() {
@@ -1428,7 +1436,7 @@ public class OldServiceImpl extends
 
 	/**
 	 * 定制每一列属性的配置信息(老人基本信息)
-	 * 
+	 *
 	 * @return
 	 */
 	private List<Column> getColumnListOld() {
@@ -1532,7 +1540,7 @@ public class OldServiceImpl extends
 
 	/**
 	 * 定制（设置）Excel中每列的属性
-	 * 
+	 *
 	 * @param columnName
 	 * @param width
 	 * @param isAutoSize
@@ -1575,7 +1583,7 @@ public class OldServiceImpl extends
 
 	/**
 	 * 查询
-	 * 
+	 *
 	 * @param searchCriteriaBuilder
 	 * @param page
 	 * @param name

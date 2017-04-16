@@ -112,12 +112,12 @@ public class EnterpriseServiceImpl extends
 		searchCriteriaBuilder.addQueryCondition("serviceTell", RestrictionExpression.EQUALS_OP, parameter.getEntity().getServiceTell());
 		searchCriteriaBuilder.addQueryCondition("contact", RestrictionExpression.EQUALS_OP, parameter.getEntity().getContact());
 		searchCriteriaBuilder.addQueryCondition("contactPhone", RestrictionExpression.EQUALS_OP, parameter.getEntity().getContactPhone());
-		
+
 		searchCriteriaBuilder.addQueryCondition("serviceCounty_id", RestrictionExpression.LIKE_OP, parameter.getCounty());
 		searchCriteriaBuilder.addQueryCondition("serviceStreet_id", RestrictionExpression.LIKE_OP, parameter.getStreet());
 		searchCriteriaBuilder.addQueryCondition("serviceCommunity_id", RestrictionExpression.LIKE_OP, parameter.getCommunity());
-		
-		
+
+
 		int count = getGeneralService().getCount(searchCriteriaBuilder.build());
 		map.put("count", count);
 		if (parameter.getPageSize() == 0) {
@@ -199,8 +199,12 @@ public class EnterpriseServiceImpl extends
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public boolean queryForTell(String serviceTell) {
-		String sql = "select count(*) from service_provider t where t.serviceTell ='"+serviceTell+"'";
+	public boolean queryForTell(String serviceTell,Long id) {
+		String idsql ="";
+		if(id!=0L){
+			idsql = " and t.id <>"+id;
+		}
+		String sql = "select count(*) from service_provider t where t.serviceTell ='"+serviceTell+"'"+idsql;
 		int i = JdbcTemplate.queryForInt(sql);
 		return i>0?false:true;
 	}

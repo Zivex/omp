@@ -30,32 +30,18 @@ import com.capinfo.region.model.OmpRegion;
  *
  */
 @Entity
-@Table(name = "service_system_copy")
+@Table(name = "service_system")
 public class New_Service_System implements BaseEntity {
 
     private static final long serialVersionUID = 1L;
     private Long id;
-    private Long county_id;
-    private OmpRegion county;
-    private Long street_id;
-    private OmpRegion street;
-    private Long community_id;
-    private OmpRegion community;
-    private Long uid;
-    private SystemUser user;
-    private Long telltype;
-    private TellType type;
+    private Long skid;
     //键位
     private Long key_state;
-
+    private Omp_key ok;
     //服务商所对应的键位
     private Long sp_id;
     private ServiceProvider serviceProvider;
-
-    private Date createTime;
-    private Date updateTime;
-    private Long user_falg;
-    private String belongs;
 
 
 
@@ -71,186 +57,60 @@ public class New_Service_System implements BaseEntity {
         this.id = id;
     }
 
-    @Column(name = "uid")
-    public Long getUid() {
-        return uid;
-    }
-
-
-
-    public void setUid(Long uid) {
-        this.uid = uid;
-    }
-
-    @Column(name = "tellType_id")
-    public Long getTelltype() {
-        return telltype;
-    }
-
-
-    public void setTelltype(Long telltype) {
-        this.telltype = telltype;
-    }
-
-
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "createTime")
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "updateTime")
-    public Date getUpdateTime() {
-        return updateTime;
-    }
-
-
-    public void setUpdateTime(Date updateTime) {
-        this.updateTime = updateTime;
-    }
-
-
-    @ManyToOne(targetEntity = SystemUser.class, fetch = FetchType.LAZY)
-    @JoinColumn(name = "uid", insertable = false, updatable = false)
-    public SystemUser getUser() {
-        return user;
-    }
-
-
-    public void setUser(SystemUser user) {
-        this.user = user;
-    }
-
-    @Column(name = "county_id")
-    public Long getCounty_id() {
-        return county_id;
-    }
-
-
-    public void setCounty_id(Long county_id) {
-        this.county_id = county_id;
-    }
-
-    @ManyToOne(targetEntity = OmpRegion.class, fetch = FetchType.LAZY)
-    @JoinColumn(name = "COUNTY_ID", insertable = false, updatable = false)
-    public OmpRegion getCounty() {
-        return county;
-    }
-
-
-    public void setCounty(OmpRegion county) {
-        this.county = county;
-    }
-
-    @Column(name = "STREET_ID")
-    public Long getStreet_id() {
-        return street_id;
-    }
-
-
-    public void setStreet_id(Long street_id) {
-        this.street_id = street_id;
-    }
-
-    @ManyToOne(targetEntity = OmpRegion.class, fetch = FetchType.LAZY)
-    @JoinColumn(name = "STREET_ID", insertable = false, updatable = false)
-    public OmpRegion getStreet() {
-        return street;
-    }
-
-
-    public void setStreet(OmpRegion street) {
-        this.street = street;
-    }
-
-    @Column(name = "COMMUNITY_ID")
-    public Long getCommunity_id() {
-        return community_id;
-    }
-
-
-    public void setCommunity_id(Long community_id) {
-        this.community_id = community_id;
-    }
-
-    @ManyToOne(targetEntity = OmpRegion.class, fetch = FetchType.LAZY)
-    @JoinColumn(name = "COMMUNITY_ID", insertable = false, updatable = false)
-    public OmpRegion getCommunity() {
-        return community;
-    }
-
-
-    public void setCommunity(OmpRegion community) {
-        this.community = community;
-    }
-
-    @ManyToOne(targetEntity = TellType.class, fetch = FetchType.LAZY)
-    @JoinColumn(name = "tellType_id", insertable = false, updatable = false)
-    public TellType getType() {
-        return type;
-    }
-
-
-    public void setType(TellType type) {
-        this.type = type;
-    }
-
-    @Column(name = "key_state")
-    public Long getKey_state() {
-        return key_state;
-    }
-
-
-    public void setKey_state(Long key_state) {
-        this.key_state = key_state;
-    }
-
-    @Column(name = "sp_id")
-    public Long getSp_id() {
-        return sp_id;
-    }
-
-
-    public void setSp_id(Long sp_id) {
-        this.sp_id = sp_id;
-    }
-
-    @ManyToOne(targetEntity = ServiceProvider.class, fetch = FetchType.LAZY)
-    @JoinColumn(name = "sp_id", insertable = false, updatable = false)
-    public ServiceProvider getServiceProvider() {
-        return serviceProvider;
-    }
-
-
-    public void setServiceProvider(ServiceProvider serviceProvider) {
-        this.serviceProvider = serviceProvider;
-    }
-
-    @Column(name = "user_falg")
-    public Long getUser_falg() {
-        return user_falg;
-    }
-
-
-    public void setUser_falg(Long user_falg) {
-        this.user_falg = user_falg;
-    }
-
-
-    @Column(name = "belongs")
-	public String getBelongs() {
-		return belongs;
+    @Column(name = "skid")
+	public Long getSkid() {
+		return skid;
 	}
 
 
-	public void setBelongs(String belongs) {
-		this.belongs = belongs;
+	public void setSkid(Long skid) {
+		this.skid = skid;
 	}
+
+	@Column(name = "key_state")
+	public Long getKey_state() {
+		return key_state;
+	}
+
+
+	public void setKey_state(Long key_state) {
+		this.key_state = key_state;
+	}
+
+	@Column(name = "sp_id")
+	public Long getSp_id() {
+		return sp_id;
+	}
+
+
+	public void setSp_id(Long sp_id) {
+		this.sp_id = sp_id;
+	}
+
+	@ManyToOne(targetEntity = ServiceProvider.class, fetch = FetchType.LAZY)
+	@JoinColumn(name = "sp_id", insertable = false, updatable = false)
+	public ServiceProvider getServiceProvider() {
+		return serviceProvider;
+	}
+
+
+	public void setServiceProvider(ServiceProvider serviceProvider) {
+		this.serviceProvider = serviceProvider;
+	}
+
+
+	@ManyToOne(targetEntity = Omp_key.class, fetch = FetchType.LAZY)
+	@JoinColumn(name = "key_state", insertable = false, updatable = false)
+	public Omp_key getOk() {
+		return ok;
+	}
+
+
+	public void setOk(Omp_key ok) {
+		this.ok = ok;
+	}
+
+
 
 
 

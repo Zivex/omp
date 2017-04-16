@@ -29,7 +29,7 @@
 						<th width="10%">座机号</th>
 						<th width="10%">推送状态</th>
 						<th width="10%">执行状态</th>
-						
+
 						<th width="10%">操作</th>
 <!-- 					<th width="10%">居住地址</th> -->
 <!-- 					<th width="10%">录入员</th> -->
@@ -41,7 +41,7 @@
 							<td><input type="checkbox" class="ids pzl" value="${order.old.id}"/></td>
 
 							<td>
-							    <a id="viewItem" href="###"  onclick="xiangqing(${order.old.id}),this">${order.old.name}</a>
+							    ${order.old.name}
 							</td>
 							<td>${order.old.household_county.name}</td>
 							<td>${order.old.household_street.name}</td>
@@ -56,7 +56,7 @@
 								<c:if test="${order.execute_flag==0}"><font color="red">失败</font></c:if>
 								<c:if test="${order.execute_flag==3}"><font color="blue">未执行</font></c:if>
 							</td>
-						
+
 <%-- 							<td>${old.address}</td> --%>
 <%-- 							<td>${old.workername}</td> --%>
 							<td>
@@ -100,7 +100,7 @@
 					<th width="15%">执行失败原因</th>
 				</tr>
 			</thead>
-			
+
 			<tbody>
 			<c:forEach items="${olist}" var="olist">
 				<tr>
@@ -116,9 +116,9 @@
 			</c:forEach>
 			</tbody>
 		</table>
-	</div> 	
+	</div>
 	<script>
-	    
+
 		$("#close").click(function(){
 			$("#box").hide();
 		})
@@ -135,24 +135,24 @@
 		</table>
 	</div>
 </div>
-	
+
 <!-- Script	-->
 <SCRIPT type="text/javascript">
-    
-	
+
+
 	$(document).ready(function() {
 		initListForm();
 		<c:if test="${DataTotalCount!=null&&DataTotalCount>0}">
 		   initPagination(<c:out value="${DataTotalCount}"/>,<c:out value="${PerPieceSize}"/>,<c:out value="${CurrentPieceNum}"/>);
 		</c:if>
 	});
-	
+
 	function check(){
 		$(".ids").map(function() {
 			$(this).attr("checked", !$(this).attr("checked"));
 		});
 	}
-	
+
 	function deleteUser(uid,tr){
 		var sure=confirm("删除操作是不可逆的，确认删除该指令吗？");
 		if(sure){
@@ -166,11 +166,11 @@
 	// 		$("#listForm").submit();
 		}
 	}
-	
-	$(function () { 
+
+	$(function () {
 		$("[data-toggle='popover']").popover();
 	});
-	
+
 	function toupd(ids){
 		var sure=confirm("确认要发送指令吗？");
 		if(sure){

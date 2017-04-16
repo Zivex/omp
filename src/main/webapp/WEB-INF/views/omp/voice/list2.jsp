@@ -21,10 +21,10 @@
 					<tr class="active">
 						<th width="5%"><input type="checkbox" onclick="check()" /></th>
 						<th width="5%">姓名</th>
+						<th width="10%">座机号</th>
 						<th width="5%">区域</th>
 						<th width="5%">街道</th>
 						<th width="10%">社区</th>
-						<th width="10%">座机号</th>
 						<th width="10%">推送状态</th>
 						<th width="10%">执行状态</th>
 						<th width="10%">执行时间</th>
@@ -39,12 +39,16 @@
 						<tr>
 
 							<td><input type="checkbox" class="ids" value="${order.old.id}" /></td>
-							<td><a id="viewItem" href="###"
-								onclick="showDetails(${order.old.id});">${order.old.name}</a></td>
+							<td>
+<!-- 							<a id="viewItem" href="###" -->
+<%-- 								onclick="showDetails(${order.old.id});"> --%>
+								${order.old.name}
+<!-- 								</a> -->
+								</td>
+							<td>${order.old.zjnumber}</td>
 										<td>${order.old.household_county.name}</td>
 							<td>${order.old.household_street.name}</td>
 							<td>${order.old.household_community.name}</td>
-							<td>${order.old.zjnumber}</td>							
 							<c:if test="${order.send_flag==1}">
 								<td style="color: green;">已发送</td>
 							</c:if>
@@ -107,15 +111,15 @@
 		initPagination(<c:out value="${DataTotalCount}"/>,<c:out value="${PerPieceSize}"/>,<c:out value="${CurrentPieceNum}"/>);
 		</c:if>
 	});
-	
+
 	function check(){
 		$(".ids").map(function() {
 			$(this).attr("checked", !$(this).attr("checked"));
 		});
 	}
-	
-	
-	
+
+
+
 	function deleteUser(uid,tr){
 		var sure=confirm("删除操作是不可逆的，确认删除该指令吗？");
 		if(sure){
@@ -134,6 +138,6 @@
 			location.reload();
 		});
 		}
-		
+
 	}
 </SCRIPT>

@@ -55,6 +55,9 @@ public class Permissions {
 	public static SearchCriteriaBuilder checkPer(SystemUser user,SearchCriteriaBuilder searchCriteriaBuilder,GeneralService generalService){
 		if (user.getLeave() > 1) {
 			if("g".equals(user.getAccount_type())){
+				
+				
+				
 			String ids = "";
 			serchG(user, searchCriteriaBuilder, generalService, ids);
 			System.out.println(ids);

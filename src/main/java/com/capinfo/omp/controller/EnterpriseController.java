@@ -132,7 +132,7 @@ public class EnterpriseController {
 					serviceProvider.setChannels(String.valueOf(user.getId()) );
 					serviceProvider.setCreateTime(new Date());
 					serviceProvider.setUser_falg(1);
-					boolean b = enterpriseService.queryForTell(serviceProvider.getServiceTell());
+					boolean b = enterpriseService.queryForTell(serviceProvider.getServiceTell(),0L);
 					if(!b){
 						errorCount++;
 						errorstr+="第"+error+"行,服务电话已存在; \n";
@@ -681,7 +681,7 @@ public class EnterpriseController {
 		r1 = uniq(r1);
 		r2 = uniq(r2);
 		r3 = uniq(r3);
-		boolean b = enterpriseService.queryForTell(parameter.getEntity().getServiceTell());
+		boolean b = enterpriseService.queryForTell(parameter.getEntity().getServiceTell(),0L);
 		if(!b){
 			return "添加失败服务商电话已存在";
 		}
@@ -708,8 +708,8 @@ public class EnterpriseController {
         }
 		return rn.replaceAll(" ", "");
 	}
-	
-	
+
+
 	/**
 	 * 服务商添加
 	 * @param id
@@ -726,7 +726,7 @@ public class EnterpriseController {
 		mv.addObject("cityS", cityS);
 		return mv;
 	}
-	
+
 	/**
 	 * 服务商保存
 	 * @param id
@@ -738,18 +738,19 @@ public class EnterpriseController {
 		ServiceProvider entity = parameter.getEntity();
 		//设置发展渠道来源
 		String serviceTell = entity.getServiceTell();
-		boolean b = enterpriseService.queryForTell(serviceTell);
+		Long id = entity.getId();
+		boolean b = enterpriseService.queryForTell(serviceTell,id);
 		if(!b){
 			return "该服务电话已存在";
 		}
-		
+
 		entity.setChannels(String.valueOf(user.getId()));
 		entity.setCreateTime(new Date());
 		generalService.saveOrUpdate(entity);
 		return "添加成功";
 	}
-	
-	
-	
+
+
+
 
 }

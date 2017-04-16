@@ -61,7 +61,7 @@ public class OldForController {
 
 	@Autowired
 	private OldService oldService;
-	
+
 	@Autowired
 	private GeneralService generalService;
 
@@ -121,7 +121,7 @@ public class OldForController {
 		if (StringUtils.isEmpty(pageSize)) {
 			pageSize = "10";
 		}
-		
+
 		int count = oldService.getCount(name, idCard, zjNumber, county, street,
 				community, isGenerationOrder, isindividuation, user);
 		// count = count == 0 ? 1 : count;
@@ -256,7 +256,7 @@ public class OldForController {
 			String street = getCellValue(row.getCell(2));
 			String community = getCellValue(row.getCell(3));
 			String tel_type = getCellValue(row.getCell(10));
-			
+
 			 //根据市区名称查询市区ID
 			String countyId = oldService.getIdByName(area, 3);
 			// 根据街道名称查询街道ID
@@ -265,7 +265,7 @@ public class OldForController {
 			String communityId = oldService.getIdByName(community, 5);
 			//查询社区编码
 			String comNUm = oldService.getIdByComCod(community, 5);
-			
+
 			int tel_num = oldService.getTel_type(tel_type);
 			Long callId = 0l;
 			if ("是".equals(call_id)) {
@@ -337,10 +337,10 @@ public class OldForController {
 	@ResponseBody
 	public ModelAndView upd(String id) {
 		ModelAndView mv = new ModelAndView("/omp/old/upd");
-		List<Map<String, Object>> list = oldService.getOldById(id);
-		Map<String, Object> map = list.get(0);
-		Map Region = oldService.getRegionList(map);
-		mv.addObject("detaMap", map);
+		Omp_Old_Info old = oldService.getOldById(id);
+//		Map<String, Object> map = list.get(0);
+		Map Region = oldService.getRegionList(old);
+		mv.addObject("detaMap", old);
 		mv.addObject("Region", Region);
 		return mv;
 	}
@@ -361,9 +361,9 @@ public class OldForController {
 			Map<String, Object> mapPreson = person.get(0);
 			mv.addObject("mapPreson", mapPreson);
 		}
-//		
-//		
-//		
+//
+//
+//
 //		List<Map<String, Object>> list = oldService.getOldById(id);
 //		Map<String, Object> map = list.get(0);
 //		List<Map<String, Object>> person = oldService.getPerson(cardId);
@@ -383,43 +383,43 @@ public class OldForController {
 	 * @param id
 	 * @return
 	 */
-	@SuppressWarnings("rawtypes")
-	@RequestMapping("/oldMatch/oldinfo.shtml")
-	@ResponseBody
-	public ModelAndView oldinfo(String id) {
-		ModelAndView mv = new ModelAndView("/omp/old/oldInfo");
-		ArrayList arrayList = new ArrayList<>();
-		List<Map<String, Object>> list = oldService.getOldById(id);
-		List<Map<String, Object>> list1 = oldService.getOldById1(id);
-		// 判断是否老人已经设置指令了
-		if (list.size() > 0 && list.get(0).get("Kp") != null) {
-			Map<String, Object> map = list.get(0);
-			Map Region = oldService.getRegionList(map);
-			String kpLiString = (String) map.get("Kp");
-			if (kpLiString != null && !"".equals(kpLiString)) {
-				JSONObject jsonObject = JsonUtil.getJson(kpLiString);
-				JSONArray json1 = JsonUtil.getJson1(jsonObject);
-				if (json1.size() > 0) {
-					for (int i = 0; i < json1.size(); i++) {
-						JSONObject job = json1.getJSONObject(i); // 遍历 jsonarray 数组，把每一个对象转成json 对象
-						arrayList.add(job);
-					}
-				}
-			}
-
-			mv.addObject("arrayList", arrayList);
-			mv.addObject("detaMap", map);
-			mv.addObject("Region", Region);
-		} else {
-			Map<String, Object> map = list1.get(0);
-			Map Region = oldService.getRegionList(map);
-			mv.addObject("arrayList", arrayList);
-			mv.addObject("detaMap", map);
-			mv.addObject("Region", Region);
-		}
-
-		return mv;
-	}
+//	@SuppressWarnings("rawtypes")
+//	@RequestMapping("/oldMatch/oldinfo.shtml")
+//	@ResponseBody
+//	public ModelAndView oldinfo(String id) {
+//		ModelAndView mv = new ModelAndView("/omp/old/oldInfo");
+//		ArrayList arrayList = new ArrayList<>();
+//		List<Map<String, Object>> list = oldService.getOldById(id);
+//		List<Map<String, Object>> list1 = oldService.getOldById1(id);
+//		// 判断是否老人已经设置指令了
+//		if (list.size() > 0 && list.get(0).get("Kp") != null) {
+//			Map<String, Object> map = list.get(0);
+//			Map Region = oldService.getRegionList(map);
+//			String kpLiString = (String) map.get("Kp");
+//			if (kpLiString != null && !"".equals(kpLiString)) {
+//				JSONObject jsonObject = JsonUtil.getJson(kpLiString);
+//				JSONArray json1 = JsonUtil.getJson1(jsonObject);
+//				if (json1.size() > 0) {
+//					for (int i = 0; i < json1.size(); i++) {
+//						JSONObject job = json1.getJSONObject(i); // 遍历 jsonarray 数组，把每一个对象转成json 对象
+//						arrayList.add(job);
+//					}
+//				}
+//			}
+//
+//			mv.addObject("arrayList", arrayList);
+//			mv.addObject("detaMap", map);
+//			mv.addObject("Region", Region);
+//		} else {
+//			Map<String, Object> map = list1.get(0);
+//			Map Region = oldService.getRegionList(map);
+//			mv.addObject("arrayList", arrayList);
+//			mv.addObject("detaMap", map);
+//			mv.addObject("Region", Region);
+//		}
+//
+//		return mv;
+//	}
 
 	/**
 	 * 去修改老人话机数据
@@ -427,41 +427,41 @@ public class OldForController {
 	 * @param id
 	 * @return
 	 */
-	@RequestMapping("/oldMatch/ompKeyModify.shtml")
-	@ResponseBody
-	public ModelAndView ompKeyModify(String id, String typeid) {
-		ModelAndView mv = new ModelAndView("/omp/old/ompKeyModify");
-		ArrayList arrayList = new ArrayList<>();
-		// List<Map<String,Object>> Region = oldService.getOldById(id);
-
-		List<Map<String, Object>> Infolist = oldService
-				.getOldKeyPointMessage(id);
-		List<Map<String, Object>> list = oldService.getOldById(id);
-
-		// 判断是否老人已经设置指令了
-		if (list.size() > 0 && list.get(0).get("Kp") != null) {
-			Map<String, Object> map = list.get(0);
-			Map Region = oldService.getRegionList(map);
-			String kpLiString = (String) map.get("Kp");
-			if (kpLiString != null && !"".equals(kpLiString)) {
-				JSONObject jsonObject = JsonUtil.getJson(kpLiString);
-				JSONArray json1 = JsonUtil.getJson1(jsonObject);
-				if (json1.size() > 0) {
-					for (int i = 0; i < json1.size(); i++) {
-						JSONObject job = json1.getJSONObject(i); // 遍历 jsonarray// 数组，把每一个对象转成// json 对象
-						arrayList.add(job);
-					}
-				}
-			}
-
-			mv.addObject("detaMap", arrayList);
-			mv.addObject("hxUserID", id);
-		}
-
-		mv.addObject("detaMap", arrayList);
-		mv.addObject("hxUserID", id);
-		return mv;
-	}
+//	@RequestMapping("/oldMatch/ompKeyModify.shtml")
+//	@ResponseBody
+//	public ModelAndView ompKeyModify(String id, String typeid) {
+//		ModelAndView mv = new ModelAndView("/omp/old/ompKeyModify");
+//		ArrayList arrayList = new ArrayList<>();
+//		// List<Map<String,Object>> Region = oldService.getOldById(id);
+//
+//		List<Map<String, Object>> Infolist = oldService
+//				.getOldKeyPointMessage(id);
+//		List<Map<String, Object>> list = oldService.getOldById(id);
+//
+//		// 判断是否老人已经设置指令了
+//		if (list.size() > 0 && list.get(0).get("Kp") != null) {
+//			Map<String, Object> map = list.get(0);
+//			Map Region = oldService.getRegionList(map);
+//			String kpLiString = (String) map.get("Kp");
+//			if (kpLiString != null && !"".equals(kpLiString)) {
+//				JSONObject jsonObject = JsonUtil.getJson(kpLiString);
+//				JSONArray json1 = JsonUtil.getJson1(jsonObject);
+//				if (json1.size() > 0) {
+//					for (int i = 0; i < json1.size(); i++) {
+//						JSONObject job = json1.getJSONObject(i); // 遍历 jsonarray// 数组，把每一个对象转成// json 对象
+//						arrayList.add(job);
+//					}
+//				}
+//			}
+//
+//			mv.addObject("detaMap", arrayList);
+//			mv.addObject("hxUserID", id);
+//		}
+//
+//		mv.addObject("detaMap", arrayList);
+//		mv.addObject("hxUserID", id);
+//		return mv;
+//	}
 
 	/**
 	 * 老人个性化数据修改
@@ -491,32 +491,24 @@ public class OldForController {
 	 * @return
 	 */
 	@RequestMapping("/oldMatch/updete.shtml")
-	public String updete(HttpServletRequest request) {
-		Map<String, Object> map = new HashMap<String, Object>();
-		String id = request.getParameter("id");
-		map.put("id", id);
-		String name = request.getParameter("name");
-		map.put("name", name);
+	public String updete(HttpServletRequest request ,Omp_Old_Info old) {
 		String county = request.getParameter("county");
-		map.put("county", county);
 		String street = request.getParameter("street");
-		map.put("street", street);
 		String community = request.getParameter("community");
-		map.put("community", community);
-		String zjnumber = request.getParameter("zjnumber");
-		map.put("zjnumber", zjnumber);
-		String phone = request.getParameter("phone");
-		map.put("phone", phone);
-		String address = request.getParameter("address");
-		map.put("address", address);
-		String emergencycontact = request.getParameter("emergencycontact");
-		map.put("emergencycontact", emergencycontact);
-		String emergencycontacttle = request
-				.getParameter("emergencycontacttle");
-		map.put("emergencycontacttle", emergencycontacttle);
-		String teltype = request.getParameter("teltype");
-		map.put("teltype", teltype);
-		oldService.updOldById(map);
+		Omp_Old_Info newOld = oldService.getOldById(String.valueOf(old.getId()));
+		newOld.setName(old.getName());
+		newOld.setHousehold_county_id(county);
+		newOld.setHousehold_street_id(street);
+		newOld.setHousehold_community_id(community);
+		newOld.setZjnumber(old.getZjnumber());
+		newOld.setPhone(old.getPhone());
+		newOld.setAddress(old.getAddress());
+		newOld.setEmergencycontact(old.getEmergencycontact());
+		newOld.setEmergencycontacttle(old.getEmergencycontacttle());
+		newOld.setTeltype(old.getTel());
+		newOld.setTeltype(old.getTeltype());
+		newOld.setCall_id(old.getCall_id());
+		oldService.updOldById(newOld);
 		return "redirect:/old/oldMatch/list.shtml?name=&idCard=&zjNumber=&county=&street=&community=&isGenerationOrder=&creationTime=";
 	}
 
