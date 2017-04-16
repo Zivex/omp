@@ -42,11 +42,13 @@
 						<div style="float: left; width: 50%;">
 							<form id="architectureForm">
 							<input type="hidden" name="entity.id" id="sid" value="${ss.id }">
-							<input type="hidden" name="entity.rid"   value="${ss.rid }">
+							<input type="hidden" name="entity.county_id"   value="${ss.county_id }">
+							<input type="hidden" name="entity.street_id"   value="${ss.street_id }">
+							<input type="hidden" name="entity.community_id"   value="${ss.community_id }">
 							<input type="hidden" name="entity.uid" value="${ss.uid }">
 							<input type="hidden" name="entity.createTime"  value="${ss.createTime }">
-							<input type="hidden" name="entity.user_falg"  value="${ss.user_falg }">
-							<input type="hidden" id="telltype" name="entity.telltype" value="${ss.telltype }">
+							<input type="hidden" name="entity.createTime"  value="${ss.updateTime }">
+							<input type="hidden" id="telltype" name="entity.telltype_id" value="${ss.telltype_id }">
 								<table class="table table-bordered" id="architecture">
 
 								</table>
@@ -186,7 +188,7 @@
 							});
 		}
 
-		//查询话机类型
+		//查询服务体系
 		function queryTellType() {
 			//var tellId = $("#telltype").val();
 			var sid = $("#sid").val();
@@ -202,13 +204,14 @@
 					function(data) {
 						var idNum = 0;
 						for (var i = 0; i < data.length; i++) {
+							alert(1);
 							idNum++;
 							architecture
 									.append("<tr><td><input type='radio' name='typeId' value='"+data[i].id+"'> "
-											+ data[i].key
+											+ data[i].ok.key
 											+ "</td><td>"
-											+ data[i].serviceName
-											+ "</td><td><input type='hidden' class='serviceId' name='entity.m"+idNum+"'value='"+data[i].sid+"' ><span>"+data[i].sname+"<span></td></tr>");
+											+ data[i].serviceProvider.serviceName
+											+ "</td><td><input type='hidden' class='serviceId' name='"+data[i].ok.key+"'value='"+data[i].sp_id+"' ><span>"+data[i].sname+"<span></td></tr>");
 						}
 						architecture
 								.append('<tr><td><a class="btn btn-default" href="#" onclick="updateSystem()" role="button">修改</a></td></tr>');

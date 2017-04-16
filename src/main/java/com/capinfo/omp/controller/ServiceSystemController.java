@@ -37,10 +37,12 @@ import com.capinfo.framework.model.BaseEntity;
 import com.capinfo.framework.service.GeneralService;
 import com.capinfo.omp.model.Composition;
 import com.capinfo.omp.model.Enterprise;
+import com.capinfo.omp.model.New_Service_System;
 import com.capinfo.omp.model.Omp_phone_type;
 import com.capinfo.omp.model.ServiceProvider;
 import com.capinfo.omp.model.ServiceType;
 import com.capinfo.omp.model.Service_System;
+import com.capinfo.omp.model.Sys_key;
 import com.capinfo.omp.parameter.EnterpriseParameter;
 import com.capinfo.omp.parameter.ServiceProviderParameter;
 import com.capinfo.omp.parameter.ServiceSystemParameter;
@@ -81,10 +83,10 @@ public class ServiceSystemController {
 			@ModelAttribute("eccomm_admin") SystemUser user,ServiceSystemParameter parameter ) {
 		ModelAndView mv = new ModelAndView("/omp/serviceSystem/initialize");
 		//当前页
-		int currentPieceNum = parameter.getCurrentPieceNum();
-		//每页数量
-		int perPieceSize = parameter.getPerPieceSize();
-
+//		int currentPieceNum = parameter.getCurrentPieceNum();
+//		//每页数量
+//		int perPieceSize = parameter.getPerPieceSize();
+//
 		HashMap<String, Object> ssList = serviceSystem.getSSList(user,parameter);
 		mv.addObject("count",ssList.get("count"));
 		mv.addObject("list",ssList.get("list"));
@@ -156,10 +158,10 @@ public class ServiceSystemController {
 			@ModelAttribute("eccomm_admin") SystemUser user,ServiceSystemParameter parameter) {
 		serviceSystem.addServiceSystem(parameter,user);
 		return "添加成功";
-		
-		
-		
-		
+
+
+
+
 	}
 
 	/**
@@ -172,7 +174,10 @@ public class ServiceSystemController {
 	public ModelAndView udpArchitecture(
 			@ModelAttribute("eccomm_admin") SystemUser user,ServiceSystemParameter parameter ) {
 		ModelAndView mv = new ModelAndView("/omp/serviceSystem/updArchitecture");
-		Service_System ss = generalService.getObjectById(Service_System.class, parameter.getId());
+		Sys_key ss = generalService.getObjectById(Sys_key.class, parameter.getId());
+
+
+
 		mv.addObject("ss", ss);
 		mv.addObject("command", parameter);
 		List<OmpRegion> cityS = enterpriseService.queryCounty(0L);
@@ -192,52 +197,60 @@ public class ServiceSystemController {
 	 */
 	@RequestMapping("/serchArchitecture.shtml")
 	@ResponseBody
-	public List<Map<String, Object>> serchArchitecture(
+	public List<New_Service_System> serchArchitecture(
 			@ModelAttribute("eccomm_admin") SystemUser user,ServiceSystemParameter parameter ) {
-		Service_System ss = generalService.getObjectById(Service_System.class, parameter.getId());
-		List<Map<String,Object>> list = serviceSystem.getQueryarchitecture(user,ss.getTelltype());
-		for (Map<String, Object> map : list) {
-			map.put("sid", ss.getM1());
-			map.put("sname", ss.getS1Name().getServiceName());
-			map.put("sid", ss.getM2());
-			map.put("sname", ss.getS2Name().getServiceName());
-			map.put("sid", ss.getM3());
-			map.put("sname", ss.getS3Name().getServiceName());
-			map.put("sid", ss.getM4());
-			map.put("sname", ss.getS5Name().getServiceName());
-			map.put("sid", ss.getM5());
-			map.put("sname", ss.getS5Name().getServiceName());
-			map.put("sid", ss.getM6());
-			map.put("sname", ss.getS6Name().getServiceName());
-			map.put("sid", ss.getM7());
-			map.put("sname", ss.getS7Name().getServiceName());
-			map.put("sid", ss.getM8());
-			map.put("sname", ss.getS8Name().getServiceName());
-			if(userType(user)!=2){
-				map.put("sid", ss.getM9());
-				map.put("sname", ss.getS9Name().getServiceName());
-			}
-			map.put("sid", ss.getM10());
-			map.put("sname", ss.getS10Name().getServiceName());
-			if(userType(user)==0){
-				map.put("sid", ss.getM11());
-				map.put("sname", ss.getS11Name().getServiceName());
-			}
-			if(userType(user)==1 || userType(user)==0){
-				map.put("sid", ss.getM12());
-				map.put("sname", ss.getS12Name().getServiceName());
-			}
-			if(userType(user)==0){
-				map.put("sid", ss.getM13());
-				map.put("sname", ss.getS13Name().getServiceName());
-				map.put("sid", ss.getM14());
-				map.put("sname", ss.getS14Name().getServiceName());
-				map.put("sid", ss.getM15());
-				map.put("sname", ss.getS15Name().getServiceName());
-				map.put("sid", ss.getM16());
-				map.put("sname", ss.getS16Name().getServiceName());
-			}
-		}
+		Sys_key ss = generalService.getObjectById(Sys_key.class, parameter.getId());
+
+		List<New_Service_System> list = serviceSystem.getupdateSys(ss);
+
+
+
+
+
+//		List<Map<String,Object>> list = serviceSystem.getQueryarchitecture(user,ss.getTelltype());
+//
+//		for (Map<String, Object> map : list) {
+//			map.put("sid", ss.getM1());
+//			map.put("sname", ss.getS1Name().getServiceName());
+//			map.put("sid", ss.getM2());
+//			map.put("sname", ss.getS2Name().getServiceName());
+//			map.put("sid", ss.getM3());
+//			map.put("sname", ss.getS3Name().getServiceName());
+//			map.put("sid", ss.getM4());
+//			map.put("sname", ss.getS5Name().getServiceName());
+//			map.put("sid", ss.getM5());
+//			map.put("sname", ss.getS5Name().getServiceName());
+//			map.put("sid", ss.getM6());
+//			map.put("sname", ss.getS6Name().getServiceName());
+//			map.put("sid", ss.getM7());
+//			map.put("sname", ss.getS7Name().getServiceName());
+//			map.put("sid", ss.getM8());
+//			map.put("sname", ss.getS8Name().getServiceName());
+//			if(userType(user)!=2){
+//				map.put("sid", ss.getM9());
+//				map.put("sname", ss.getS9Name().getServiceName());
+//			}
+//			map.put("sid", ss.getM10());
+//			map.put("sname", ss.getS10Name().getServiceName());
+//			if(userType(user)==0){
+//				map.put("sid", ss.getM11());
+//				map.put("sname", ss.getS11Name().getServiceName());
+//			}
+//			if(userType(user)==1 || userType(user)==0){
+//				map.put("sid", ss.getM12());
+//				map.put("sname", ss.getS12Name().getServiceName());
+//			}
+//			if(userType(user)==0){
+//				map.put("sid", ss.getM13());
+//				map.put("sname", ss.getS13Name().getServiceName());
+//				map.put("sid", ss.getM14());
+//				map.put("sname", ss.getS14Name().getServiceName());
+//				map.put("sid", ss.getM15());
+//				map.put("sname", ss.getS15Name().getServiceName());
+//				map.put("sid", ss.getM16());
+//				map.put("sname", ss.getS16Name().getServiceName());
+//			}
+//		}
 		return list;
 	}
 
@@ -258,11 +271,11 @@ public class ServiceSystemController {
 				return 2;
 			}
 			return 0;
-			
+
 		}
 		//键位为空判断
 //		public Stirng keyEmpty(Service_System ss){
-//			
-//			
+//
+//
 //		}
 }

@@ -6,16 +6,17 @@ import java.util.Map;
 import com.capinfo.framework.web.parameter.DataListParameter;
 import com.capinfo.omp.model.New_Service_System;
 import com.capinfo.omp.model.Service_System;
+import com.capinfo.omp.model.Sys_key;
 
 /**
  * 服务商参数
  * @author Rivex
  *
  */
-public class ServiceSystemParameter extends DataListParameter<New_Service_System>  {
+public class ServiceSystemParameter extends DataListParameter<Sys_key>  {
 
-	private New_Service_System entity = new New_Service_System();
-	private Class<New_Service_System> entityClazz = New_Service_System.class;
+	private Sys_key entity = new Sys_key();
+	private Class<Sys_key> entityClazz = Sys_key.class;
 
 	//区域
 	private Long city;
@@ -43,16 +44,17 @@ public class ServiceSystemParameter extends DataListParameter<New_Service_System
 	private Long M16;
 
 
-	public New_Service_System getEntity() {
+
+	public Sys_key getEntity() {
 		return entity;
 	}
-	public void setEntity(New_Service_System entity) {
+	public void setEntity(Sys_key entity) {
 		this.entity = entity;
 	}
-	public Class<New_Service_System> getEntityClazz() {
+	public Class<Sys_key> getEntityClazz() {
 		return entityClazz;
 	}
-	public void setEntityClazz(Class<New_Service_System> entityClazz) {
+	public void setEntityClazz(Class<Sys_key> entityClazz) {
 		this.entityClazz = entityClazz;
 	}
 	public Long getCity() {

@@ -85,14 +85,14 @@
 						<tr class="active">
 						<th width="10%" style="text-align: center;">所属账户</th>
 						<th width="6%" style="text-align: center;">话机类型</th>
-						<th width="6%" style="text-align: center;">M1</th>
-						<th width="6%" style="text-align: center;">M2</th>
-						<th width="6%" style="text-align: center;">M3</th>
-						<th width="6%" style="text-align: center;">M4</th>
-						<th width="6%" style="text-align: center;">M5</th>
-						<th width="6%" style="text-align: center;">M6</th>
-						<th width="6%" style="text-align: center;">M7</th>
-						<th width="6%" style="text-align: center;">M8</th>
+<!-- 						<th width="6%" style="text-align: center;">M1</th> -->
+<!-- 						<th width="6%" style="text-align: center;">M2</th> -->
+<!-- 						<th width="6%" style="text-align: center;">M3</th> -->
+<!-- 						<th width="6%" style="text-align: center;">M4</th> -->
+<!-- 						<th width="6%" style="text-align: center;">M5</th> -->
+<!-- 						<th width="6%" style="text-align: center;">M6</th> -->
+<!-- 						<th width="6%" style="text-align: center;">M7</th> -->
+<!-- 						<th width="6%" style="text-align: center;">M8</th> -->
 <!-- 						<th width="6%" style="text-align: center;">M9</th> -->
 <!-- 						<th width="6%" style="text-align: center;">M10</th> -->
 <!-- 						<th width="6%" style="text-align: center;">M12</th> -->
@@ -103,14 +103,14 @@
 <%-- 									<td>${s.id }</td> --%>
 									<td style="text-align: center;">${s.user.name }</td>
 									<td style="text-align: center;">${s.type.phoneType }</td>
-									<td style="text-align: center;"><a href="#" onclick="mod(${s.s1Name.id })" >M1</a>
-									<td style="text-align: center;"><a href="#" onclick="mod(${s.s2Name.id })" >M2</a>
-									<td style="text-align: center;"><a href="#" onclick="mod(${s.s3Name.id })" >M3</a>
-									<td style="text-align: center;"><a href="#" onclick="mod(${s.s4Name.id })" >M4</a>
-									<td style="text-align: center;"><a href="#" onclick="mod(${s.s5Name.id })" >M5</a>
-									<td style="text-align: center;"><a href="#" onclick="mod(${s.s6Name.id })" >M6</a>
-									<td style="text-align: center;"><a href="#" onclick="mod(${s.s7Name.id })" >M7</a>
-									<td style="text-align: center;"><a href="#" onclick="mod(${s.s8Name.id })" >M8</a>
+<%-- 									<td style="text-align: center;"><a href="#" onclick="mod(${s.s1Name.id })" >M1</a> --%>
+<%-- 									<td style="text-align: center;"><a href="#" onclick="mod(${s.s2Name.id })" >M2</a> --%>
+<%-- 									<td style="text-align: center;"><a href="#" onclick="mod(${s.s3Name.id })" >M3</a> --%>
+<%-- 									<td style="text-align: center;"><a href="#" onclick="mod(${s.s4Name.id })" >M4</a> --%>
+<%-- 									<td style="text-align: center;"><a href="#" onclick="mod(${s.s5Name.id })" >M5</a> --%>
+<%-- 									<td style="text-align: center;"><a href="#" onclick="mod(${s.s6Name.id })" >M6</a> --%>
+<%-- 									<td style="text-align: center;"><a href="#" onclick="mod(${s.s7Name.id })" >M7</a> --%>
+<%-- 									<td style="text-align: center;"><a href="#" onclick="mod(${s.s8Name.id })" >M8</a> --%>
 <%-- 									<td style="text-align: center;"><a href="#" onclick="mod(${s.s9Name.id })" >M9</a> --%>
 <%-- 									<td style="text-align: center;"><a href="#" onclick="mod(${s.s10Name.id })" >M10</a> --%>
 <%-- 									<td style="text-align: center;"><a href="#" onclick="mod(${s.s12Name.id })" >M11</a> --%>
