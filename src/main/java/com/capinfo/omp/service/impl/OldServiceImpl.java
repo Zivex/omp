@@ -25,8 +25,10 @@ import com.capinfo.framework.dao.impl.restriction.RestrictionExpression;
 import com.capinfo.framework.model.BaseEntity;
 import com.capinfo.framework.web.service.impl.CommonsDataOperationServiceImpl;
 import com.capinfo.omp.model.CardPerson;
+import com.capinfo.omp.model.New_Service_System;
 import com.capinfo.omp.model.Omp_Old_Info;
 import com.capinfo.omp.model.Service_System;
+import com.capinfo.omp.model.Sys_key;
 import com.capinfo.omp.parameter.OldParameter;
 import com.capinfo.omp.service.OldService;
 import com.capinfo.omp.utils.Page;
@@ -89,7 +91,7 @@ public class OldServiceImpl extends
 		Long autoIncId = ompOldInfo.getId();
 
 		if (autoIncId > 0) {
-			addOmpOldOrderInfo(autoIncId);
+			addOmpOldOrderInfo(ompOldInfo);
 			addOldKeyInfo(ompOldInfo, autoIncId);
 		}
 
@@ -465,6 +467,20 @@ public class OldServiceImpl extends
 		// setOldisIndividuation(id, 1);
 		return (update == 1);
 	}
+
+
+
+
+	// 新增老人自动匹配
+		public Boolean automatch(String id, String json) {
+			String sql = "INSERT INTO omp_old_order ("
+					+ "oldId, phoneName, communityOrderId, keyPointMessage)"
+					+ "  select t.ID,t.TELTYPE,t.HOUSEHOLD_COMMUNITY_ID,'" + json
+					+ "' from omp_old_info t WHERE t.ID = " + id;
+			int update = jdbcTemplate.update(sql);
+			// setOldisIndividuation(id, 1);
+			return (update == 1);
+		}
 
 	@SuppressWarnings("deprecation")
 	@Override
@@ -1704,38 +1720,61 @@ public class OldServiceImpl extends
 	}
 
 	// 匹配老人体系
-	public void addOmpOldOrderInfo(Long id) {
+	@SuppressWarnings("deprecation")
+	public void addOmpOldOrderInfo(Omp_Old_Info old) {
+		List<Map<String,Object>> list3 = null;
+		String sssql = "select count(*) from sys_key ss where ss.tellType_id="+old.getTeltype()+" and ss.uid="+old.getId()+" and  ss.user_falg=1;";
+		Long id = jdbcTemplate.queryForLong(sssql);
+		if(id==0){
+			String sqlsp = "select ok.`key`, ss.key_state,sp.serviceName,sp.serviceTell from sys_key sk left JOIN service_system ss on ss.skid = sk.id LEFT JOIN service_provider sp on sp.id = ss.sp_id left join omp_key ok on ok.id=ss.key_state where sk.community_id="+old.getHousehold_community_id()+" and sk.telltype_id="+old.getTeltype();
+			list3 = jdbcTemplate.queryForList(sqlsp);
+		}else{
+			String sidsql = "select ss.id from sys_key ss where ss.tellType_id="+old.getTeltype()+" and ss.uid="+old.getId()+" and  ss.user_falg=1;";
+			Long ssid = jdbcTemplate.queryForLong(sidsql);
+			String sql = "SELECT t.key_state,st.id stid, k.`key`, p.serviceName, p.serviceTell, t.sp_id, st.serviceName tname FROM service_system t LEFT JOIN omp_key k ON t.key_state = k.id LEFT JOIN omp_service_type st ON k.stId = st.id LEFT JOIN service_provider p ON t.sp_id = p.id where t.skid"+ssid;
 
-		Omp_Old_Info old = getGeneralService().getObjectById(
-				Omp_Old_Info.class, id);
-		SearchCriteriaBuilder<Service_System> searchCriteriaBuilder = new SearchCriteriaBuilder<Service_System>(
-				Service_System.class);
-		searchCriteriaBuilder.addQueryCondition("rid",
-				RestrictionExpression.EQUALS_OP,
-				old.getHousehold_community_id());
-		searchCriteriaBuilder.addQueryCondition("tellType_id",
-				RestrictionExpression.EQUALS_OP, old.getTeltype());
+			List<Map<String,Object>> list = jdbcTemplate.queryForList(sql);
+			for (Map<String, Object> map : list) {
+				Integer spid = (Integer) map.get("sp_id");
+				if(spid==0){
+					String sqlsp = "select ss.key_state,sp.serviceName,sp.serviceTell from sys_key sk left JOIN service_system ss on ss.skid = sk.id LEFT JOIN service_provider sp on sp.id = ss.sp_id where sk.community_id="+old.getHousehold_community_id()+" and sk.telltype_id="+old.getTeltype()+"and ss.key_state="+map.get("key_state");
+					List<Map<String,Object>> list2 = jdbcTemplate.queryForList(sqlsp);
+					map.put("serviceTell", list2.get(0).get("serviceTell"));
+				}
 
-		Service_System ss = getGeneralService().getObjectByCriteria(
-				searchCriteriaBuilder.build());
+			}
+		}
+
+
+
+//		Long id = ss.getId();
+//
+//
+//		String sql = "";
+
+
+
+
+
+
 
 		// [{"M1":"82660886","M2":"96003","M3":"67287180","M4":"4008331212","M5":"4008221299","M6":"56328888","M7":"13691139445","M8":"68887325","M9":"88982461","M10":"68873023","M11":"8008100032","M12":"999","M13":"84925513","M14":"84931297","M15":"8008100032","M16":"8008100032"}]
-		String json = "[{" + "\"M1\":\"" + ss.getM1() + "\"," + "\"M2\":\""
-				+ ss.getM2() + "\"," + "\"M3\":\"" + ss.getM3() + "\","
-				+ "\"M4\":\"" + ss.getM4() + "\"," + "\"M5\":\"" + ss.getM5()
-				+ "\"," + "\"M6\":\"" + ss.getM6() + "\"," + "\"M7\":\""
-				+ ss.getM7() + "\"," + "\"M8\":\"" + ss.getM8() + "\","
-				+ "\"M9\":\"" + ss.getM9() + "\"," + "\"M10\":\"" + ss.getM10()
-				+ "\"," + "\"M11\":\"" + ss.getM11() + "\"," + "\"M12\":\""
-				+ ss.getM12() + "\"," + "\"M13\":\"" + ss.getM13() + "\","
-				+ "\"M14\":\"" + ss.getM14() + "\"," + "\"M15\":\""
-				+ ss.getM15() + "\"," + "\"M16\":\"" + ss.getM16() + "\""
-				+ "}]";
-		String sql = "INSERT INTO omp_old_order ("
-				+ "oldId, phoneName, communityOrderId, keyPointMessage)"
-				+ "  select t.ID,t.TELTYPE,t.HOUSEHOLD_COMMUNITY_ID,'" + json
-				+ "' from omp_old_info t WHERE t.ID = " + id;
-		;
+//		String json = "[{" + "\"M1\":\"" + ss.getM1() + "\"," + "\"M2\":\""
+//				+ ss.getM2() + "\"," + "\"M3\":\"" + ss.getM3() + "\","
+//				+ "\"M4\":\"" + ss.getM4() + "\"," + "\"M5\":\"" + ss.getM5()
+//				+ "\"," + "\"M6\":\"" + ss.getM6() + "\"," + "\"M7\":\""
+//				+ ss.getM7() + "\"," + "\"M8\":\"" + ss.getM8() + "\","
+//				+ "\"M9\":\"" + ss.getM9() + "\"," + "\"M10\":\"" + ss.getM10()
+//				+ "\"," + "\"M11\":\"" + ss.getM11() + "\"," + "\"M12\":\""
+//				+ ss.getM12() + "\"," + "\"M13\":\"" + ss.getM13() + "\","
+//				+ "\"M14\":\"" + ss.getM14() + "\"," + "\"M15\":\""
+//				+ ss.getM15() + "\"," + "\"M16\":\"" + ss.getM16() + "\""
+//				+ "}]";
+//		String sql = "INSERT INTO omp_old_order ("
+//				+ "oldId, phoneName, communityOrderId, keyPointMessage)"
+//				+ "  select t.ID,t.TELTYPE,t.HOUSEHOLD_COMMUNITY_ID,'" + json
+//				+ "' from omp_old_info t WHERE t.ID = " + id;
+//		;
 
 	}
 
