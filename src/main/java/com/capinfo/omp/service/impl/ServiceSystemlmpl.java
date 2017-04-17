@@ -12,13 +12,9 @@ import org.springframework.stereotype.Service;
 import com.capinfo.common.model.SystemUser;
 import com.capinfo.framework.dao.SearchCriteriaBuilder;
 import com.capinfo.framework.dao.impl.restriction.RestrictionExpression;
-import com.capinfo.framework.model.BaseEntity;
-import com.capinfo.framework.service.GeneralService;
 import com.capinfo.framework.web.service.impl.CommonsDataOperationServiceImpl;
 import com.capinfo.omp.model.Enterprise;
 import com.capinfo.omp.model.New_Service_System;
-import com.capinfo.omp.model.Omp_Old_Info;
-import com.capinfo.omp.model.Service_System;
 import com.capinfo.omp.model.Sys_key;
 import com.capinfo.omp.parameter.EnterpriseParameter;
 import com.capinfo.omp.parameter.ServiceProviderParameter;
@@ -94,6 +90,10 @@ public class ServiceSystemlmpl extends
 		entity.setUser_falg(1L);
 		entity.setTelltype_id(telltype);
 		entity.setUid(user.getId());
+		
+		
+		
+		
 		if (parameter.getEntity().getCommunity_id() != null
 				&& parameter.getEntity().getCommunity_id() == 0
 				&& parameter.getEntity().getStreet_id() != 0) {
@@ -106,6 +106,12 @@ public class ServiceSystemlmpl extends
 				pubSavrSys(parameter, user, rid);
 			}
 		} else {
+			
+			
+			
+			
+			
+			
 			pubSavrSys(parameter, user, "0");
 
 
@@ -200,14 +206,31 @@ public class ServiceSystemlmpl extends
 		if (!"0".equals(rid)) {
 			entity.setCommunity_id(Long.parseLong(rid));
 		}
+		if("g".equals(user.getAccount_type())){
+			Long community_id = user.getRid();
+			Long stree_id = user.getParentid();
+			String regionSql = "select r.PARENTID from omp_region r where r.USE_FLAG=1 and r.id="+stree_id;
+			Long county_id = JdbcTemplate.queryForLong(regionSql);
+			entity.setCounty_id(county_id);
+			entity.setStreet_id(stree_id);
+			entity.setCommunity_id(community_id);
+		}
+		
+		
+		
+		
+		
+		
+		
+		
 		String sqlCheck = "select count(*) from sys_key s where s.user_falg=1 and s.uid="
-				+ user.getId()
+				+ entity.getUid()
 				+ "  and s.telltype_id= "
 				+ parameter.getTelltype() + " and s.community_id =" + rid;
 		int forInt = JdbcTemplate.queryForInt(sqlCheck);
 		if (forInt > 0) {
 			String getIdSql = "select s.id from sys_key s where s.user_falg=1 and s.uid="
-					+ user.getId()
+					+ entity.getUid()
 					+ "  and s.telltype_id= "
 					+ parameter.getTelltype() + " and s.community_id =" + rid;
 			long id = JdbcTemplate.queryForLong(getIdSql);
@@ -220,6 +243,10 @@ public class ServiceSystemlmpl extends
 		Map<String, Long> mapKeys = Permissions.mapKeys(parameter);
 		List<Map<String, Object>> mList = getQueryarchitecture(user,
 				parameter.getTelltype());
+		String delSql="DELETE FROM service_system   where skid=  "+sk_id;
+		JdbcTemplate.update(delSql);
+		
+		
 		for (Map<String, Object> map : mList) {
 			New_Service_System ss = new New_Service_System();
 			Long sid = mapKeys.get(map.get("key"));
@@ -246,7 +273,7 @@ public class ServiceSystemlmpl extends
 	@Override
 	public void updateServiceSystem(ServiceSystemParameter parameter,
 			SystemUser user) {
-		pubSavrSys(parameter, user, "0");
+		pubSavrSys(parameter, user, parameter.getEntity().getCommunity_id()+"");
 	}
 
 	@Override

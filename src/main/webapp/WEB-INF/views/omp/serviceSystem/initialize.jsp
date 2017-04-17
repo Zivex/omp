@@ -65,8 +65,8 @@
 					<div class="header-underline"></div>
 					<div class="col-md-4">
 						<a role="button" class="btn btn-default" href='#'
-							onclick='addsystem()'>创建公共服务体系</a> <a role="button"
-							class="btn btn-default" href='#' onclick='addprivate()'>创建服务体系</a>
+							onclick='addsystem()'>公共服务体系管理</a> <a role="button"
+							class="btn btn-default" href='#' onclick='addprivate()'>服务体系管理</a>
 					</div>
 
 
@@ -74,6 +74,7 @@
 					<br />
 						<table class="table">
 						<tr class="active">
+						<th width="6%" style="text-align: center;">编号</th>
 						<th width="6%" style="text-align: center;">企业名称</th>
 						<th width="10%" style="text-align: center;">所属账户</th>
 						<th width="6%" style="text-align: center;">话机类型</th>
@@ -81,6 +82,7 @@
 					</tr>
 							<c:forEach items="${list }" var="s">
 								<tr>
+									<td style="text-align: center;">${s.id }</td>
 									<td style="text-align: center;">${s.user.enterprise.name }</td>
 									<td style="text-align: center;">${s.user.name }</td>
 									<td style="text-align: center;">${s.type.phoneType }</td>

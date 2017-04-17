@@ -1,11 +1,6 @@
 package com.capinfo.omp.parameter;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.capinfo.framework.web.parameter.DataListParameter;
-import com.capinfo.omp.model.New_Service_System;
-import com.capinfo.omp.model.Service_System;
 import com.capinfo.omp.model.Sys_key;
 
 /**

@@ -42,6 +42,7 @@
 						<div style="float: left; width: 50%;">
 							<form id="architectureForm">
 							<input type="hidden" name="entity.id" id="sid" value="${ss.id }">
+							<input type="hidden" name="entity.user_falg" id="sid" value="${ss.user_falg }">
 							<input type="hidden" name="entity.county_id"   value="${ss.county_id }">
 							<input type="hidden" name="entity.street_id"   value="${ss.street_id }">
 							<input type="hidden" name="entity.community_id"   value="${ss.community_id }">
@@ -265,6 +266,7 @@
 		function updateSystem() {
 			var addForm = $("#architectureForm").serialize() + "&"
 					+ $("#conditions").serialize();
+			alert(addForm)
 			$.ajax({
 					type : "POST",
 					url : "${pageContext.request.contextPath }/serviceSystem/updateServiceSystem.shtml",

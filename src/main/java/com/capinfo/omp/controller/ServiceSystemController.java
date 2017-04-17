@@ -224,6 +224,8 @@ public class ServiceSystemController {
 	public String updateServiceSystem(
 			@ModelAttribute("eccomm_admin") SystemUser user,
 			ServiceSystemParameter parameter) {
+		Sys_key entity = parameter.getEntity();
+		parameter.setTelltype(entity.getTelltype_id());
 		serviceSystem.updateServiceSystem(parameter, user);
 		return "修改成功";
 	}
