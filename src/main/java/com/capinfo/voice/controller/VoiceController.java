@@ -246,9 +246,9 @@ public class VoiceController {
 	}
 
 	public void getVoList(ModelAndView mv, String current, String name,SystemUser user) {
-		if (StringUtils.isEmpty(current)) {
-			current = "1";
-		}
+//		if (StringUtils.isEmpty(current)) {
+//			current = "1";
+//		}
 		int count = voiceService.getvoicelist(name,user);
 		//count = count == 0 ? 1 : count;
 		Page page = new Page(current, count, "10");

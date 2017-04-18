@@ -6,20 +6,20 @@
 
 <div class="panel panel-default">
 	<form:form id="listForm" name="listForm" method="post" action="${pageContext.request.contextPath }/old/oldMatch/updete.shtml">
-		<input type="hidden" id="id" name="id" value="${detaMap.id }"/>
+		<input type="hidden" id="id" name="entity.id" value="${detaMap.id }"/>
 		<table>
 			<tr>
-				<td>姓名：</td><td><input type="text" id="name" name="name" value="${detaMap.name }"/></td>
+				<td>姓名：</td><td><input type="text" id="name" name="entity.name" value="${detaMap.name }"/></td>
 			</tr>
 			<tr>
-				<td>区县：</td><td><select name=county id="county1" onchange="udpCounty()" >
+				<td>区县：</td><td><select name=county id="county1" onchange="udpCounty1()" >
 					<c:forEach items="${Region.county }" var="county" >
 						<option class="county" value="${county.id }"<c:if test="${county.id==detaMap.household_county_id }">selected="selected"</c:if>>${county.name}</option>
 					</c:forEach>
 				</select></td>
 			</tr>
 			<tr>
-				<td>街道：</td><td><select name="street" id="street1" onchange="udpStreet()">
+				<td>街道：</td><td><select name="street" id="street1" onchange="udpStreet1()">
 						<c:forEach items="${Region.street }" var="street">
 							<option value="${street.id }"<c:if test="${street.id==detaMap.household_street_id }">selected="selected"</c:if>>${street.name}</option>
 						</c:forEach>
@@ -33,22 +33,22 @@
 				</select></td>
 			</tr>
 			<tr>
-				<td>座机号：</td><td><input type="text" id="zjnumber" name="zjnumber" value="${detaMap.zjnumber }"/></td>
+				<td>座机号：</td><td><input type="text" id="zjnumber" name="entity.zjnumber" value="${detaMap.zjnumber }"/></td>
 			</tr>
 			<tr>
-				<td>手机号：</td><td><input type="text" id="phone" name="phone" value="${detaMap.phone }"/></td>
+				<td>手机号：</td><td><input type="text" id="phone" name="entity.phone" value="${detaMap.phone }"/></td>
 			</tr>
 			<tr>
-				<td>居住地址：</td><td><input type="text" id="address" name="address" value="${detaMap.address }"/></td>
+				<td>居住地址：</td><td><input type="text" id="address" name="entity.address" value="${detaMap.address }"/></td>
 			</tr>
 			<tr>
-				<td>紧急联系人：</td><td><input type="text" id="emergencycontact" name="emergencycontact" value="${detaMap.emergencycontact }"/></td>
+				<td>紧急联系人：</td><td><input type="text" id="emergencycontact" name="entity.emergencycontact" value="${detaMap.emergencycontact }"/></td>
 			</tr>
 			<tr>
-				<td>紧急联系人电话：</td><td><input type="text" id="emergencycontacttle" name="emergencycontacttle" value="${detaMap.emergencycontacttle }"/></td>
+				<td>紧急联系人电话：</td><td><input type="text" id="emergencycontacttle" name="entity.emergencycontacttle" value="${detaMap.emergencycontacttle }"/></td>
 			</tr>
 			<tr>
-				<td>来电显示：</td><td><input type="radio"  name="call_id" value="1" <c:if test="${detaMap.call_id=='1' }">checked="checked"</c:if>/>是
+				<td>来电显示：</td><td><input type="radio"  name="entity.call_id" value="1" <c:if test="${detaMap.call_id=='1' }">checked="checked"</c:if>/>是
 
 				<input type="radio"  name="call_id" value="0" <c:if test="${detaMap.call_id=='0' }">checked="checked"</c:if>/> 否
 
@@ -57,7 +57,7 @@
 			<tr>
 				<td>话机类型：</td>
 				<td><c:if test="${sys == 'admin'}">
-						<select id="teltype" name="teltype">
+						<select id="teltype" name="entity.teltype">
 							<option value="1"
 								<c:if test="${detaMap.teltype=='1' }">selected="selected"</c:if>>居家型</option>
 							<option value="3"
@@ -74,14 +74,15 @@
 	</form:form>
 </div>
 <!-- Script	-->
-<SCRIPT type="text/javascript">
+<script type="text/javascript">
 var county1 = $("#county1");
 var street1 = $("#street1");
 var community1 = $("#community1");
-function udpCounty(){
+
+function udpCounty1(){
 	changCounty(county1,street1,community1);
 }
-function udpStreet(){
+function udpStreet1(){
 	changStreet(street1,community1);
 }
 
@@ -89,13 +90,11 @@ function udpStreet(){
 //修改街道
 function changCounty(county1,street1,community1){
 	community1.empty();
-	community1.append("<option>请选择</option>")
 	var id = county1.val();
 	$.post("${pageContext.request.contextPath }/old/oldMatch/getRegionById.shtml",
 			{id:id},
 			function(data){
 				street1.empty();
-				street1.append("<option>请选择</option>")
 				for(var i = 0;i<data.length;i++){
 					street1.append("<option value='"+data[i].id+"'>"+data[i].name+"</option>")
 				}
@@ -109,7 +108,6 @@ function changStreet(street1,community1){
 			{id:id},
 			function(data){
 				community1.empty();
-				community1.append("<option>请选择</option>")
 				for(var i = 0;i<data.length;i++){
 					community1.append("<option value='"+data[i].id+"'>"+data[i].name+"</option>")
 				}
@@ -122,46 +120,16 @@ function changCommunity(community1){
 
 
 
- 	$(document).ready(function(){
-		$("#county").change(function(){
-			$("#community").empty();
-			$("#community").append("<option>请选择</option>")
-			var id = $("#county").val();
-			$.post("${pageContext.request.contextPath }/old/oldMatch/getRegionById.shtml",
-					{id:id},
-					function(data){
-						$("#street").empty();
-						$("#street").append("<option>请选择</option>")
-						for(var i = 0;i<data.length;i++){
-							$("#street").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>")
-						}
-
-			});
-		});
-		$("#street").change(function(){
-			var id = $("#county").val();
-			$.post("${pageContext.request.contextPath }/old/oldMatch/getRegionById.shtml",
-					{id:id},
-					function(data){
-						$("#community").empty();
-						$("#community").append("<option>请选择</option>")
-						for(var i = 0;i<data.length;i++){
-							$("#community").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>")
-						}
-			});
-		});
-	});
-
 	function submit(){
 		$("#listForm").submit(function(){
 		});
  	}
-			var street = $("#street").val();
-			var community = $("#community").val();
-			if(street=="" || street==undefined){
-				return;
-			}
-			if(community=="" || community==undefined){
-				return;
-			}
-</SCRIPT>
+// 			var street = $("#street").val();
+// 			var community = $("#community").val();
+// 			if(street=="" || street==undefined){
+// 				return;
+// 			}
+// 			if(community=="" || community==undefined){
+// 				return;
+// 			}
+	</script>

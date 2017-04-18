@@ -65,6 +65,8 @@ public interface OldService extends CommonsDataOperationService<Omp_Old_Info, Ol
 	List<Map<String, Object>> getOldById1(String id);
 
 	Map getRegionList(Omp_Old_Info old);
+	
+	Map getRegionList1(Map<String, Object> map);
 
 	List<Map<String, Object>> getRegionById(String id);
 

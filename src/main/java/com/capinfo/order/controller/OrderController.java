@@ -1,15 +1,9 @@
 package com.capinfo.order.controller;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.lang3.StringUtils;
-import org.opensaml.util.resource.HttpResource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -17,21 +11,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
-
 import com.capinfo.common.model.SystemUser;
-import com.capinfo.omp.model.Omp_Old_Info;
 import com.capinfo.omp.model.Omp_old_order;
 import com.capinfo.omp.service.OldService;
 import com.capinfo.omp.service.OrderService;
-import com.capinfo.omp.service.impl.OrderServiceImpl;
-import com.capinfo.omp.utils.JsonUtil;
 import com.capinfo.omp.utils.Page;
 import com.capinfo.omp.ws.client.ClientGetDataService;
-import com.capinfo.omp.ws.client.ClientGetVoiceDataService;
 import com.capinfo.omp.ws.model.ImKey;
-
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
 
 @Controller
 @RequestMapping("/order")

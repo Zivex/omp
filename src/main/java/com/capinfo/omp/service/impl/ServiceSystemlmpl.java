@@ -226,7 +226,7 @@ public class ServiceSystemlmpl extends
 		String sqlCheck = "select count(*) from sys_key s where s.user_falg=1 and s.uid="
 				+ entity.getUid()
 				+ "  and s.telltype_id= "
-				+ parameter.getTelltype() + " and s.community_id =" + rid;
+				+ parameter.getTelltype() + " and s.community_id =" + entity.getCommunity_id();
 		int forInt = JdbcTemplate.queryForInt(sqlCheck);
 		if (forInt > 0) {
 			String getIdSql = "select s.id from sys_key s where s.user_falg=1 and s.uid="

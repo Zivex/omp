@@ -32,9 +32,7 @@
 						<th width="12%" style="text-align: center;">社区</th>
 						<th width="10%" style="text-align: center;">编号</th>
 						<th width="10%" style="text-align: center;">话机类型</th>
-<%-- 						<c:if test="${sys == 'admin'}"> --%>
 							<th width="10%" style="text-align: center;">所属账户</th>
-<%-- 						</c:if> --%>
 						<th width="10%" style="text-align: center;">来电显示</th>
 						<th width="8%" style="text-align: center;">个性化</th>
 						<th width="10%" style="text-align: center;">操作</th>
@@ -52,10 +50,7 @@
 							<td style="text-align: center;">${old.household_community.name}</td>
 							<td style="text-align: center;">${old.account_type}</td>
 							<td style="text-align: center;">${old.phoneType.phoneType}</td>
-<%-- 							<c:if test="${sys == 'admin'}"> --%>
-								<td style="text-align: center;">${old.user_name}</td>
-<%-- 							</c:if> --%>
-
+								<td style="text-align: center;">${old.user.name}</td>
 							<c:if test="${old.call_id == 1}">
 								<td style="text-align: center; color: green">是</td>
 							</c:if>
@@ -80,15 +75,13 @@
 									</button>
 									<ul class="dropdown-menu" role="menu">
 									<c:if
-											test="${old.agent_id == sessionScope.eccomm_admin.id || sessionScope.eccomm_admin.id == 1 }">
+											test="${old.agent_id == sessionScope.eccomm_admin.id || sessionScope.eccomm_admin.leave == 0 }">
 										<li><a onclick="toupd(${old.id})">修改</a></li>
 										<li><a href="###" onclick="deleteUser(${old.id},this);">删除</a></li>
 									</c:if>
 										<li><a
 											onclick="see('${old.certificates_number}',${old.id})">查看</a></li>
-<%-- 										<c:if test="${sys ==  'admin'}"> --%>
 											<li><a onclick="ompKeyModify(${old.id} )">指令个性化</a></li>
-<%-- 										</c:if> --%>
 									</ul>
 								</div>
 							</td>
@@ -140,9 +133,6 @@
 			location.href = "delete.shtml?id="+uid;
 			alert("删除成功！");
 			window.location.href="${pageContext.request.contextPath}/old/oldMatch/list.shtml?name=&idCard=&zjNumber=&county=&street=&community=&isGenerationOrder=&isindividuation=";
-	// 		$("#item_entity_id").val(uid);
-	// 		$("#listForm").attr("action", '<c:url value="/old/oldMatch/delete.shtml"/>');
-	// 		$("#listForm").submit();
 		}
 	}
 

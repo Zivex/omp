@@ -1,5 +1,7 @@
 package com.capinfo.omp.model;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -9,8 +11,11 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import com.capinfo.assistant.platform.ws.card.model.CardPersonMessageBack;
+import com.capinfo.common.model.SystemUser;
 import com.capinfo.framework.model.BaseEntity;
 import com.capinfo.region.model.OmpRegion;
 
@@ -53,11 +58,12 @@ public class Omp_Old_Info  implements BaseEntity {
 	private Long ispersonalized;
 	private Long updNumber;
 	private Long isGenerationOrder;
-	private String creationTime;
-	private String updateTime;
+	private Date creationTime;
+	private Date updateTime;
 	private int isindividuation;
 	private Long sync;
 	private Long agent_id;
+	private SystemUser user;
 	private Long num;
 	private Long ordernum;
 	private Long call_id;
@@ -253,22 +259,22 @@ public class Omp_Old_Info  implements BaseEntity {
 	public void setIsGenerationOrder(Long isGenerationOrder) {
 		this.isGenerationOrder = isGenerationOrder;
 	}
-
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "creationTime", length = 256)
-	public String getCreationTime() {
+	public Date getCreationTime() {
 		return creationTime;
 	}
 
-	public void setCreationTime(String creationTime) {
+	public void setCreationTime(Date creationTime) {
 		this.creationTime = creationTime;
 	}
-
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "updateTime", length = 256)
-	public String getUpdateTime() {
+	public Date getUpdateTime() {
 		return updateTime;
 	}
 
-	public void setUpdateTime(String updateTime) {
+	public void setUpdateTime(Date updateTime) {
 		this.updateTime = updateTime;
 	}
 
@@ -424,6 +430,17 @@ public class Omp_Old_Info  implements BaseEntity {
 	public void setSiji(Integer siji) {
 		this.siji = siji;
 	}
+	@ManyToOne(targetEntity = SystemUser.class, fetch = FetchType.LAZY)
+	@JoinColumn(name = "agent_id", insertable = false, updatable = false)
+	public SystemUser getUser() {
+		return user;
+	}
+
+	public void setUser(SystemUser user) {
+		this.user = user;
+	}
+	
+	
 
 	
 	

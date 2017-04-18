@@ -50,31 +50,6 @@ public class VoiceServiceImpl extends CommonsDataOperationServiceImpl<Omp_voice_
 	public int getCount(String name, String idCard, String zjNumber,
 			String county, String street, String community,SystemUser user) {
 		int count = oldService.getCount(name, idCard, zjNumber, county, street, community, null, null, user);
-		
-		
-		
-//		if (!StringUtils.isEmpty(name)) {
-//			name = " AND I.`NAME` LIKE '%" + name + "%'";
-//		}
-//		if (!StringUtils.isEmpty(idCard)) {
-//			idCard = " AND I.CERTIFICATES_NUMBER = '" + idCard + "'";
-//		}
-//		if (!StringUtils.isEmpty(zjNumber)) {
-//			zjNumber = "  AND I.ZJNUMBER = '" + zjNumber + "'";
-//		}
-//		if (!StringUtils.isEmpty(county)) {
-//			county = " AND I.HOUSEHOLD_COUNTY_ID = '" + county + "'";
-//		}
-//		if (!StringUtils.isEmpty(street)) {
-//			street = " AND I.HOUSEHOLD_STREET_ID = '" + street + "'";
-//		}
-//		if (!StringUtils.isEmpty(community)) {
-//			community = " AND I.HOUSEHOLD_COMMUNITY_ID = '" + community + "'";
-//		}
-//
-//		String sql = "SELECT count(i.ID) FROM	OMP_OLD_INFO i WHERE i.STATE = 1 "
-//				+ name + idCard + zjNumber + county + street + community;
-//		int maxRows = JdbcTemplate.queryForInt(sql);
 		return count;
 	}
 
@@ -232,58 +207,6 @@ public class VoiceServiceImpl extends CommonsDataOperationServiceImpl<Omp_voice_
 
 		return orderList;
 		
-		
-		
-		
-		
-		
-//		
-//		
-//		
-//		String uName = "";
-////		if (!"admin".equals(user.getLogonName())) {
-////			uName = " AND o.agent_id  =  '" + user.getId() + "'";
-////		}
-//		if (!StringUtils.isEmpty(name)) {
-//			name = " AND oldo.`NAME` LIKE '%" + name + "%'";
-//		}
-//		if (!StringUtils.isEmpty(idCard)) {
-//			idCard = " AND oldo.idCard = '" + idCard + "'";
-//		}
-//		if (!StringUtils.isEmpty(zjNumber)) {
-//			zjNumber = " AND oldo.ZJNUMBER = '" + zjNumber + "'";
-//		}
-//		if (!StringUtils.isEmpty(county)) {
-//			county = " AND i.HOUSEHOLD_COUNTY_ID = '" + county + "'";
-//		}
-//		if (!StringUtils.isEmpty(street)) {
-//			street = " AND i.HOUSEHOLD_STREET_ID = '" + street + "'";
-//		}
-//		if (!StringUtils.isEmpty(community)) {
-//			community = " AND i.HOUSEHOLD_COMMUNITY_ID = '" + community + "'";
-//		}
-//		if (!StringUtils.isEmpty(send_flag)) {
-//			send_flag = " AND oldo.send_flag = '" + send_flag + "'";
-//		}
-//		if (!StringUtils.isEmpty(execute_flag)) {
-//			execute_flag = " AND oldo.execute_flag = '" + execute_flag + "'";
-//		}
-//		String sql = "SELECT oldo.* FROM "
-//				+ "(SELECT o.startTime,old.id,o.id orderId,old.`NAME`,old.idcard,old.community,old.county,old.street,"
-//				+ "old.ZJNUMBER,o.send_flag,o.execute_flag FROM omp_voice_order o,"
-//				+ "(SELECT i.id,i.`NAME`,i.CERTIFICATES_NUMBER idcard,r1.`NAME` community,r2.`NAME`"
-//				+ " county,r3.`NAME` street,i.ZJNUMBER FROM omp_old_info i,omp_region r1,omp_region r2,"
-//				+ "omp_region r3	WHERE	i.HOUSEHOLD_COMMUNITY_ID = r1.ID"
-//				+ " AND i.HOUSEHOLD_COUNTY_ID = r2.ID	AND i.HOUSEHOLD_STREET_ID = r3.ID "
-//				+ county + street + community + ") old"
-//				+ "	WHERE	o.oldId = old.id " + uName
-//				+ "AND o.send_flag = 1 ) oldo WHERE 1=1"
-//				+ name + idCard + zjNumber + send_flag + execute_flag
-//				+" order BY oldo.startTime deSC"
-//				+ " LIMIT " + (page.getCurrentPage() - 1) * page.getPageSize()
-//				+ ", " + page.getPageSize();
-//		List<Map<String, Object>> list = JdbcTemplate.queryForList(sql);
-		//return orderList;
 	}
 
 	@Override
@@ -321,48 +244,6 @@ public class VoiceServiceImpl extends CommonsDataOperationServiceImpl<Omp_voice_
 		
 		
 		
-		
-		
-//		
-//		
-//		if (!StringUtils.isEmpty(name)) {
-//			name = " AND oldo.`NAME` LIKE '%" + name + "%'";
-//		}
-//		if (!StringUtils.isEmpty(idCard)) {
-//			idCard = " AND oldo.idCard = '" + idCard + "'";
-//		}
-//		if (!StringUtils.isEmpty(zjNumber)) {
-//			zjNumber = " AND oldo.ZJNUMBER = '" + zjNumber + "'";
-//		}
-//		if (!StringUtils.isEmpty(county)) {
-//			county = " AND i.HOUSEHOLD_COUNTY_ID = '" + county + "'";
-//		}
-//		if (!StringUtils.isEmpty(street)) {
-//			street = " AND i.HOUSEHOLD_STREET_ID = '" + street + "'";
-//		}
-//		if (!StringUtils.isEmpty(community)) {
-//			community = " AND i.HOUSEHOLD_COMMUNITY_ID = '" + community + "'";
-//		}
-//		if (!StringUtils.isEmpty(send_flag)) {
-//			send_flag = " AND oldo.send_flag = '" + send_flag + "'";
-//		}
-//		if (!StringUtils.isEmpty(execute_flag)) {
-//			execute_flag = " AND oldo.execute_flag = '" + execute_flag + "'";
-//		}
-//		String sql = "SELECT count(oldo.id) FROM "
-//				+ "(SELECT old.id,old.`NAME`,old.idcard,old.community,old.county,old.street,"
-//				+ "old.ZJNUMBER,o.send_flag,o.execute_flag FROM omp_voice_order o,"
-//				+ "(SELECT i.id,i.`NAME`,i.CERTIFICATES_NUMBER idcard,r1.`NAME` community,r2.`NAME`"
-//				+ " county,r3.`NAME` street,i.ZJNUMBER FROM omp_old_info i,omp_region r1,omp_region r2,"
-//				+ "omp_region r3	WHERE	i.HOUSEHOLD_COMMUNITY_ID = r1.ID"
-//				+ " AND i.HOUSEHOLD_COUNTY_ID = r2.ID	AND i.HOUSEHOLD_STREET_ID = r3.ID "
-//				+ county
-//				+ street
-//				+ community
-//				+ ") old"
-//				+ "	WHERE	o.oldId = old.id AND o.send_flag = 1) oldo WHERE 1=1 "
-//				+ name + idCard + zjNumber + send_flag + execute_flag;
-//		int forInt = JdbcTemplate.queryForInt(sql);
 		return count;
 	}
 
@@ -416,15 +297,8 @@ public class VoiceServiceImpl extends CommonsDataOperationServiceImpl<Omp_voice_
 		String string = jsonObject.toString();
 		String replace = string.replace("\\", "");
 		StringBuffer stringBuffer = new StringBuffer(replace);
-		// int x;// 定义两变量
-		// Random ne = new Random();// 实例化一个random的对象ne
-		// x = ne.nextInt(99999 - 10000 + 1) + 1000;// 为变量赋随机值10000-99999
-		// String time = new SimpleDateFormat("yyyyMMddHHmmss").format(new
-		// Date());
-		// String t = time + x;
 		StringBuffer insert = stringBuffer.insert(1,
 				"\"generateSerialNumber\":\"" + t + "\",");
-
 		System.out.println(insert);
 		return insert.toString();
 	}

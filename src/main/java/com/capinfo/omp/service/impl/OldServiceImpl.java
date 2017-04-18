@@ -71,6 +71,7 @@ public class OldServiceImpl extends
 		ompOldInfo.setNum(1L);
 		ompOldInfo.setOrdernum(1L);
 		ompOldInfo.setIspersonalized(0L);
+		ompOldInfo.setCreationTime(new Date());
 		if ("b".equals(user.getAccount_type())
 				|| "m".equals(user.getAccount_type())) {
 			ompOldInfo.setYiji(user.getYiji());
@@ -136,19 +137,19 @@ public class OldServiceImpl extends
 	public Integer checkOldIsHave(String phoneid, String cardID) {
 		String sql = "SELECT COUNT(*) FROM  (SELECT * FROM omp_old_info t WHERE  t.ZJNUMBER = "
 				+ phoneid + ") a ";
-		String sql1 = "SELECT COUNT(*) FROM  (SELECT * FROM omp_old_info t WHERE  t.CERTIFICATES_NUMBER ='"
-				+ cardID + "') a1 ";
+//		String sql1 = "SELECT COUNT(*) FROM  (SELECT * FROM omp_old_info t WHERE  t.CERTIFICATES_NUMBER ='"
+//				+ cardID + "') a1 ";
 		int count = jdbcTemplate.queryForInt(sql);// 用queryForInt方法！！！
-		int count1 = jdbcTemplate.queryForInt(sql1);// 用queryForInt方法！！！
-		if (count * count1 > 0) {
-			return 3;
-		}
+		//int count1 = jdbcTemplate.queryForInt(sql1);// 用queryForInt方法！！！
+//		if (count * count1 > 0) {
+//			return 3;
+//		}
 		if (count > 0) {
 			return 1;// 大座机号已存在
 		}
-		if (count1 > 0) {
-			return 2;// 老人身份证号已存在
-		}
+//		if (count1 > 0) {
+//			return 2;// 老人身份证号已存在
+//		}
 		return 0;
 	}
 
@@ -197,93 +198,6 @@ public class OldServiceImpl extends
 
 		int count = getGeneralService().getCount(selectList.build());
 
-		//
-		// // 查询用户区域
-		// String rname = "";
-		// if("g".equals(user.getAccount_type())){
-		// switch (user.getLeave()) {
-		// case 3:
-		// rname = " and i.HOUSEHOLD_COUNTY_ID = " + user.getRid();
-		// break;
-		// case 4:
-		// rname = " and i.HOUSEHOLD_STREET_ID = " + user.getRid();
-		// break;
-		// case 5:
-		// rname = " and i.HOUSEHOLD_COMMUNITY_ID = " + user.getRid();
-		// break;
-		// }
-		// }
-		// String ji = "";
-		// if("m".equals(user.getAccount_type()) ||
-		// "b".equals(user.getAccount_type())){
-		// switch (user.getLeave()) {
-		// case 1: String idSsql =
-		// "select t.id from composition t where t.prient_id is null and t.cid="+user.getId();
-		// int id = jdbcTemplate.queryForInt(idSsql);
-		// ji = " and i.yiji = " + id;
-		// break;
-		// case 2:
-		// ji = " and i.yiji = " + user.getYiji();
-		// break;
-		// case 3:
-		// ji = " and i.erji = " + user.getErji();
-		// break;
-		// case 4:
-		// ji = " and i.sjji = " + user.getSjji();
-		// break;
-		// case 5:
-		// ji = " and i.siji = " + user.getSiji();
-		// break;
-		// }
-		// }
-		//
-		// if (name != null && !StringUtils.isEmpty(name)) {
-		// name = " AND I.NAME  LIKE  '%" + name + "%'";
-		// } else {
-		// name = "";
-		// }
-		// if (idCard != null && !StringUtils.isEmpty(idCard)) {
-		// idCard = " AND I.CERTIFICATES_NUMBER = '" + idCard + "'";
-		// }
-		// if (zjNumber != null && !StringUtils.isEmpty(zjNumber)) {
-		// zjNumber = "  AND I.ZJNUMBER = '" + zjNumber + "'";
-		// }
-		// if (county != null && idCard != null && !StringUtils.isEmpty(county))
-		// {
-		// county = " AND I.HOUSEHOLD_COUNTY_ID = '" + county + "'";
-		// }
-		// if (street != null && !StringUtils.isEmpty(street)) {
-		// street = " AND I.HOUSEHOLD_STREET_ID = '" + street + "'";
-		// }
-		// if (community != null && !StringUtils.isEmpty(community)) {
-		// community = " AND I.HOUSEHOLD_COMMUNITY_ID = '" + community + "'";
-		// }
-		// if (isGenerationOrder != null
-		// && !StringUtils.isEmpty(isGenerationOrder)) {
-		// isGenerationOrder = " AND I.isGenerationOrder = '"
-		// + isGenerationOrder + "'";
-		// }
-		//
-		// if (isindividuation != null && !StringUtils.isEmpty(isindividuation))
-		// {
-		// isindividuation = " AND I.isindividuation = '" + isindividuation
-		// + "'";
-		// }
-		// /*
-		// * if (!StringUtils.isEmpty(creationTime)) { creationTime =
-		// * " AND I.creationTime like '%"+creationTime+"%'"; }
-		// */
-		// String sql =
-		// "SELECT count(i.ID) FROM	OMP_OLD_INFO i WHERE i.STATE = 1 "
-		// + rname
-		// + ji
-		// + name
-		// + idCard
-		// + zjNumber
-		// + county
-		// + street
-		// + community + isGenerationOrder + isindividuation;
-		// int maxRows = jdbcTemplate.queryForInt(sql);
 		return count;
 	}
 
@@ -322,7 +236,10 @@ public class OldServiceImpl extends
 
 	@Override
 	public List<Map<String, Object>> getOldById1(String id) {
-		String sql = "SELECT I.*,R. NAME SNAM FROM OMP_OLD_INFO i, OMP_REGION r WHERE I.STATE = 1 AND I.HOUSEHOLD_COMMUNITY_ID = R.ID AND i.ID = "
+//		String sql = "SELECT I.*,R. NAME SNAM FROM OMP_OLD_INFO i, OMP_REGION r WHERE I.STATE = 1 AND I.HOUSEHOLD_COMMUNITY_ID = R.ID AND i.ID = "
+//				+ id;
+//		List<Map<String, Object>> list = jdbcTemplate.queryForList(sql);
+		String sql = "SELECT I.*,o.keyPointMessage Kp, R.NAME SNAME FROM OMP_OLD_INFO i,OMP_REGION r,omp_old_order o WHERE I.STATE = 1 AND I.HOUSEHOLD_COMMUNITY_ID = R.ID AND o.oldId= i.ID AND i.ID = "
 				+ id;
 		List<Map<String, Object>> list = jdbcTemplate.queryForList(sql);
 		return list;
@@ -341,6 +258,24 @@ public class OldServiceImpl extends
 		String sql3 = "select r.id,r.name from Omp_Region r where r.levelid = 5 and r.parentid = "
 				+old.getHousehold_street_id();
 //				+ map.get("HOUSEHOLD_STREET_ID");
+		List<Map<String, Object>> list3 = jdbcTemplate.queryForList(sql3);
+		maps.put("county", list1);
+		maps.put("street", list2);
+		maps.put("community", list3);
+		return maps;
+	}
+	@Override
+	public Map<String, Object> getRegionList1(Map<String, Object> map) {
+		Map<String, Object> maps = new HashMap<String, Object>();
+		String sql1 = "select r.id,r.name from Omp_Region r where r.levelid = 3";
+		List<Map<String, Object>> list1 = jdbcTemplate.queryForList(sql1);
+		String sql2 = "select r.id,r.name from Omp_Region r where r.levelid = 4 and r.parentid = "
+				+ map.get("HOUSEHOLD_COUNTY_ID");
+//				+old.getHousehold_county_id();
+		List<Map<String, Object>> list2 = jdbcTemplate.queryForList(sql2);
+		String sql3 = "select r.id,r.name from Omp_Region r where r.levelid = 5 and r.parentid = "
+				+ map.get("HOUSEHOLD_STREET_ID");
+//		+old.getHousehold_street_id();
 		List<Map<String, Object>> list3 = jdbcTemplate.queryForList(sql3);
 		maps.put("county", list1);
 		maps.put("street", list2);
@@ -1626,8 +1561,8 @@ public class OldServiceImpl extends
 			searchCriteriaBuilder.addQueryCondition("isGenerationOrder",
 					RestrictionExpression.EQUALS_OP, isGenerationOrder);
 		} else if (user.getLeave() > 1){
-			searchCriteriaBuilder.addQueryCondition("agent_id",
-					RestrictionExpression.EQUALS_OP, user.getId());
+//			searchCriteriaBuilder.addQueryCondition("agent_id",
+//					RestrictionExpression.EQUALS_OP, user.getId());
 			searchCriteriaBuilder.addQueryCondition("call_id",
 					RestrictionExpression.EQUALS_OP, 1);
 		}
@@ -1652,8 +1587,10 @@ public class OldServiceImpl extends
 					rname = "household_community_id";
 					break;
 				}
-				searchCriteriaBuilder.addQueryCondition(rname,
-						RestrictionExpression.EQUALS_OP, user.getRid());
+				if(!rname.isEmpty()){
+					searchCriteriaBuilder.addQueryCondition(rname,
+							RestrictionExpression.EQUALS_OP, user.getRid());
+				}
 			} else if ("m".equals(user.getAccount_type())
 					|| "b".equals(user.getAccount_type())) {
 				String ji = "";
@@ -1751,7 +1688,11 @@ public class OldServiceImpl extends
 				if(spid==0){
 					String sqlsp = "select ss.key_state,sp.serviceName,sp.serviceTell from sys_key sk left JOIN service_system ss on ss.skid = sk.id LEFT JOIN service_provider sp on sp.id = ss.sp_id where sk.community_id="+old.getHousehold_community_id()+" and sk.telltype_id="+old.getTeltype()+" and sk.uid=1 and ss.key_state="+map.get("id");
 					List<Map<String,Object>> list2 = jdbcTemplate.queryForList(sqlsp);
-					map.put("serviceTell", list2.get(0).get("serviceTell"));	//json数据
+					if(list2.size()==0){
+						map.put("serviceTell", "96003");
+					}else{
+						map.put("serviceTell", list2.get(0).get("serviceTell"));	//json数据
+					}
 				}
 
 			}

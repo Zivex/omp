@@ -20,6 +20,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -48,11 +49,11 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 /**
- *
+ * 
  * 展示主页面
- *
+ * 
  * @author Administrator
- *
+ * 
  */
 @Controller
 @RequestMapping("/old")
@@ -63,17 +64,21 @@ public class OldForController {
 	private OldService oldService;
 
 	@Autowired
+	private JdbcTemplate jdbcTemplate;
+
+	@Autowired
 	private GeneralService generalService;
 
 	@RequestMapping("/oldMatch/list.shtml")
-	public ModelAndView list(@ModelAttribute("eccomm_admin") SystemUser user,String pageSize,
-			String current, String name, String idCard, String zjNumber,
-			String county, String street, String community,
+	public ModelAndView list(@ModelAttribute("eccomm_admin") SystemUser user,
+			String pageSize, String current, String name, String idCard,
+			String zjNumber, String county, String street, String community,
 			String isGenerationOrder, String isindividuation,
 			String creationTime, HttpServletRequest request) {
 		ModelAndView mv = new ModelAndView("/omp/old/initial");
 		getList(mv, current, name, idCard, zjNumber, county, street, community,
-				isGenerationOrder, isindividuation, creationTime, user,pageSize);
+				isGenerationOrder, isindividuation, creationTime, user,
+				pageSize);
 
 		// oldService.saveLogger("2", "老人信息表", "lixing", "1");
 		return mv;
@@ -81,7 +86,7 @@ public class OldForController {
 
 	/**
 	 * 老人列表查询
-	 *
+	 * 
 	 * @param current
 	 * @param name
 	 * @param idCard
@@ -95,14 +100,15 @@ public class OldForController {
 	 * @return
 	 */
 	@RequestMapping("/oldMatch/listtoo.shtml")
-	public ModelAndView listtoo(String current,String pageSize, String name, String idCard,
-			String zjNumber, String county, String street, String community,
-			String isGenerationOrder, String isindividuation,
+	public ModelAndView listtoo(String current, String pageSize, String name,
+			String idCard, String zjNumber, String county, String street,
+			String community, String isGenerationOrder, String isindividuation,
 			String creationTime, Integer call_id,
 			@ModelAttribute("eccomm_admin") SystemUser user) {
 		ModelAndView mv = new ModelAndView("/omp/old/list");
 		getList(mv, current, name, idCard, zjNumber, county, street, community,
-				isGenerationOrder, isindividuation, creationTime, user,pageSize);
+				isGenerationOrder, isindividuation, creationTime, user,
+				pageSize);
 		// LogRecord.logger("2", "", "", "", "2");
 		return mv;
 	}
@@ -110,7 +116,7 @@ public class OldForController {
 	public void getList(ModelAndView mv, String current, String name,
 			String idCard, String zjNumber, String county, String street,
 			String community, String isGenerationOrder, String isindividuation,
-			String creationTime, SystemUser user,String pageSize) {
+			String creationTime, SystemUser user, String pageSize) {
 
 		if (StringUtils.isEmpty(current)) {
 			current = "1";
@@ -145,7 +151,7 @@ public class OldForController {
 
 	/**
 	 * 导入老人Excel
-	 *
+	 * 
 	 * @param request
 	 * @param excelFile
 	 * @return
@@ -162,7 +168,8 @@ public class OldForController {
 		String num = "";
 		if (excelFile != null && !"".equals(excelFile)) {
 			InputStream fis = excelFile.getInputStream();
-			Map<String, Object> map = importEmployeeByPoi(fis,user.getAccount_type());
+			Map<String, Object> map = importEmployeeByPoi(fis,
+					user.getAccount_type());
 			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");// 设置日期格式
 			String format = df.format(new Date());// new Date()为获取当前系统时间
 			String zjNumber = "{'landLineNumber':'";// 导入成功后将座机号码同步到中航
@@ -182,17 +189,19 @@ public class OldForController {
 					// 通过座机号，身份证号判断是否存在老人 1大座机号已存在 2身份证号已存在 0不存在
 					int t = oldService.checkOldIsHave(ompOldInfo.getZjnumber(),
 							ompOldInfo.getCertificates_number());
-					if (t == 3) {
-						errorstr = errorstr + "第" + nb + "行:身份证号和大座机号重复 \n";
-						enb++;
-
-					} else if (t == 1) {
+					// if (t == 3) {
+					// errorstr = errorstr + "第" + nb + "行:身份证号和大座机号重复 \n";
+					// enb++;
+					//
+					// } else
+					if (t == 1) {
 						errorstr = errorstr + "第" + nb + "行:大座机号重复 \n ";
 						enb++;
-					} else if (t == 2) {
-						errorstr = errorstr + "第" + nb + "行:身份证号重复 \n";
-						enb++;
 					}
+					// else if (t == 2) {
+					// errorstr = errorstr + "第" + nb + "行:身份证号重复 \n";
+					// enb++;
+					// }
 					if (enb == 0) {
 						linkNbr = ompOldInfo.getZjnumber();
 						// 判断
@@ -227,7 +236,7 @@ public class OldForController {
 
 	/**
 	 * POI:解析Excel文件中的数据并把每行数据封装成一个实体
-	 *
+	 * 
 	 * @param fis
 	 *            文件输入流
 	 * @param string
@@ -257,13 +266,13 @@ public class OldForController {
 			String community = getCellValue(row.getCell(3));
 			String tel_type = getCellValue(row.getCell(10));
 
-			 //根据市区名称查询市区ID
+			// 根据市区名称查询市区ID
 			String countyId = oldService.getIdByName(area, 3);
 			// 根据街道名称查询街道ID
 			String streetId = oldService.getIdByName(street, 4);
 			// 根据社区名称查询社区ID
 			String communityId = oldService.getIdByName(community, 5);
-			//查询社区编码
+			// 查询社区编码
 			String comNUm = oldService.getIdByComCod(community, 5);
 
 			int tel_num = oldService.getTel_type(tel_type);
@@ -283,11 +292,11 @@ public class OldForController {
 			old_info.setPhone(getCellValue(row.getCell(7)));
 			old_info.setEmergencycontact(getCellValue(row.getCell(8)));
 			old_info.setEmergencycontacttle(getCellValue(row.getCell(9)));
-			//话机类型
+			// 话机类型
 			old_info.setTeltype(String.valueOf(tel_num));
 			old_info.setAddress(getCellValue(row.getCell(11)));
 			old_info.setCall_id(callId);
-			old_info.setAccount_type(acc+comNUm);
+			old_info.setAccount_type(acc + comNUm);
 			infos.add(old_info);
 
 		}
@@ -329,7 +338,7 @@ public class OldForController {
 
 	/**
 	 * 去修改老人数据
-	 *
+	 * 
 	 * @param id
 	 * @return
 	 */
@@ -338,7 +347,7 @@ public class OldForController {
 	public ModelAndView upd(String id) {
 		ModelAndView mv = new ModelAndView("/omp/old/upd");
 		Omp_Old_Info old = oldService.getOldById(id);
-//		Map<String, Object> map = list.get(0);
+		// Map<String, Object> map = list.get(0);
 		Map Region = oldService.getRegionList(old);
 		mv.addObject("detaMap", old);
 		mv.addObject("Region", Region);
@@ -347,7 +356,7 @@ public class OldForController {
 
 	/**
 	 * 查看老人数据
-	 *
+	 * 
 	 * @param id
 	 * @return
 	 */
@@ -355,117 +364,122 @@ public class OldForController {
 	@ResponseBody
 	public ModelAndView seePerson(String id, String cardId) {
 		ModelAndView mv = new ModelAndView("/omp/old/see");
-		Omp_Old_Info old = generalService.getObjectById(Omp_Old_Info.class, Long.parseLong(id));
+		Omp_Old_Info old = generalService.getObjectById(Omp_Old_Info.class,
+				Long.parseLong(id));
 		List<Map<String, Object>> person = oldService.getPerson(cardId);
 		if (person.size() != 0) {
 			Map<String, Object> mapPreson = person.get(0);
 			mv.addObject("mapPreson", mapPreson);
 		}
-//
-//
-//
-//		List<Map<String, Object>> list = oldService.getOldById(id);
-//		Map<String, Object> map = list.get(0);
-//		List<Map<String, Object>> person = oldService.getPerson(cardId);
-//		if (person.size() != 0) {
-//			Map<String, Object> mapPreson = person.get(0);
-//			mv.addObject("mapPreson", mapPreson);
-//		}
-//		Map Region = oldService.getRegionList(map);
-//		mv.addObject("Region", Region);
+		//
+		//
+		//
+		// List<Map<String, Object>> list = oldService.getOldById(id);
+		// Map<String, Object> map = list.get(0);
+		// List<Map<String, Object>> person = oldService.getPerson(cardId);
+		// if (person.size() != 0) {
+		// Map<String, Object> mapPreson = person.get(0);
+		// mv.addObject("mapPreson", mapPreson);
+		// }
+		// Map Region = oldService.getRegionList(map);
+		// mv.addObject("Region", Region);
 		mv.addObject("detaMap", old);
 		return mv;
 	}
 
 	/**
 	 * 去查看老人数据
-	 *
+	 * 
 	 * @param id
 	 * @return
 	 */
-//	@SuppressWarnings("rawtypes")
-//	@RequestMapping("/oldMatch/oldinfo.shtml")
-//	@ResponseBody
-//	public ModelAndView oldinfo(String id) {
-//		ModelAndView mv = new ModelAndView("/omp/old/oldInfo");
-//		ArrayList arrayList = new ArrayList<>();
-//		List<Map<String, Object>> list = oldService.getOldById(id);
-//		List<Map<String, Object>> list1 = oldService.getOldById1(id);
-//		// 判断是否老人已经设置指令了
-//		if (list.size() > 0 && list.get(0).get("Kp") != null) {
-//			Map<String, Object> map = list.get(0);
-//			Map Region = oldService.getRegionList(map);
-//			String kpLiString = (String) map.get("Kp");
-//			if (kpLiString != null && !"".equals(kpLiString)) {
-//				JSONObject jsonObject = JsonUtil.getJson(kpLiString);
-//				JSONArray json1 = JsonUtil.getJson1(jsonObject);
-//				if (json1.size() > 0) {
-//					for (int i = 0; i < json1.size(); i++) {
-//						JSONObject job = json1.getJSONObject(i); // 遍历 jsonarray 数组，把每一个对象转成json 对象
-//						arrayList.add(job);
-//					}
-//				}
-//			}
-//
-//			mv.addObject("arrayList", arrayList);
-//			mv.addObject("detaMap", map);
-//			mv.addObject("Region", Region);
-//		} else {
-//			Map<String, Object> map = list1.get(0);
-//			Map Region = oldService.getRegionList(map);
-//			mv.addObject("arrayList", arrayList);
-//			mv.addObject("detaMap", map);
-//			mv.addObject("Region", Region);
-//		}
-//
-//		return mv;
-//	}
+	@SuppressWarnings("rawtypes")
+	@RequestMapping("/oldMatch/oldinfo.shtml")
+	@ResponseBody
+	public ModelAndView oldinfo(String id) {
+		ModelAndView mv = new ModelAndView("/omp/old/oldInfo");
+		ArrayList arrayList = new ArrayList<>();
+		List<Map<String, Object>> list = oldService.getOldById1(id);
+		// 判断是否老人已经设置指令了
+		if (list.size() > 0 && list.get(0).get("Kp") != null) {
+			Map<String, Object> map = list.get(0);
+			Map Region = oldService.getRegionList1(map);
+			String kpLiString = (String) map.get("Kp");
+			if (kpLiString != null && !"".equals(kpLiString)) {
+				JSONObject jsonObject = JsonUtil.getJson(kpLiString);
+				JSONArray json1 = JsonUtil.getJson1(jsonObject);
+				if (json1.size() > 0) {
+					for (int i = 0; i < json1.size(); i++) {
+						JSONObject job = json1.getJSONObject(i); // 遍历 jsonarray
+																	// 数组，把每一个对象转成json
+																	// 对象
+						arrayList.add(job);
+					}
+				}
+			}
+
+			mv.addObject("arrayList", arrayList);
+			mv.addObject("detaMap", map);
+			mv.addObject("Region", Region);
+		} else {
+			Map<String, Object> map = list.get(0);
+			Map Region = oldService.getRegionList1(map);
+			mv.addObject("arrayList", arrayList);
+			mv.addObject("detaMap", map);
+			mv.addObject("Region", Region);
+		}
+
+		return mv;
+	}
 
 	/**
 	 * 去修改老人话机数据
-	 *
+	 * 
 	 * @param id
 	 * @return
 	 */
-//	@RequestMapping("/oldMatch/ompKeyModify.shtml")
-//	@ResponseBody
-//	public ModelAndView ompKeyModify(String id, String typeid) {
-//		ModelAndView mv = new ModelAndView("/omp/old/ompKeyModify");
-//		ArrayList arrayList = new ArrayList<>();
-//		// List<Map<String,Object>> Region = oldService.getOldById(id);
-//
-//		List<Map<String, Object>> Infolist = oldService
-//				.getOldKeyPointMessage(id);
-//		List<Map<String, Object>> list = oldService.getOldById(id);
-//
-//		// 判断是否老人已经设置指令了
-//		if (list.size() > 0 && list.get(0).get("Kp") != null) {
-//			Map<String, Object> map = list.get(0);
-//			Map Region = oldService.getRegionList(map);
-//			String kpLiString = (String) map.get("Kp");
-//			if (kpLiString != null && !"".equals(kpLiString)) {
-//				JSONObject jsonObject = JsonUtil.getJson(kpLiString);
-//				JSONArray json1 = JsonUtil.getJson1(jsonObject);
-//				if (json1.size() > 0) {
-//					for (int i = 0; i < json1.size(); i++) {
-//						JSONObject job = json1.getJSONObject(i); // 遍历 jsonarray// 数组，把每一个对象转成// json 对象
-//						arrayList.add(job);
-//					}
-//				}
-//			}
-//
-//			mv.addObject("detaMap", arrayList);
-//			mv.addObject("hxUserID", id);
-//		}
-//
-//		mv.addObject("detaMap", arrayList);
-//		mv.addObject("hxUserID", id);
-//		return mv;
-//	}
+	@RequestMapping("/oldMatch/ompKeyModify.shtml")
+	@ResponseBody
+	public ModelAndView ompKeyModify(String id, String typeid) {
+		ModelAndView mv = new ModelAndView("/omp/old/ompKeyModify");
+		ArrayList arrayList = new ArrayList<>();
+		// List<Map<String,Object>> Region = oldService.getOldById(id);
+
+		List<Map<String, Object>> Infolist = oldService
+				.getOldKeyPointMessage(id);
+		List<Map<String, Object>> list = oldService.getOldById1(id);
+
+		// 判断是否老人已经设置指令了
+		if (list.size() > 0 && list.get(0).get("Kp") != null) {
+			Map<String, Object> map = list.get(0);
+			Map Region = oldService.getRegionList1(map);
+			String kpLiString = (String) map.get("Kp");
+			if (kpLiString != null && !"".equals(kpLiString)) {
+				JSONObject jsonObject = JsonUtil.getJson(kpLiString);
+				JSONArray json1 = JsonUtil.getJson1(jsonObject);
+				if (json1.size() > 0) {
+					for (int i = 0; i < json1.size(); i++) {
+						JSONObject job = json1.getJSONObject(i); // 遍历
+																	// jsonarray//
+																	// 数组，把每一个对象转成//
+																	// json 对象
+						arrayList.add(job);
+					}
+				}
+			}
+
+			mv.addObject("detaMap", arrayList);
+			mv.addObject("hxUserID", id);
+		}
+
+		mv.addObject("detaMap", arrayList);
+		mv.addObject("hxUserID", id);
+		return mv;
+	}
 
 	/**
 	 * 老人个性化数据修改
-	 *
+	 * 
 	 * @param id
 	 * @return
 	 */
@@ -486,27 +500,44 @@ public class OldForController {
 
 	/**
 	 * 修改老人数据
-	 *
+	 * 
 	 * @param id
 	 * @return
 	 */
+	@SuppressWarnings("deprecation")
 	@RequestMapping("/oldMatch/updete.shtml")
-	public String updete(HttpServletRequest request ,Omp_Old_Info old) {
-		String county = request.getParameter("county");
-		String street = request.getParameter("street");
-		String community = request.getParameter("community");
-		Omp_Old_Info newOld = oldService.getOldById(String.valueOf(old.getId()));
+	public String updete(HttpServletRequest request, 
+			OldParameter parameter,
+			@ModelAttribute("eccomm_admin") SystemUser user) {
+		Omp_Old_Info old = parameter.getEntity();
+		
+		String county = parameter.getCounty();
+		String street = parameter.getStreet();
+		String community = parameter.getCommunity();
+		Omp_Old_Info newOld = oldService
+				.getOldById(String.valueOf(old.getId()));
 		newOld.setName(old.getName());
 		newOld.setHousehold_county_id(county);
 		newOld.setHousehold_street_id(street);
 		newOld.setHousehold_community_id(community);
+		if (!community.equals(old.getHousehold_community())
+				&& "g".equals(user.getAccount_type())) {
+			String sql = "select t.id from users t where t.ENABLED = 1 and  t.rid = "
+					+ community;
+			long id = jdbcTemplate.queryForLong(sql);
+			newOld.setAgent_id(id);
+		}
+
 		newOld.setZjnumber(old.getZjnumber());
 		newOld.setPhone(old.getPhone());
 		newOld.setAddress(old.getAddress());
 		newOld.setEmergencycontact(old.getEmergencycontact());
 		newOld.setEmergencycontacttle(old.getEmergencycontacttle());
-		newOld.setTeltype(old.getTel());
-		newOld.setTeltype(old.getTeltype());
+		newOld.setTel(old.getTel());
+		if (user.getId() == 1) {
+			newOld.setTeltype(old.getTeltype());
+		}
+
 		newOld.setCall_id(old.getCall_id());
 		oldService.updOldById(newOld);
 		return "redirect:/old/oldMatch/list.shtml?name=&idCard=&zjNumber=&county=&street=&community=&isGenerationOrder=&creationTime=";
@@ -514,7 +545,7 @@ public class OldForController {
 
 	/**
 	 * 省市街区三级联动
-	 *
+	 * 
 	 * @param id
 	 * @return
 	 */
@@ -530,7 +561,7 @@ public class OldForController {
 
 	/**
 	 * 停用老人信息
-	 *
+	 * 
 	 * @param id
 	 * @return
 	 */
@@ -542,7 +573,7 @@ public class OldForController {
 
 	/**
 	 * 老人导入
-	 *
+	 * 
 	 * @return
 	 */
 	@RequestMapping("/Import/toImport.shtml")
@@ -553,7 +584,7 @@ public class OldForController {
 
 	/**
 	 * 生成指令
-	 *
+	 * 
 	 * @param ids
 	 * @return
 	 */
@@ -635,7 +666,8 @@ public class OldForController {
 	 */
 	@RequestMapping("/oldMatch/exportExcel.shtml")
 	public void exportExcel(NativeWebRequest request,
-			HttpServletResponse response, OldParameter parameter,@ModelAttribute("eccomm_admin") SystemUser user) {
+			HttpServletResponse response, OldParameter parameter,
+			@ModelAttribute("eccomm_admin") SystemUser user) {
 		try {
 			OutputStream stream = response.getOutputStream();
 			response.setContentType("application/msexcel;charset=UTF-8");
@@ -644,7 +676,7 @@ public class OldForController {
 					"attachment;filename=\""
 							+ ExportUtils.getExportFileName(request, "老人信息"
 									+ DateUtils.currentDateTime()) + ".xlsx");
-			ExcelBuilder exportExcel = oldService.exportExcel(parameter,user);
+			ExcelBuilder exportExcel = oldService.exportExcel(parameter, user);
 			exportExcel.writeToStream(stream);
 			stream.close();
 		} catch (Exception e) {
@@ -653,6 +685,5 @@ public class OldForController {
 		;
 
 	}
-
 
 }
