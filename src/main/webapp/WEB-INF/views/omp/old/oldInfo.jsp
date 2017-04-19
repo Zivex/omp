@@ -56,7 +56,7 @@
 				</select></td>
 			</tr>
 		</table>
-		
+
 		<table class="table table-hover table-middle" role="grid">
 				<thead>
 					<tr class="active">
@@ -64,19 +64,19 @@
 						<th >号码</th>
 					</tr>
 				</thead>
-				
+
 				<tbody>
 					<c:forEach var="old" items="${arrayList}" varStatus="sta">
 						<tr>
 							<td>
 							   <c:if test="${old.key=='M1'}">养老驿站</c:if>
 							   <c:if test="${old.key=='M2'}">咨询投诉</c:if>
-							   <c:if test="${old.key=='M3'}">老人用具</c:if>
+							   <c:if test="${old.key=='M3'}">老年用具</c:if>
 							   <c:if test="${old.key=='M4'}">居家护理</c:if>
 							   <c:if test="${old.key=='M5'}">家电服务</c:if>
 							   <c:if test="${old.key=='M6'}">家政服务</c:if>
 							   <c:if test="${old.key=='M7'}">日用百货</c:if>
-							   <c:if test="${old.key=='M8'}">老人餐桌</c:if>
+							   <c:if test="${old.key=='M8'}">老年餐桌</c:if>
 							   <c:if test="${old.key=='M9'}">卫生站</c:if>
 							   <c:if test="${old.key=='M10'}">居委会</c:if>
 							   <c:if test="${old.key=='M11'}">社区广播</c:if>
@@ -84,14 +84,14 @@
 							   <c:if test="${old.key=='M13'}">中心号码</c:if>
 							   <c:if test="${old.key=='M14'}">----</c:if>
 							   <c:if test="${old.key=='M15'}">----</c:if>
-							   <c:if test="${old.key=='M16'}">----</c:if>							
+							   <c:if test="${old.key=='M16'}">----</c:if>
 							</td>
 							<td>${old.value}</td>
-							
+
 						</tr>
 					</c:forEach>
 				</tbody>
-				
+
 			</table>
 	</form:form>
 </div>

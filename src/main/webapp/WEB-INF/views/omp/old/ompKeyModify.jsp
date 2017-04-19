@@ -15,7 +15,7 @@
 <%-- 		<form:hidden path="current" id="current" /> --%>
 		<input id="item_entity_id" type="hidden" name="id" value="">
 		<input id="currentPage" type="hidden" name="current" value="">
-	
+
 			<!-- tools -->
 			<!-- 		<div class="panel-heading"></div> -->
 			<table class="table table-hover table-middle" role="grid">
@@ -31,12 +31,12 @@
 							<td>
 							   <c:if test="${old.key=='M1'}">养老驿站</c:if>
 							   <c:if test="${old.key=='M2'}">咨询投诉</c:if>
-							   <c:if test="${old.key=='M3'}">老人用具</c:if>
+							   <c:if test="${old.key=='M3'}">老年用具</c:if>
 							   <c:if test="${old.key=='M4'}">居家护理</c:if>
 							   <c:if test="${old.key=='M5'}">家电服务</c:if>
 							   <c:if test="${old.key=='M6'}">家政服务</c:if>
 							   <c:if test="${old.key=='M7'}">日用百货</c:if>
-							   <c:if test="${old.key=='M8'}">老人餐桌</c:if>
+							   <c:if test="${old.key=='M8'}">老年餐桌</c:if>
 							   <c:if test="${old.key=='M9'}">卫生站</c:if>
 							   <c:if test="${old.key=='M10'}">居委会</c:if>
 							   <c:if test="${old.key=='M11'}">社区广播</c:if>
@@ -47,22 +47,22 @@
 							   <c:if test="${old.key=='M16'}">----</c:if>
 							</td>
 							<td><input type="text" id="${old.key}" name="nametext" value="${old.value}"/></td>
-							
+
 						</tr>
 					</c:forEach>
 				</tbody>
-				
+
 				<tr>
 				<input type="hidden" id="useridInput"  value="${hxUserID}"/>
 				<td colspan="2"><input type="button" onclick="hxsubmit()" value="修改"/></td>
 			</tr>
 			</table>
-		
+
 	</form:form>
-		
+
 </div>
 <div>
-	
+
 	<SCRIPT type="text/javascript">
 	function hxsubmit(){
 		var jsonObj = $("input[name='nametext']");
@@ -73,7 +73,7 @@
 			var myid = jsonObj.eq(i).attr("id");
 			json = json + "\"" + myid + "\"" ;
 			json = json + ":\"" + myvalue + "\"" ;
-			
+
 			if (myvalue == ""  || myvalue==undefined){
 				isOK = 0;
 				break;
@@ -91,10 +91,10 @@
 		$.post("${pageContext.request.contextPath }/old/oldMatch/uploadOldIndividuation.shtml",
 				{id:id,json:json},
 			function(data){
-				alert(data);	
+				alert(data);
 		});
 	}
 </SCRIPT>
 </div>
 
-	
+
