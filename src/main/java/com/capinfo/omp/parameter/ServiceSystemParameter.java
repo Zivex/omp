@@ -14,6 +14,7 @@ public class ServiceSystemParameter extends DataListParameter<Sys_key>  {
 	private Class<Sys_key> entityClazz = Sys_key.class;
 
 	//区域
+	private Long sid;
 	private Long city;
 	private Long street;
 	private Long county;
@@ -40,6 +41,12 @@ public class ServiceSystemParameter extends DataListParameter<Sys_key>  {
 
 
 
+	public Long getSid() {
+		return sid;
+	}
+	public void setSid(Long sid) {
+		this.sid = sid;
+	}
 	public Sys_key getEntity() {
 		return entity;
 	}

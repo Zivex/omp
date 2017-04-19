@@ -68,59 +68,18 @@
 							onclick='addsystem()'>公共服务体系管理</a> <a role="button"
 							class="btn btn-default" href='#' onclick='addprivate()'>服务体系管理</a>
 					</div>
+					<div class="header-underline"></div>
+
+					<c:url var="queryForm" value="/serviceSystem/list.shtml" />
+							<form:form id="command" role="form" class="form-inline" action="${queryForm}" method="post">
+								<input id="pageNo" name="currentPieceNum" type="hidden" value="1">
+								<input id="pageSizes" name="perPieceSize" type="hidden" value="10">
+								</form:form>
 
 
-					<div class="page-body">
-					<br />
-						<table class="table">
-						<tr class="active">
-						<th width="6%" style="text-align: center;">编号</th>
-						<th width="6%" style="text-align: center;">企业名称</th>
-						<th width="10%" style="text-align: center;">所属账户</th>
-						<th width="6%" style="text-align: center;">话机类型</th>
-						<th width="10%" style="text-align: center;">操作</th>
-					</tr>
-							<c:forEach items="${list }" var="s">
-								<tr>
-									<td style="text-align: center;">${s.id }</td>
-									<td style="text-align: center;">${s.user.enterprise.name }</td>
-									<td style="text-align: center;">${s.user.name }</td>
-									<td style="text-align: center;">${s.type.phoneType }</td>
-									</td>
-									<td style="text-align: center;">
-										<div class="btn-group">
-											<button type="button"
-												class="btn btn-default btn-sm dropdown-toggle"
-												data-toggle="dropdown">
-												操作 <span class="caret"></span>
-											</button>
-											<ul class="dropdown-menu" role="menu">
-												<li><a onclick="see(${s.id})">查看</a></li>
-												<li><a onclick="updateSystem(${s.id})">修改</a></li>
-												<li><a href="###" onclick="deleteSystem(${s.id})">删除</a></li>
-												<%-- 										<c:if test="${sys ==  'admin'}"> --%>
-												<%-- 										</c:if> --%>
-											</ul>
-										</div>
-									</td>
-								</tr>
-							</c:forEach>
-
-						</table>
-
-						<div class="panel-footer">
-		<table class="table table-pagination">
-			<thead>
-				<tr>
-					<td align="left">共<span class="text-danger"><strong>${count}</strong></span>条记录（每页<span class="text-info"><strong>${command.perPieceSize}</strong></span>条记录）&emsp;
-					</td>
-					<td align="right" height="28"><div id="result_page"></div></td>
-				</tr>
-			</thead>
-		</table>
-	</div>
-
-					</div>
+					<div id="resultDiv">
+							<%@ include file="/WEB-INF/views/omp/serviceSystem/list.jsp"%>
+						</div>
 				</div>
 			</div>
 			<!-- ./main -->
@@ -137,7 +96,6 @@
 	<script type="text/javascript">
 
 		$(function() {
-			initPagination(<c:out value="${count}"/>,<c:out value="${command.perPieceSize}"/>,<c:out value="${command.currentPieceNum}"/>);
 			initalizeSiderBar();
 			selectMenu("o_sys");
 			initQueryForm();
@@ -169,20 +127,20 @@
 		}
 		//修改体系
 		function updateSystem(sid){
-			location.href = "udpArchitecture.shtml?id="+sid;
+			location.href = "udpArchitecture.shtml?sid="+sid;
 		}
 		//查看体系
 		function see(sid){
-			location.href = "seeArchitecture.shtml?id="+sid;
+			location.href = "seeArchitecture.shtml?sid="+sid;
 		}
-		//查看体系
-		function deleteSystem(id){
+		//删除
+		function deleteSystem(sid){
 			$.ajax({
 				type: "POST",
 				url: "${pageContext.request.contextPath }/serviceSystem/delService.shtml",
 				async: false,
 				data: {
-					id : id
+					sid : sid
 				},
 				success: function(data) {
 					alert(data);

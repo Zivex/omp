@@ -214,6 +214,9 @@ public class SystemUserServiceImpl extends CommonsDataOperationServiceImpl<Syste
 	public void recharge(SystemUser admin, Long money,Long id) {
 		SystemUser user = getGeneralService().getObjectById(SystemUser.class, id);
 		Long holdCount = user.getNum();	//当前持有条数
+		if(holdCount == null){
+			holdCount = 0L;
+		}
 		Long afterCount = holdCount+money;	//充值后的条数
 		RechargeLog log = new RechargeLog();
 		user.setNum(afterCount);

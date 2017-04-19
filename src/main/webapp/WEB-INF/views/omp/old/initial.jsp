@@ -27,21 +27,19 @@
 			<%@ include file="/WEB-INF/views/menu/menu_adm.jsp"%>
 			<!-- ./menu -->
 			<!-- main -->
-			<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main"
-				role="main">
+			<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main" role="main">
 				<div>
 					<div class="page-header">
 						<h1>
-							<i class="fa fa-user fa-fw"></i>老人管理 <span id="backspan"><input
-								type="button" id="backButton" onclick="hxBackClick()" value="返回" /></span>
+							<i class="fa fa-user fa-fw"></i>老人管理 <span id="backspan"><input type="button"
+								id="backButton" onclick="hxBackClick()" value="返回" /></span>
 						</h1>
 					</div>
 					<div class="header-underline"></div>
 					<div id="displayDiv">
 						<div class="operatorDiv">
 							<c:url var="queryForm" value="/old/oldMatch/listtoo.shtml" />
-							<form:form id="command" role="form" class="form-inline"
-								action="${queryForm}" method="post">
+							<form:form id="command" role="form" class="form-inline" action="${queryForm}" method="post">
 								<%-- 								action="${queryForm}" method="post"> --%>
 								<input id="pageNo" name="current" type="hidden" value="1">
 								<input id="pageSizes" name="pageSize" type="hidden" value="10">
@@ -50,14 +48,11 @@
 										<td>姓名：</td>
 										<td><input type="text" id="name" name="name" /></td>
 										<td>身份证号码：</td>
-										<td><input type="text" value="${idCard }" id="idCard"
-											name="idCard" /></td>
+										<td><input type="text" value="${idCard }" id="idCard" name="idCard" /></td>
 										<td>座机号：</td>
-										<td><input type="text" value="${zjNumber }" id="zjNumber"
-											name="zjNumber" /></td>
+										<td><input type="text" value="${zjNumber }" id="zjNumber" name="zjNumber" /></td>
 										<td>是否生成指令</td>
-										<td><select id="isGenerationOrder"
-											name="isGenerationOrder">
+										<td><select id="isGenerationOrder" name="isGenerationOrder">
 												<option value="${isGenerationOrder }">--请选择--</option>
 												<option value="0">未生成指令</option>
 												<option value="1">已生成指令</option>
@@ -94,13 +89,10 @@
 										</select></td>
 									</tr>
 									<tr>
-										<td><input class="btn btn-default" type="submit"
-											value="查询">
+										<td><input class="btn btn-default" type="submit" value="查询">
 										<td><input class="btn btn-danger" type="reset" value="重置">
-										<td><a class="btn btn-default" href="#"
-											onclick="importInformation()" role="button">导入</a>
-										<td><a class="btn btn-default" href="#"
-											onclick="exportExcel()" role="button">导出</a>
+										<td><a class="btn btn-default" href="#" onclick="importInformation()" role="button">导入</a>
+										<td><a class="btn btn-default" href="#" onclick="exportExcel()" role="button">导出</a>
 									</tr>
 								</table>
 							</form:form>

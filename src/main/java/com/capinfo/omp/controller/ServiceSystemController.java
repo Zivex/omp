@@ -66,6 +66,31 @@ public class ServiceSystemController {
 		// serviceSystem.getSSPList();
 		return mv;
 	}
+	/**
+	 * 查询
+	 *
+	 * @param user
+	 * @param parameter
+	 * @return
+	 */
+	@RequestMapping("/list.shtml")
+	public ModelAndView getList(
+			@ModelAttribute("eccomm_admin") SystemUser user,
+			ServiceSystemParameter parameter) {
+		ModelAndView mv = new ModelAndView("/omp/serviceSystem/list");
+		// 当前页
+		// int currentPieceNum = parameter.getCurrentPieceNum();
+		// //每页数量
+		// int perPieceSize = parameter.getPerPieceSize();
+		//
+		HashMap<String, Object> ssList = serviceSystem.getSSList(user,
+				parameter);
+		mv.addObject("count", ssList.get("count"));
+		mv.addObject("list", ssList.get("list"));
+		mv.addObject("command", parameter);
+		// serviceSystem.getSSPList();
+		return mv;
+	}
 
 	/**
 	 * 跳转到创建服务体系
@@ -160,7 +185,7 @@ public class ServiceSystemController {
 			ServiceSystemParameter parameter) {
 		ModelAndView mv = new ModelAndView("/omp/serviceSystem/updArchitecture");
 		Sys_key ss = generalService.getObjectById(Sys_key.class,
-				parameter.getId());
+				parameter.getSid());
 		mv.addObject("ss", ss);
 		mv.addObject("command", parameter);
 		List<OmpRegion> cityS = enterpriseService.queryCounty(0L);
@@ -186,7 +211,7 @@ public class ServiceSystemController {
 			ServiceSystemParameter parameter) {
 		ModelAndView mv = new ModelAndView("/omp/serviceSystem/seeArchitecture");
 		Sys_key ss = generalService.getObjectById(Sys_key.class,
-				parameter.getId());
+				parameter.getSid());
 		mv.addObject("ss", ss);
 		mv.addObject("command", parameter);
 		List<OmpRegion> cityS = enterpriseService.queryCounty(0L);
@@ -213,7 +238,7 @@ public class ServiceSystemController {
 			@ModelAttribute("eccomm_admin") SystemUser user,
 			ServiceSystemParameter parameter) {
 		Sys_key ss = generalService.getObjectById(Sys_key.class,
-				parameter.getId());
+				parameter.getSid());
 		List<Map<String, Object>> list = serviceSystem.getupdateSys(ss);
 		return list;
 	}
@@ -234,8 +259,8 @@ public class ServiceSystemController {
 	@ResponseBody
 	public String delServiceSystem(
 			@ModelAttribute("eccomm_admin") SystemUser user,
-			ServiceSystemParameter parameter,Long id) {
-		Sys_key ss = generalService.getObjectById(Sys_key.class,id);
+			ServiceSystemParameter parameter) {
+		Sys_key ss = generalService.getObjectById(Sys_key.class,parameter.getSid());
 		ss.setUser_falg(0L);
 		generalService.saveOrUpdate(ss);
 		return "删除成功";

@@ -5,16 +5,14 @@
 
 <c:if test="${not empty messages }">
 	<div class="alert alert-warning alert-dismissable">
-		<button type="button" class="close" data-dismiss="alert"
-			aria-hidden="true">&times;</button>
+		<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
 		${messages.message}
 	</div>
 
 </c:if>
 <div class="panel panel-default">
 	${messageCount }
-	<form:form id="listForm" name="listForm" method="post"
-		action='${queryForm }'>
+	<form:form id="listForm" name="listForm" method="post" action='${queryForm }'>
 		<%-- 		<form:hidden path="id" id="item_entity_id" /> --%>
 		<%-- 		<form:hidden path="current" id="current" /> --%>
 		<input id="item_entity_id" type="hidden" name="id" value="">
@@ -42,8 +40,12 @@
 							<td>${item.SCOPE_DELIVERY}</td>
 							<td>${item.SERVER_TYPE}</td>
 							<td>${item.SERVER_TEL}</td>
-							<c:if test="${item.IS_VALID == 1 }"><td style="color: green;">是</td></c:if>
-							<c:if test="${item.IS_VALID == 0 }"><td style="color: red;">否</td></c:if>
+							<c:if test="${item.IS_VALID == 1 }">
+								<td style="color: green;">是</td>
+							</c:if>
+							<c:if test="${item.IS_VALID == 0 }">
+								<td style="color: red;">否</td>
+							</c:if>
 							<%-- <td><a onclick="hxtoServerInfo(${item.id})">详情</a></td> --%>
 							<td style="text-align: center;">
 								<div class="btn-group">
@@ -107,7 +109,6 @@ function serverPro(id){
 function deleteService(uid,tr){
 	var sure=confirm("删除操作是不可逆的，确认删除该信息吗？");
 	if(sure){
-		
 		location.href = "deleteService.shtml?id="+uid;
 		alert("删除成功！");
 		location.replace() 

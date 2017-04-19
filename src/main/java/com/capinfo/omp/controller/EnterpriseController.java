@@ -513,6 +513,7 @@ public class EnterpriseController {
 	mv.addObject("mList",map.get("list"));
 	mv.addObject("DataTotalCount",map.get("count"));
 	mv.addObject("PerPieceSize",parameter.getPageSize());
+	mv.addObject("CurrentPieceNum", parameter.getCurrentPieceNum());
 	return mv;
 	}
     /**

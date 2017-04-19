@@ -1685,7 +1685,7 @@ public class OldServiceImpl extends
 			}
 			for (Map<String, Object> map : alllist) {
 				Integer spid = (Integer) map.get("sp_id");
-				if(spid==0){
+				if(spid == null || spid==0){
 					String sqlsp = "select ss.key_state,sp.serviceName,sp.serviceTell from sys_key sk left JOIN service_system ss on ss.skid = sk.id LEFT JOIN service_provider sp on sp.id = ss.sp_id where sk.community_id="+old.getHousehold_community_id()+" and sk.telltype_id="+old.getTeltype()+" and sk.uid=1 and ss.key_state="+map.get("id");
 					List<Map<String,Object>> list2 = jdbcTemplate.queryForList(sqlsp);
 					if(list2.size()==0){

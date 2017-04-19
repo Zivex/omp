@@ -216,13 +216,6 @@ public class ServiceSystemlmpl extends
 			entity.setCommunity_id(community_id);
 		}
 		
-		
-		
-		
-		
-		
-		
-		
 		String sqlCheck = "select count(*) from sys_key s where s.user_falg=1 and s.uid="
 				+ entity.getUid()
 				+ "  and s.telltype_id= "
