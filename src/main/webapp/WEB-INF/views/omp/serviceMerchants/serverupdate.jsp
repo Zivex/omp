@@ -85,6 +85,7 @@
 					<td width="25%">服务区域描述</td>
 					<td><form:input path="entity.addressDescribe" /></td>
 				</tr>
+				<c:if test="${openRegions==1 }">
 				<tr>
 					<td width="25%">服务区域</td>
 					<td>
@@ -110,9 +111,10 @@
 						<ul id="ss"></ul>
 					</td>
 				</tr>
+					</c:if>
 				<tr>
 					<td width="25%">渠道发展来源</td>
-					<td><form:input path="entity.channels" /></td>
+					<td><form:input path="entity.user.name" disabled="true"  /></td>
 				</tr>
 				<tr>
 					<td width="25%">联系人</td>

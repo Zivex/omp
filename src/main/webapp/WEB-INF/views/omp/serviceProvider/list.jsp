@@ -13,13 +13,7 @@
 <div class="panel panel-default">
 	${messageCount }
 	<form:form id="listForm" name="listForm" method="post" action='${queryForm }'>
-		<%-- 		<form:hidden path="id" id="item_entity_id" /> --%>
-		<%-- 		<form:hidden path="current" id="current" /> --%>
-		<input id="item_entity_id" type="hidden" name="id" value="">
-		<input id="currentPage" type="hidden" name="current" value="">
 		<c:if test="${DataTotalCount>0}">
-			<!-- tools -->
-			<!-- 		<div class="panel-heading"></div> -->
 			<table class="table table-hover table-middle " width="100%">
 				<thead>
 					<tr class="active">
@@ -84,15 +78,15 @@
 
 
 <!-- Script	-->
-<SCRIPT type="text/javascript">
+<script type="text/javascript">
 
 $(document).ready(function() {
-	
 	initListForm();
 	<c:if test="${DataTotalCount!=null&&DataTotalCount>0}">
-	initPagination(<c:out value="${DataTotalCount}"/>,<c:out value="${PerPieceSize}"/>,<c:out value="${CurrentPieceNum}"/>);
+	   initPagination(<c:out value="${DataTotalCount}"/>,<c:out value="${PerPieceSize}"/>,<c:out value="${CurrentPieceNum}"/>);
 	</c:if>
 });
+
 
 function serverPro(id){
 	$.post(
@@ -112,12 +106,8 @@ function deleteService(uid,tr){
 		location.href = "deleteService.shtml?id="+uid;
 		alert("删除成功！");
 		location.replace() 
-		//window.location.href="${pageContext.request.contextPath}/old/oldMatch/list.shtml?name=&idCard=&zjNumber=&county=&street=&community=&isGenerationOrder=&isindividuation=";
-// 		$("#item_entity_id").val(uid);
-// 		$("#listForm").attr("action", '<c:url value="/old/oldMatch/delete.shtml"/>');
-// 		$("#listForm").submit();
 	}
 }
 
 
-</SCRIPT>
+</script>

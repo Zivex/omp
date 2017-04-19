@@ -12,7 +12,6 @@
 	float: right;
 	margin-right: 2cm;
 }
-
 </style>
 
 </head>
@@ -20,22 +19,21 @@
 	<!-- header -->
 	<%@ include file="/WEB-INF/views/layout/adm_head.jsp"%>
 	<!-- /header -->
-	<div class="modal fade" id="myModal" tabindex="-1" role="dialog"
-		aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+		aria-hidden="true">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal"
-						aria-hidden="true">&times;</button>
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 					<h4 class="modal-title" id="myModalLabel">服务商信息</h4>
 				</div>
-				<div class="modal-body" >
-				<table class="table" id="modalBody">
-					<tr>
-						<th>服务商名称</th>
-						<th>服务商电话</th>
-					</tr>
-				</table>
+				<div class="modal-body">
+					<table class="table" id="modalBody">
+						<tr>
+							<th>服务商名称</th>
+							<th>服务商电话</th>
+						</tr>
+					</table>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
@@ -53,33 +51,35 @@
 			<%@ include file="/WEB-INF/views/menu/menu_adm.jsp"%>
 			<!-- ./menu -->
 			<!-- main -->
-			<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main"
-				role="main">
+			<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main" role="main">
 				<div>
 					<div class="page-header">
 						<h1>
-							<i class="fa fa-user fa-fw"></i>服务体系<span id="backspan"><input
-								type="button" id="backButton" onclick="hxBackClick()" value="返回" /></span>
+							<i class="fa fa-user fa-fw"></i>服务体系<span id="backspan"><input type="button"
+								id="backButton" onclick="hxBackClick()" value="返回" /></span>
 						</h1>
 					</div>
 					<div class="header-underline"></div>
 					<div class="col-md-4">
-						<a role="button" class="btn btn-default" href='#'
-							onclick='addsystem()'>公共服务体系管理</a> <a role="button"
-							class="btn btn-default" href='#' onclick='addprivate()'>服务体系管理</a>
+						<c:if test="${sessionScope.eccomm_admin.id==1 }">
+							<a role="button" class="btn btn-default" href='#' onclick='addsystem()'>默认服务体系管理</a>
+						</c:if>
+						<c:if test="${sessionScope.eccomm_admin.id!=1 }">
+							<a role="button" class="btn btn-default" href='#' onclick='addprivate()'>服务体系确认</a>
+						</c:if>
 					</div>
 					<div class="header-underline"></div>
 
 					<c:url var="queryForm" value="/serviceSystem/list.shtml" />
-							<form:form id="command" role="form" class="form-inline" action="${queryForm}" method="post">
-								<input id="pageNo" name="currentPieceNum" type="hidden" value="1">
-								<input id="pageSizes" name="perPieceSize" type="hidden" value="10">
-								</form:form>
+					<form:form id="command" role="form" class="form-inline" action="${queryForm}" method="post">
+						<input id="pageNo" name="currentPieceNum" type="hidden" value="1">
+						<input id="pageSizes" name="perPieceSize" type="hidden" value="10">
+					</form:form>
 
 
 					<div id="resultDiv">
-							<%@ include file="/WEB-INF/views/omp/serviceSystem/list.jsp"%>
-						</div>
+						<%@ include file="/WEB-INF/views/omp/serviceSystem/list.jsp"%>
+					</div>
 				</div>
 			</div>
 			<!-- ./main -->

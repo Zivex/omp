@@ -41,7 +41,9 @@
 					<div id="displayDiv">
 						<div class="operatorDiv">
 							<c:url var="queryForm" value="/enterprise/list.shtml" />
-							<form:form id="parameter" name="parameter" method="post"  action='${queryForm}' >
+							<form:form id="command" method="post"  action='${queryForm}' >
+							<input id="pageNo" name="current" type="hidden" value="1">
+							<input id="pageSizes" name="pageSize" type="hidden" value="10">
 								<a role="button" class="btn btn-primary"
 									onclick="importInformation()">服务商信息导入</a>
 								<a role="button" class="btn btn-primary"
@@ -155,10 +157,6 @@
 			initalizeSiderBar();
 			selectMenu("o_serviceMerchants");
 			initQueryForm();
-			initialFormValidate('command');
-			initSaveForm();
-			
-			
 			
 			$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",function(data){
 				for(var i = 0;i<data.length;i++){
@@ -207,10 +205,14 @@
 				$("#resultDiv").html(data);
 			});
 		}
-		function update(id){
-
+		function update(sid){
+			var openRegions = 0;
+			var b = window.confirm('是否显示区域信息?');
+			if(b){
+				openRegions = 1;
+			}
 			$.post("${pageContext.request.contextPath}/enterprise/serviceMerchants/Serviceupdate.shtml",
-					{id:id},
+					{sid:sid,openRegions:openRegions},
 					function(data){
 				$("#resultDiv").html(data);
 			});
@@ -233,7 +235,7 @@
 					cache : true,
 					type : "POST",
 					url : '${queryForm}',
-					data : $('#parameter').serialize(),// 你的formid
+					data : $('#command').serialize(),// 你的formid
 					async : false,
 					error : function(request) {
 						alert("Connection error");

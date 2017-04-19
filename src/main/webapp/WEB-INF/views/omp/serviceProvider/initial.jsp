@@ -101,6 +101,14 @@
 
 	<!-- Script	-->
 	<script type="text/javascript">
+	$(function() {
+		initalizeSiderBar();
+		selectMenu ("o_provider");
+		initQueryForm();
+	});
+	
+	
+	
 		/**
          * 导入信息
          **/
@@ -125,13 +133,6 @@
 	        var url = '<c:url value="/admin/sys/user/detail.shtml"/>?entity.id=' + id;
 	        showDynamicModal (url);
         }
-
-        $ (document).ready (function ()
-        {
-	        initalizeSiderBar ();
-	        selectMenu ("o_provider");
-	        initQueryForm ();
-        });
         
         /**
          *老人信息查询

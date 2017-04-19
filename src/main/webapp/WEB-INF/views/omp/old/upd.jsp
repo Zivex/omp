@@ -50,7 +50,7 @@
 			<tr>
 				<td>来电显示：</td><td><input type="radio"  name="entity.call_id" value="1" <c:if test="${detaMap.call_id=='1' }">checked="checked"</c:if>/>是
 
-				<input type="radio"  name="call_id" value="0" <c:if test="${detaMap.call_id=='0' }">checked="checked"</c:if>/> 否
+				<input type="radio"  name="entity.call_id" value="0" <c:if test="${detaMap.call_id=='0' }">checked="checked"</c:if>/> 否
 
 				</td>
 			</tr>

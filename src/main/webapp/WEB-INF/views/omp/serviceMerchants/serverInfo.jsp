@@ -87,7 +87,7 @@ $(document).ready(function(){
 			</tr>
 			<tr>
 				<td width="25%">渠道发展来源</td>
-				<td>${serviceProvider.channels}</td>
+				<td>${serviceProvider.user.name}</td>
 			</tr>
 			<tr>
 				<td width="25%">联系人</td>

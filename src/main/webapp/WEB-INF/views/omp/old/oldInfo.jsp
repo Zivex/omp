@@ -61,7 +61,7 @@
 				<thead>
 					<tr class="active">
 						<th width="25%">话机键位</th>
-						<th >号码</th>
+						<th >号码${sessionScope.eccomm_admin.id }</th>
 					</tr>
 				</thead>
 
@@ -81,10 +81,10 @@
 							   <c:if test="${old.key=='M10'}">居委会</c:if>
 							   <c:if test="${old.key=='M11'}">社区广播</c:if>
 							   <c:if test="${old.key=='M12'}">急救</c:if>
-							   <c:if test="${old.key=='M13'}">中心号码</c:if>
-							   <c:if test="${old.key=='M14'}">----</c:if>
-							   <c:if test="${old.key=='M15'}">----</c:if>
-							   <c:if test="${old.key=='M16'}">----</c:if>
+							   <c:if test="${old.key=='M13'}">中心号码1</c:if>
+							   <c:if test="${old.key=='M14'}">中心号码2</c:if>
+							   <c:if test="${old.key=='M15'}">中心号码3</c:if>
+							   <c:if test="${old.key=='M16'}">中心号码4</c:if>
 							</td>
 							<td>${old.value}</td>
 

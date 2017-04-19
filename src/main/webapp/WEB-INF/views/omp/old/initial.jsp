@@ -213,7 +213,7 @@
 		}
 		function hxtoOldInfo(id){
 			$.post("${pageContext.request.contextPath}/old/oldMatch/oldinfo.shtml",
-					{id:id},
+					{oid:id},
 					function(data){
 						$("#displayDiv1").html(data);
 						$("#backButton").show();

@@ -15,6 +15,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import com.capinfo.assistant.platform.ws.card.model.CardPersonMessageBack;
+import com.capinfo.common.model.SystemUser;
 import com.capinfo.framework.model.BaseEntity;
 import com.capinfo.region.model.OmpRegion;
 
@@ -73,7 +74,9 @@ public class ServiceProvider implements BaseEntity {
 	private OmpRegion serviceCommunity;
 
 	//渠道发展来源
-	private String channels;
+	private Long channels;
+	
+	private SystemUser user;
 
 	//服务电话
 	private String serviceTell;
@@ -350,14 +353,17 @@ public class ServiceProvider implements BaseEntity {
 	}
 
 	@Column(name = "channels")
-	public String getChannels() {
+	public Long getChannels() {
 		return channels;
 	}
 
 
-	public void setChannels(String channels) {
+	public void setChannels(Long channels) {
 		this.channels = channels;
 	}
+	
+	
+	
 
 	@Column(name = "serviceTell")
 	public String getServiceTell() {
@@ -570,6 +576,17 @@ public class ServiceProvider implements BaseEntity {
 
 	public void setUser_falg(int user_falg) {
 		this.user_falg = user_falg;
+	}
+
+	@ManyToOne(targetEntity = SystemUser.class, fetch = FetchType.LAZY)
+	@JoinColumn(name = "channels", insertable = false, updatable = false)
+	public SystemUser getUser() {
+		return user;
+	}
+
+
+	public void setUser(SystemUser user) {
+		this.user = user;
 	}
 
 

@@ -50,15 +50,16 @@ CommonsDataOperationServiceImpl<Omp_old_order, OrderParameter>  implements
 		// 查询用户区域
 		String rname = "";
 		if("g".equals(user.getAccount_type())){
+			rname =" and yiji is null";
 			switch (user.getLeave()) {
 			case 3:
-				rname = " and i.HOUSEHOLD_COUNTY_ID = " + user.getRid();
+				rname += " and i.HOUSEHOLD_COUNTY_ID = " + user.getRid();
 				break;
 			case 4:
-				rname = " and i.HOUSEHOLD_STREET_ID = " + user.getRid();
+				rname += " and i.HOUSEHOLD_STREET_ID = " + user.getRid();
 				break;
 			case 5:
-				rname = " and i.HOUSEHOLD_COMMUNITY_ID = " + user.getRid();
+				rname += " and i.HOUSEHOLD_COMMUNITY_ID = " + user.getRid();
 				break;
 			}
 		}

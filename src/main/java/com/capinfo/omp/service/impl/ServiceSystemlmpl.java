@@ -51,6 +51,10 @@ public class ServiceSystemlmpl extends
 	@Override
 	public List<Map<String, Object>> serchService(
 			ServiceProviderParameter parameter) {
+		int serviceId = parameter.getServiceId();
+		if(serviceId == 23 || serviceId==24){
+			serviceId =11;
+		}
 		String serchserviceId = "";
 		String serchserviceName = "";
 		String serchstreeId = "";
@@ -60,9 +64,9 @@ public class ServiceSystemlmpl extends
 				&& parameter.getId() != 0) {
 			sqlService = " and t.id =" + parameter.getId();
 		}
-		if (parameter.getServiceId() != 0) {
+		if (serviceId != 0) {
 			serchserviceId = " and t.serviceTypeId ="
-					+ parameter.getServiceId();
+					+ serviceId;
 		}
 		if ((!"".equals(parameter.getServiceName()))
 				&& parameter.getId() != null

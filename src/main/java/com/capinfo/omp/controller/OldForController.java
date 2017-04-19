@@ -396,10 +396,10 @@ public class OldForController {
 	@SuppressWarnings("rawtypes")
 	@RequestMapping("/oldMatch/oldinfo.shtml")
 	@ResponseBody
-	public ModelAndView oldinfo(String id) {
+	public ModelAndView oldinfo(String oid,@ModelAttribute("eccomm_admin") SystemUser user) {
 		ModelAndView mv = new ModelAndView("/omp/old/oldInfo");
 		ArrayList arrayList = new ArrayList<>();
-		List<Map<String, Object>> list = oldService.getOldById1(id);
+		List<Map<String, Object>> list = oldService.getOldById1(oid);
 		// 判断是否老人已经设置指令了
 		if (list.size() > 0 && list.get(0).get("Kp") != null) {
 			Map<String, Object> map = list.get(0);
@@ -410,9 +410,11 @@ public class OldForController {
 				JSONArray json1 = JsonUtil.getJson1(jsonObject);
 				if (json1.size() > 0) {
 					for (int i = 0; i < json1.size(); i++) {
-						JSONObject job = json1.getJSONObject(i); // 遍历 jsonarray
-																	// 数组，把每一个对象转成json
-																	// 对象
+						JSONObject job = json1.getJSONObject(i); 
+						if(user.getId()!=1 && (i==9 || i==12 || i==13 || i==14 || i==15)){
+							continue;
+						}
+																	
 						arrayList.add(job);
 					}
 				}

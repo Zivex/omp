@@ -21,11 +21,19 @@ public class ServiceProviderParameter extends DataListParameter<ServiceProvider>
 	private int serviceId;
 	private String serviceName;
 	private int streetId;
+	
+	private Long openRegions;
 
 
 
 
 
+	public Long getOpenRegions() {
+		return openRegions;
+	}
+	public void setOpenRegions(Long openRegions) {
+		this.openRegions = openRegions;
+	}
 	public Long getId() {
 		return id;
 	}

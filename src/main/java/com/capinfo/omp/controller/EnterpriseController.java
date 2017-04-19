@@ -129,7 +129,7 @@ public class EnterpriseController {
 				for (ServiceProvider serviceProvider : list) {
 					error++;
 					// 保存服务商
-					serviceProvider.setChannels(String.valueOf(user.getId()) );
+					serviceProvider.setChannels(user.getId());
 					serviceProvider.setCreateTime(new Date());
 					serviceProvider.setUser_falg(1);
 					boolean b = enterpriseService.queryForTell(serviceProvider.getServiceTell(),0L);
@@ -493,6 +493,8 @@ public class EnterpriseController {
 		mv.addObject("mList",map.get("list"));
 		mv.addObject("DataTotalCount",map.get("count"));
 		mv.addObject("PerPieceSize",parameter.getPageSize());
+		mv.addObject("CurrentPieceNum", parameter.getCurrentPieceNum());
+
 		return mv;
 	}
 	/**
@@ -503,7 +505,6 @@ public class EnterpriseController {
 	 */
 	@RequestMapping("/list.shtml")
 	public ModelAndView dicSortList(HttpServletRequest request,ServiceProviderParameter parameter) {
-		System.out.println("我进来了");
 		ModelAndView mv = new ModelAndView("/omp/serviceMerchants/list");
 	mv.addObject("command", parameter);
 	List<ServiceType> typeList = generalService.getAllObjects(ServiceType.class);
@@ -513,7 +514,7 @@ public class EnterpriseController {
 	mv.addObject("mList",map.get("list"));
 	mv.addObject("DataTotalCount",map.get("count"));
 	mv.addObject("PerPieceSize",parameter.getPageSize());
-	mv.addObject("CurrentPieceNum", parameter.getCurrentPieceNum());
+	mv.addObject("CurrentPieceNum", parameter.getCurrent());
 	return mv;
 	}
     /**
@@ -563,9 +564,10 @@ public class EnterpriseController {
 	 */
 	@RequestMapping("/serviceMerchants/Serviceupdate.shtml")
 	@ResponseBody
-	public ModelAndView serviceupdate(int id,ServiceProviderParameter parameter) {
+	public ModelAndView serviceupdate(Long sid,ServiceProviderParameter parameter) {
 		ModelAndView mv = new ModelAndView("/omp/serviceMerchants/serverupdate");
-		ServiceProvider serviceProvider = generalService.getObjectById(ServiceProvider.class, (long) id);
+		Long o_mark = parameter.getOpenRegions();
+		ServiceProvider serviceProvider = generalService.getObjectById(ServiceProvider.class, sid);
 		String serviceCommunity_id = serviceProvider.getServiceCommunity_id();
 		String serviceCounty_id = serviceProvider.getServiceCounty_id();
 		String serviceStreet_id = serviceProvider.getServiceStreet_id();
@@ -649,6 +651,7 @@ public class EnterpriseController {
 		mv.addObject("countyS", countyS);
 		mv.addObject("streeS", streeS);
 		mv.addObject("cityS", cityS);
+		mv.addObject("openRegions", o_mark);
 		return mv;
 	}
 	/**
@@ -745,7 +748,7 @@ public class EnterpriseController {
 			return "该服务电话已存在";
 		}
 
-		entity.setChannels(String.valueOf(user.getId()));
+		entity.setChannels(user.getId());
 		entity.setCreateTime(new Date());
 		generalService.saveOrUpdate(entity);
 		return "添加成功";

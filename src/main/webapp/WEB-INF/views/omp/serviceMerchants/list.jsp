@@ -15,10 +15,6 @@
 	${messageCount }
 	<form:form id="listForm" name="listForm" method="post"
 		action='${queryForm }'>
-		<%-- 		<form:hidden path="id" id="item_entity_id" /> --%>
-		<%-- 		<form:hidden path="current" id="current" /> --%>
-		<input id="item_entity_id" type="hidden" name="id" value="">
-		<input id="currentPage" type="hidden" name="current" value="">
 		<c:if test="${DataTotalCount>0}">
 			<!-- tools -->
 			<!-- 		<div class="panel-heading"></div> -->
@@ -88,8 +84,11 @@ $(document).ready(function() {
 
 	initListForm();
 	<c:if test="${DataTotalCount!=null&&DataTotalCount>0}">
-	initPagination(<c:out value="${DataTotalCount}"/>,<c:out value="${PerPieceSize}"/>,<c:out value="${CurrentPieceNum}"/>);
+	   initPagination(<c:out value="${DataTotalCount}"/>,<c:out value="${PerPieceSize}"/>,<c:out value="${CurrentPieceNum}"/>);
 	</c:if>
+	
+	
+	
 });
 
 function serverPro(id){

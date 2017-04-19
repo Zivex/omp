@@ -53,11 +53,6 @@ public class ServiceSystemController {
 			@ModelAttribute("eccomm_admin") SystemUser user,
 			ServiceSystemParameter parameter) {
 		ModelAndView mv = new ModelAndView("/omp/serviceSystem/initialize");
-		// 当前页
-		// int currentPieceNum = parameter.getCurrentPieceNum();
-		// //每页数量
-		// int perPieceSize = parameter.getPerPieceSize();
-		//
 		HashMap<String, Object> ssList = serviceSystem.getSSList(user,
 				parameter);
 		mv.addObject("count", ssList.get("count"));
@@ -78,11 +73,6 @@ public class ServiceSystemController {
 			@ModelAttribute("eccomm_admin") SystemUser user,
 			ServiceSystemParameter parameter) {
 		ModelAndView mv = new ModelAndView("/omp/serviceSystem/list");
-		// 当前页
-		// int currentPieceNum = parameter.getCurrentPieceNum();
-		// //每页数量
-		// int perPieceSize = parameter.getPerPieceSize();
-		//
 		HashMap<String, Object> ssList = serviceSystem.getSSList(user,
 				parameter);
 		mv.addObject("count", ssList.get("count"));

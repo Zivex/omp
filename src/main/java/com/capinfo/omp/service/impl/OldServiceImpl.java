@@ -1557,10 +1557,15 @@ public class OldServiceImpl extends
 				RestrictionExpression.EQUALS_OP, street);
 		searchCriteriaBuilder.addQueryCondition("household_community_id",
 				RestrictionExpression.EQUALS_OP, community);
+		String gSql ="";
 		if (!"order".equals(isGenerationOrder)) {
 			searchCriteriaBuilder.addQueryCondition("isGenerationOrder",
 					RestrictionExpression.EQUALS_OP, isGenerationOrder);
+			
 		} else if (user.getLeave() > 1){
+			if("g".equals(user.getAccount_type())){
+				gSql = " this_.yiji is  NULL";
+			}
 //			searchCriteriaBuilder.addQueryCondition("agent_id",
 //					RestrictionExpression.EQUALS_OP, user.getId());
 			searchCriteriaBuilder.addQueryCondition("call_id",
@@ -1628,8 +1633,8 @@ public class OldServiceImpl extends
 		// sql +=
 		// "and this_.CREATE_CARD_SUCCESS = 1 and this_.has_pushed = 1 and this_.residence_county_id !=31381";
 
-		if (!"".equals(sql)) {
-			searchCriteriaBuilder.addAdditionalRestrictionSql(sql);
+		if (!"".equals(gSql)) {
+			searchCriteriaBuilder.addAdditionalRestrictionSql(gSql);
 		}
 
 		return searchCriteriaBuilder;
