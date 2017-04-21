@@ -51,7 +51,6 @@
 										<c:if test="${sys == 'admin'}">
 											<li><a href="###" onclick="deleteService(${item.id},this);">删除</a></li>
 										</c:if>
-										<%-- <li><a onclick="tocreOrder(${old.id})">生成指令</a></li> --%>
 									</ul>
 								</div>
 							</td>

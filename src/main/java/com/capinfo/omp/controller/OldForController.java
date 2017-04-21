@@ -411,7 +411,7 @@ public class OldForController {
 				if (json1.size() > 0) {
 					for (int i = 0; i < json1.size(); i++) {
 						JSONObject job = json1.getJSONObject(i); 
-						if(user.getId()!=1 && (i==9 || i==12 || i==13 || i==14 || i==15)){
+						if(user.getId()!=1 && (i==10 || i==12 || i==13 || i==14 || i==15)){
 							continue;
 						}
 																	

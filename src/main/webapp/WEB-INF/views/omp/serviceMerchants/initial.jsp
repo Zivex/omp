@@ -205,12 +205,31 @@
 				$("#resultDiv").html(data);
 			});
 		}
+		
 		function update(sid){
 			var openRegions = 0;
-			var b = window.confirm('是否显示区域信息?');
-			if(b){
-				openRegions = 1;
-			}
+			 $.confirm({
+                 title: '提示',
+                 content: '是否显示区域信息?',
+                 buttons: {
+                     	是: function () {
+                     		openRegions = 1;
+                     		updateLink(sid,openRegions)
+                     },
+                     somethingElse: {
+                         text: '否',
+                         btnClass: 'btn-blue',
+                         action: function () {
+                        	 openRegions = 0;
+                        	 updateLink(sid,openRegions)
+                         }
+                     }
+                 }
+             });
+			
+		}
+		
+		function updateLink(sid,openRegions){
 			$.post("${pageContext.request.contextPath}/enterprise/serviceMerchants/Serviceupdate.shtml",
 					{sid:sid,openRegions:openRegions},
 					function(data){
@@ -218,6 +237,8 @@
 			});
 		}
 
+	
+		
 
 		function hxtoServerInfo(id){
 			$.post("${pageContext.request.contextPath}/enterprise/ServiceInfo.shtml",
@@ -245,8 +266,6 @@
 					}
 			});
 		}
-		
-		
 		
 	</script>
 

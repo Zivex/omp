@@ -201,7 +201,7 @@ public class ServiceSystemController {
 			ServiceSystemParameter parameter) {
 		ModelAndView mv = new ModelAndView("/omp/serviceSystem/seeArchitecture");
 		Sys_key ss = generalService.getObjectById(Sys_key.class,
-				parameter.getSid());
+				parameter.getEntity().getId());
 		mv.addObject("ss", ss);
 		mv.addObject("command", parameter);
 		List<OmpRegion> cityS = enterpriseService.queryCounty(0L);

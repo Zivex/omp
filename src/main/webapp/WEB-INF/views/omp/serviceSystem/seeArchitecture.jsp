@@ -73,7 +73,7 @@
 			$.post(
 					"${pageContext.request.contextPath }/serviceSystem/serchArchitecture.shtml",
 					{
-						id : sid
+						sid : sid
 					},
 					function(data) {
 						var idNum = 0;
@@ -91,10 +91,10 @@
 
 
 	    $(function(){
-	    	queryTellType();
 			initalizeSiderBar();
 			selectMenu("o_sys");
 			initQueryForm();
+	    	queryTellType();
 	    });
 
 

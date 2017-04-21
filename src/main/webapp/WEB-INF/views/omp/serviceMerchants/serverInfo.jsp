@@ -137,12 +137,14 @@ $(document).ready(function(){
 				<td width="25%">折扣信息</td>
 				<td>${serviceProvider.discountInfo == 1?"是":"否"}</td>
 			</tr>
+			<c:if test="${sessionScope.eccomm_admin.id==1 }">
 			<tr>
 				<td width="25%">核实状态</td>
 				<td><c:if test="${serviceProvider.verify == 1}">未审核</c:if> <c:if
 						test="${serviceProvider.verify == 2}">无效</c:if> <c:if
 						test="${serviceProvider.verify == 3}">有效</c:if></td>
 			</tr>
+			</c:if>
 			<tr>
 				<td width="25%">是否签约</td>
 				<td>${serviceProvider.is_signing == 1?"是":"否"}</td>

@@ -13,6 +13,7 @@
 
 
 
+
 <link rel=stylesheet type=text/css href="<c:url value="/resources/css/bootstrap.css"/>" media="screen">
 <%-- <link rel=stylesheet type=text/css href="<c:url value="/resources/css/bootstrap-theme.css"/>" media="screen"> --%>
 
@@ -20,6 +21,7 @@
 <link rel=stylesheet type=text/css href="<c:url value="/resources/css/datepicker3.css"/>" media="screen">
 <%-- <link rel=stylesheet type=text/css href="<c:url value="/resources/css/style.css"/>" media="screen"> --%>
 <link rel=stylesheet type=text/css href="<c:url value="/resources/css/main.css"/>" media="screen">
+<link rel=stylesheet type=text/css href="<c:url value="/resources/css/jquery-confirm.min.css"/>" media="screen">
 
 <!--[if lt IE 9]>
      <script type="text/javascript"	src="<c:url value="/resources/js/bootstrap/html5shiv.js"/>"></script>
@@ -27,6 +29,7 @@
 <![endif]-->
 
 <script type="text/javascript"	src="<c:url value="/resources/js/jquery/jquery-1.11.1.min.js"/>"></script>
+<script type="text/javascript"	src="<c:url value="/resources/js/jquery/jquery-confirm.min.js"/>"></script>
 <script type="text/javascript"	src="<c:url value="/resources/js/jquery/jquery-migrate-1.2.1.min.js"/>"></script>
 <script type="text/javascript"	src="<c:url value="/resources/js/jquery/jquery.form.js"/>"></script>
 <script type="text/javascript"	src="<c:url value="/resources/js/jquery/pagination.min.js"/>"></script>

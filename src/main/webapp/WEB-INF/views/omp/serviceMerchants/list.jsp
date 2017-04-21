@@ -49,9 +49,19 @@
 										操作 <span class="caret"></span>
 									</button>
 									<ul class="dropdown-menu" role="menu">
-										<li><a onclick="see(${m.id})">查看详情</a></li>
+										<li><a onclick="see(${m.id})">查看详情 </a></li>
 <%-- 											<li><a href="###" onclick="deleteService(${item.id},this);">删除</a></li> --%>
+									<c:choose>
+										<c:when test="${sessionScope.eccomm_admin.id==1 }" >	
 											<li><a href="###" onclick="update(${m.id});">修改</a></li>
+										</c:when>
+										<c:when test="${sessionScope.eccomm_admin.account_type=='g' && (m.user.account_type =='g' || m.user.account_type == 'admin')   }" >
+											<li><a href="###" onclick="update(${m.id});">修改</a></li>
+										</c:when>
+										<c:when test="${sessionScope.eccomm_admin.account_type=='b' && m.user.account_type=='b'  }" >
+											<li><a href="###" onclick="update(${m.id});">修改</a></li>
+										</c:when>
+									</c:choose>
 									</ul>
 								</div>
 							</td>

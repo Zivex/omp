@@ -131,7 +131,7 @@
 		}
 		//查看体系
 		function see(sid){
-			location.href = "seeArchitecture.shtml?sid="+sid;
+			location.href = "seeArchitecture.shtml?entity.id="+sid;
 		}
 		//删除
 		function deleteSystem(sid){
