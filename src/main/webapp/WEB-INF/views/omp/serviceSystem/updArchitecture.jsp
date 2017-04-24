@@ -61,15 +61,6 @@
 										<label for="serviceName">名称</label> <input type="text" name="serviceName"
 											class="form-control" id="serviceName" placeholder="请输入服务商名称">
 									</div>
-									<div class="form-group">
-										<label for="serviceType">服务类型</label> <select name="serviceType" id="serviceType"
-											class="form-control">
-											<option value="0">--请选择--</option>
-											<c:forEach items="${serviceTypes }" var="st">
-												<option value="${st.id }">${st.serviceName }</option>
-											</c:forEach>
-										</select>
-									</div>
 									<a class="btn btn-default" href="#" onclick="serchService()" role="button">搜索</a> <a
 										class="btn btn-default" href="#" onclick="addService()" role="button">添加</a>
 								</form>
@@ -215,11 +206,19 @@
 	        
 	        var serviceList = $ ("#serviceList");
 	        //服务区域
-	        
+	        serviceList.empty();
 	        //话机类型
 	        var serviceId = $ ('input[name="typeId"]:checked').val ();
 	        
 	        //	var serviceId = $("#serviceType").val();
+	        
+	        if(typeof(serviceId)==="undefined"){
+				alert("请选择键位");
+				return ; 
+			}
+	        
+	        
+	        
 	        $.post (
             "${pageContext.request.contextPath }/serviceSystem/serchService.shtml",
             {
@@ -252,12 +251,13 @@
 	        var sp = td.children ("span");
 	        sp.text (spName);
 	        td.children ("input.serviceId")[0].value = spId;
+	        var serviceList = $("#serviceList");
+			serviceList.empty();
         }
 
         function updateSystem ()
         {
 	        var addForm = $ ("#architectureForm").serialize () + "&" + $ ("#conditions").serialize ();
-	        alert (addForm)
 	        $.ajax (
 	        {
 	            type : "POST",

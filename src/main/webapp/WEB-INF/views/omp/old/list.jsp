@@ -27,7 +27,7 @@
 						<th width="5%" style="text-align: center;">姓名</th>
 						<th width="10%" style="text-align: center;">座机号</th>
 						<th width="10%" style="text-align: center;">身份证号</th>
-						<th width="5%" style="text-align: center;">区域</th>
+						<th width="5%" style="text-align: center;">区县</th>
 						<th width="5%" style="text-align: center;">街道</th>
 						<th width="12%" style="text-align: center;">社区</th>
 						<th width="10%" style="text-align: center;">编号</th>

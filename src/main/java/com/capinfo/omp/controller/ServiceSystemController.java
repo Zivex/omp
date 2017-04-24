@@ -62,7 +62,7 @@ public class ServiceSystemController {
 		return mv;
 	}
 	/**
-	 * 查询
+	 * 查询服务体系
 	 *
 	 * @param user
 	 * @param parameter

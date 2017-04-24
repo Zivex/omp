@@ -7,19 +7,16 @@
 <link rel="stylesheet"
 	href="${pageContext.request.contextPath}/resources/easyUIjs/themes/default/easyui.css"
 	type="text/css"></link>
-<link rel="stylesheet"
-	href="${pageContext.request.contextPath}/resources/easyUIjs/themes/icon.css"
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/easyUIjs/themes/icon.css"
 	type="text/css"></link>
 <script type="text/javascript"
 	src="${pageContext.request.contextPath}/resources/easyUIjs/jquery-1.7.2.js"></script>
 <script type="text/javascript"
-	src="${pageContext.request.contextPath}/resources/easyUIjs/jquery.easyui.min.js"
-	rel="stylesheet"></script>
+	src="${pageContext.request.contextPath}/resources/easyUIjs/jquery.easyui.min.js" rel="stylesheet"></script>
 <script type="text/javascript"
 	src="${pageContext.request.contextPath}/resources/easyUIjs/locale/easyui-lang-zh_CN.js"
 	rel="stylesheet"></script>
-<script type="text/javascript"
-	src="${pageContext.request.contextPath}/resources/easyUIjs/sys.js"
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/easyUIjs/sys.js"
 	rel="stylesheet"></script>
 <script type="text/javascript">
 
@@ -35,22 +32,18 @@
 				<caption>服务商详情</caption>
 				<tr>
 					<td width="25%">所属市</td>
-					<td>
-					<form:select id="city1"
-							path="entity.city_id" items="${cityS}" itemLabel="name"
+					<td><form:select id="city1" path="entity.city_id" items="${cityS}" itemLabel="name"
 							itemValue="id"></form:select></td>
 				</tr>
 				<tr>
 					<td width="25%">所属区县</td>
-					<td><form:select id="county1" onchange="udpCounty()"
-							path="entity.county_id" items="${countyS}" itemLabel="name"
-							itemValue="id"></form:select></td>
+					<td><form:select id="county1" onchange="udpCounty()" path="entity.county_id"
+							items="${countyS}" itemLabel="name" itemValue="id"></form:select></td>
 				</tr>
 				<tr>
 					<td width="25%">所属街道</td>
-					<td><form:select id="street1" onchange="udpCounty()"
-							path="entity.street_id" items="${streeS}" itemLabel="name"
-							itemValue="id"></form:select></td>
+					<td><form:select id="street1" onchange="udpCounty()" path="entity.street_id"
+							items="${streeS}" itemLabel="name" itemValue="id"></form:select></td>
 				</tr>
 				<tr>
 					<td width="25%">服务单位名称</td>
@@ -62,8 +55,7 @@
 				</tr>
 				<tr>
 					<td width="25%">营业执照编码</td>
-					<td><form:input style="width:300px"
-							path="entity.charterNumber" /></td>
+					<td><form:input style="width:300px" path="entity.charterNumber" /></td>
 				</tr>
 				<tr>
 					<td width="25%">服务电话</td>
@@ -71,14 +63,12 @@
 				</tr>
 				<tr>
 					<td width="25%">服务地址</td>
-					<td><form:input style="width:300px"
-							path="entity.serviceAddress" /></td>
+					<td><form:input style="width:300px" path="entity.serviceAddress" /></td>
 				</tr>
 				<tr>
 					<td width="25%">服务类型</td>
 					<td><form:select path="entity.serviceTypeId">
-							<form:options items="${typeList }" itemLabel="serviceName"
-								itemValue="id" />
+							<form:options items="${typeList }" itemLabel="serviceName" itemValue="id" />
 						</form:select></td>
 				</tr>
 				<tr>
@@ -86,35 +76,36 @@
 					<td><form:input path="entity.addressDescribe" /></td>
 				</tr>
 				<c:if test="${openRegions==1 }">
-				<tr>
-					<td width="25%">服务区域</td>
-					<td>
-						<ul id="tree" class="easyui-tree" data-options="lines:true" checkbox="true">
-							<c:forEach items="${countyList }" var="item">
-								<li id="${item.id}" state="closed" <c:if test="${item.checked == 1}">checked</c:if> ><span>${item.name }</span>
-									<ul id="${item.id}">
-										<c:forEach items="${streetList }" var="street">
-											<c:if test="${item.id==street.pid }">
-												<li id="${street.id}" <c:if test="${street.checked == 1}">checked</c:if> state="closed"><span>${street.name }</span>
-													<ul id="${street.id}">
-														<c:forEach items="${communityList }" var="community">
-															<c:if test="${street.id==community.pid }">
-																<li id="${community.id}" <c:if test="${community.checked == 1}">checked</c:if> state="closed"><span>${community.name }</span>
-															</c:if>
-														</c:forEach>
-													</ul></li>
-											</c:if>
-										</c:forEach>
-									</ul></li>
-							</c:forEach>
-						</ul>
-						<ul id="ss"></ul>
-					</td>
-				</tr>
-					</c:if>
+					<tr>
+						<td width="25%">服务区域</td>
+						<td>
+							<ul id="tree" class="easyui-tree" data-options="lines:true" checkbox="true">
+								<c:forEach items="${countyList }" var="item">
+									<li id="${item.id}" state="closed" <c:if test="${item.checked == 1}">checked</c:if>><span>${item.name }</span>
+										<ul id="${item.id}">
+											<c:forEach items="${streetList }" var="street">
+												<c:if test="${item.id==street.pid }">
+													<li id="${street.id}" <c:if test="${street.checked == 1}">checked</c:if> state="closed"><span>${street.name }</span>
+														<ul id="${street.id}">
+															<c:forEach items="${communityList }" var="community">
+																<c:if test="${street.id==community.pid }">
+																	<li id="${community.id}" <c:if test="${community.checked == 1}">checked</c:if>
+																		state="closed"><span>${community.name }</span>
+																</c:if>
+															</c:forEach>
+														</ul></li>
+												</c:if>
+											</c:forEach>
+										</ul></li>
+								</c:forEach>
+							</ul>
+							<ul id="ss"></ul>
+						</td>
+					</tr>
+				</c:if>
 				<tr>
 					<td width="25%">渠道发展来源</td>
-					<td><form:input path="entity.user.name" disabled="true"  /></td>
+					<td><form:input path="entity.user.name" disabled="true" /></td>
 				</tr>
 				<tr>
 					<td width="25%">联系人</td>
@@ -126,16 +117,14 @@
 				</tr>
 				<tr>
 					<td width="25%">是否能刷养老卡</td>
-					<td><form:select path="entity.is_pensionCard"
-							id="is_pensionCard">
+					<td><form:select path="entity.is_pensionCard" id="is_pensionCard">
 							<form:option value="1">是</form:option>
 							<form:option value="0">否</form:option>
 						</form:select></td>
 				</tr>
 				<tr>
 					<td width="25%">是否能刷跨年</td>
-					<td><form:select path="entity.is_AcrossYears"
-							id="is_AcrossYears">
+					<td><form:select path="entity.is_AcrossYears" id="is_AcrossYears">
 							<form:option value="1">是</form:option>
 							<form:option value="0">否</form:option>
 						</form:select></td>
@@ -169,7 +158,7 @@
 				</tr>
 				<tr>
 					<td width="25%">服务内容</td>
-					<td><form:textarea style="width: 300px; height: 60px;" path="entity.serviceContent"/>
+					<td><form:textarea style="width: 300px; height: 60px;" path="entity.serviceContent" />
 				<tr>
 					<td width="25%">折扣信息</td>
 					<td><form:select path="entity.discountInfo" id="discountInfo">
@@ -177,14 +166,16 @@
 							<form:option value="0">否</form:option>
 						</form:select></td>
 				</tr>
-				<tr>
-					<td width="25%">核实状态</td>
-					<td><form:select path="entity.verify" id="verify">
-							<form:option value="1">未审核</form:option>
-							<form:option value="2">无效</form:option>
-							<form:option value="3">有效</form:option>
-						</form:select></td>
-				</tr>
+				<c:if test="${sessionScope.eccomm_admin.id==1 }">
+					<tr>
+						<td width="25%">核实状态</td>
+						<td><form:select path="entity.verify" id="verify">
+								<form:option value="1">未审核</form:option>
+								<form:option value="2">无效</form:option>
+								<form:option value="3">有效</form:option>
+							</form:select></td>
+					</tr>
+				</c:if>
 				<tr>
 					<td width="25%">是否签约</td>
 					<td><form:select path="entity.is_signing" id="is_anergy">
@@ -201,10 +192,8 @@
 					<td><form:input path="entity.email" /></td>
 				</tr>
 				<tr>
-					<td colspan="2">
-						<a class="btn btn-default" href="#" class="btn btn-success"
-											onclick="submit()" >修改</a>
-						</td>
+					<td colspan="2"><a class="btn btn-default" href="#" class="btn btn-success"
+						onclick="submit()">修改</a></td>
 					<td colspan="2"><input type="reset" class="btn btn-warning" /></td>
 				</tr>
 

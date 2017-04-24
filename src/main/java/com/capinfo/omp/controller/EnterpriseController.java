@@ -667,24 +667,26 @@ public class EnterpriseController {
 		String r2 = "";
 		String r3 = "";
 		String[] regions = parameter.getRegionIds().split(",");
-		for (String id : regions) {
-			OmpRegion entity = generalService.getObjectById(OmpRegion.class, Long.parseLong(id));
-			if(entity.getLevelid()==3){
-				r1+=entity.getId()+",";
-
-			}else if (entity.getLevelid()==4) {
-				r2+=entity.getId()+",";
-				r1+=entity.getParentid()+",";
-			}else if (entity.getLevelid()==5) {
-				r3+=entity.getId()+",";
-				r2+=entity.getParentid()+",";
-				OmpRegion entityP = generalService.getObjectById(OmpRegion.class, entity.getParentid());
-				r1+=entityP.getParentid()+",";
+		if(regions.length>0){
+			for (String id : regions) {
+				OmpRegion entity = generalService.getObjectById(OmpRegion.class, Long.parseLong(id));
+				if(entity.getLevelid()==3){
+					r1+=entity.getId()+",";
+					
+				}else if (entity.getLevelid()==4) {
+					r2+=entity.getId()+",";
+					r1+=entity.getParentid()+",";
+				}else if (entity.getLevelid()==5) {
+					r3+=entity.getId()+",";
+					r2+=entity.getParentid()+",";
+					OmpRegion entityP = generalService.getObjectById(OmpRegion.class, entity.getParentid());
+					r1+=entityP.getParentid()+",";
+				}
 			}
+			r1 = uniq(r1);
+			r2 = uniq(r2);
+			r3 = uniq(r3);
 		}
-		r1 = uniq(r1);
-		r2 = uniq(r2);
-		r3 = uniq(r3);
 		boolean b = enterpriseService.queryForTell(parameter.getEntity().getServiceTell(),0L);
 		if(!b){
 			return "添加失败服务商电话已存在";

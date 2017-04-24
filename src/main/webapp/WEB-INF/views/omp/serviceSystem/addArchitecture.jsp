@@ -103,15 +103,6 @@
 									<label for="serviceName">名称</label> <input type="text" name="serviceName"
 										class="form-control" id="serviceName" placeholder="请输入服务商名称">
 								</div>
-								<div class="form-group">
-									<label for="serviceType">服务类型</label> <select name="serviceType"
-										id="serviceType"  class="form-control">
-										<option value="0">--请选择--</option>
-										<c:forEach items="${serviceTypes }" var="st">
-											<option value="${st.id }">${st.serviceName }</option>
-										</c:forEach>
-									</select>
-								</div>
 								<a class="btn btn-default" href="#" onclick="serchService()" role="button">搜索</a>
 								<a class="btn btn-default" href="#" onclick="addService()" role="button">添加</a>
 							</form>
@@ -244,7 +235,7 @@
 						var idNum = 0;
 						for (var i = 0; i < data.length; i++) {
 							idNum++;
-							architecture.append("<tr><td><input type='radio' name='mSys' value='"+data[i].id+"'> "+data[i].key+"</td><td>"+data[i].serviceName+"</td><td><input type='hidden' class='serviceId' name='"+data[i].key+"'value='0' ></td></tr>");
+							architecture.append("<tr><td><input type='radio' name='typeId' value='"+data[i].id+"'> "+data[i].key+"</td><td>"+data[i].serviceName+"</td><td><input type='hidden' class='serviceId' name='"+data[i].key+"'value='0' ><span><span></td></tr>");
 						}
 						architecture.append('<tr><td><a class="btn btn-default" href="#" onclick="addSystem()" role="button">保存</a></td></tr>');
 					});
@@ -256,14 +247,22 @@
 		//搜索服务商
 		function serchService(){
 
-
+			
 			var serviceList = $("#serviceList");
+			serviceList.empty();
 			//服务区域
 
 			//话机类型
-
+			var serviceId = $ ('input[name="typeId"]:checked').val ();
+			if(typeof(serviceId)==="undefined"){
+				alert("请选择键位");
+				return ;
+			}
+			
+			
+			
 			var street = $("#street").val();
-			var serviceId = $("#serviceType").val();
+			//var serviceId = $("#serviceType").val();
 			var serviceName = $("#serviceName").val();
 			$.post(
 					"${pageContext.request.contextPath }/serviceSystem/serchService.shtml",
@@ -280,14 +279,20 @@
 							idNum++;
 							serviceList.append("<tr><td><input type='radio' name='providers' value='"+data[i].id+"'> "+data[i].serviceName+"</td><td>"+data[i].serviceTell+"</td></tr>");
 						}
+						
 					});
+			
+			
 		}
 		function addService(){
-			var spId = $('input[name="providers"]:checked').val();
-			var spName = $('input[name="providers"]:checked').parent().text();
-			var td = $('input[name="mSys"]:checked').parent().next().next();
-			td.append(spName);
-			td.children("input.serviceId")[0].value = spId;
+			var spId = $ ('input[name="providers"]:checked').val ();
+	        var spName = $ ('input[name="providers"]:checked').parent ().text ();
+	        var td = $ ('input[name="typeId"]:checked').parent ().next ().next ();
+	        var sp = td.children ("span");
+	        sp.text (spName);
+	        td.children ("input.serviceId")[0].value = spId;
+	        var serviceList = $("#serviceList");
+			serviceList.empty();
 		}
 
 		function addSystem(){

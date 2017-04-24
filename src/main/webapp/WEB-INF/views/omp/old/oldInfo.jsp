@@ -61,7 +61,7 @@
 				<thead>
 					<tr class="active">
 						<th width="25%">话机键位</th>
-						<th >号码${sessionScope.eccomm_admin.id }</th>
+						<th >号码</th>
 					</tr>
 				</thead>
 
