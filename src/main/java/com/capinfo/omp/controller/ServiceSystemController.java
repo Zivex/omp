@@ -147,7 +147,7 @@ public class ServiceSystemController {
 	public List<Map<String, Object>> serchService(
 			@ModelAttribute("eccomm_admin") SystemUser user,
 			ServiceProviderParameter parameter) {
-		List<Map<String, Object>> list = serviceSystem.serchService(parameter);
+		List<Map<String, Object>> list = serviceSystem.serchService(parameter,user);
 		return list;
 	}
 

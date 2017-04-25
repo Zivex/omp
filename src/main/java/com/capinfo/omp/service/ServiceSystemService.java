@@ -16,7 +16,7 @@ public interface ServiceSystemService extends CommonsDataOperationService<Enterp
 
 	public List<Map<String, Object>> getQueryarchitecture(SystemUser user, Long stId);
 
-	public List<Map<String, Object>> serchService(ServiceProviderParameter parameter);
+	public List<Map<String, Object>> serchService(ServiceProviderParameter parameter,SystemUser user);
 
 	public void addServiceSystem(ServiceSystemParameter parameter, SystemUser user);
 

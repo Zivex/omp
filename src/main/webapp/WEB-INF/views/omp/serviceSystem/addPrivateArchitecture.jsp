@@ -65,6 +65,7 @@
 											class="form-control" id="serviceName" placeholder="请输入服务商名称">
 									</div>
 								</form>
+								<c:if test="${sessionScope.eccomm_admin.account_type !='g' }">
 								<div class="form-group">
 									<form class="form-inline" id="conditions">
 										<div class="form-group">
@@ -103,6 +104,7 @@
 
 									</form>
 								</div>
+								</c:if>
 								<a class="btn btn-default" href="#" onclick="serchService()" role="button">搜索</a> <a
 									class="btn btn-default" href="#" onclick="addService()" role="button">添加</a>
 							</div>

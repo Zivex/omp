@@ -50,7 +50,7 @@ public class ServiceSystemlmpl extends
 
 	@Override
 	public List<Map<String, Object>> serchService(
-			ServiceProviderParameter parameter) {
+			ServiceProviderParameter parameter,SystemUser user) {
 		int serviceId = parameter.getServiceId();
 		if(serviceId == 23 || serviceId==24){
 			serviceId =11;
@@ -77,8 +77,13 @@ public class ServiceSystemlmpl extends
 		if (parameter.getStreetId() != 0) {
 			serchstreeId = " and t.serviceStreet_id like '%"
 					+ parameter.getStreetId() + "%'";
+		}else{
+			if("g".equals(user.getAccount_type()) && user.getLeave()==5){
+				serchstreeId = " and t.serviceStreet_id like '%"
+						+ user.getParentid()+ "%'";
+			}
 		}
-		String sql = "select t.id,t.serviceName,t.serviceTell from service_provider t where 1=1 "
+		String sql = "select t.id,t.serviceName,t.serviceTell from service_provider t where t.user_falg=1 "
 				+ serchserviceId + serchserviceName + serchstreeId + sqlService;
 		List<Map<String, Object>> list = JdbcTemplate.queryForList(sql);
 		return list;
@@ -204,7 +209,7 @@ public class ServiceSystemlmpl extends
 		if (rid != null && rid != 0) {
 			entity.setCommunity_id(rid);
 		}
-		if("g".equals(user.getAccount_type())){
+		if("g".equals(user.getAccount_type()) && entity.getId()==null){		//添加
 			Long community_id = user.getRid();
 			Long stree_id = user.getParentid();
 			String regionSql = "select r.PARENTID from omp_region r where r.USE_FLAG=1 and r.id="+stree_id;
@@ -214,18 +219,19 @@ public class ServiceSystemlmpl extends
 			entity.setCommunity_id(community_id);
 		}
 		
-		String sqlCheck = "select count(*) from sys_key s where s.user_falg=1 and s.uid="
-				+ entity.getUid()
-				+ "  and s.telltype_id= "
-				+ parameter.getTelltype() + " and s.community_id =" + entity.getCommunity_id();
-		int forInt = JdbcTemplate.queryForInt(sqlCheck);
-		if (forInt > 0) {
-			String getIdSql = "select s.id from sys_key s where s.user_falg=1 and s.uid="
-					+ entity.getUid()
-					+ "  and s.telltype_id= "
-					+ parameter.getTelltype() + " and s.community_id =" + rid;
-			long id = JdbcTemplate.queryForLong(getIdSql);
-			entity.setId(id);
+//		String sqlCheck = "select count(*) from sys_key s where s.user_falg=1 and s.uid="
+//				+ entity.getUid()
+//				+ "  and s.telltype_id= "
+//				+ parameter.getTelltype() + " and s.community_id =" + entity.getCommunity_id();
+//		int forInt = JdbcTemplate.queryForInt(sqlCheck);
+		if (entity.getId() != null) {
+//		if (forInt > 0) {
+//			String getIdSql = "select s.id from sys_key s where s.user_falg=1 and s.uid="
+//					+ entity.getUid()
+//					+ "  and s.telltype_id= "
+//					+ parameter.getTelltype() + " and s.community_id =" + rid;
+//			long id = JdbcTemplate.queryForLong(getIdSql);
+//			entity.setId(id);
 			entity.setUpdateTime(new Date());
 		}
 		getGeneralService().saveOrUpdate(entity);

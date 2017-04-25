@@ -41,9 +41,9 @@
 						<div style="float: left; width: 50%;">
 							<form id="architectureForm">
 								<input type="hidden" name="entity.id" id="sid" value="${ss.id }"> <input
-									type="hidden" name="entity.user_falg" id="sid" value="${ss.user_falg }"> <input
+									type="hidden" name="entity.user_falg"  value="${ss.user_falg }"> <input
 									type="hidden" name="entity.county_id" value="${ss.county_id }"> <input
-									type="hidden" name="entity.street_id" value="${ss.street_id }"> <input
+									type="hidden" name="entity.street_id" id="street_id" value="${ss.street_id }"> <input
 									type="hidden" name="entity.community_id" value="${ss.community_id }"> <input
 									type="hidden" name="entity.uid" value="${ss.uid }"> <input type="hidden"
 									name="entity.createTime" value="${ss.createTime }"> <input type="hidden"
@@ -203,7 +203,7 @@
         //搜索服务商
         function serchService ()
         {
-	        
+        	var streetId = $ ("#street_id").val ();
 	        var serviceList = $ ("#serviceList");
 	        //服务区域
 	        serviceList.empty();
@@ -222,7 +222,8 @@
 	        $.post (
             "${pageContext.request.contextPath }/serviceSystem/serchService.shtml",
             {
-             serviceId : serviceId
+             serviceId : serviceId,
+             streetId : streetId
             },
             function (data)
             {

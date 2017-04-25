@@ -67,6 +67,8 @@
 						<c:if test="${sessionScope.eccomm_admin.id!=1 }">
 							<a role="button" class="btn btn-default" href='#' onclick='addprivate()'>服务体系确认</a>
 						</c:if>
+						<a class="btn btn-primary btn-sm" href="<%=request.getContextPath() %>/resources/pdf/服务体系管理-教程.pdf">
+							帮助</a>
 					</div>
 					<div class="header-underline"></div>
 
@@ -135,6 +137,8 @@
 		}
 		//删除
 		function deleteSystem(sid){
+			var sure=confirm("删除操作是不可逆的，确认删除该体系吗？");
+			if(sure){
 			$.ajax({
 				type: "POST",
 				url: "${pageContext.request.contextPath }/serviceSystem/delService.shtml",
@@ -144,9 +148,10 @@
 				},
 				success: function(data) {
 					alert(data);
+					window.location.reload ();
 				}
 			});
-		}
+		}}
 
 
 

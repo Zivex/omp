@@ -14,31 +14,25 @@ public class ServiceProviderParameter extends DataListParameter<ServiceProvider>
 	private int pageSize;
 	private String regionIds;
 
-	private Long id;
+	private Long sid;
 	private String county;
 	private String street;
 	private String community;
 	private int serviceId;
 	private String serviceName;
 	private int streetId;
-	
 	private Long openRegions;
-
-
-
-
-
 	public Long getOpenRegions() {
 		return openRegions;
 	}
 	public void setOpenRegions(Long openRegions) {
 		this.openRegions = openRegions;
 	}
-	public Long getId() {
-		return id;
+	public Long getSid() {
+		return sid;
 	}
-	public void setId(Long id) {
-		this.id = id;
+	public void setSid(Long sid) {
+		this.sid = sid;
 	}
 	public int getServiceId() {
 		return serviceId;
