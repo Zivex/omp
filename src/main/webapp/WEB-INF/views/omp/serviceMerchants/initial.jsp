@@ -207,26 +207,26 @@
 		}
 		
 		function update(sid){
-			var openRegions = 0;
-			 $.confirm({
-                 title: '提示',
-                 content: '是否显示区域信息?',
-                 buttons: {
-                     	是: function () {
-                     		openRegions = 1;
-                     		updateLink(sid,openRegions)
-                     },
-                     somethingElse: {
-                         text: '否',
-                         btnClass: 'btn-blue',
-                         action: function () {
-                        	 openRegions = 0;
-                        	 updateLink(sid,openRegions)
-                         }
-                     }
-                 }
-             });
-			
+			var openRegions = 1;
+            updateLink(sid,openRegions);
+// 			 $.confirm({
+//                  title: '提示',
+//                  content: '是否显示区域信息?',
+//                  buttons: {
+//                      	是: function () {
+//                      		openRegions = 1;
+//                      		updateLink(sid,openRegions)
+//                      },
+//                      somethingElse: {
+//                          text: '否',
+//                          btnClass: 'btn-blue',
+//                          action: function () {
+//                         	 openRegions = 0;
+//                         	 updateLink(sid,openRegions)
+//                          }
+//                      }
+//                  }
+//              });
 		}
 		
 		function updateLink(sid,openRegions){

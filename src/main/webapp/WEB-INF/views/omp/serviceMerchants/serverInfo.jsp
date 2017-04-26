@@ -71,11 +71,11 @@ $(document).ready(function(){
 											<c:if test="${item.id==street.parentid }">
 												<li id="${street.id}" state="open"><span>${street.name }</span>
 													<ul id="${street.id}">
-														<c:forEach items="${communityList }" var="community">
-															<c:if test="${street.id==community.parentid }">
-																<li id="${community.id}" state="open"><span>${community.name }</span>
-															</c:if>
-														</c:forEach>
+<%-- 														<c:forEach items="${communityList }" var="community"> --%>
+<%-- 															<c:if test="${street.id==community.parentid }"> --%>
+<%-- 																<li id="${community.id}" state="open"><span>${community.name }</span> --%>
+<%-- 															</c:if> --%>
+<%-- 														</c:forEach> --%>
 													</ul></li>
 											</c:if>
 										</c:forEach>

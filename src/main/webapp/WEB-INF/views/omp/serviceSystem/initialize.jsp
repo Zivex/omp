@@ -64,10 +64,10 @@
 						<c:if test="${sessionScope.eccomm_admin.id==1 }">
 							<a role="button" class="btn btn-default" href='#' onclick='addsystem()'>默认服务体系管理</a>
 						</c:if>
-						<c:if test="${sessionScope.eccomm_admin.id!=1 }">
+						<c:if test="${sessionScope.eccomm_admin.id!=1 && ((sessionScope.eccomm_admin.account_type=='g' && sessionScope.eccomm_admin.leave==5) || sessionScope.eccomm_admin.account_type=='b' || sessionScope.eccomm_admin.account_type=='m' )}">
 							<a role="button" class="btn btn-default" href='#' onclick='addprivate()'>服务体系确认</a>
 						</c:if>
-						<a class="btn btn-primary btn-sm" href="<%=request.getContextPath() %>/resources/pdf/服务体系管理-教程.pdf">
+						<a class="btn btn-primary btn-sm" target="view_window" href="<%=request.getContextPath() %>/resources/pdf/help01.pdf">
 							帮助</a>
 					</div>
 					<div class="header-underline"></div>

@@ -83,7 +83,7 @@ public class ServiceSystemlmpl extends
 						+ user.getParentid()+ "%'";
 			}
 		}
-		String sql = "select t.id,t.serviceName,t.serviceTell from service_provider t where t.user_falg=1 "
+		String sql = "select t.id,t.serviceName,t.serviceTell from service_provider t where t.user_falg=1 and t.verify=3"
 				+ serchserviceId + serchserviceName + serchstreeId + sqlService;
 		List<Map<String, Object>> list = JdbcTemplate.queryForList(sql);
 		return list;
@@ -131,9 +131,9 @@ public class ServiceSystemlmpl extends
 				SystemUser.class);
 		String sql = "";
 		HashMap<String, Object> map = new HashMap<String, Object>();
-		if (!"ADMIN".equals(user.getAccount_type())) {
+		if (!("ADMIN".equals(user.getAccount_type())|| user.getLeave() == 2)) {
 
-			if (user.getLeave() > 1) {
+			if (user.getLeave() > 1 ) {
 				if ("g".equals(user.getAccount_type())) {
 					Long rid = user.getRid();
 					Long id = user.getId();

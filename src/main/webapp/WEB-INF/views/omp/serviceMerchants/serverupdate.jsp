@@ -28,6 +28,9 @@
 			action="${pageContext.request.contextPath}/enterprise/serviceMerchants/ServiceupdateDo.shtml"
 			role="form">
 			<form:hidden path="entity.id" />
+			<form:hidden path="entity.signingDate" />
+			<form:hidden path="entity.createTime" />
+			<form:hidden path="entity.user_falg" />
 			<table class="table table-hover table-middle">
 				<caption>服务商详情</caption>
 				<tr>
@@ -87,12 +90,12 @@
 												<c:if test="${item.id==street.pid }">
 													<li id="${street.id}" <c:if test="${street.checked == 1}">checked</c:if> state="closed"><span>${street.name }</span>
 														<ul id="${street.id}">
-															<c:forEach items="${communityList }" var="community">
-																<c:if test="${street.id==community.pid }">
-																	<li id="${community.id}" <c:if test="${community.checked == 1}">checked</c:if>
-																		state="closed"><span>${community.name }</span>
-																</c:if>
-															</c:forEach>
+<%-- 															<c:forEach items="${communityList }" var="community"> --%>
+<%-- 																<c:if test="${street.id==community.pid }"> --%>
+<%-- 																	<li id="${community.id}" <c:if test="${community.checked == 1}">checked</c:if> --%>
+<%-- 																		state="closed"><span>${community.name }</span> --%>
+<%-- 																</c:if> --%>
+<%-- 															</c:forEach> --%>
 														</ul></li>
 												</c:if>
 											</c:forEach>

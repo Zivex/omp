@@ -576,10 +576,10 @@ public class EnterpriseController {
 
 		List<Map<String,Object>> countyAllList = enterpriseService.queryAllRegions(3);
 		List<Map<String,Object>> streetAllList = enterpriseService.queryAllRegions(4);
-		List<Map<String,Object>> communityAllList = enterpriseService.queryAllRegions(5);
+		//List<Map<String,Object>> communityAllList = enterpriseService.queryAllRegions(5);
 		String[] countys = serviceCounty_id.split(",");
 		String[] streets = serviceStreet_id.split(",");
-		String[] communitys = serviceCommunity_id.split(",");
+//		String[] communitys = serviceCommunity_id.split(",");
 		for (String string : countys) {
 			if(!"".equals(string)){
 				for (Map<String, Object> map : countyAllList) {
@@ -599,49 +599,62 @@ public class EnterpriseController {
 				}
 			}
 		}
-		for (String string : communitys) {
-			if(!"".equals(string)){
-				for (Map<String, Object> map : communityAllList) {
-					Set<Entry<String,Object>> set = map.entrySet( );
-					if(Integer.parseInt(map.get("id").toString())==Integer.parseInt(string)){
-						map.put("checked", 1);
+//		for (String string : communitys) {
+//			if(!"".equals(string)){
+//				for (Map<String, Object> map : communityAllList) {
+//					Set<Entry<String,Object>> set = map.entrySet( );
+//					if(Integer.parseInt(map.get("id").toString())==Integer.parseInt(string)){
+//						map.put("checked", 1);
+//					}
+//				}
+//			}
+//		}
+
+//		for (Map<String, Object> map3 : communityAllList) {
+//			if (map3.get("checked") != null && (Integer) map3.get("checked") == 1) {
+//				for (Map<String, Object> map2 : streetAllList) {
+//					if (map2.get("checked") != null && (Integer) map2.get("checked") == 1) {
+//						if (((String) map3.get("pid")).equals(String.valueOf(map2.get("id")))) {
+//							map2.remove("checked");
+//						}
+//						for (Map<String, Object> map1 : countyAllList) {
+//							if (((String) map2.get("pid")).equals(String.valueOf(map1.get("id")))) {
+//								map1.remove("checked");
+//							}
+//						}
+//					}
+//
+//				}
+//
+//			}
+//			for (Map<String, Object> map2 : streetAllList) {
+//				if (map2.get("checked") != null && (Integer) map2.get("checked") == 1) {
+//					for (Map<String, Object> map1 : countyAllList) {
+//						if (((String) map2.get("pid")).equals(String.valueOf(map1.get("id")))) {
+//							map1.remove("checked");
+//						}
+//					}
+//				}
+//
+//			}
+//		}
+		
+		
+		for (Map<String, Object> map2 : streetAllList) {
+			if (map2.get("checked") != null && (Integer) map2.get("checked") == 1) {
+				for (Map<String, Object> map1 : countyAllList) {
+					if (((String) map2.get("pid")).equals(String.valueOf(map1.get("id")))) {
+						map1.remove("checked");
 					}
 				}
 			}
+
 		}
-
-		for (Map<String, Object> map3 : communityAllList) {
-			if (map3.get("checked") != null && (Integer) map3.get("checked") == 1) {
-				for (Map<String, Object> map2 : streetAllList) {
-					if (map2.get("checked") != null && (Integer) map2.get("checked") == 1) {
-						if (((String) map3.get("pid")).equals(String.valueOf(map2.get("id")))) {
-							map2.remove("checked");
-						}
-						for (Map<String, Object> map1 : countyAllList) {
-							if (((String) map2.get("pid")).equals(String.valueOf(map1.get("id")))) {
-								map1.remove("checked");
-							}
-						}
-					}
-
-				}
-
-			}
-			for (Map<String, Object> map2 : streetAllList) {
-				if (map2.get("checked") != null && (Integer) map2.get("checked") == 1) {
-					for (Map<String, Object> map1 : countyAllList) {
-						if (((String) map2.get("pid")).equals(String.valueOf(map1.get("id")))) {
-							map1.remove("checked");
-						}
-					}
-				}
-
-			}
-		}
+		
 
 			mv.addObject("countyList",countyAllList);
 			mv.addObject("streetList",streetAllList);
-			mv.addObject("communityList",communityAllList);
+//			mv.addObject("communityList",communityAllList);
 		List<OmpRegion> cityS = enterpriseService.queryCounty(0L);
 		List<OmpRegion> countyS = enterpriseService.queryCounty(serviceProvider.getCity_id());
 		List<OmpRegion> streeS = enterpriseService.queryCounty(serviceProvider.getCounty_id());
@@ -687,7 +700,7 @@ public class EnterpriseController {
 			r2 = uniq(r2);
 			r3 = uniq(r3);
 		}
-		boolean b = enterpriseService.queryForTell(parameter.getEntity().getServiceTell(),0L);
+		boolean b = enterpriseService.queryForTell(parameter.getEntity().getServiceTell(),parameter.getEntity().getId());
 		if(!b){
 			return "添加失败服务商电话已存在";
 		}
