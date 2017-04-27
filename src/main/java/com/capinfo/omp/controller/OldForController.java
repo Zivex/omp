@@ -70,15 +70,9 @@ public class OldForController {
 	private GeneralService generalService;
 
 	@RequestMapping("/oldMatch/list.shtml")
-	public ModelAndView list(@ModelAttribute("eccomm_admin") SystemUser user,
-			String pageSize, String current, String name, String idCard,
-			String zjNumber, String county, String street, String community,
-			String isGenerationOrder, String isindividuation,
-			String creationTime, HttpServletRequest request) {
+	public ModelAndView list(@ModelAttribute("eccomm_admin") SystemUser user,OldParameter parameter) {
 		ModelAndView mv = new ModelAndView("/omp/old/initial");
-		getList(mv, current, name, idCard, zjNumber, county, street, community,
-				isGenerationOrder, isindividuation, creationTime, user,
-				pageSize);
+		getList(mv,parameter,user);
 
 		// oldService.saveLogger("2", "老人信息表", "lixing", "1");
 		return mv;
@@ -86,67 +80,27 @@ public class OldForController {
 
 	/**
 	 * 老人列表查询
-	 * 
-	 * @param current
-	 * @param name
-	 * @param idCard
-	 * @param zjNumber
-	 * @param county
-	 * @param street
-	 * @param community
-	 * @param isGenerationOrder
-	 * @param isindividuation
-	 * @param creationTime
-	 * @return
 	 */
 	@RequestMapping("/oldMatch/listtoo.shtml")
-	public ModelAndView listtoo(String current, String pageSize, String name,
-			String idCard, String zjNumber, String county, String street,
-			String community, String isGenerationOrder, String isindividuation,
-			String creationTime, Integer call_id,
+	public ModelAndView listtoo(OldParameter parameter,
 			@ModelAttribute("eccomm_admin") SystemUser user) {
 		ModelAndView mv = new ModelAndView("/omp/old/list");
-		getList(mv, current, name, idCard, zjNumber, county, street, community,
-				isGenerationOrder, isindividuation, creationTime, user,
-				pageSize);
+		getList(mv,parameter,user);
 		// LogRecord.logger("2", "", "", "", "2");
 		return mv;
 	}
 
-	public void getList(ModelAndView mv, String current, String name,
-			String idCard, String zjNumber, String county, String street,
-			String community, String isGenerationOrder, String isindividuation,
-			String creationTime, SystemUser user, String pageSize) {
+	public void getList(ModelAndView mv,OldParameter parameter,SystemUser user) {
 
-		if (StringUtils.isEmpty(current)) {
-			current = "1";
-		}
-		if (StringUtils.isEmpty(isindividuation)) {
-			isindividuation = "";
-		}
-		if (StringUtils.isEmpty(pageSize)) {
-			pageSize = "10";
-		}
 
-		int count = oldService.getCount(name, idCard, zjNumber, county, street,
-				community, isGenerationOrder, isindividuation, user);
+		//int count = oldService.getCount(parameter,user);
 		// count = count == 0 ? 1 : count;
-		Page page = new Page<>(current, count, pageSize);
-		List<Omp_Old_Info> entities = oldService.getOldContextList(page, name,
-				idCard, zjNumber, county, street, community, isGenerationOrder,
-				isindividuation, user);
-		mv.addObject("dataList", entities);
-		mv.addObject("DataTotalCount", count);
-		mv.addObject("CurrentPieceNum", page.getCurrentPage());
-		mv.addObject("PerPieceSize", pageSize);
-		mv.addObject("name", name);
-		mv.addObject("idCard", idCard);
-		mv.addObject("zjNumber", zjNumber);
-		mv.addObject("county", county);
-		mv.addObject("street", street);
-		mv.addObject("community", community);
-		mv.addObject("isGenerationOrder", isGenerationOrder);
-		mv.addObject("isindividuation", isindividuation);
+		 Map<String, Object> map = oldService.getOldContextList(parameter,user);
+		 
+		mv.addObject("dataList", map.get("list"));
+		mv.addObject("DataTotalCount", map.get("count"));
+		mv.addObject("CurrentPieceNum",parameter.getCurrentPieceNum());
+		mv.addObject("PerPieceSize", parameter.getPerPieceSize());
 	}
 
 	/**
@@ -396,7 +350,8 @@ public class OldForController {
 	@SuppressWarnings("rawtypes")
 	@RequestMapping("/oldMatch/oldinfo.shtml")
 	@ResponseBody
-	public ModelAndView oldinfo(String oid,@ModelAttribute("eccomm_admin") SystemUser user) {
+	public ModelAndView oldinfo(String oid,
+			@ModelAttribute("eccomm_admin") SystemUser user) {
 		ModelAndView mv = new ModelAndView("/omp/old/oldInfo");
 		ArrayList arrayList = new ArrayList<>();
 		List<Map<String, Object>> list = oldService.getOldById1(oid);
@@ -410,11 +365,12 @@ public class OldForController {
 				JSONArray json1 = JsonUtil.getJson1(jsonObject);
 				if (json1.size() > 0) {
 					for (int i = 0; i < json1.size(); i++) {
-						JSONObject job = json1.getJSONObject(i); 
-						if(user.getId()!=1 && (i==10 || i==12 || i==13 || i==14 || i==15)){
+						JSONObject job = json1.getJSONObject(i);
+						if (user.getId() != 1
+								&& (i == 10 || i == 12 || i == 13 || i == 14 || i == 15)) {
 							continue;
 						}
-																	
+
 						arrayList.add(job);
 					}
 				}
@@ -508,11 +464,10 @@ public class OldForController {
 	 */
 	@SuppressWarnings("deprecation")
 	@RequestMapping("/oldMatch/updete.shtml")
-	public String updete(HttpServletRequest request, 
-			OldParameter parameter,
+	public String updete(HttpServletRequest request, OldParameter parameter,
 			@ModelAttribute("eccomm_admin") SystemUser user) {
 		Omp_Old_Info old = parameter.getEntity();
-		
+
 		String county = parameter.getCounty();
 		String street = parameter.getStreet();
 		String community = parameter.getCommunity();

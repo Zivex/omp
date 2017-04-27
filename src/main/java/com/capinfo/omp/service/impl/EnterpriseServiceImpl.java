@@ -14,6 +14,7 @@ import com.capinfo.framework.model.BaseEntity;
 import com.capinfo.framework.web.service.impl.CommonsDataOperationServiceImpl;
 import com.capinfo.omp.model.Composition;
 import com.capinfo.omp.model.Enterprise;
+import com.capinfo.omp.model.Omp_Old_Info;
 import com.capinfo.omp.model.ServiceProvider;
 import com.capinfo.omp.parameter.EnterpriseParameter;
 import com.capinfo.omp.parameter.ServiceProviderParameter;
@@ -27,7 +28,9 @@ public class EnterpriseServiceImpl extends
 		implements EnterpriseService {
 
 	@Autowired
-	private JdbcTemplate JdbcTemplate;
+	private JdbcTemplate jdbcTemplate;
+	@Autowired
+	private OldServiceImpl oldServiceImpl;
 
 	@Override
 	public List<Enterprise> getListByName(EnterpriseParameter parameter) {
@@ -66,11 +69,11 @@ public class EnterpriseServiceImpl extends
 		long id = 0L;
 		String checksql = "select count(*) from omp_service_type t where t.serviceName = '"
 				+ serviceType + "'";
-		int check = JdbcTemplate.queryForInt(checksql);
+		int check = jdbcTemplate.queryForInt(checksql);
 		if (check > 0) {
 			String sql = "select t.id from omp_service_type t where t.serviceName = '"
 					+ serviceType + "'";
-			id = JdbcTemplate.queryForLong(sql);
+			id = jdbcTemplate.queryForLong(sql);
 		}
 		return id;
 	}
@@ -86,11 +89,11 @@ public class EnterpriseServiceImpl extends
 		}
 		String checksql = "select count(*)from omp_region t where t.name = '"
 				+ city + "' and levelid=0" + i + psql + " and USE_FLAG = 1";
-		int check = JdbcTemplate.queryForInt(checksql);
+		int check = jdbcTemplate.queryForInt(checksql);
 		if (check > 0) {
 			sql = "select t.id from omp_region t where t.name = '" + city
 					+ "' and levelid=0" + i + psql + " and USE_FLAG = 1";
-			id = JdbcTemplate.queryForLong(sql);
+			id = jdbcTemplate.queryForLong(sql);
 		}
 		return String.valueOf(id);
 	}
@@ -116,6 +119,7 @@ public class EnterpriseServiceImpl extends
 		searchCriteriaBuilder.addQueryCondition("serviceCounty_id", RestrictionExpression.LIKE_OP, parameter.getCounty());
 		searchCriteriaBuilder.addQueryCondition("serviceStreet_id", RestrictionExpression.LIKE_OP, parameter.getStreet());
 		searchCriteriaBuilder.addQueryCondition("serviceCommunity_id", RestrictionExpression.LIKE_OP, parameter.getCommunity());
+		searchCriteriaBuilder.addQueryCondition("user_falg", RestrictionExpression.EQUALS_OP, 1L);
 
 
 		int count = getGeneralService().getCount(searchCriteriaBuilder.build());
@@ -187,7 +191,7 @@ public class EnterpriseServiceImpl extends
 	@Override
 	public List<Map<String,Object>> queryAllRegions(int i) {
 		String sql = "select t.id id,t.name name,t.PARENTID pid from omp_region t where t.USE_FLAG=1 and t.LEVELID="+i;
-		List<Map<String,Object>> list = JdbcTemplate.queryForList(sql);
+		List<Map<String,Object>> list = jdbcTemplate.queryForList(sql);
 		return list;
 	}
 
@@ -205,8 +209,34 @@ public class EnterpriseServiceImpl extends
 			idsql = " and t.id <>"+id;
 		}
 		String sql = "select count(*) from service_provider t where t.serviceTell ='"+serviceTell+"'"+idsql;
-		int i = JdbcTemplate.queryForInt(sql);
+		int i = jdbcTemplate.queryForInt(sql);
 		return i>0?false:true;
+	}
+
+	@SuppressWarnings("deprecation")
+	@Override
+	public Long queryForOldTell(Long id) {
+		String sql = "select t.serviceTell from service_provider t where t.id="+id;
+		Long serviceTell = jdbcTemplate.queryForLong(sql);
+		return serviceTell;
+	}
+
+	@Override
+	public void syncOld(Long oldServiceTell) {
+		String sql = "select t.oldId from omp_old_order t where t.keyPointMessage like '%"+oldServiceTell+"%'";
+		List<Map<String,Object>> oldIdList = jdbcTemplate.queryForList(sql);
+		if(oldIdList.size()>0){
+			for (Map<String, Object> map : oldIdList) {
+				Long id = Long.parseLong(map.get("oldId")+"");
+				String sqlId = "select count(*) from omp_old_info t where t.id = "+id;
+				int count = jdbcTemplate.queryForInt(sqlId);
+				if(count>0){
+					Omp_Old_Info old = getGeneralService().getObjectById(Omp_Old_Info.class, id);
+					oldServiceImpl.addOmpOldOrderInfo(old);
+				}
+			}
+		}
+		
 	}
 
 }

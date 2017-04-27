@@ -43,21 +43,20 @@ public class OldServiceImpl extends
 	private JdbcTemplate jdbcTemplate;
 
 	@Override
-	public List<Omp_Old_Info> getOldContextList(Page page, String name,
-			String idCard, String zjNumber, String county, String street,
-			String community, String isGenerationOrder, String isindividuation,
-			SystemUser user) {
+	public Map<String,Object> getOldContextList(OldParameter parameter,SystemUser user) {
 
 		SearchCriteriaBuilder<Omp_Old_Info> searchCriteriaBuilder = new SearchCriteriaBuilder<Omp_Old_Info>(
 				Omp_Old_Info.class);
 		SearchCriteriaBuilder<Omp_Old_Info> selectList = selectList(
-				searchCriteriaBuilder, page, name, idCard, zjNumber, county,
-				street, community, isGenerationOrder, isindividuation, user);
-
+				searchCriteriaBuilder, parameter, user);
+		
+		int count = getGeneralService().getCount(selectList.build());
 		List<Omp_Old_Info> omp_Old_InfoList = getGeneralService().getObjects(
 				selectList.build());
-
-		return omp_Old_InfoList;
+		Map<String,Object> hashMap = new HashMap<>();
+		hashMap.put("count", count);
+		hashMap.put("list", omp_Old_InfoList);
+		return hashMap;
 	}
 
 	@Override
@@ -188,17 +187,17 @@ public class OldServiceImpl extends
 	public int getCount(String name, String idCard, String zjNumber,
 			String county, String street, String community,
 			String isGenerationOrder, String isindividuation, SystemUser user) {
+//
+//		SearchCriteriaBuilder<Omp_Old_Info> searchCriteriaBuilder = new SearchCriteriaBuilder<Omp_Old_Info>(
+//				Omp_Old_Info.class);
+//
+//		SearchCriteriaBuilder<Omp_Old_Info> selectList = selectList(
+//				searchCriteriaBuilder, null, name, idCard, zjNumber, county,
+//				street, community, isGenerationOrder, isindividuation, user);
+//
+//		int count = getGeneralService().getCount(selectList.build());
 
-		SearchCriteriaBuilder<Omp_Old_Info> searchCriteriaBuilder = new SearchCriteriaBuilder<Omp_Old_Info>(
-				Omp_Old_Info.class);
-
-		SearchCriteriaBuilder<Omp_Old_Info> selectList = selectList(
-				searchCriteriaBuilder, null, name, idCard, zjNumber, county,
-				street, community, isGenerationOrder, isindividuation, user);
-
-		int count = getGeneralService().getCount(selectList.build());
-
-		return count;
+		return 0;
 	}
 
 	@Override
@@ -812,12 +811,8 @@ public class OldServiceImpl extends
 		// RestrictionExpression.EQUALS_OP,
 		// parameter.getIsindividuation());
 
-		List<Omp_Old_Info> oldPersonlist = getOldContextList(null,
-				parameter.getName(), parameter.getIdCard(),
-				parameter.getZjNumber(), parameter.getCounty(),
-				parameter.getStreet(), parameter.getCommunity(),
-				parameter.getIsGenerationOrder(),
-				parameter.getIsindividuation(), user);
+		 Map<String, Object> map = getOldContextList(parameter, user);
+		 List<Omp_Old_Info> oldPersonlist = (List<Omp_Old_Info>) map.get("list");
 
 		// List<Omp_Old_Info> oldPersonlist = getGeneralService().getObjects(
 		// searchCriteriaBuilder.build());
@@ -1540,27 +1535,26 @@ public class OldServiceImpl extends
 	 * @param user
 	 */
 	public SearchCriteriaBuilder<Omp_Old_Info> selectList(
-			SearchCriteriaBuilder<Omp_Old_Info> searchCriteriaBuilder,
-			Page page, String name, String idCard, String zjNumber,
-			String county, String street, String community,
-			String isGenerationOrder, String isindividuation, SystemUser user) {
+			SearchCriteriaBuilder<Omp_Old_Info> searchCriteriaBuilder,OldParameter parameter, SystemUser user) {
 		// 名字
 		searchCriteriaBuilder.addQueryCondition("name",
-				RestrictionExpression.EQUALS_OP, name);
+				RestrictionExpression.EQUALS_OP, parameter.getName());
 		searchCriteriaBuilder.addQueryCondition("certificates_number",
-				RestrictionExpression.EQUALS_OP, idCard);
+				RestrictionExpression.EQUALS_OP, parameter.getIdCard());
 		searchCriteriaBuilder.addQueryCondition("zjnumber",
-				RestrictionExpression.EQUALS_OP, zjNumber);
+				RestrictionExpression.EQUALS_OP, parameter.getZjNumber());
 		searchCriteriaBuilder.addQueryCondition("household_county_id",
-				RestrictionExpression.EQUALS_OP, county);
+				RestrictionExpression.EQUALS_OP, parameter.getCounty());
 		searchCriteriaBuilder.addQueryCondition("household_street_id",
-				RestrictionExpression.EQUALS_OP, street);
+				RestrictionExpression.EQUALS_OP, parameter.getStreet());
 		searchCriteriaBuilder.addQueryCondition("household_community_id",
-				RestrictionExpression.EQUALS_OP, community);
+				RestrictionExpression.EQUALS_OP, parameter.getCommunity());
+		searchCriteriaBuilder.addQueryCondition("call_id",
+				RestrictionExpression.EQUALS_OP, parameter.getCall_id());
 		String gSql ="";
-		if (!"order".equals(isGenerationOrder)) {
+		if (!"order".equals(parameter.getIsGenerationOrder())) {
 			searchCriteriaBuilder.addQueryCondition("isGenerationOrder",
-					RestrictionExpression.EQUALS_OP, isGenerationOrder);
+					RestrictionExpression.EQUALS_OP, parameter.getIsGenerationOrder());
 			
 		} else if (user.getLeave() > 1){
 			if("g".equals(user.getAccount_type())){
@@ -1572,13 +1566,9 @@ public class OldServiceImpl extends
 					RestrictionExpression.EQUALS_OP, 1);
 		}
 		searchCriteriaBuilder.addQueryCondition("isindividuation",
-				RestrictionExpression.EQUALS_OP, isindividuation);
-		if (page != null) {
-			searchCriteriaBuilder.addLimitCondition((page.getCurrentPage() - 1)
-					* page.getPageSize(), page.getPageSize());
-		}
+				RestrictionExpression.EQUALS_OP, parameter.getIsindividuation());
+		searchCriteriaBuilder.addLimitCondition(((parameter.getCurrentPieceNum()) - 1)* parameter.getPerPieceSize(), parameter.getPerPieceSize());
 		if (user.getLeave() > 1) {
-
 			if ("g".equals(user.getAccount_type())) {
 				String rname = "";
 				switch (user.getLeave()) {
@@ -1636,7 +1626,7 @@ public class OldServiceImpl extends
 		if (!"".equals(gSql)) {
 			searchCriteriaBuilder.addAdditionalRestrictionSql(gSql);
 		}
-
+		
 		return searchCriteriaBuilder;
 	}
 
@@ -1717,50 +1707,23 @@ public class OldServiceImpl extends
 		json = json.substring(0, json.length()-1);
 		json +="}]";
 		
-		System.out.println(json);
+//		System.out.println(json);
 		
-		
-		
-		
-		String sql = "INSERT INTO omp_old_order ("
-				+ "oldId, phoneName, communityOrderId, keyPointMessage)"
-				+ "  select t.ID,t.TELTYPE,t.HOUSEHOLD_COMMUNITY_ID,'" + json
-				+ "' from omp_old_info t WHERE t.ID = " + old.getId();
+		String oldCountsql = "select count(*) from omp_old_order t where t.oldId="+old.getId();
+		int count = jdbcTemplate.queryForInt(oldCountsql);
+		String sql ="";
+		if(count>0){	//更新
+			String idsql = "select t.id from omp_old_order t where t.oldId="+old.getId();
+			int oid = jdbcTemplate.queryForInt(idsql);
+			sql = "update omp_old_order set keyPointMessage='"+json+"' where id="+oid;
+		}else{
+			 sql = "INSERT INTO omp_old_order ("
+					+ "oldId, phoneName, communityOrderId, keyPointMessage)"
+					+ "  select t.ID,t.TELTYPE,t.HOUSEHOLD_COMMUNITY_ID,'" + json
+					+ "' from omp_old_info t WHERE t.ID = " + old.getId();
+			
+		}
 		jdbcTemplate.update(sql);
-		
-		
-		
-
-
-//		Long id = ss.getId();
-//
-//
-//		String sql = "";
-
-
-
-
-
-
-
-		// [{"M1":"82660886","M2":"96003","M3":"67287180","M4":"4008331212","M5":"4008221299","M6":"56328888","M7":"13691139445","M8":"68887325","M9":"88982461","M10":"68873023","M11":"8008100032","M12":"999","M13":"84925513","M14":"84931297","M15":"8008100032","M16":"8008100032"}]
-//		String json = "[{" + "\"M1\":\"" + ss.getM1() + "\"," + "\"M2\":\""
-//				+ ss.getM2() + "\"," + "\"M3\":\"" + ss.getM3() + "\","
-//				+ "\"M4\":\"" + ss.getM4() + "\"," + "\"M5\":\"" + ss.getM5()
-//				+ "\"," + "\"M6\":\"" + ss.getM6() + "\"," + "\"M7\":\""
-//				+ ss.getM7() + "\"," + "\"M8\":\"" + ss.getM8() + "\","
-//				+ "\"M9\":\"" + ss.getM9() + "\"," + "\"M10\":\"" + ss.getM10()
-//				+ "\"," + "\"M11\":\"" + ss.getM11() + "\"," + "\"M12\":\""
-//				+ ss.getM12() + "\"," + "\"M13\":\"" + ss.getM13() + "\","
-//				+ "\"M14\":\"" + ss.getM14() + "\"," + "\"M15\":\""
-//				+ ss.getM15() + "\"," + "\"M16\":\"" + ss.getM16() + "\""
-//				+ "}]";
-//		String sql = "INSERT INTO omp_old_order ("
-//				+ "oldId, phoneName, communityOrderId, keyPointMessage)"
-//				+ "  select t.ID,t.TELTYPE,t.HOUSEHOLD_COMMUNITY_ID,'" + json
-//				+ "' from omp_old_info t WHERE t.ID = " + id;
-//		;
-
 	}
 
 }

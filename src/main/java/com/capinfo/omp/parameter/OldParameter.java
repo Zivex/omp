@@ -10,6 +10,7 @@ public class OldParameter extends DataListParameter<Omp_Old_Info> {
 	private Class<Omp_Old_Info> entityClazz = Omp_Old_Info.class;
 	private String name;
 	private String current;
+	private String pageSize;
 	private String idCard;
 	private String zjNumber;
 	private String county;
@@ -19,6 +20,15 @@ public class OldParameter extends DataListParameter<Omp_Old_Info> {
 	private String isindividuation;
 	private String creationTime;
 	private Integer call_id;
+
+	
+	public String getPageSize() {
+		return pageSize;
+	}
+
+	public void setPageSize(String pageSize) {
+		this.pageSize = pageSize;
+	}
 
 	public String getName() {
 		return name;

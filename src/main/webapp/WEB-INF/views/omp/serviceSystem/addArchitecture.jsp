@@ -33,8 +33,9 @@
 				<div>
 					<div class="page-header">
 						<h1>
-							<i class="fa fa-user fa-fw"></i>添加服务体系<span id="backspan"><input
-								type="button" id="backButton" onclick="hxBackClick()" value="返回" /></span>
+							<i class="fa fa-user fa-fw"></i>添加服务体系<span id="backspan">
+							<a class="btn btn-default"  id="backButton" href="${pageContext.request.contextPath }/serviceSystem/initialize.shtml"  role="button">返回</a>
+							</span>
 						</h1>
 					</div>
 					<div class="header-underline"></div>
@@ -303,7 +304,7 @@
 				data: addForm,
 				success: function(result) {
 					alert(result);
-					window.location.reload();
+					window.location.href="${pageContext.request.contextPath }/serviceSystem/initialize.shtml";
 				}
 			});
 

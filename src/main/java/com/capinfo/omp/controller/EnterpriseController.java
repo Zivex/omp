@@ -704,12 +704,17 @@ public class EnterpriseController {
 		if(!b){
 			return "添加失败服务商电话已存在";
 		}
+		Long oldServiceTell = enterpriseService.queryForOldTell(parameter.getEntity().getId());
 		ServiceProvider serviceProvider = parameter.getEntity();
 		serviceProvider.setUpdateTime(new Date());
 		serviceProvider.setServiceCounty_id(r1);
 		serviceProvider.setServiceStreet_id(r2);
 		serviceProvider.setServiceCommunity_id(r3);
 		generalService.saveOrUpdate(serviceProvider);
+		
+		//同步指令
+		enterpriseService.syncOld(oldServiceTell); 
+		
 		return "成功";
 	}
 

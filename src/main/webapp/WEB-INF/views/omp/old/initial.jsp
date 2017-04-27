@@ -41,8 +41,10 @@
 							<c:url var="queryForm" value="/old/oldMatch/listtoo.shtml" />
 							<form:form id="command" role="form" class="form-inline" action="${queryForm}" method="post">
 								<%-- 								action="${queryForm}" method="post"> --%>
-								<input id="pageNo" name="current" type="hidden" value="1">
-								<input id="pageSizes" name="pageSize" type="hidden" value="10">
+								<!-- 								<input id="pageNo" name="current" type="hidden" value="1"> -->
+								<!-- 								<input id="pageSizes" name="pageSize" type="hidden" value="10"> -->
+								<input id="pageNo" name="currentPieceNum" type="hidden" value="1">
+								<input id="pageSizes" name="perPieceSize" type="hidden" value="10">
 								<table class="table">
 									<tr>
 										<td>姓名：</td>
@@ -84,8 +86,8 @@
 										<td>是否有来电显示：</td>
 										<td><select id="call_id" name="call_id">
 												<option value="${call_id }">--请选择--</option>
-												<option value="0">是</option>
-												<option value="1">否</option>
+												<option value="1">是</option>
+												<option value="0">否</option>
 										</select></td>
 									</tr>
 									<tr>
@@ -262,19 +264,25 @@
 			$("#street").change(function(){
 				$("#community option:not(:first)").remove();
 				var id = $("#street").val();
-				$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",{id : id},function(data) {
-						for (var i = 0; i < data.length; i++) {
-							$("#community").append("<option value='"+data[i].id+"'>"+ data[i].name+ "</option>");
-						}
-					});
-				});
-						});
-
-		function hxBackClick() {
-			$("#displayDiv1").hide();
-			$("#displayDiv").show();
-			$("#backButton").hide();
-		};
+				$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",
+		        {
+			        id : id
+		        }, function (data)
+		        {
+			        for (var i = 0; i < data.length; i++)
+			        {
+				        $ ("#community").append ("<option value='"+data[i].id+"'>" + data[i].name + "</option>");
+			        }
+		        });
+	        });
+        });
+        
+        function hxBackClick ()
+        {
+	        $ ("#displayDiv1").hide ();
+	        $ ("#displayDiv").show ();
+	        $ ("#backButton").hide ();
+        };
 	</script>
 
 

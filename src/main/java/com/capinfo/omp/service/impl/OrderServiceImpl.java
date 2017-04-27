@@ -103,10 +103,10 @@ CommonsDataOperationServiceImpl<Omp_old_order, OrderParameter>  implements
 			community = " AND i.HOUSEHOLD_COMMUNITY_ID = '" + community + "'";
 		}
 		if (!StringUtils.isEmpty(send_flag)) {
-			send_flag = " AND oldo.send_flag = '" + send_flag + "'";
+			send_flag = " AND oldo.send_flag = '" + send_flag + "'";	//发送状态
 		}
 		if (!StringUtils.isEmpty(execute_flag)) {
-			execute_flag = " AND oldo.execute_flag = '" + execute_flag + "'";
+			execute_flag = " AND oldo.execute_flag = '" + execute_flag + "'";		//执行状态
 		}
 		String sql = "SELECT count(oldo.id) FROM "
 				+ "(SELECT old.id,old.`NAME`,old.idcard,old.community,old.county,old.street,"
@@ -127,7 +127,22 @@ CommonsDataOperationServiceImpl<Omp_old_order, OrderParameter>  implements
 			String idCard, String zjNumber, String county, String street,
 			String community, String send_flag, String execute_flag,SystemUser user) {
 		List<Omp_old_order> orderList = null;
-		List<Omp_Old_Info> oldList = oldService.getOldContextList(page, name, idCard, zjNumber, county, street, community, "order", null, user);
+		
+		OldParameter parameter = new OldParameter();
+		parameter.setName(name);
+		parameter.setIdCard(idCard);
+		parameter.setZjNumber(zjNumber);
+		parameter.setCounty(county);
+		parameter.setStreet(street);
+		parameter.setCommunity(community);
+		parameter.setPerPieceSize(page.getPageSize());
+		parameter.setCurrentPieceNum(page.getCurrentPage());
+		parameter.setIsGenerationOrder("order");
+//		List<Omp_Old_Info> oldList = 
+				
+		Map<String, Object> map = oldService.getOldContextList(parameter, user);
+		List<Omp_Old_Info> oldList = (List<Omp_Old_Info>) map.get("list");
+		
 		if(oldList.size()>0){
 		SearchCriteriaBuilder<Omp_old_order> searchCriteriaBuilder = new SearchCriteriaBuilder<Omp_old_order>(
 				Omp_old_order.class);

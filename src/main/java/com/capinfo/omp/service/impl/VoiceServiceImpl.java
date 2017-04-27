@@ -22,6 +22,7 @@ import com.capinfo.framework.web.service.impl.CommonsDataOperationServiceImpl;
 import com.capinfo.omp.model.Omp_Old_Info;
 import com.capinfo.omp.model.Omp_old_order;
 import com.capinfo.omp.model.Omp_voice_order;
+import com.capinfo.omp.parameter.OldParameter;
 import com.capinfo.omp.parameter.UserInfoParameter;
 import com.capinfo.omp.service.OldService;
 import com.capinfo.omp.service.VoiceService;
@@ -42,8 +43,22 @@ public class VoiceServiceImpl extends CommonsDataOperationServiceImpl<Omp_voice_
 	public List<Omp_Old_Info> getOldContextList(Page page, String name,
 			String idCard, String zjNumber, String county, String street,
 			String community,SystemUser user) {
-		List<Omp_Old_Info> oldlist = oldService.getOldContextList(page, name, idCard, zjNumber, county, street, community, null, null, user);
-		return oldlist;
+		
+		OldParameter parameter = new OldParameter();
+		parameter.setName(name);
+		parameter.setIdCard(idCard);
+		parameter.setZjNumber(zjNumber);
+		parameter.setCounty(county);
+		parameter.setStreet(street);
+		parameter.setCommunity(community);
+		parameter.setPerPieceSize(page.getPageSize());
+		parameter.setCurrentPieceNum(page.getCurrentPage());
+		
+//		List<Omp_Old_Info> oldlist = oldService.getOldContextList(page, name, idCard, zjNumber, county, street, community, null, null, user);
+		Map<String, Object> map = oldService.getOldContextList(parameter, user);
+		@SuppressWarnings("unchecked")
+		List<Omp_Old_Info> oldList = (List<Omp_Old_Info>) map.get("list");
+		return oldList;
 	}
 
 	@Override
@@ -177,7 +192,32 @@ public class VoiceServiceImpl extends CommonsDataOperationServiceImpl<Omp_voice_
 			String idCard, String zjNumber, String county, String street,
 			String community, String send_flag, String execute_flag,SystemUser user) {
 		List<Omp_old_order> orderList = null;
-		List<Omp_Old_Info> oldList = oldService.getOldContextList(page, name, idCard, zjNumber, county, street, community, null, null, user);
+		
+		OldParameter parameter = new OldParameter();
+		parameter.setName(name);
+		parameter.setIdCard(idCard);
+		parameter.setZjNumber(zjNumber);
+		parameter.setCounty(county);
+		parameter.setStreet(street);
+		parameter.setCommunity(community);
+		parameter.setPerPieceSize(page.getPageSize());
+		parameter.setCurrentPieceNum(page.getCurrentPage());
+//		List<Omp_Old_Info> oldList = 
+				
+		Map<String, Object> map = oldService.getOldContextList(parameter, user);
+		List<Omp_Old_Info> oldList = (List<Omp_Old_Info>) map.get("list");
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		//List<Omp_Old_Info> oldList = oldService.getOldContextList(page, name, idCard, zjNumber, county, street, community, null, null, user);
 
 		if (oldList.size() > 0) {
 		SearchCriteriaBuilder<Omp_voice_order> searchCriteriaBuilder = new SearchCriteriaBuilder<Omp_voice_order>(
@@ -214,7 +254,20 @@ public class VoiceServiceImpl extends CommonsDataOperationServiceImpl<Omp_voice_
 			String county, String street, String community, String send_flag,
 			String execute_flag,SystemUser user) {
 		int count = 0;
-		List<Omp_Old_Info> oldList = oldService.getOldContextList(null, name, idCard, zjNumber, county, street, community, null, null, user);
+		
+		
+		OldParameter parameter = new OldParameter();
+		parameter.setName(name);
+		parameter.setIdCard(idCard);
+		parameter.setZjNumber(zjNumber);
+		parameter.setCounty(county);
+		parameter.setStreet(street);
+		parameter.setCommunity(community);
+//		List<Omp_Old_Info> oldList = 
+				
+		Map<String, Object> map = oldService.getOldContextList(parameter, user);
+		List<Omp_Old_Info> oldList = (List<Omp_Old_Info>) map.get("list");
+//		List<Omp_Old_Info> oldList = oldService.getOldContextList(null, name, idCard, zjNumber, county, street, community, null, null, user);
 
 		if (oldList.size() > 0) {
 			SearchCriteriaBuilder<Omp_voice_order> searchCriteriaBuilder = new SearchCriteriaBuilder<Omp_voice_order>(

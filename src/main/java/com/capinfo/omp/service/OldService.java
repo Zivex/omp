@@ -28,7 +28,7 @@ public interface OldService extends CommonsDataOperationService<Omp_Old_Info, Ol
 	 *
 	 * @return
 	 */
-	List<Omp_Old_Info> getOldContextList(Page page, String name, String idCard, String zjNumber, String county, String street, String community, String isGenerationOrder,String isindividuation,SystemUser user);
+	Map<String,Object> getOldContextList(OldParameter parameter,SystemUser user);
 
 	//List getOldContextList(Page page, String name, String idCard, String zjNumber, String county, String street, String community, String isGenerationOrder,String isindividuation,SystemUser user);
 
