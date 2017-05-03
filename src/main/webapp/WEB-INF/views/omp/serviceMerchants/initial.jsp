@@ -44,10 +44,15 @@
 							<form:form id="command" method="post"  action='${queryForm}' >
 							<input id="pageNo" name="current" type="hidden" value="1">
 							<input id="pageSizes" name="pageSize" type="hidden" value="10">
+							<input id="government" name="g" type="hidden" value="0">
+							<c:if test="${ sessionScope.eccomm_admin.account_type=='g'}">
 								<a role="button" class="btn btn-primary"
-									onclick="importInformation()">服务商信息导入</a>
+									onclick="selectGSerivce()">市级服务商导入</a>
+									</c:if>
 								<a role="button" class="btn btn-primary"
-									onclick="addService()">添加服务商</a>
+									onclick="importInformation()">批量导入</a>
+								<a role="button" class="btn btn-primary"
+									onclick="addService()">单个录入</a>
 								<table class="table">
 									<tr>
 										<td>服务商名称：</td>
@@ -87,12 +92,12 @@
 													<option value="${street }">--请选择--</option>		
 												</select>
 											</td>
-											<td>服务社区：</td>
-											<td>
-												<select id="communityinit" name="community">
-													<option value="${community }">--请选择--</option>		
-												</select>
-											</td>
+<!-- 											<td>服务社区：</td> -->
+<!-- 											<td> -->
+<!-- 												<select id="communityinit" name="community"> -->
+<%-- 													<option value="${community }">--请选择--</option>		 --%>
+<!-- 												</select> -->
+<!-- 											</td> -->
 									</tr>
 									<tr>
 										<td><input  type="button" onclick="query()" value="查询"></td>
@@ -179,16 +184,39 @@
 				});
 			});
 			
-			$("#streetinit").change(function(){
-				//$("#street").find("option:not(:first)").remove();
-				$("#communityinit").find("option:not(:first)").remove();
-				var id = $("#streetinit").val();
-				$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",{id:id},function(data){
+			
+			<c:if test="${sessionScope.eccomm_admin.account_type=='g' }">
+			flag=1;
+			var lv = "${eccomm_admin.leave}";
+			var rid = "${eccomm_admin.rid}";
+			var pid = "${eccomm_admin.parentid}";
+			if(lv==2){	//北京
+				flag=0;
+			}
+			if(lv==3){	//区
+				$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",{id:rid},function(data){
+				$("#countyinit").val(rid); 
+				$("#countyinit").attr("disabled", true);
 					for(var i = 0;i<data.length;i++){
-						$("#communityinit").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
+						$("#streetinit").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
 					}				
 				});
-			});
+				
+			}
+			if(lv==4){	//街道
+				$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",{id:pid},function(data){
+					$("#countyinit").val(pid); 
+					$("#countyinit").attr("disabled", true);
+						for(var i = 0;i<data.length;i++){
+							$("#streetinit").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
+						}
+						$("#streetinit").val(rid); 
+						$("#streetinit").attr("disabled", true);
+					});
+			}
+		
+		</c:if>
+			
 		});
 
 		function see(id){
@@ -265,6 +293,12 @@
 						$("#resultDiv").html(data);
 					}
 			});
+		}
+		
+		
+		function selectGSerivce(){
+			$('#government').val(1);
+			query();
 		}
 		
 	</script>

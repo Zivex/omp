@@ -30,6 +30,10 @@
       <td>${c.count }</td>
     </tr>
   </c:forEach>
+  <tr>
+  	<td>总次数</td>
+  	<td>${sum }</td>
+  </tr>
   </tbody>
 </table>
 	

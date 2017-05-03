@@ -34,52 +34,47 @@
 						<div class="operatorDiv">
 							<c:url var="queryForm" value="/syslog/ReportFrom/list.shtml" />
 							<form:form id="command" role="form" class="form-inline" action="${queryForm}" method="post">
-							<input id="pageNo" name="current" type="hidden" value="1">
-<!-- 								&nbsp; -->
-<!-- 									<a role="button" class="btn btn-primary" onclick="DeAuditInformation()">未生成指令</a> -->
-<!-- 								&nbsp; -->
-<!-- 								&nbsp; -->
-<!-- 									<a role="button" class="btn btn-primary" onclick="DeAuditInformation()">*已生成指令*</a> -->
-<!-- 								&nbsp; -->
-								<table class="table" >
-										<tr>
-											<td>区域：</td>
-											<td>
-												<select id="county" name="county">
-													<option value="${county }">--请选择--</option>		
-												</select>
-											</td>
-											<td>街道：</td>
-											<td>
-												<select id="street" name="street">
-													<option value="${street }">--请选择--</option>		
-												</select>
-											</td>
-											<td>社区：</td>
-											<td>
-												<select id="community" name="community">
-													<option value="${community }">--请选择--</option>		
-												</select>
-											</td>
-											<td>
-											开始时间：<input type="text" value="" id="stime" name="stime" onclick="WdatePicker({isShowClear:false,readOnly:true,dateFmt:'yyyy-MM-dd HH:mm:ss'})" />
-											结束时间：<input type="text" value="" id="etime" name="etime" onclick="WdatePicker({isShowClear:false,readOnly:true,dateFmt:'yyyy-MM-dd HH:mm:ss'})" />
-											</td>
-										</tr>
-										<tr>
-											<td>座机类型：</td>
-											<td>
-												<select id="otype" name="otype">
-												  <option value="">--请选择--</option>	
-												  <option value ="1">居家型</option>
-												  <option value ="2">失能型</option>
-												  <option value="3">农商型</option> 
-												</select> 
-											</td>
-											<td><button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#myModal" onclick="quety()">查询</button></td>
-											<td><input class="btn btn-primary btn-sm" data-toggle="modal" data-target="#myModal" type="reset" value="重置"/></td>
-										</tr>
-									</table>
+								<input id="pageNo" name="current" type="hidden" value="1">
+								<!-- 								&nbsp; -->
+								<!-- 									<a role="button" class="btn btn-primary" onclick="DeAuditInformation()">未生成指令</a> -->
+								<!-- 								&nbsp; -->
+								<!-- 								&nbsp; -->
+								<!-- 									<a role="button" class="btn btn-primary" onclick="DeAuditInformation()">*已生成指令*</a> -->
+								<!-- 								&nbsp; -->
+								<table class="table">
+									<tr>
+										<td>区域：</td>
+										<td><select id="county" name="county">
+												<option value="${county }">--请选择--</option>
+										</select></td>
+										<td>街道：</td>
+										<td><select id="street" name="street">
+												<option value="${street }">--请选择--</option>
+										</select></td>
+										<td>社区：</td>
+										<td><select id="community" name="community">
+												<option value="${community }">--请选择--</option>
+										</select></td>
+										<td>开始时间：<input type="text" value="" id="stime" name="stime"
+											onclick="WdatePicker({isShowClear:false,readOnly:true,dateFmt:'yyyy-MM-dd HH:mm:ss'})" />
+											结束时间：<input type="text" value="" id="etime" name="etime"
+											onclick="WdatePicker({isShowClear:false,readOnly:true,dateFmt:'yyyy-MM-dd HH:mm:ss'})" />
+										</td>
+									</tr>
+									<tr>
+										<td>座机类型：</td>
+										<td><select id="otype" name="otype">
+												<option value="">--请选择--</option>
+												<option value="1">居家型</option>
+												<option value="2">失能型</option>
+												<option value="3">农商型</option>
+										</select></td>
+										<td><button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#myModal"
+												onclick="quety()">查询</button></td>
+										<td><input class="btn btn-primary btn-sm" data-toggle="modal" data-target="#myModal"
+											type="reset" value="重置" /></td>
+									</tr>
+								</table>
 							</form:form>
 						</div>
 						<hr>
@@ -100,6 +95,8 @@
 	<!--footer-->
 	<%@ include file="/WEB-INF/views/layout/adm_foot.jsp"%>
 	<!--/footer-->
+
+
 
 	<!-- Script	-->
 	<script type="text/javascript">
@@ -124,16 +121,17 @@
 			initalizeSiderBar();
 			selectMenu("o_wordbooks");
 			initQueryForm();
+			
 			$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",function(data){
 				for(var i = 0;i<data.length;i++){
 					$("#county").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
 				}				
 			});
+			
 			$("#county").change(function(){
 			//	$("#county").find("option:not(:first)").remove();
 				$("#street").find("option:not(:first)").remove();
 				$("#community").find("option:not(:first)").remove();
-				S
 				
 				
 				var id = $("#county").val();
@@ -155,8 +153,89 @@
 					}				
 				});
 			});
-		});
 		
+			
+			<c:if test="${sessionScope.eccomm_admin.account_type=='g' }">
+				flag=1;
+				var lv = "${eccomm_admin.leave}";
+				var rid = "${eccomm_admin.rid}";
+				var pid = "${eccomm_admin.parentid}";
+				if(lv==2){	//北京
+					flag=0;
+				}
+				if(lv==3){	//区
+					$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",{id:rid},function(data){
+					$("#county").val(rid); 
+					$("#county").attr("disabled", true);
+						for(var i = 0;i<data.length;i++){
+							$("#street").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
+						}				
+					});
+					
+				}
+				if(lv==4){	//街道
+					$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",{id:pid},function(data){
+						$("#county").val(pid); 
+						$("#county").attr("disabled", true);
+							for(var i = 0;i<data.length;i++){
+								$("#street").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
+							}
+							$("#street").val(rid); 
+							$("#street").attr("disabled", true);
+							$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",{id:rid},function(data){
+								for(var i = 0;i<data.length;i++){
+									$("#community").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
+								}
+								
+							});
+						});
+				}
+				if(lv==5){	//社区
+					$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionByPid.shtml",{id:pid},function(data){
+						var pid=data[0].PARENTID;
+						var sid=data[0].id;
+						
+						$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",{id:pid},function(data){
+						$("#county").val(pid); 
+						$("#county").attr("disabled", true);
+								for(var i = 0;i<data.length;i++){
+									$("#street").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
+								}
+								$("#street").val(sid); 
+								$("#street").attr("disabled", true);
+								$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",{id:sid},function(data){
+									for(var i = 0;i<data.length;i++){
+										$("#community").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
+									}
+									$("#community").val(rid); 
+									$("#community").attr("disabled", true);
+									
+								});
+							});
+						
+						});
+				}
+			
+			</c:if>
+			
+				
+			
+		});
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+			
+			
+			
 		
 		
 		function quety(){
@@ -167,17 +246,16 @@
 			var stime = $("#stime").val();
 			var etime = $("#etime").val();
 			$.post("<%=request.getContextPath() %>/syslog/ReportFrom/list.shtml",
-					{
-						county:county,
-						street:street,
-						community:community,
-						otype:otype,
-						stime:stime,
-						etime:etime
-					});
-			
-		}
-		
+	        {
+	            county : county,
+	            street : street,
+	            community : community,
+	            otype : otype,
+	            stime : stime,
+	            etime : etime
+	        });
+	        
+        }
 	</script>
 
 

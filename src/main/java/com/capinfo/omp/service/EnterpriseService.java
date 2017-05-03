@@ -3,6 +3,7 @@ package com.capinfo.omp.service;
 import java.util.List;
 import java.util.Map;
 
+import com.capinfo.common.model.SystemUser;
 import com.capinfo.framework.web.service.CommonsDataOperationService;
 import com.capinfo.omp.model.Composition;
 import com.capinfo.omp.model.Enterprise;
@@ -23,7 +24,7 @@ public interface EnterpriseService extends CommonsDataOperationService<Enterpris
 
 	String getRegionId(String city, int i, String cityId);
 
-	Map getMerchantsList(ServiceProviderParameter parameter);
+	Map getMerchantsList(ServiceProviderParameter parameter, SystemUser user);
 
 	int getMerchantsCount(ServiceProviderParameter parameter);
 

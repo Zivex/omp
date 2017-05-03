@@ -99,11 +99,11 @@ public class OrderController {
 				if ("1".equals(imKey.getStatusCode())) {
 //				ImKey imKey = new ImKey();
 //					if (true) {
-					orderService.resultOrder(imKey, id,username);
+					orderService.resultOrder(imKey, id,user);
 					i++;
 				}else{
 					//失败回滚
-					orderService.rollback(id,username,orderSata);
+					orderService.rollback(id,user,orderSata);
 				}
 				if (i != 0) {
 					// 全部成功后修改指令状态

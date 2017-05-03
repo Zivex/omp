@@ -52,6 +52,7 @@
 										操作 <span class="caret"></span>
 									</button>
 									<ul class="dropdown-menu" role="menu">
+										<li><a onclick="seeContent(${vo.id})">查看内容</a></li>
 										<li><a onclick="ordersend(${vo.id})">发送</a></li>
 										<c:if test="${old.logonName ne 'admin'}">
 											<li><a onclick="deleteAll(${vo.id});">删除</a></li>

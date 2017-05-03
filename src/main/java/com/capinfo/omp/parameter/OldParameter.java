@@ -9,16 +9,15 @@ public class OldParameter extends DataListParameter<Omp_Old_Info> {
 	private Omp_Old_Info entity = new Omp_Old_Info();
 	private Class<Omp_Old_Info> entityClazz = Omp_Old_Info.class;
 	private String name;
-	private String current;
 	private String idCard;
 	private String zjNumber;
 	private String county;
 	private String street;
 	private String community;
-	private String isGenerationOrder;
-	private String isindividuation;
+	private String isGenerationOrder;	//是否生成指令
+	private String isindividuation;	//个性化
 	private String creationTime;
-	private Integer call_id;
+	private Integer call_id;	//是否来显
 
 	public String getName() {
 		return name;
@@ -28,13 +27,6 @@ public class OldParameter extends DataListParameter<Omp_Old_Info> {
 		this.name = name;
 	}
 
-	public String getCurrent() {
-		return current;
-	}
-
-	public void setCurrent(String current) {
-		this.current = current;
-	}
 
 	public String getIdCard() {
 		return idCard;

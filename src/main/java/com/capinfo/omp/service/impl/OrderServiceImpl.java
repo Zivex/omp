@@ -127,7 +127,21 @@ CommonsDataOperationServiceImpl<Omp_old_order, OrderParameter>  implements
 			String idCard, String zjNumber, String county, String street,
 			String community, String send_flag, String execute_flag,SystemUser user) {
 		List<Omp_old_order> orderList = null;
-		List<Omp_Old_Info> oldList = oldService.getOldContextList(page, name, idCard, zjNumber, county, street, community, "order", null, user);
+		OldParameter parameter = new OldParameter();
+		parameter.setName(name);
+		parameter.setIdCard(idCard);
+		parameter.setZjNumber(zjNumber);
+		parameter.setCounty(county);
+		parameter.setStreet(street);
+		parameter.setCommunity(community);
+		parameter.setIsGenerationOrder("order");
+		parameter.setPerPieceSize(page.getPageSize());
+		parameter.setCurrentPieceNum(page.getCurrentPage());
+		
+		
+		
+//		List<Omp_Old_Info> oldList = oldService.getOldContextList(page, name, idCard, zjNumber, county, street, community, "order", null, user);
+		List<Omp_Old_Info> oldList = oldService.getOldContextList(parameter, user);
 		if(oldList.size()>0){
 		SearchCriteriaBuilder<Omp_old_order> searchCriteriaBuilder = new SearchCriteriaBuilder<Omp_old_order>(
 				Omp_old_order.class);
@@ -178,7 +192,7 @@ CommonsDataOperationServiceImpl<Omp_old_order, OrderParameter>  implements
 	@Override
 	public void toupdete(String string, ImKey imKey) {
 		// String sql =
-		// "UPDATE `omp_old_order` SET `execute_flag`= (select n.execute_flag 'execute_flag' from omp_order_number n where n.number='"+imKey.getGenerateSerialNumber()+"' and n.oid ='"+string+"') WHERE oldId= '"+string+"'";
+		// "UPDATE `omp_old_order` SET `execute_flag`= (select n.execute_lag 'execute_flag' from omp_order_number n where n.number='"+imKey.getGenerateSerialNumber()+"' and n.oid ='"+string+"') WHERE oldId= '"+string+"'";
 		String sql = "UPDATE `omp_old_order` SET `send_flag`='"
 				+ imKey.getStatusCode() + "' WHERE oldId='" + string + "'";
 //		+"1' WHERE oldId='" + string + "'";
@@ -283,7 +297,7 @@ CommonsDataOperationServiceImpl<Omp_old_order, OrderParameter>  implements
 	}
 
 	@Override
-	public void resultOrder(ImKey imKey, String id, String username) {
+	public void resultOrder(ImKey imKey, String id, SystemUser user) {
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");// 设置日期格式
 		System.out.println(df.format(new Date()));// new Date()为获取当前系统时间
 		String date = df.format(new Date());
@@ -293,12 +307,12 @@ CommonsDataOperationServiceImpl<Omp_old_order, OrderParameter>  implements
 				+ date
 				+ "','"
 				+ imKey.getGenerateSerialNumber()
-				+ "'," + imKey.getStatusCode() + ",'1','" + username + "');";
+				+ "'," + imKey.getStatusCode() + ",'1','" + user.getId() + "');";
 //				+ "123"
 //				+ "'," + "1" + ",'1','" + username + "');";
 		// String sql =
 		// "UPDATE omp_order_number n SET n.send_date = '"+date+"' ,n.returntype = '1' where n.number = '"+imKey.getGenerateSerialNumber()+"'";
-		oldService.saveLogger("5", "按键指令表", "" + username + "",
+		oldService.saveLogger("5", "按键指令表", "" + user.getName() + "",
 //				"" + imKey.getStatusCode() + "");
 				"" + Integer.toString(1) + "");
 		jdbcTemplate.update(sql);
@@ -381,7 +395,7 @@ CommonsDataOperationServiceImpl<Omp_old_order, OrderParameter>  implements
 	}
 
 	@Override
-	public void rollback(String id, String username, String voiceSata) {
+	public void rollback(String id, SystemUser user, String voiceSata) {
 		if (voiceSata != null) {
 			String sql = "";
 			if ("old".equals(voiceSata)) {
@@ -393,7 +407,7 @@ CommonsDataOperationServiceImpl<Omp_old_order, OrderParameter>  implements
 				int i = Integer.parseInt(voiceSata);
 				i = i + 1;
 				sql = "update users o set o.num = " + i
-						+ " where 1=1 and o.user_name = '" + username + "'";
+						+ " where 1=1 and o.id = "+user.getId();
 			}
 			jdbcTemplate.update(sql);
 		}

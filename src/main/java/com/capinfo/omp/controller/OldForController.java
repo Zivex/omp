@@ -70,15 +70,11 @@ public class OldForController {
 	private GeneralService generalService;
 
 	@RequestMapping("/oldMatch/list.shtml")
+	
 	public ModelAndView list(@ModelAttribute("eccomm_admin") SystemUser user,
-			String pageSize, String current, String name, String idCard,
-			String zjNumber, String county, String street, String community,
-			String isGenerationOrder, String isindividuation,
-			String creationTime, HttpServletRequest request) {
+			OldParameter parameter) {
 		ModelAndView mv = new ModelAndView("/omp/old/initial");
-		getList(mv, current, name, idCard, zjNumber, county, street, community,
-				isGenerationOrder, isindividuation, creationTime, user,
-				pageSize);
+		getList(mv, parameter, user);
 
 		// oldService.saveLogger("2", "老人信息表", "lixing", "1");
 		return mv;
@@ -100,53 +96,26 @@ public class OldForController {
 	 * @return
 	 */
 	@RequestMapping("/oldMatch/listtoo.shtml")
-	public ModelAndView listtoo(String current, String pageSize, String name,
-			String idCard, String zjNumber, String county, String street,
-			String community, String isGenerationOrder, String isindividuation,
-			String creationTime, Integer call_id,
+	@ResponseBody
+	public ModelAndView listtoo(OldParameter parameter,
 			@ModelAttribute("eccomm_admin") SystemUser user) {
 		ModelAndView mv = new ModelAndView("/omp/old/list");
-		getList(mv, current, name, idCard, zjNumber, county, street, community,
-				isGenerationOrder, isindividuation, creationTime, user,
-				pageSize);
+		getList(mv, parameter, user);
 		// LogRecord.logger("2", "", "", "", "2");
 		return mv;
 	}
 
-	public void getList(ModelAndView mv, String current, String name,
-			String idCard, String zjNumber, String county, String street,
-			String community, String isGenerationOrder, String isindividuation,
-			String creationTime, SystemUser user, String pageSize) {
+	public void getList(ModelAndView mv, OldParameter parameter, SystemUser user) {
 
-		if (StringUtils.isEmpty(current)) {
-			current = "1";
-		}
-		if (StringUtils.isEmpty(isindividuation)) {
-			isindividuation = "";
-		}
-		if (StringUtils.isEmpty(pageSize)) {
-			pageSize = "10";
-		}
 
-		int count = oldService.getCount(name, idCard, zjNumber, county, street,
-				community, isGenerationOrder, isindividuation, user);
+		int count = oldService.getCount(parameter, user);
+		
 		// count = count == 0 ? 1 : count;
-		Page page = new Page<>(current, count, pageSize);
-		List<Omp_Old_Info> entities = oldService.getOldContextList(page, name,
-				idCard, zjNumber, county, street, community, isGenerationOrder,
-				isindividuation, user);
+		List<Omp_Old_Info> entities = oldService.getOldContextList(parameter, user);
+		
 		mv.addObject("dataList", entities);
-		mv.addObject("DataTotalCount", count);
-		mv.addObject("CurrentPieceNum", page.getCurrentPage());
-		mv.addObject("PerPieceSize", pageSize);
-		mv.addObject("name", name);
-		mv.addObject("idCard", idCard);
-		mv.addObject("zjNumber", zjNumber);
-		mv.addObject("county", county);
-		mv.addObject("street", street);
-		mv.addObject("community", community);
-		mv.addObject("isGenerationOrder", isGenerationOrder);
-		mv.addObject("isindividuation", isindividuation);
+		mv.addObject("count", count);
+		mv.addObject("command", parameter);
 	}
 
 	/**
@@ -558,6 +527,21 @@ public class OldForController {
 			id = "2";
 		}
 		List<Map<String, Object>> list = oldService.getRegionById(id);
+		return list;
+	}
+	/**
+	 * 查询政府单位所在区域
+	 * 
+	 * @param id
+	 * @return
+	 */
+	@RequestMapping("/oldMatch/getRegionByPid.shtml")
+	@ResponseBody
+	public List<Map<String, Object>> getRegionByPid(String id) {
+		if (StringUtils.isEmpty(id)) {
+			id = "2";
+		}
+		List<Map<String, Object>> list = oldService.getRegionByPid(id);
 		return list;
 	}
 

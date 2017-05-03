@@ -18,6 +18,8 @@ import com.capinfo.common.web.service.ResourceService;
 import com.capinfo.common.web.service.SystemUserService;
 import com.capinfo.framework.service.GeneralService;
 import com.capinfo.framework.web.parameter.BaseParameter;
+import com.capinfo.omp.parameter.UserInfoParameter;
+import com.capinfo.omp.service.VoiceService;
 
 /**
  * 
@@ -38,6 +40,9 @@ public class AdminController {
 	private SystemUserService systemUserService;
 	@Autowired
 	private GeneralService generalService;
+	
+	@Autowired
+	private VoiceService voiceService;
 
 	@RequestMapping("/index.shtml")
 	public String index(NativeWebRequest request, HttpServletResponse response) {
@@ -54,6 +59,8 @@ public class AdminController {
 	@RequestMapping("/admin/index.shtml")
 	public ModelAndView admin_index(HttpServletRequest request, HttpServletResponse response, @ModelAttribute("eccomm_admin") SystemUser user) {
 		ModelAndView mv = new ModelAndView("/admin/index");
+		UserInfoParameter userInfo = voiceService.getUserInfo(user);
+		mv.addObject("userINfo",userInfo);
 		return mv;
 	}
 

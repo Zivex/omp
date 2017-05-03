@@ -202,6 +202,68 @@
 					}				
 				});
 			});
+			<c:if test="${sessionScope.eccomm_admin.account_type=='g' }">
+			flag=1;
+			var lv = "${eccomm_admin.leave}";
+			var rid = "${eccomm_admin.rid}";
+			var pid = "${eccomm_admin.parentid}";
+			if(lv==2){	//北京
+				flag=0;
+			}
+			if(lv==3){	//区
+				$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",{id:rid},function(data){
+				$("#county").val(rid); 
+				$("#county").attr("disabled", true);
+					for(var i = 0;i<data.length;i++){
+						$("#street").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
+					}				
+				});
+				
+			}
+			if(lv==4){	//街道
+				$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",{id:pid},function(data){
+					$("#county").val(pid); 
+					$("#county").attr("disabled", true);
+						for(var i = 0;i<data.length;i++){
+							$("#street").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
+						}
+						$("#street").val(rid); 
+						$("#street").attr("disabled", true);
+						$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",{id:rid},function(data){
+							for(var i = 0;i<data.length;i++){
+								$("#community").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
+							}
+							
+						});
+					});
+			}
+			if(lv==5){	//社区
+				$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionByPid.shtml",{id:pid},function(data){
+					var pid=data[0].PARENTID;
+					var sid=data[0].id;
+					
+					$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",{id:pid},function(data){
+					$("#county").val(pid); 
+					$("#county").attr("disabled", true);
+							for(var i = 0;i<data.length;i++){
+								$("#street").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
+							}
+							$("#street").val(sid); 
+							$("#street").attr("disabled", true);
+							$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",{id:sid},function(data){
+								for(var i = 0;i<data.length;i++){
+									$("#community").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
+								}
+								$("#community").val(rid); 
+								$("#community").attr("disabled", true);
+								
+							});
+						});
+					
+					});
+			}
+		
+		</c:if>
 		});
 		
 		<!--获取详情--> 

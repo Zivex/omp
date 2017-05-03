@@ -52,7 +52,7 @@ public class Omp_voice_order implements BaseEntity {
 	private Long voiceId;
 	private String errorMessage;
 	private Long number;
-	private String agent_id;
+	private Long agent_id;
 
 	
 	
@@ -189,14 +189,14 @@ public class Omp_voice_order implements BaseEntity {
 	public void setNumber(Long number) {
 		this.number = number;
 	}
+	
 	@Column(name = "agent_id")
-
-	public String getAgent_id() {
+	public Long getAgent_id() {
 		return agent_id;
 	}
 
 
-	public void setAgent_id(String agent_id) {
+	public void setAgent_id(Long agent_id) {
 		this.agent_id = agent_id;
 	}
 	

@@ -43,16 +43,12 @@ public class OldServiceImpl extends
 	private JdbcTemplate jdbcTemplate;
 
 	@Override
-	public List<Omp_Old_Info> getOldContextList(Page page, String name,
-			String idCard, String zjNumber, String county, String street,
-			String community, String isGenerationOrder, String isindividuation,
-			SystemUser user) {
+	public List<Omp_Old_Info> getOldContextList(OldParameter parameter, SystemUser user) {
 
 		SearchCriteriaBuilder<Omp_Old_Info> searchCriteriaBuilder = new SearchCriteriaBuilder<Omp_Old_Info>(
 				Omp_Old_Info.class);
 		SearchCriteriaBuilder<Omp_Old_Info> selectList = selectList(
-				searchCriteriaBuilder, page, name, idCard, zjNumber, county,
-				street, community, isGenerationOrder, isindividuation, user);
+				searchCriteriaBuilder, parameter, user);
 
 		List<Omp_Old_Info> omp_Old_InfoList = getGeneralService().getObjects(
 				selectList.build());
@@ -85,7 +81,7 @@ public class OldServiceImpl extends
 
 		if (autoIncId > 0) {
 			addOmpOldOrderInfo(ompOldInfo);
-		//	addOldKeyInfo(ompOldInfo, autoIncId);
+			// addOldKeyInfo(ompOldInfo, autoIncId);
 		}
 
 		return autoIncId > 0;
@@ -137,19 +133,20 @@ public class OldServiceImpl extends
 	public Integer checkOldIsHave(String phoneid, String cardID) {
 		String sql = "SELECT COUNT(*) FROM  (SELECT * FROM omp_old_info t WHERE  t.ZJNUMBER = "
 				+ phoneid + ") a ";
-//		String sql1 = "SELECT COUNT(*) FROM  (SELECT * FROM omp_old_info t WHERE  t.CERTIFICATES_NUMBER ='"
-//				+ cardID + "') a1 ";
+		// String sql1 =
+		// "SELECT COUNT(*) FROM  (SELECT * FROM omp_old_info t WHERE  t.CERTIFICATES_NUMBER ='"
+		// + cardID + "') a1 ";
 		int count = jdbcTemplate.queryForInt(sql);// 用queryForInt方法！！！
-		//int count1 = jdbcTemplate.queryForInt(sql1);// 用queryForInt方法！！！
-//		if (count * count1 > 0) {
-//			return 3;
-//		}
+		// int count1 = jdbcTemplate.queryForInt(sql1);// 用queryForInt方法！！！
+		// if (count * count1 > 0) {
+		// return 3;
+		// }
 		if (count > 0) {
 			return 1;// 大座机号已存在
 		}
-//		if (count1 > 0) {
-//			return 2;// 老人身份证号已存在
-//		}
+		// if (count1 > 0) {
+		// return 2;// 老人身份证号已存在
+		// }
 		return 0;
 	}
 
@@ -158,18 +155,19 @@ public class OldServiceImpl extends
 
 		getGeneralService().saveOrUpdate(newOld);
 
-//		// TODO Auto-generated method stub
-//		String sql = "update omp_old_info " + "set NAME = '" + map.get("name")
-//				+ "'," + "HOUSEHOLD_COUNTY_ID = '" + map.get("county") + "',"
-//				+ "HOUSEHOLD_STREET_ID = '" + map.get("street") + "',"
-//				+ "HOUSEHOLD_COMMUNITY_ID = '" + map.get("community") + "',"
-//				+ "ZJNUMBER = '" + map.get("zjnumber") + "'," + "PHONE = '"
-//				+ map.get("phone") + "'," + "ADDRESS = '" + map.get("address")
-//				+ "'," + "EMERGENCYCONTACT = '" + map.get("emergencycontact")
-//				+ "'," + "EMERGENCYCONTACTTLE = '"
-//				+ map.get("emergencycontacttle") + "'," + "TELTYPE = '"
-//				+ map.get("teltype") + "'" + "where id = " + map.get("id");
-//		jdbcTemplate.update(sql);
+		// // TODO Auto-generated method stub
+		// String sql = "update omp_old_info " + "set NAME = '" +
+		// map.get("name")
+		// + "'," + "HOUSEHOLD_COUNTY_ID = '" + map.get("county") + "',"
+		// + "HOUSEHOLD_STREET_ID = '" + map.get("street") + "',"
+		// + "HOUSEHOLD_COMMUNITY_ID = '" + map.get("community") + "',"
+		// + "ZJNUMBER = '" + map.get("zjnumber") + "'," + "PHONE = '"
+		// + map.get("phone") + "'," + "ADDRESS = '" + map.get("address")
+		// + "'," + "EMERGENCYCONTACT = '" + map.get("emergencycontact")
+		// + "'," + "EMERGENCYCONTACTTLE = '"
+		// + map.get("emergencycontacttle") + "'," + "TELTYPE = '"
+		// + map.get("teltype") + "'" + "where id = " + map.get("id");
+		// jdbcTemplate.update(sql);
 		return false;
 	}
 
@@ -185,16 +183,13 @@ public class OldServiceImpl extends
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public int getCount(String name, String idCard, String zjNumber,
-			String county, String street, String community,
-			String isGenerationOrder, String isindividuation, SystemUser user) {
+	public int getCount(OldParameter parameter, SystemUser user) {
 
 		SearchCriteriaBuilder<Omp_Old_Info> searchCriteriaBuilder = new SearchCriteriaBuilder<Omp_Old_Info>(
 				Omp_Old_Info.class);
 
 		SearchCriteriaBuilder<Omp_Old_Info> selectList = selectList(
-				searchCriteriaBuilder, null, name, idCard, zjNumber, county,
-				street, community, isGenerationOrder, isindividuation, user);
+				searchCriteriaBuilder, parameter, user);
 
 		int count = getGeneralService().getCount(selectList.build());
 
@@ -226,19 +221,22 @@ public class OldServiceImpl extends
 	@Override
 	public Omp_Old_Info getOldById(String id) {
 
-		Omp_Old_Info entity = getGeneralService().getObjectById(Omp_Old_Info.class, Long.parseLong(id));
+		Omp_Old_Info entity = getGeneralService().getObjectById(
+				Omp_Old_Info.class, Long.parseLong(id));
 
-//		String sql = "SELECT I.*,o.keyPointMessage Kp, R.NAME SNAME FROM OMP_OLD_INFO i,OMP_REGION r,omp_old_order o WHERE I.STATE = 1 AND I.HOUSEHOLD_COMMUNITY_ID = R.ID AND o.oldId= i.ID AND i.ID = "
-//				+ id;
-//		List<Map<String, Object>> list = jdbcTemplate.queryForList(sql);
+		// String sql =
+		// "SELECT I.*,o.keyPointMessage Kp, R.NAME SNAME FROM OMP_OLD_INFO i,OMP_REGION r,omp_old_order o WHERE I.STATE = 1 AND I.HOUSEHOLD_COMMUNITY_ID = R.ID AND o.oldId= i.ID AND i.ID = "
+		// + id;
+		// List<Map<String, Object>> list = jdbcTemplate.queryForList(sql);
 		return entity;
 	}
 
 	@Override
 	public List<Map<String, Object>> getOldById1(String id) {
-//		String sql = "SELECT I.*,R. NAME SNAM FROM OMP_OLD_INFO i, OMP_REGION r WHERE I.STATE = 1 AND I.HOUSEHOLD_COMMUNITY_ID = R.ID AND i.ID = "
-//				+ id;
-//		List<Map<String, Object>> list = jdbcTemplate.queryForList(sql);
+		// String sql =
+		// "SELECT I.*,R. NAME SNAM FROM OMP_OLD_INFO i, OMP_REGION r WHERE I.STATE = 1 AND I.HOUSEHOLD_COMMUNITY_ID = R.ID AND i.ID = "
+		// + id;
+		// List<Map<String, Object>> list = jdbcTemplate.queryForList(sql);
 		String sql = "SELECT I.*,o.keyPointMessage Kp, R.NAME SNAME FROM OMP_OLD_INFO i,OMP_REGION r,omp_old_order o WHERE I.STATE = 1 AND I.HOUSEHOLD_COMMUNITY_ID = R.ID AND o.oldId= i.ID AND i.ID = "
 				+ id;
 		List<Map<String, Object>> list = jdbcTemplate.queryForList(sql);
@@ -252,18 +250,19 @@ public class OldServiceImpl extends
 		String sql1 = "select r.id,r.name from Omp_Region r where r.levelid = 3";
 		List<Map<String, Object>> list1 = jdbcTemplate.queryForList(sql1);
 		String sql2 = "select r.id,r.name from Omp_Region r where r.levelid = 4 and r.parentid = "
-				+old.getHousehold_county_id();
-//				+ map.get("HOUSEHOLD_COUNTY_ID");
+				+ old.getHousehold_county_id();
+		// + map.get("HOUSEHOLD_COUNTY_ID");
 		List<Map<String, Object>> list2 = jdbcTemplate.queryForList(sql2);
 		String sql3 = "select r.id,r.name from Omp_Region r where r.levelid = 5 and r.parentid = "
-				+old.getHousehold_street_id();
-//				+ map.get("HOUSEHOLD_STREET_ID");
+				+ old.getHousehold_street_id();
+		// + map.get("HOUSEHOLD_STREET_ID");
 		List<Map<String, Object>> list3 = jdbcTemplate.queryForList(sql3);
 		maps.put("county", list1);
 		maps.put("street", list2);
 		maps.put("community", list3);
 		return maps;
 	}
+
 	@Override
 	public Map<String, Object> getRegionList1(Map<String, Object> map) {
 		Map<String, Object> maps = new HashMap<String, Object>();
@@ -271,11 +270,11 @@ public class OldServiceImpl extends
 		List<Map<String, Object>> list1 = jdbcTemplate.queryForList(sql1);
 		String sql2 = "select r.id,r.name from Omp_Region r where r.levelid = 4 and r.parentid = "
 				+ map.get("HOUSEHOLD_COUNTY_ID");
-//				+old.getHousehold_county_id();
+		// +old.getHousehold_county_id();
 		List<Map<String, Object>> list2 = jdbcTemplate.queryForList(sql2);
 		String sql3 = "select r.id,r.name from Omp_Region r where r.levelid = 5 and r.parentid = "
 				+ map.get("HOUSEHOLD_STREET_ID");
-//		+old.getHousehold_street_id();
+		// +old.getHousehold_street_id();
 		List<Map<String, Object>> list3 = jdbcTemplate.queryForList(sql3);
 		maps.put("county", list1);
 		maps.put("street", list2);
@@ -285,7 +284,15 @@ public class OldServiceImpl extends
 
 	@Override
 	public List<Map<String, Object>> getRegionById(String county) {
-		String sql = "select r.id,r.name from Omp_Region r where r.USE_FLAG=1 and r.parentid = "
+		String sql = "select r.id,r.name,r.PARENTID from Omp_Region r where r.USE_FLAG=1 and r.parentid = "
+				+ county;
+		List<Map<String, Object>> list = jdbcTemplate.queryForList(sql);
+		return list;
+	}
+
+	@Override
+	public List<Map<String, Object>> getRegionByPid(String county) {
+		String sql = "select r.id,r.name,r.PARENTID from Omp_Region r where r.USE_FLAG=1 and r.id = "
 				+ county;
 		List<Map<String, Object>> list = jdbcTemplate.queryForList(sql);
 		return list;
@@ -395,19 +402,16 @@ public class OldServiceImpl extends
 		return (update == 1);
 	}
 
-
-
-
 	// 新增老人自动匹配
-		public Boolean automatch(String id, String json) {
-			String sql = "INSERT INTO omp_old_order ("
-					+ "oldId, phoneName, communityOrderId, keyPointMessage)"
-					+ "  select t.ID,t.TELTYPE,t.HOUSEHOLD_COMMUNITY_ID,'" + json
-					+ "' from omp_old_info t WHERE t.ID = " + id;
-			int update = jdbcTemplate.update(sql);
-			// setOldisIndividuation(id, 1);
-			return (update == 1);
-		}
+	public Boolean automatch(String id, String json) {
+		String sql = "INSERT INTO omp_old_order ("
+				+ "oldId, phoneName, communityOrderId, keyPointMessage)"
+				+ "  select t.ID,t.TELTYPE,t.HOUSEHOLD_COMMUNITY_ID,'" + json
+				+ "' from omp_old_info t WHERE t.ID = " + id;
+		int update = jdbcTemplate.update(sql);
+		// setOldisIndividuation(id, 1);
+		return (update == 1);
+	}
 
 	@SuppressWarnings("deprecation")
 	@Override
@@ -812,12 +816,7 @@ public class OldServiceImpl extends
 		// RestrictionExpression.EQUALS_OP,
 		// parameter.getIsindividuation());
 
-		List<Omp_Old_Info> oldPersonlist = getOldContextList(null,
-				parameter.getName(), parameter.getIdCard(),
-				parameter.getZjNumber(), parameter.getCounty(),
-				parameter.getStreet(), parameter.getCommunity(),
-				parameter.getIsGenerationOrder(),
-				parameter.getIsindividuation(), user);
+		List<Omp_Old_Info> oldPersonlist = getOldContextList(parameter, user);
 
 		// List<Omp_Old_Info> oldPersonlist = getGeneralService().getObjects(
 		// searchCriteriaBuilder.build());
@@ -908,7 +907,7 @@ public class OldServiceImpl extends
 
 	/**
 	 * 获取（定制）表头(老人详细信息)
-	 *
+	 * 
 	 * @return
 	 */
 	private List<ColHeaderCell> getColHeaderCellList() {
@@ -934,7 +933,7 @@ public class OldServiceImpl extends
 
 	/**
 	 * 获取（定制）表头(老人基本信息)
-	 *
+	 * 
 	 * @return
 	 */
 	private List<ColHeaderCell> getColHeaderCellListOld() {
@@ -956,7 +955,7 @@ public class OldServiceImpl extends
 
 	/**
 	 * 定制每一列属性的配置信息(老人详细信息)
-	 *
+	 * 
 	 * @return
 	 */
 	private List<Column> getColumnList() {
@@ -1379,7 +1378,7 @@ public class OldServiceImpl extends
 
 	/**
 	 * 定制每一列属性的配置信息(老人基本信息)
-	 *
+	 * 
 	 * @return
 	 */
 	private List<Column> getColumnListOld() {
@@ -1483,7 +1482,7 @@ public class OldServiceImpl extends
 
 	/**
 	 * 定制（设置）Excel中每列的属性
-	 *
+	 * 
 	 * @param columnName
 	 * @param width
 	 * @param isAutoSize
@@ -1526,7 +1525,7 @@ public class OldServiceImpl extends
 
 	/**
 	 * 查询
-	 *
+	 * 
 	 * @param searchCriteriaBuilder
 	 * @param page
 	 * @param name
@@ -1540,43 +1539,47 @@ public class OldServiceImpl extends
 	 * @param user
 	 */
 	public SearchCriteriaBuilder<Omp_Old_Info> selectList(
-			SearchCriteriaBuilder<Omp_Old_Info> searchCriteriaBuilder,
-			Page page, String name, String idCard, String zjNumber,
-			String county, String street, String community,
-			String isGenerationOrder, String isindividuation, SystemUser user) {
+			SearchCriteriaBuilder searchCriteriaBuilder,
+			OldParameter parameter, SystemUser user) {
 		// 名字
 		searchCriteriaBuilder.addQueryCondition("name",
-				RestrictionExpression.EQUALS_OP, name);
+				RestrictionExpression.EQUALS_OP, parameter.getName());
 		searchCriteriaBuilder.addQueryCondition("certificates_number",
-				RestrictionExpression.EQUALS_OP, idCard);
+				RestrictionExpression.EQUALS_OP, parameter.getIdCard());
 		searchCriteriaBuilder.addQueryCondition("zjnumber",
-				RestrictionExpression.EQUALS_OP, zjNumber);
+				RestrictionExpression.EQUALS_OP, parameter.getZjNumber());
 		searchCriteriaBuilder.addQueryCondition("household_county_id",
-				RestrictionExpression.EQUALS_OP, county);
+				RestrictionExpression.EQUALS_OP, parameter.getCounty());
 		searchCriteriaBuilder.addQueryCondition("household_street_id",
-				RestrictionExpression.EQUALS_OP, street);
+				RestrictionExpression.EQUALS_OP, parameter.getStreet());
 		searchCriteriaBuilder.addQueryCondition("household_community_id",
-				RestrictionExpression.EQUALS_OP, community);
-		String gSql ="";
-		if (!"order".equals(isGenerationOrder)) {
+				RestrictionExpression.EQUALS_OP, parameter.getCommunity());
+		searchCriteriaBuilder.addQueryCondition("call_id",
+				RestrictionExpression.EQUALS_OP, parameter.getCall_id());
+		String gSql = "";
+		if (!"order".equals(parameter.getIsGenerationOrder())) {
 			searchCriteriaBuilder.addQueryCondition("isGenerationOrder",
-					RestrictionExpression.EQUALS_OP, isGenerationOrder);
-			
-		} else if (user.getLeave() > 1){
-			if("g".equals(user.getAccount_type())){
+					RestrictionExpression.EQUALS_OP,
+					parameter.getIsGenerationOrder());
+
+		} else if (user.getLeave() > 1) {
+			if ("g".equals(user.getAccount_type())) {
 				gSql = " this_.yiji is  NULL";
 			}
-//			searchCriteriaBuilder.addQueryCondition("agent_id",
-//					RestrictionExpression.EQUALS_OP, user.getId());
+			// searchCriteriaBuilder.addQueryCondition("agent_id",
+			// RestrictionExpression.EQUALS_OP, user.getId());
 			searchCriteriaBuilder.addQueryCondition("call_id",
 					RestrictionExpression.EQUALS_OP, 1);
 		}
-		searchCriteriaBuilder.addQueryCondition("isindividuation",
-				RestrictionExpression.EQUALS_OP, isindividuation);
-		if (page != null) {
-			searchCriteriaBuilder.addLimitCondition((page.getCurrentPage() - 1)
-					* page.getPageSize(), page.getPageSize());
-		}
+		searchCriteriaBuilder
+				.addQueryCondition("isindividuation",
+						RestrictionExpression.EQUALS_OP,
+						parameter.getIsindividuation());
+
+		searchCriteriaBuilder.addLimitCondition(
+				(parameter.getCurrentPieceNum() - 1)
+						* parameter.getPerPieceSize(),
+				parameter.getPerPieceSize());
 		if (user.getLeave() > 1) {
 
 			if ("g".equals(user.getAccount_type())) {
@@ -1592,7 +1595,7 @@ public class OldServiceImpl extends
 					rname = "household_community_id";
 					break;
 				}
-				if(!rname.isEmpty()){
+				if (!rname.isEmpty()) {
 					searchCriteriaBuilder.addQueryCondition(rname,
 							RestrictionExpression.EQUALS_OP, user.getRid());
 				}
@@ -1656,33 +1659,42 @@ public class OldServiceImpl extends
 	// 匹配老人体系
 	@SuppressWarnings("deprecation")
 	public void addOmpOldOrderInfo(Omp_Old_Info old) {
-		List<Map<String,Object>> alllist = null;
-		String errormessage="";
-		String sssql = "select count(*) from sys_key ss where ss.tellType_id="+old.getTeltype()+" and ss.uid="+old.getAgent_id()+" and  ss.user_falg=1;";
+		List<Map<String, Object>> alllist = null;
+		String errormessage = "";
+		String sssql = "select count(*) from sys_key ss where ss.tellType_id="
+				+ old.getTeltype() + " and ss.uid=" + old.getAgent_id()
+				+ " and  ss.user_falg=1;";
 		Long id = jdbcTemplate.queryForLong(sssql);
-		if(id==0){
-			String sqlsp = "select ok.`key`, ss.key_state,sp.serviceName,sp.serviceTell from sys_key sk left JOIN service_system ss on ss.skid = sk.id LEFT JOIN service_provider sp on sp.id = ss.sp_id left join omp_key ok on ok.id=ss.key_state where sk.community_id="+old.getHousehold_community_id()+" and sk.telltype_id="+old.getTeltype();
+		if (id == 0) {
+			String sqlsp = "select ok.`key`, ss.key_state,sp.serviceName,sp.serviceTell from sys_key sk left JOIN service_system ss on ss.skid = sk.id LEFT JOIN service_provider sp on sp.id = ss.sp_id left join omp_key ok on ok.id=ss.key_state where sk.community_id="
+					+ old.getHousehold_community_id()
+					+ " and sk.telltype_id="
+					+ old.getTeltype();
 			alllist = jdbcTemplate.queryForList(sqlsp);
-			if(alllist.size()==0){
-				errormessage="没有公共服务体系";
+			if (alllist.size() == 0) {
+				errormessage = "没有公共服务体系";
 			}
-		}else{
-			String sidsql = "select ss.id from sys_key ss where ss.tellType_id="+old.getTeltype()+" and ss.uid="+old.getAgent_id()+" and  ss.user_falg=1;";
+		} else {
+			String sidsql = "select ss.id from sys_key ss where ss.tellType_id="
+					+ old.getTeltype()
+					+ " and ss.uid="
+					+ old.getAgent_id()
+					+ " and  ss.user_falg=1;";
 			Long ssid = jdbcTemplate.queryForLong(sidsql);
-			String sql = "SELECT t.key_state,st.id stid, k.`key`, p.serviceName, p.serviceTell, t.sp_id, st.serviceName tname FROM service_system t LEFT JOIN omp_key k ON t.key_state = k.id LEFT JOIN omp_service_type st ON k.stId = st.id LEFT JOIN service_provider p ON t.sp_id = p.id where t.skid="+ssid;
-		    
+			String sql = "SELECT t.key_state,st.id stid, k.`key`, p.serviceName, p.serviceTell, t.sp_id, st.serviceName tname FROM service_system t LEFT JOIN omp_key k ON t.key_state = k.id LEFT JOIN omp_service_type st ON k.stId = st.id LEFT JOIN service_provider p ON t.sp_id = p.id where t.skid="
+					+ ssid;
+
 			List<Map<String, Object>> list = jdbcTemplate.queryForList(sql);
-			
-			
+
 			String sqlallss = "select k.id, k.`key`,st.serviceName from omp_key k INNER JOIN omp_phone_type t on k.pyId = t.id INNER JOIN omp_service_type st on st.id = k.stId where k.pyId="
 					+ old.getTeltype();
-			
-			 alllist = jdbcTemplate.queryForList(sqlallss);
-			
+
+			alllist = jdbcTemplate.queryForList(sqlallss);
+
 			for (Map<String, Object> mapAll : alllist) {
 				mapAll.put("sp_id", 0);
 				for (Map<String, Object> map : list) {
-					if(mapAll.get("key").equals(map.get("key"))){
+					if (mapAll.get("key").equals(map.get("key"))) {
 						mapAll.put("serviceTell", map.get("serviceTell"));
 						mapAll.put("sp_id", map.get("sp_id"));
 					}
@@ -1690,76 +1702,68 @@ public class OldServiceImpl extends
 			}
 			for (Map<String, Object> map : alllist) {
 				Integer spid = (Integer) map.get("sp_id");
-				if(spid == null || spid==0){
-					String sqlsp = "select ss.key_state,sp.serviceName,sp.serviceTell from sys_key sk left JOIN service_system ss on ss.skid = sk.id LEFT JOIN service_provider sp on sp.id = ss.sp_id where sk.community_id="+old.getHousehold_community_id()+" and sk.telltype_id="+old.getTeltype()+" and sk.uid=1 and ss.key_state="+map.get("id");
-					List<Map<String,Object>> list2 = jdbcTemplate.queryForList(sqlsp);
-					if(list2.size()==0){
+				if (spid == null || spid == 0) {
+					String sqlsp = "select ss.key_state,sp.serviceName,sp.serviceTell from sys_key sk left JOIN service_system ss on ss.skid = sk.id LEFT JOIN service_provider sp on sp.id = ss.sp_id where sk.community_id="
+							+ old.getHousehold_community_id()
+							+ " and sk.telltype_id="
+							+ old.getTeltype()
+							+ " and sk.uid=1 and ss.key_state=" + map.get("id");
+					List<Map<String, Object>> list2 = jdbcTemplate
+							.queryForList(sqlsp);
+					if (list2.size() == 0) {
 						map.put("serviceTell", "96003");
-					}else{
-						map.put("serviceTell", list2.get(0).get("serviceTell"));	//json数据
+					} else {
+						map.put("serviceTell", list2.get(0).get("serviceTell")); // json数据
 					}
 				}
 
 			}
 		}
 		String json = "";
-		json +="[{";
+		json += "[{";
 		for (int i = 1; i < 17; i++) {
-			String m="M"+i;
-			json += "\""+m+"\":";
+			String m = "M" + i;
+			json += "\"" + m + "\":";
 			for (Map<String, Object> map : alllist) {
-				if(map.get("key").equals(m)){
-					String serviceTell = map.get("serviceTell")+"";
-					json += "\""+serviceTell+"\",";
+				if (map.get("key").equals(m)) {
+					String serviceTell = map.get("serviceTell") + "";
+					json += "\"" + serviceTell + "\",";
 				}
 			}
 		}
-		json = json.substring(0, json.length()-1);
-		json +="}]";
-		
+		json = json.substring(0, json.length() - 1);
+		json += "}]";
+
 		System.out.println(json);
-		
-		
-		
-		
+
 		String sql = "INSERT INTO omp_old_order ("
 				+ "oldId, phoneName, communityOrderId, keyPointMessage)"
 				+ "  select t.ID,t.TELTYPE,t.HOUSEHOLD_COMMUNITY_ID,'" + json
 				+ "' from omp_old_info t WHERE t.ID = " + old.getId();
 		jdbcTemplate.update(sql);
-		
-		
-		
 
-
-//		Long id = ss.getId();
-//
-//
-//		String sql = "";
-
-
-
-
-
-
+		// Long id = ss.getId();
+		//
+		//
+		// String sql = "";
 
 		// [{"M1":"82660886","M2":"96003","M3":"67287180","M4":"4008331212","M5":"4008221299","M6":"56328888","M7":"13691139445","M8":"68887325","M9":"88982461","M10":"68873023","M11":"8008100032","M12":"999","M13":"84925513","M14":"84931297","M15":"8008100032","M16":"8008100032"}]
-//		String json = "[{" + "\"M1\":\"" + ss.getM1() + "\"," + "\"M2\":\""
-//				+ ss.getM2() + "\"," + "\"M3\":\"" + ss.getM3() + "\","
-//				+ "\"M4\":\"" + ss.getM4() + "\"," + "\"M5\":\"" + ss.getM5()
-//				+ "\"," + "\"M6\":\"" + ss.getM6() + "\"," + "\"M7\":\""
-//				+ ss.getM7() + "\"," + "\"M8\":\"" + ss.getM8() + "\","
-//				+ "\"M9\":\"" + ss.getM9() + "\"," + "\"M10\":\"" + ss.getM10()
-//				+ "\"," + "\"M11\":\"" + ss.getM11() + "\"," + "\"M12\":\""
-//				+ ss.getM12() + "\"," + "\"M13\":\"" + ss.getM13() + "\","
-//				+ "\"M14\":\"" + ss.getM14() + "\"," + "\"M15\":\""
-//				+ ss.getM15() + "\"," + "\"M16\":\"" + ss.getM16() + "\""
-//				+ "}]";
-//		String sql = "INSERT INTO omp_old_order ("
-//				+ "oldId, phoneName, communityOrderId, keyPointMessage)"
-//				+ "  select t.ID,t.TELTYPE,t.HOUSEHOLD_COMMUNITY_ID,'" + json
-//				+ "' from omp_old_info t WHERE t.ID = " + id;
-//		;
+		// String json = "[{" + "\"M1\":\"" + ss.getM1() + "\"," + "\"M2\":\""
+		// + ss.getM2() + "\"," + "\"M3\":\"" + ss.getM3() + "\","
+		// + "\"M4\":\"" + ss.getM4() + "\"," + "\"M5\":\"" + ss.getM5()
+		// + "\"," + "\"M6\":\"" + ss.getM6() + "\"," + "\"M7\":\""
+		// + ss.getM7() + "\"," + "\"M8\":\"" + ss.getM8() + "\","
+		// + "\"M9\":\"" + ss.getM9() + "\"," + "\"M10\":\"" + ss.getM10()
+		// + "\"," + "\"M11\":\"" + ss.getM11() + "\"," + "\"M12\":\""
+		// + ss.getM12() + "\"," + "\"M13\":\"" + ss.getM13() + "\","
+		// + "\"M14\":\"" + ss.getM14() + "\"," + "\"M15\":\""
+		// + ss.getM15() + "\"," + "\"M16\":\"" + ss.getM16() + "\""
+		// + "}]";
+		// String sql = "INSERT INTO omp_old_order ("
+		// + "oldId, phoneName, communityOrderId, keyPointMessage)"
+		// + "  select t.ID,t.TELTYPE,t.HOUSEHOLD_COMMUNITY_ID,'" + json
+		// + "' from omp_old_info t WHERE t.ID = " + id;
+		// ;
 
 	}
 

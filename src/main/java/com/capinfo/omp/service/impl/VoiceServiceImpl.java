@@ -22,6 +22,7 @@ import com.capinfo.framework.web.service.impl.CommonsDataOperationServiceImpl;
 import com.capinfo.omp.model.Omp_Old_Info;
 import com.capinfo.omp.model.Omp_old_order;
 import com.capinfo.omp.model.Omp_voice_order;
+import com.capinfo.omp.parameter.OldParameter;
 import com.capinfo.omp.parameter.UserInfoParameter;
 import com.capinfo.omp.service.OldService;
 import com.capinfo.omp.service.VoiceService;
@@ -29,27 +30,48 @@ import com.capinfo.omp.utils.Page;
 import com.capinfo.omp.ws.model.ImKey;
 
 @Service
-public class VoiceServiceImpl extends CommonsDataOperationServiceImpl<Omp_voice_order, UserInfoParameter> implements VoiceService {
+public class VoiceServiceImpl extends
+		CommonsDataOperationServiceImpl<Omp_voice_order, UserInfoParameter>
+		implements VoiceService {
 
 	@Autowired
 	private JdbcTemplate JdbcTemplate;
 
 	@Autowired
 	private OldService oldService;
-	
 
 	@Override
 	public List<Omp_Old_Info> getOldContextList(Page page, String name,
 			String idCard, String zjNumber, String county, String street,
-			String community,SystemUser user) {
-		List<Omp_Old_Info> oldlist = oldService.getOldContextList(page, name, idCard, zjNumber, county, street, community, null, null, user);
+			String community, SystemUser user) {
+		OldParameter parameter = new OldParameter();
+		parameter.setName(name);
+		parameter.setIdCard(idCard);
+		parameter.setZjNumber(zjNumber);
+		parameter.setCounty(county);
+		parameter.setStreet(street);
+		parameter.setCommunity(community);
+		parameter.setPerPieceSize(page.getPageSize());
+		parameter.setCurrentPieceNum(page.getCurrentPage());
+		
+		List<Omp_Old_Info> oldlist = oldService.getOldContextList(parameter, user);
+//		List<Omp_Old_Info> oldlist = oldService.getOldContextList(page, name,
+//				idCard, zjNumber, county, street, community, null, null, user);
 		return oldlist;
 	}
 
 	@Override
 	public int getCount(String name, String idCard, String zjNumber,
-			String county, String street, String community,SystemUser user) {
-		int count = oldService.getCount(name, idCard, zjNumber, county, street, community, null, null, user);
+			String county, String street, String community, SystemUser user) {
+		OldParameter parameter = new OldParameter();
+		parameter.setName(name);
+		parameter.setIdCard(idCard);
+		parameter.setZjNumber(zjNumber);
+		parameter.setCounty(county);
+		parameter.setStreet(street);
+		parameter.setCommunity(community);
+		
+		int count = oldService.getCount(parameter, user);
 		return count;
 	}
 
@@ -94,8 +116,9 @@ public class VoiceServiceImpl extends CommonsDataOperationServiceImpl<Omp_voice_
 	}
 
 	@Override
-	public List<Map<String, Object>> getvoicelist(Page page, String name,SystemUser user) {
-		
+	public List<Map<String, Object>> getvoicelist(Page page, String name,
+			SystemUser user) {
+
 		String uName = "";
 		if (!"admin".equals(user.getLogonName())) {
 			uName = " AND v.agent_id  =  '" + user.getLogonName() + "'";
@@ -105,7 +128,7 @@ public class VoiceServiceImpl extends CommonsDataOperationServiceImpl<Omp_voice_
 		} else {
 			name = "";
 		}
-		String sql = "select v.id 'id',v.voiceName 'n',v.voiceTime 't',v.remark 'r' from omp_voice_info v where v.stat = '1' "
+		String sql = "select v.id 'id',v.voiceName 'n',v.voiceTime 't',v.remark 'r',v.content from omp_voice_info v where v.stat = '1' "
 				+ uName
 				+ " order by v.id desc"
 				+ name
@@ -119,13 +142,14 @@ public class VoiceServiceImpl extends CommonsDataOperationServiceImpl<Omp_voice_
 	}
 
 	@Override
-	public int getvoicelist(String name,SystemUser user) {
+	public int getvoicelist(String name, SystemUser user) {
 		if (!StringUtils.isEmpty(name)) {
 			name = " AND v.`voiceName` LIKE '%" + name + "%'";
 		} else {
 			name = "";
 		}
-		if (!StringUtils.isEmpty(user.getLogonName()) && !"admin".equals(user.getLogonName())) {
+		if (!StringUtils.isEmpty(user.getLogonName())
+				&& !"admin".equals(user.getLogonName())) {
 			name = " AND v.`agent_id` LIKE '%" + user.getLogonName() + "%'";
 		} else {
 			name = "";
@@ -149,7 +173,9 @@ public class VoiceServiceImpl extends CommonsDataOperationServiceImpl<Omp_voice_
 	 * 
 	 * }
 	 */
-
+	/**
+	 * 失效
+	 */
 	@Override
 	public int SenVoice(String vid, String cid) {
 		int result = 0;
@@ -175,20 +201,36 @@ public class VoiceServiceImpl extends CommonsDataOperationServiceImpl<Omp_voice_
 	@Override
 	public List<Omp_old_order> getOldList(Page page, String name,
 			String idCard, String zjNumber, String county, String street,
-			String community, String send_flag, String execute_flag,SystemUser user) {
+			String community, String send_flag, String execute_flag,
+			SystemUser user) {
 		List<Omp_old_order> orderList = null;
-		List<Omp_Old_Info> oldList = oldService.getOldContextList(page, name, idCard, zjNumber, county, street, community, null, null, user);
+		OldParameter parameter = new OldParameter();
+		parameter.setName(name);
+		parameter.setIdCard(idCard);
+		parameter.setZjNumber(zjNumber);
+		parameter.setCounty(county);
+		parameter.setStreet(street);
+		parameter.setCommunity(community);
+		parameter.setIsGenerationOrder("order");
+		parameter.setPerPieceSize(page.getPageSize());
+		parameter.setCurrentPieceNum(page.getCurrentPage());
+		
+		
+		
+//		List<Omp_Old_Info> oldList = oldService.getOldContextList(page, name,
+//				idCard, zjNumber, county, street, community, null, null, user);
+		List<Omp_Old_Info> oldList = oldService.getOldContextList(parameter, user);
 
 		if (oldList.size() > 0) {
-		SearchCriteriaBuilder<Omp_voice_order> searchCriteriaBuilder = new SearchCriteriaBuilder<Omp_voice_order>(
-				Omp_voice_order.class);
-		
-		searchCriteriaBuilder.addQueryCondition("send_flag",
-				RestrictionExpression.EQUALS_OP, send_flag);
-		searchCriteriaBuilder.addQueryCondition("execute_flag",
-				RestrictionExpression.EQUALS_OP, execute_flag);
+			SearchCriteriaBuilder<Omp_voice_order> searchCriteriaBuilder = new SearchCriteriaBuilder<Omp_voice_order>(
+					Omp_voice_order.class);
 
-		String sql = "";
+			searchCriteriaBuilder.addQueryCondition("send_flag",
+					RestrictionExpression.EQUALS_OP, send_flag);
+			searchCriteriaBuilder.addQueryCondition("execute_flag",
+					RestrictionExpression.EQUALS_OP, execute_flag);
+
+			String sql = "";
 			String ids = "";
 			for (Omp_Old_Info old : oldList) {
 				ids += old.getId() + ",";
@@ -200,50 +242,57 @@ public class VoiceServiceImpl extends CommonsDataOperationServiceImpl<Omp_voice_
 				searchCriteriaBuilder.addAdditionalRestrictionSql(sql);
 			}
 			GeneralService g = getGeneralService();
-			
-			orderList = g.getObjects(
-					searchCriteriaBuilder.build());
+
+			orderList = g.getObjects(searchCriteriaBuilder.build());
 		}
 
 		return orderList;
-		
+
 	}
 
 	@Override
 	public int getOlCount(String name, String idCard, String zjNumber,
 			String county, String street, String community, String send_flag,
-			String execute_flag,SystemUser user) {
+			String execute_flag, SystemUser user) {
 		int count = 0;
-		List<Omp_Old_Info> oldList = oldService.getOldContextList(null, name, idCard, zjNumber, county, street, community, null, null, user);
+		
+		OldParameter parameter = new OldParameter();
+		parameter.setName(name);
+		parameter.setIdCard(idCard);
+		parameter.setZjNumber(zjNumber);
+		parameter.setCounty(county);
+		parameter.setStreet(street);
+		parameter.setCommunity(community);
+		parameter.setIsGenerationOrder("order");
+		
+		
+		List<Omp_Old_Info> oldList = oldService.getOldContextList(parameter, user);
 
 		if (oldList.size() > 0) {
 			SearchCriteriaBuilder<Omp_voice_order> searchCriteriaBuilder = new SearchCriteriaBuilder<Omp_voice_order>(
 					Omp_voice_order.class);
-			
+
 			searchCriteriaBuilder.addQueryCondition("send_flag",
 					RestrictionExpression.EQUALS_OP, send_flag);
 			searchCriteriaBuilder.addQueryCondition("execute_flag",
 					RestrictionExpression.EQUALS_OP, execute_flag);
 
 			String sql = "";
-				String ids = "";
-				for (Omp_Old_Info old : oldList) {
-					ids += old.getId() + ",";
-				}
-				ids = ids.substring(0, ids.length() - 1);
-				System.out.println(ids);
-				sql += " oldId In (" + ids + ")";
-				if (!"".equals(sql)) {
-					searchCriteriaBuilder.addAdditionalRestrictionSql(sql);
-				}
-				GeneralService g = getGeneralService();
-				
-				count = g.getCount(searchCriteriaBuilder.build());
+			String ids = "";
+			for (Omp_Old_Info old : oldList) {
+				ids += old.getId() + ",";
 			}
+			ids = ids.substring(0, ids.length() - 1);
+			System.out.println(ids);
+			sql += " oldId In (" + ids + ")";
+			if (!"".equals(sql)) {
+				searchCriteriaBuilder.addAdditionalRestrictionSql(sql);
+			}
+			GeneralService g = getGeneralService();
 
-		
-		
-		
+			count = g.getCount(searchCriteriaBuilder.build());
+		}
+
 		return count;
 	}
 
@@ -262,7 +311,7 @@ public class VoiceServiceImpl extends CommonsDataOperationServiceImpl<Omp_voice_
 
 	@Override
 	public void saveviceoder(String id, String vid, String executeType,
-			String startTime, String endTime, String t) {
+			String startTime, String endTime, String t, SystemUser user) {
 		String userName = SecurityContextHolder.getContext()
 				.getAuthentication().getName();
 
@@ -277,7 +326,7 @@ public class VoiceServiceImpl extends CommonsDataOperationServiceImpl<Omp_voice_
 				+ "','"
 				+ vid
 				+ "',(select i.voiceFileAddress from omp_voice_info i where id = "
-				+ vid + "),'" + t + "','" + userName + "')";
+				+ vid + "),'" + t + "',"+user.getId()+")";
 		JdbcTemplate.update(sql);
 	}
 
@@ -349,20 +398,20 @@ public class VoiceServiceImpl extends CommonsDataOperationServiceImpl<Omp_voice_
 	}
 
 	@Override
-	public void resultVOrders(ImKey imKey, String id, String username) {
+	public void resultVOrders(ImKey imKey, String id, SystemUser user) {
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");// 设置日期格式
 		System.out.println(df.format(new Date()));// new Date()为获取当前系统时间
 		String date = df.format(new Date());
-		String sql = "insert into omp_order_number (oid,send_date,send_flag,number,returnType,operator) VALUES("
+		String sql = "insert into omp_order_number (oid,send_date,send_flag,number,returnType,agent_id) VALUES("
 				+ id
 				+ ",'"
 				+ date
 				+ "',"
 				+ imKey.getStatusCode()
 				+ ",'"
-				+ imKey.getGenerateSerialNumber() + "','2','" + username + "')";
+				+ imKey.getGenerateSerialNumber() + "','2'," + user.getId() + ")";
 		// + "123" + "','2','" + username + "')";
-		oldService.saveLogger("5", "语音指令表", "" + username + "",
+		oldService.saveLogger("5", "语音指令表", "" + user.getName() + "",
 				"" + imKey.getStatusCode() + "");
 		// "1");
 		JdbcTemplate.update(sql);
@@ -457,7 +506,7 @@ public class VoiceServiceImpl extends CommonsDataOperationServiceImpl<Omp_voice_
 	}
 
 	@Override
-	public void rollback(String id, String username, String voiceSata) {
+	public void rollback(String id, SystemUser user, String voiceSata) {
 		if (voiceSata != null) {
 			String sql = "";
 			if ("old".equals(voiceSata)) {
@@ -469,7 +518,7 @@ public class VoiceServiceImpl extends CommonsDataOperationServiceImpl<Omp_voice_
 				int i = Integer.parseInt(voiceSata);
 				i = i + 1;
 				sql = "update users o set o.num = " + i
-						+ " where 1=1 and o.user_name = '" + username + "'";
+						+ " where 1=1 and o.id = " + user.getId() ;
 			}
 			JdbcTemplate.update(sql);
 		}
@@ -480,53 +529,80 @@ public class VoiceServiceImpl extends CommonsDataOperationServiceImpl<Omp_voice_
 	@Override
 	public UserInfoParameter getUserInfo(SystemUser user) {
 		if (user != null) {
+			/**
+			 * 语音
+			 */
 			// 发送成功
-			String sql1 = "select count(*) from omp_voice_order o where o.send_flag = 1 and o.agent_id = '"
-					+ user.getLogonName() + "'";
-			int sendSuccess = JdbcTemplate.queryForInt(sql1);
+			String sql1 = "select count(*) from omp_voice_order o where o.send_flag = 1 and o.agent_id = "
+					+ user.getId();
+			Long voiceSendSuc = JdbcTemplate.queryForLong(sql1);
 			// 发送失败
-			String sql2 = "select count(*) from omp_voice_order o where o.send_flag = 2 and o.agent_id = '"
-					+ user.getLogonName() + "'";
-			int sendFail = JdbcTemplate.queryForInt(sql2);
+			String sql2 = "select count(*) from omp_voice_order o where o.send_flag = 0 and o.agent_id = "
+					+ user.getId();
+			Long voiceSendFail = JdbcTemplate.queryForLong(sql2);
 
-			// 执行成功
-			String sql3 = "select count(*) from omp_voice_order o where o.execute_flag = 1 and o.agent_id = '"
-					+ user.getLogonName() + "'";
-			int executeSuc = JdbcTemplate.queryForInt(sql3);
-
-			String sql4 = "select count(*) from omp_voice_order o where o.execute_flag = 0 and o.agent_id = '"
-					+ user.getLogonName() + "'";
-			int executeFail = JdbcTemplate.queryForInt(sql4);
-
-			// 未接听
-			String sql5 = "select count(*) from omp_voice_order o where o.execute_flag = 3 and o.agent_id = '"
-					+ user.getLogonName() + "'";
-			int notAnswer = JdbcTemplate.queryForInt(sql5);
-
-			// 未返回
-			String sql6 = "select count(*) from omp_voice_order o where o.execute_flag is null and o.agent_id = '"
-					+ user.getLogonName() + "'";
-			int notReturn = JdbcTemplate.queryForInt(sql6);
-
-			// 剩余语音发送次数
-			String sql7 = "select u.num from users u where u.USER_NAME = '"
-					+ user.getLogonName() + "'";
-			int voiceCount = JdbcTemplate.queryForInt(sql7);
-
+//			// 执行成功
+//			String sql3 = "select count(*) from omp_voice_order o where o.execute_flag = 1 and o.agent_id = '"
+//					+ user.getLogonName() + "'";
+//			int executeSuc = JdbcTemplate.queryForInt(sql3);
+//
+//			String sql4 = "select count(*) from omp_voice_order o where o.execute_flag = 0 and o.agent_id = '"
+//					+ user.getLogonName() + "'";
+//			int executeFail = JdbcTemplate.queryForInt(sql4);
+//
+//			// 未接听
+//			String sql5 = "select count(*) from omp_voice_order o where o.execute_flag = 3 and o.agent_id = '"
+//					+ user.getLogonName() + "'";
+//			int notAnswer = JdbcTemplate.queryForInt(sql5);
+//
+//			// 未返回
+//			String sql6 = "select count(*) from omp_voice_order o where o.execute_flag is null and o.agent_id = '"
+//					+ user.getLogonName() + "'";
+//			int notReturn = JdbcTemplate.queryForInt(sql6);
+			
 			// 语音发送总次数
-			String sql8 = "select count(*) from omp_voice_order o where o.agent_id  = '"
-					+ user.getLogonName() + "'";
-			int sumCount = JdbcTemplate.queryForInt(sql8);
+			String sql8 = "select count(*) from omp_voice_order o where o.agent_id  = "+ user.getId();
+			Long voiceCount = JdbcTemplate.queryForLong(sql8);
 
+			
+			/**
+			 * 指令
+			 */
+
+			// 成功
+			String sql9 = "select count(*) from omp_order_number o where o.send_flag= 1  and o.agent_id="
+					+ user.getId();
+			Long orderSuc = JdbcTemplate.queryForLong(sql9);
+
+			// 失败
+			String sq20 = "select count(*) from omp_order_number o where o.send_flag= 0  and o.agent_id="
+					+ user.getId();
+			Long orderFail = JdbcTemplate.queryForLong(sq20);
+			// 总数
+			String sq21 = "select count(*) from omp_order_number o where o.send_flag= 1  and o.agent_id="
+					+ user.getId();
+			Long orderCount = JdbcTemplate.queryForLong(sq21);
+			
+
+			// 剩余发送次数
+			String sql7 = "select u.num from users u where u.id = "+user.getId();
+			Long remainCount = JdbcTemplate.queryForLong(sql7);
+			
 			UserInfoParameter userInfo = new UserInfoParameter();
-			userInfo.setExecuteFail(executeFail);
-			userInfo.setExecuteSuc(executeSuc);
-			userInfo.setNotAnswer(notAnswer);
-			userInfo.setNotReturn(notReturn);
-			userInfo.setSendFail(sendFail);
-			userInfo.setSendSuccess(sendSuccess);
+//			userInfo.setExecuteFail(executeFail);
+//			userInfo.setExecuteSuc(executeSuc);
+//			userInfo.setNotAnswer(notAnswer);
+//			userInfo.setNotReturn(notReturn);
+			userInfo.setVoiceSendFail(voiceSendFail);
+			userInfo.setVoiceSendSuc(voiceSendSuc);
+			
+			userInfo.setOrderFail(orderFail);
+			userInfo.setOrderSuc(orderSuc);
+			
+			userInfo.setRemainCount(remainCount);
 			userInfo.setVoiceCount(voiceCount);
-			userInfo.setSumCount(sumCount);
+			userInfo.setOrderCount(orderCount);
+			
 			return userInfo;
 
 		}

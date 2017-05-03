@@ -22,6 +22,16 @@ public class ServiceProviderParameter extends DataListParameter<ServiceProvider>
 	private String serviceName;
 	private int streetId;
 	private Long openRegions;
+	//是否政府
+	private Long g;
+	
+	
+	public Long getG() {
+		return g;
+	}
+	public void setG(Long g) {
+		this.g = g;
+	}
 	public Long getOpenRegions() {
 		return openRegions;
 	}

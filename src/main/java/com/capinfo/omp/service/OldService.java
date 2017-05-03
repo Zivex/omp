@@ -28,7 +28,7 @@ public interface OldService extends CommonsDataOperationService<Omp_Old_Info, Ol
 	 *
 	 * @return
 	 */
-	List<Omp_Old_Info> getOldContextList(Page page, String name, String idCard, String zjNumber, String county, String street, String community, String isGenerationOrder,String isindividuation,SystemUser user);
+//	List<Omp_Old_Info> getOldContextList(Page page, String name, String idCard, String zjNumber, String county, String street, String community, String isGenerationOrder,String isindividuation,SystemUser user);
 
 	//List getOldContextList(Page page, String name, String idCard, String zjNumber, String county, String street, String community, String isGenerationOrder,String isindividuation,SystemUser user);
 
@@ -55,8 +55,8 @@ public interface OldService extends CommonsDataOperationService<Omp_Old_Info, Ol
 	 */
 	int delOldById(String id);
 
-	int getCount(String name, String idCard, String zjNumber, String county, String street, String community, String isGenerationOrder,String isindividuation,SystemUser user
-		);
+//	int getCount(String name, String idCard, String zjNumber, String county, String street, String community, String isGenerationOrder,String isindividuation,SystemUser user
+//		);
 
 	String getIdByName(String area, int i);
 
@@ -69,6 +69,7 @@ public interface OldService extends CommonsDataOperationService<Omp_Old_Info, Ol
 	Map getRegionList1(Map<String, Object> map);
 
 	List<Map<String, Object>> getRegionById(String id);
+	List<Map<String, Object>> getRegionByPid(String id);
 
 	List<Map<String, Object>> queryCommunityOrder(String id);
 
@@ -117,6 +118,10 @@ public interface OldService extends CommonsDataOperationService<Omp_Old_Info, Ol
 	List getCuser(SystemUser user);
 
 	int getTel_type(String tel_type);
+
+	int getCount(OldParameter parameter, SystemUser user);
+
+	List<Omp_Old_Info> getOldContextList(OldParameter parameter, SystemUser user);
 
 
 }

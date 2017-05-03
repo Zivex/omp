@@ -67,7 +67,7 @@ public interface VoiceService extends CommonsDataOperationService<Omp_voice_orde
 	
 	String middle();
 	
-	void saveviceoder(String id, String vid,String executeType,String startTime,String endTime,String t);
+	void saveviceoder(String id, String vid,String executeType,String startTime,String endTime,String t, SystemUser user);
 	
 	String resultVice();
 	
@@ -85,7 +85,7 @@ public interface VoiceService extends CommonsDataOperationService<Omp_voice_orde
 	
 	String ResultOderById(String comid);
 	
-	void resultVOrders(ImKey imKey,String id,String username);
+	void resultVOrders(ImKey imKey,String id,SystemUser user);
 	
 	//删除声音
 	void deleteVoidByid(String vid);
@@ -95,7 +95,7 @@ public interface VoiceService extends CommonsDataOperationService<Omp_voice_orde
 
 	String numRest(String id);
 	//语音次数回滚
-	void rollback(String id, String username, String voiceSata);
+	void rollback(String id, SystemUser user, String voiceSata);
 
 	UserInfoParameter getUserInfo(SystemUser user);
 }

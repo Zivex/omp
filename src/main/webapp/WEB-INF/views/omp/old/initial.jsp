@@ -41,8 +41,8 @@
 							<c:url var="queryForm" value="/old/oldMatch/listtoo.shtml" />
 							<form:form id="command" role="form" class="form-inline" action="${queryForm}" method="post">
 								<%-- 								action="${queryForm}" method="post"> --%>
-								<input id="pageNo" name="current" type="hidden" value="1">
-								<input id="pageSizes" name="pageSize" type="hidden" value="10">
+								<input id="pageNo" name="currentPieceNum" type="hidden" value="1">
+								<input id="pageSizes" name="perPieceSize" type="hidden" value="10">
 								<table class="table">
 									<tr>
 										<td>姓名：</td>
@@ -51,19 +51,25 @@
 										<td><input type="text" value="${idCard }" id="idCard" name="idCard" /></td>
 										<td>座机号：</td>
 										<td><input type="text" value="${zjNumber }" id="zjNumber" name="zjNumber" /></td>
-										<td>是否生成指令</td>
-										<td><select id="isGenerationOrder" name="isGenerationOrder">
-												<option value="${isGenerationOrder }">--请选择--</option>
-												<option value="0">未生成指令</option>
-												<option value="1">已生成指令</option>
+										<!-- 										<td>是否生成指令</td> -->
+										<!-- 										<td><select id="isGenerationOrder" name="isGenerationOrder"> -->
+										<%-- 												<option value="${isGenerationOrder }">--请选择--</option> --%>
+										<!-- 												<option value="0">未生成指令</option> -->
+										<!-- 												<option value="1">已生成指令</option> -->
+										<!-- 										</select></td> -->
+										<td>是否有来电显示：</td>
+										<td><select id="call_id" name="call_id">
+												<option value="${call_id }">--请选择--</option>
+												<option value="1">是</option>
+												<option value="0">否</option>
 										</select></td>
 									</tr>
 									<tr>
 										<td>个性类型：</td>
 										<td><select id="isindividuation" name="isindividuation">
 												<option value="${isindividuation }">--请选择--</option>
-												<option value="0">非个性化</option>
-												<option value="1">已个性化</option>
+												<option value="0">有个性化</option>
+												<option value="1">无个性化</option>
 										</select></td>
 
 										<td>区域：</td>
@@ -81,15 +87,7 @@
 
 									</tr>
 									<tr>
-										<td>是否有来电显示：</td>
-										<td><select id="call_id" name="call_id">
-												<option value="${call_id }">--请选择--</option>
-												<option value="0">是</option>
-												<option value="1">否</option>
-										</select></td>
-									</tr>
-									<tr>
-										<td><input class="btn btn-default" type="submit" value="查询">
+										<td><input class="btn btn-default" type="button" onclick="quety()" value="查询">
 										<td><input class="btn btn-danger" type="reset" value="重置">
 										<td><a class="btn btn-default" href="#" onclick="importInformation()" role="button">导入</a>
 										<td><a class="btn btn-default" href="#" onclick="exportExcel()" role="button">导出</a>
@@ -165,7 +163,8 @@
 			var street = $("#street").val();
 			var community = $("#community").val();
 			var isGenerationOrder = $("#isGenerationOrder").val();
-			$.post("<%=request.getContextPath() %>/old/oldMatch/list.shtml",
+			var call_id = $("#call_id").val();
+			$.post("<%=request.getContextPath() %>/old/oldMatch/listtoo.shtml",
 					{
 						creationTime:creationTime,
 						name:name,
@@ -175,8 +174,12 @@
 						street:street,
 						community:community,
 						isGenerationOrder:isGenerationOrder,
-						isindividuation:isindividuation
-					});
+						isindividuation:isindividuation,
+						call_id:call_id
+					},	
+					function(data){
+				$("#resultDiv").html(data);
+			});
 		}
 
 		//导出
@@ -268,13 +271,84 @@
 						}
 					});
 				});
+			
+			
+			<c:if test="${sessionScope.eccomm_admin.account_type=='g' }">
+			flag=1;
+			var lv = "${eccomm_admin.leave}";
+			var rid = "${eccomm_admin.rid}";
+			var pid = "${eccomm_admin.parentid}";
+			if(lv==2){	//北京
+				flag=0;
+			}
+			if(lv==3){	//区
+				$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",{id:rid},function(data){
+				$("#county").val(rid); 
+				$("#county").attr("disabled", true);
+					for(var i = 0;i<data.length;i++){
+						$("#street").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
+					}				
+				});
+				
+			}
+			if(lv==4){	//街道
+				$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",{id:pid},function(data){
+					$("#county").val(pid); 
+					$("#county").attr("disabled", true);
+						for(var i = 0;i<data.length;i++){
+							$("#street").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
+						}
+						$("#street").val(rid); 
+						$("#street").attr("disabled", true);
+						$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",{id:rid},function(data){
+							for(var i = 0;i<data.length;i++){
+								$("#community").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
+							}
+							
 						});
-
-		function hxBackClick() {
-			$("#displayDiv1").hide();
-			$("#displayDiv").show();
-			$("#backButton").hide();
-		};
+					});
+			}
+			if(lv==5){	//社区
+				$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionByPid.shtml",{id:pid},function(data){
+					var pid=data[0].PARENTID;
+					var sid=data[0].id;
+					
+					$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",{id:pid},function(data){
+					$("#county").val(pid); 
+					$("#county").attr("disabled", true);
+							for(var i = 0;i<data.length;i++){
+								$("#street").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
+							}
+							$("#street").val(sid); 
+							$("#street").attr("disabled", true);
+							$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",
+				                {
+					                id : sid
+				                }, function (data)
+				                {
+					                for (var i = 0; i < data.length; i++)
+					                {
+						                $ ("#community").append (
+						                        "<option value='"+data[i].id+"'>" + data[i].name + "</option>");
+					                }
+					                $ ("#community").val (rid);
+					                $ ("#community").attr ("disabled", true);
+					                
+				                });
+			                });
+			                
+		                });
+	                }
+	                
+	                </c:if>
+                });
+        
+        function hxBackClick ()
+        {
+	        $ ("#displayDiv1").hide ();
+	        $ ("#displayDiv").show ();
+	        $ ("#backButton").hide ();
+        };
 	</script>
 
 

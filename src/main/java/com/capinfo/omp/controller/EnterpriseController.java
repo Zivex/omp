@@ -483,13 +483,13 @@ public class EnterpriseController {
 	 * @return
 	 */
 	@RequestMapping("/initial.shtml")
-	public ModelAndView initial(HttpServletRequest request, ServiceProviderParameter parameter) {
+	public ModelAndView initial(@ModelAttribute("eccomm_admin") SystemUser user,HttpServletRequest request, ServiceProviderParameter parameter) {
 		ModelAndView mv = new ModelAndView("/omp/serviceMerchants/initial");
 		mv.addObject("command", parameter);
 		List<ServiceType> typeList = generalService.getAllObjects(ServiceType.class);
 		mv.addObject("typeList",typeList);
 		@SuppressWarnings("unchecked")
-		Map<String, Object> map = enterpriseService.getMerchantsList(parameter);
+		Map<String, Object> map = enterpriseService.getMerchantsList(parameter,user);
 		mv.addObject("mList",map.get("list"));
 		mv.addObject("DataTotalCount",map.get("count"));
 		mv.addObject("PerPieceSize",parameter.getPageSize());
@@ -504,13 +504,13 @@ public class EnterpriseController {
 	 * @return
 	 */
 	@RequestMapping("/list.shtml")
-	public ModelAndView dicSortList(HttpServletRequest request,ServiceProviderParameter parameter) {
+	public ModelAndView dicSortList(@ModelAttribute("eccomm_admin") SystemUser user,HttpServletRequest request,ServiceProviderParameter parameter) {
 		ModelAndView mv = new ModelAndView("/omp/serviceMerchants/list");
 	mv.addObject("command", parameter);
 	List<ServiceType> typeList = generalService.getAllObjects(ServiceType.class);
 	mv.addObject("typeList",typeList);
 	@SuppressWarnings("unchecked")
-	Map<String, Object> map = enterpriseService.getMerchantsList(parameter);
+	Map<String, Object> map = enterpriseService.getMerchantsList(parameter,user);
 	mv.addObject("mList",map.get("list"));
 	mv.addObject("DataTotalCount",map.get("count"));
 	mv.addObject("PerPieceSize",parameter.getPageSize());

@@ -52,9 +52,9 @@ public class SystemLogsController extends AuthenticationSuccessHandlerImpl {
 	 */
 	
 	@RequestMapping("/ReportFrom/list.shtml")
-	public ModelAndView list(String county, String street, String community,String otype,Date stime,Date etime) {
+	public ModelAndView list(String county, String street, String community,String otype,Date stime,Date etime,@ModelAttribute(Constants.ADMIN_ATTRIBUTE_KEY) SystemUser user) {
 		ModelAndView mv = new ModelAndView("/admin/list");
-		listget(mv, county, street, community, otype, stime, etime);
+		listget(mv, county, street, community, otype, stime, etime,user);
 		return mv;
 	}
 	/**
@@ -68,10 +68,9 @@ public class SystemLogsController extends AuthenticationSuccessHandlerImpl {
 	 * @return
 	 */
 	@RequestMapping("/ReportFrom/initial.shtml")
-	public ModelAndView initial(String county, String street, String community,String otype,Date stime,Date etime) {
+	public ModelAndView initial(String county, String street, String community,String otype,Date stime,Date etime,@ModelAttribute(Constants.ADMIN_ATTRIBUTE_KEY) SystemUser user) {
 		ModelAndView mv = new ModelAndView("/admin/initial");
-		
-		listget(mv, county, street, community, otype, stime, etime);
+		listget(mv, county, street, community, otype, stime, etime,user);
 		return mv;
 	}
 	/**
@@ -157,8 +156,8 @@ public class SystemLogsController extends AuthenticationSuccessHandlerImpl {
 		return mv;
 	}
 	
-	public void listget(ModelAndView mv,String county, String street, String community,String otype,Date stime,Date etime) {
-		SimpleDateFormat fromg = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");// 设置日期格式
+	public void listget(ModelAndView mv,String county, String street, String community,String otype,Date stime,Date etime, SystemUser user) {
+		SimpleDateFormat fromg = new SimpleDateFormat("yyyy-MM-dd");// 设置日期格式
 		String stimes = "";
 		String etimes = "";
 		if (stime==null) {
@@ -174,8 +173,15 @@ public class SystemLogsController extends AuthenticationSuccessHandlerImpl {
 		
 		
 		
-		List<Map<String, Object>> showcout = systemLogs.getlistCount(county, street, community, otype, stimes, etimes);
+		List<Map<String, Object>> showcout = systemLogs.getlistCount(county, street, community, otype, stimes, etimes,user);
+		Double sum = 0.0;
+		for (Map<String, Object> map : showcout) {
+			Double c = Double.parseDouble(map.get("count")+"");
+			sum +=c;
+		}
+		long round = Math.round(sum);
 		mv.addObject("showcout",showcout);
+		mv.addObject("sum",round);
 		mv.addObject("county", county);
 		mv.addObject("street", street);
 		mv.addObject("community", community);
@@ -187,7 +193,7 @@ public class SystemLogsController extends AuthenticationSuccessHandlerImpl {
 	
 	
 	public void listKeyGet(ModelAndView mv,String county, String street, String community,String otype,Date stime,Date etime,int sata) {
-		SimpleDateFormat fromg = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");// 设置日期格式
+		SimpleDateFormat fromg = new SimpleDateFormat("yyyy-MM-dd");// 设置日期格式
 		String stimes = "";
 		String etimes = "";
 		if (stime==null) {

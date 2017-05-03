@@ -12,31 +12,37 @@
 
 
 <div class="panel panel-default">
-	
-<table class="table table-hover">
 
-  <caption style="text-align:center"><h3>快捷键修改次数统计</h3></caption>
-  
-  <thead>
-    <tr>
-      <th>区域</th>
-      <th>语音发送总次数</th>
-      <th>发送成功</th>
-      <th>发送失败</th>
-    </tr>
-  </thead>
-  <tbody>
-  <c:forEach var="c" items="${keyCount}" >
-    <tr>
-      <td>${c.name }</td>
-      <td>${c.count }</td>
-      <td>${c.suc }</td>
-      <td>${c.fai }</td>
-    </tr>
-  </c:forEach>
-  </tbody>
-</table>
-	
+	<table class="table table-hover">
+
+		<caption style="text-align: center">
+			<h3>语音发送次数统计</h3>
+		</caption>
+
+		<thead>
+			<tr>
+				<th>区域</th>
+				<th>语音发送总次数</th>
+				<th>发送成功</th>
+				<th>已听取</th>
+				<th>未听取</th>
+				<th>发送失败</th>
+			</tr>
+		</thead>
+		<tbody>
+			<c:forEach var="c" items="${keyCount}">
+				<tr>
+					<td>${c.name }</td>
+					<td>${c.count }</td>
+					<td>${c.suc }</td>
+					<td>${c.listen }</td>
+					<td>${c.noListen }</td>
+					<td>${c.fai }</td>
+				</tr>
+			</c:forEach>
+		</tbody>
+	</table>
+
 </div>
 
 

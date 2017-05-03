@@ -35,7 +35,40 @@
 						</h1>
 					</div>
 					<div class="header-underline"></div>
-					<div id="displayDiv"></div>
+					<div id="displayDiv">
+					<div class="table-responsive">
+						<table class="table table-bordered">
+							<tr>
+								<th colspan="6" ><h4 style="text-align: center;">用户信息</h4></th>
+							</tr>
+							<tr>
+								<td colspan="3" width="50%" style="text-align: center;" >剩余发送次数:</td>
+								<td colspan="3" width="50%">${userINfo.remainCount }</td>
+							</tr>
+							<tr>
+								<td colspan="3" style="text-align: center;" >指令键发送次数:</td>
+								<td colspan="3">${userINfo.orderCount }</td>
+							</tr>
+							<tr>
+								<td colspan="1" width="20%" style="text-align: right;" class="success">成功:</td>
+								<td colspan="2" class="success">${userINfo.orderSuc }</td>
+								<td colspan="1" style="text-align: right;" class="danger">失败:</td>
+								<td colspan="2" class="danger">${userINfo.orderFail }</td>
+							</tr>
+							<tr>
+								<td colspan="3" style="text-align: center;">语音累计发送次数:</td>
+								<td colspan="3">${userINfo.voiceCount }</td>
+							</tr>
+							<tr>
+								<td colspan="1" width="20%" style="text-align: right;" class="success">成功:</td>
+								<td colspan="2" class="success">${userINfo.voiceSendSuc }</td>
+								<td colspan="1" style="text-align: right;" class="danger">失败:</td>
+								<td colspan="2" class="danger">${userINfo.voiceSendFail }</td>
+							</tr>
+
+						</table>
+</div>
+					</div>
 				</div>
 			</div>
 			<!-- ./main -->

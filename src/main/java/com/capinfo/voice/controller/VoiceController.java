@@ -263,19 +263,17 @@ public class VoiceController {
 	}
 
 	/**
-	 * 文件上传
+	 * 语音文件上传
 	 * @param muFile
 	 * @param request
 	 * @return
 	 */
 	@RequestMapping("/voiceManage/oneUpload.shtml")
-	public String oneUpload(@RequestParam("muFile") MultipartFile muFile, HttpServletRequest request) {
-		
-		
-		
+	public String oneUpload(@RequestParam("muFile") MultipartFile muFile, HttpServletRequest request,@ModelAttribute("eccomm_admin") SystemUser user) {
 		Random random =new Random();
 		String voicename = request.getParameter("voicename");
 		String remark = request.getParameter("remark");
+		String content = request.getParameter("content");
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");// 设置日期格式
 		System.out.println(df.format(new Date()));// new Date()为获取当前系统时间
 		String date = df.format(new Date());
@@ -286,10 +284,8 @@ public class VoiceController {
         //重命名上传后的文件名,使用时间戳作为文件名称
 		filName = System.currentTimeMillis()+String.valueOf(random.nextInt(10000))+extName;
 		String urls = uploadUrl + filName;
-		String userName = SecurityContextHolder.getContext()
-				.getAuthentication().getName();
 		String url = urls.replace("\\", "/");
-		String sql = "INSERT INTO `omp_voice_info` (`agent_id`,`voiceFIleId`, `voiceName`, `voiceFileAddress`, `remark`, `voiceTime`) VALUES ('"+userName+"','2', '" + voicename + "', '" + url + "', '" + remark + "', '" + date + "')";
+		String sql = "INSERT INTO `omp_voice_info` (`agent_id`,`voiceFIleId`, `voiceName`, `voiceFileAddress`, `remark`, `voiceTime`,`content`) VALUES ('"+user.getLogonName()+"','2', '" + voicename + "', '" + url + "', '" + remark + "', '" + date + "','"+content+"')";
 		jdbcTemplate.update(sql);
 		File dir = new File(uploadUrl);
 		if (!dir.exists()) {
@@ -421,7 +417,7 @@ public class VoiceController {
 					String time = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
 					String t = time + x;
 					//保存语音发送记录
-					voiceService.saveviceoder(id, mid, executeType, executionTime, executionEndTime, t);
+					voiceService.saveviceoder(id, mid, executeType, executionTime, executionEndTime, t,user);
 					//查询最大omp_voice_order.id
 					//String result = "";
 					String result = voiceService.resultVice();
@@ -434,11 +430,11 @@ public class VoiceController {
 					if ("1".equals(imKey.getStatusCode())) {
 					//	if (false) {
 						//成功
-						voiceService.resultVOrders(imKey, id, username);
+						voiceService.resultVOrders(imKey, id, user);
 						i++;
 					}else{
 						//失败回滚
-						voiceService.rollback(id,username,voiceSata);
+						voiceService.rollback(id,user,voiceSata);
 					}
 					if (i != 0) {
 						voiceService.toupdete(number);
@@ -461,7 +457,7 @@ public class VoiceController {
 					x = ne.nextInt(99999 - 10000 + 1) + 1000;// 为变量赋随机值10000-99999
 					String time = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
 					String t = time + x;
-					voiceService.saveviceoder(id, mid, executeType, executionTime, executionEndTime, t);
+					voiceService.saveviceoder(id, mid, executeType, executionTime, executionEndTime, t,user);
 				}
 			}
 
@@ -496,12 +492,12 @@ public class VoiceController {
 				x = ne.nextInt(99999 - 10000 + 1) + 1000;// 为变量赋随机值10000-99999
 				String time = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
 				String t = time + x;
-				voiceService.saveviceoder(id, mid, executeType, startTime, endTime, t);
+				voiceService.saveviceoder(id, mid, executeType, startTime, endTime, t,user);
 				String result = voiceService.resultVice();
 				String json = voiceService.sendvice(result, t);
 				ImKey imKey = vice.svoice(json);
 				if ("1".equals(imKey.getStatusCode())) {
-					voiceService.resultVOrders(imKey, id,username);
+					voiceService.resultVOrders(imKey, id,user);
 					i++;
 				}
 				if (i != 0) {
@@ -567,13 +563,13 @@ public class VoiceController {
 				x = ne.nextInt(99999 - 10000 + 1) + 1000;// 为变量赋随机值10000-99999
 				String time = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
 				String t = time + x;
-				voiceService.saveviceoder(id, mid, executeType, startTime, endTime, t);
+				voiceService.saveviceoder(id, mid, executeType, startTime, endTime, t,user);
 				String result = voiceService.resultVice();
 				String json = voiceService.sendvice(result, t);
 				ImKey imKey = vice.svoice(json);
 
 				if ("1".equals(imKey.getStatusCode())) {
-					voiceService.resultVOrders(imKey, id,username);
+					voiceService.resultVOrders(imKey, id,user);
 					i++;
 				}
 				if (i != 0) {
@@ -624,13 +620,13 @@ public class VoiceController {
 				x = ne.nextInt(99999 - 10000 + 1) + 1000;// 为变量赋随机值10000-99999
 				String time = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
 				String t = time + x;
-				voiceService.saveviceoder(id, mid, executeType, startTime, endTime, t);
+				voiceService.saveviceoder(id, mid, executeType, startTime, endTime, t,user);
 				String result = voiceService.resultVice();
 				String json = voiceService.sendvice(result, t);
 				ImKey imKey = vice.svoice(json);
 
 				if ("1".equals(imKey.getStatusCode())) {
-					voiceService.resultVOrders(imKey, id,username);
+					voiceService.resultVOrders(imKey, id,user);
 					i++;
 				}
 				if (i != 0) {
@@ -659,6 +655,21 @@ public class VoiceController {
 	public String deleteAll(String vids) {
 		voiceService.deleteVoidsByid(vids);
 		return "刪除成功";
+		
+	}
+	
+	/**
+	 * 查看语音内容
+	 * @param vid
+	 * @return
+	 */
+	@RequestMapping("/voiceManage/seeContent.shtml")
+	@ResponseBody
+	public Map<String, Object> seeContent(Long vid) {
+		String sql = " select t.content,t.voiceTime,t.voiceName from omp_voice_info t where t.id="+vid;
+		List<Map<String,Object>> queryForList = jdbcTemplate.queryForList(sql);
+		Map<String, Object> map = queryForList.get(0);
+		return map;
 		
 	}
 

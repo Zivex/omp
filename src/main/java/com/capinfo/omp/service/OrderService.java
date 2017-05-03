@@ -41,7 +41,7 @@ public interface OrderService extends CommonsDataOperationService<Omp_old_order,
     
     List<Map<String, Object>> getOList(String id);
     
-    void resultOrder(ImKey imKey,String id,String username);
+    void resultOrder(ImKey imKey,String id,SystemUser user);
     
     String RequestZJ(String zj);
     
@@ -49,7 +49,7 @@ public interface OrderService extends CommonsDataOperationService<Omp_old_order,
     
     public String numRest(String id);
 
-	void rollback(String id, String username, String orderSata);
+	void rollback(String id, SystemUser user, String orderSata);
     
     
     

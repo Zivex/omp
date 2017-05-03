@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
+import com.capinfo.common.model.SystemUser;
 import com.capinfo.framework.dao.SearchCriteriaBuilder;
 import com.capinfo.framework.dao.impl.restriction.RestrictionExpression;
 import com.capinfo.framework.model.BaseEntity;
@@ -27,7 +28,7 @@ public class EnterpriseServiceImpl extends
 		implements EnterpriseService {
 
 	@Autowired
-	private JdbcTemplate JdbcTemplate;
+	private JdbcTemplate jdbcTemplate;
 
 	@Override
 	public List<Enterprise> getListByName(EnterpriseParameter parameter) {
@@ -66,11 +67,11 @@ public class EnterpriseServiceImpl extends
 		long id = 0L;
 		String checksql = "select count(*) from omp_service_type t where t.serviceName = '"
 				+ serviceType + "'";
-		int check = JdbcTemplate.queryForInt(checksql);
+		int check = jdbcTemplate.queryForInt(checksql);
 		if (check > 0) {
 			String sql = "select t.id from omp_service_type t where t.serviceName = '"
 					+ serviceType + "'";
-			id = JdbcTemplate.queryForLong(sql);
+			id = jdbcTemplate.queryForLong(sql);
 		}
 		return id;
 	}
@@ -86,18 +87,18 @@ public class EnterpriseServiceImpl extends
 		}
 		String checksql = "select count(*)from omp_region t where t.name = '"
 				+ city + "' and levelid=0" + i + psql + " and USE_FLAG = 1";
-		int check = JdbcTemplate.queryForInt(checksql);
+		int check = jdbcTemplate.queryForInt(checksql);
 		if (check > 0) {
 			sql = "select t.id from omp_region t where t.name = '" + city
 					+ "' and levelid=0" + i + psql + " and USE_FLAG = 1";
-			id = JdbcTemplate.queryForLong(sql);
+			id = jdbcTemplate.queryForLong(sql);
 		}
 		return String.valueOf(id);
 	}
 
 	@Override
 	public Map<String, Object> getMerchantsList(
-			ServiceProviderParameter parameter) {
+			ServiceProviderParameter parameter,SystemUser user) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		SearchCriteriaBuilder<ServiceProvider> searchCriteriaBuilder = new SearchCriteriaBuilder<ServiceProvider>(
 				ServiceProvider.class);
@@ -116,8 +117,22 @@ public class EnterpriseServiceImpl extends
 		searchCriteriaBuilder.addQueryCondition("serviceCounty_id", RestrictionExpression.LIKE_OP, parameter.getCounty());
 		searchCriteriaBuilder.addQueryCondition("serviceStreet_id", RestrictionExpression.LIKE_OP, parameter.getStreet());
 		searchCriteriaBuilder.addQueryCondition("serviceCommunity_id", RestrictionExpression.LIKE_OP, parameter.getCommunity());
-
-
+		searchCriteriaBuilder.addQueryCondition("user_falg", RestrictionExpression.EQUALS_OP, 1L);
+		if(parameter.getG()!=null&&parameter.getG()==1 && user.getLeave() > 2){
+			String serviceRegion = "";
+			Long rid = 0L;
+			if(user.getLeave()==3){
+				serviceRegion = "serviceCounty_id";
+				rid = user.getRid();
+			}else if (user.getLeave()==4){
+				serviceRegion = "serviceStreet_id";
+				rid = user.getRid();
+			}else if (user.getLeave()==5){
+				serviceRegion = "serviceStreet_id";
+				rid = user.getParentid();
+			}
+			searchCriteriaBuilder.addQueryCondition(serviceRegion, RestrictionExpression.EQUALS_OP, rid);
+		}
 		int count = getGeneralService().getCount(searchCriteriaBuilder.build());
 		map.put("count", count);
 		if (parameter.getPageSize() == 0) {
@@ -180,6 +195,7 @@ public class EnterpriseServiceImpl extends
 		if (!"".equals(sql)) {
 			searchCriteriaBuilder.addAdditionalRestrictionSql(sql);
 		}
+		searchCriteriaBuilder.addOrderCondition("id", "ASC");
 		List<OmpRegion> list = getGeneralService().getObjects(searchCriteriaBuilder.build());
 		return list;
 	}
@@ -187,7 +203,7 @@ public class EnterpriseServiceImpl extends
 	@Override
 	public List<Map<String,Object>> queryAllRegions(int i) {
 		String sql = "select t.id id,t.name name,t.PARENTID pid from omp_region t where t.USE_FLAG=1 and t.LEVELID="+i;
-		List<Map<String,Object>> list = JdbcTemplate.queryForList(sql);
+		List<Map<String,Object>> list = jdbcTemplate.queryForList(sql);
 		return list;
 	}
 
@@ -205,7 +221,7 @@ public class EnterpriseServiceImpl extends
 			idsql = " and t.id <>"+id;
 		}
 		String sql = "select count(*) from service_provider t where t.serviceTell ='"+serviceTell+"'"+idsql;
-		int i = JdbcTemplate.queryForInt(sql);
+		int i = jdbcTemplate.queryForInt(sql);
 		return i>0?false:true;
 	}
 
