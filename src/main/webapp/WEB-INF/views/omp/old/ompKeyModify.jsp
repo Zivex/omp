@@ -22,11 +22,12 @@
 				<thead>
 					<tr class="active">
 						<th width="25%">话机键位</th>
+						<th width="25%">服务商名称</th>
 						<th >号码</th>
 					</tr>
 				</thead>
 				<tbody>
-					<c:forEach var="old" items="${detaMap}" varStatus="sta">
+					<c:forEach var="old" items="${sp}" varStatus="sta">
 						<tr>
 							<td>
 							   <c:if test="${old.key=='M1'}">养老驿站</c:if>
@@ -46,7 +47,8 @@
 							   <c:if test="${old.key=='M15'}">----</c:if>
 							   <c:if test="${old.key=='M16'}">----</c:if>
 							</td>
-							<td><input type="text" id="${old.key}" name="nametext" value="${old.value}"/></td>
+							<td><input type="text" id="${old.key}" name="nametext" value="${old.sp.serviceName}"/></td>
+							<td><input type="text" id="${old.key}" name="nametext" value="${old.sp.serviceTell}"/></td>
 
 						</tr>
 					</c:forEach>

@@ -36,7 +36,9 @@ import com.capinfo.framework.model.BaseEntity;
 import com.capinfo.framework.service.GeneralService;
 import com.capinfo.framework.util.DateUtils;
 import com.capinfo.omp.model.Omp_Old_Info;
+import com.capinfo.omp.model.ServiceProvider;
 import com.capinfo.omp.parameter.CompositionParameter;
+import com.capinfo.omp.parameter.Ksp_id;
 import com.capinfo.omp.parameter.OldParameter;
 import com.capinfo.omp.service.OldService;
 import com.capinfo.omp.utils.JsonUtil;
@@ -370,36 +372,31 @@ public class OldForController {
 		ArrayList arrayList = new ArrayList<>();
 		List<Map<String, Object>> list = oldService.getOldById1(oid);
 		// 判断是否老人已经设置指令了
-		if (list.size() > 0 && list.get(0).get("Kp") != null) {
-			Map<String, Object> map = list.get(0);
-			Map Region = oldService.getRegionList1(map);
-			String kpLiString = (String) map.get("Kp");
-			if (kpLiString != null && !"".equals(kpLiString)) {
-				JSONObject jsonObject = JsonUtil.getJson(kpLiString);
-				JSONArray json1 = JsonUtil.getJson1(jsonObject);
-				if (json1.size() > 0) {
-					for (int i = 0; i < json1.size(); i++) {
-						JSONObject job = json1.getJSONObject(i); 
-						if(user.getId()!=1 && (i==10 || i==12 || i==13 || i==14 || i==15)){
-							continue;
-						}
-																	
-						arrayList.add(job);
-					}
-				}
+		List<Map<String,Object>> sp = new ArrayList<Map<String,Object>>();
+		Map<String, Object> map = list.get(0);
+		if (list.size() > 0 && list.get(0).get("ksp_id") != null) {
+			String ksp_idJsom = map.get("ksp_id")+"";
+			JSONArray json = JSONArray.fromObject(ksp_idJsom ); 
+			System.out.println(json.get(0));
+			JSONObject o=JSONObject.fromObject(json.get(0));
+			Ksp_id kd=(Ksp_id)JSONObject.toBean(o, Ksp_id.class);
+			System.out.println(kd);
+			sp = kd.getSp(generalService);
+			if(user.getId()>1){
+				sp.remove(15);
+				sp.remove(14);
+				sp.remove(13);
+				sp.remove(12);
+				sp.remove(10);
 			}
-
-			mv.addObject("arrayList", arrayList);
-			mv.addObject("detaMap", map);
-			mv.addObject("Region", Region);
-		} else {
-			Map<String, Object> map = list.get(0);
-			Map Region = oldService.getRegionList1(map);
-			mv.addObject("arrayList", arrayList);
-			mv.addObject("detaMap", map);
-			mv.addObject("Region", Region);
+			mv.addObject("sp",sp);
+			
 		}
 
+		mv.addObject("arrayList", list);
+		mv.addObject("detaMap", map);
+		Map Region = oldService.getRegionList1(map);
+		mv.addObject("Region", Region);
 		return mv;
 	}
 
@@ -419,29 +416,46 @@ public class OldForController {
 		List<Map<String, Object>> Infolist = oldService
 				.getOldKeyPointMessage(id);
 		List<Map<String, Object>> list = oldService.getOldById1(id);
+		
+		// 判断是否老人已经设置指令了
+		List<Map<String,Object>> sp = new ArrayList<Map<String,Object>>();
+		Map<String, Object> map = list.get(0);
+		if (list.size() > 0 && list.get(0).get("ksp_id") != null) {
+			String ksp_idJsom = map.get("ksp_id")+"";
+			JSONArray json = JSONArray.fromObject(ksp_idJsom ); 
+			System.out.println(json.get(0));
+			JSONObject o=JSONObject.fromObject(json.get(0));
+			Ksp_id kd=(Ksp_id)JSONObject.toBean(o, Ksp_id.class);
+			System.out.println(kd);
+			sp = kd.getSp(generalService);
+			mv.addObject("sp",sp);
+			
+		}
+		
+		
 
 		// 判断是否老人已经设置指令了
-		if (list.size() > 0 && list.get(0).get("Kp") != null) {
-			Map<String, Object> map = list.get(0);
-			Map Region = oldService.getRegionList1(map);
-			String kpLiString = (String) map.get("Kp");
-			if (kpLiString != null && !"".equals(kpLiString)) {
-				JSONObject jsonObject = JsonUtil.getJson(kpLiString);
-				JSONArray json1 = JsonUtil.getJson1(jsonObject);
-				if (json1.size() > 0) {
-					for (int i = 0; i < json1.size(); i++) {
-						JSONObject job = json1.getJSONObject(i); // 遍历
-																	// jsonarray//
-																	// 数组，把每一个对象转成//
-																	// json 对象
-						arrayList.add(job);
-					}
-				}
-			}
-
-			mv.addObject("detaMap", arrayList);
-			mv.addObject("hxUserID", id);
-		}
+//		if (list.size() > 0 && list.get(0).get("Kp") != null) {
+//			Map<String, Object> map = list.get(0);
+//			Map Region = oldService.getRegionList1(map);
+//			String kpLiString = (String) map.get("Kp");
+//			if (kpLiString != null && !"".equals(kpLiString)) {
+//				JSONObject jsonObject = JsonUtil.getJson(kpLiString);
+//				JSONArray json1 = JsonUtil.getJson1(jsonObject);
+//				if (json1.size() > 0) {
+//					for (int i = 0; i < json1.size(); i++) {
+//						JSONObject job = json1.getJSONObject(i); // 遍历
+//																	// jsonarray//
+//																	// 数组，把每一个对象转成//
+//																	// json 对象
+//						arrayList.add(job);
+//					}
+//				}
+//			}
+//
+//			mv.addObject("detaMap", arrayList);
+//			mv.addObject("hxUserID", id);
+//		}
 
 		mv.addObject("detaMap", arrayList);
 		mv.addObject("hxUserID", id);

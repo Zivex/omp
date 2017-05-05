@@ -61,12 +61,13 @@
 				<thead>
 					<tr class="active">
 						<th width="25%">话机键位</th>
+						<th width="25%">服务商名称</th>
 						<th >号码</th>
 					</tr>
 				</thead>
 
 				<tbody>
-					<c:forEach var="old" items="${arrayList}" varStatus="sta">
+					<c:forEach var="old" items="${sp}" varStatus="sta">
 						<tr>
 							<td>
 							   <c:if test="${old.key=='M1'}">养老驿站</c:if>
@@ -86,7 +87,8 @@
 							   <c:if test="${old.key=='M15'}">中心号码3</c:if>
 							   <c:if test="${old.key=='M16'}">中心号码4</c:if>
 							</td>
-							<td>${old.value}</td>
+							<td>${old.sp.serviceName}</td>
+							<td>${old.sp.serviceTell}</td>
 
 						</tr>
 					</c:forEach>

@@ -56,12 +56,12 @@
 											<td><input type="text" value="${zjNumber }" id="zjNumber" name="zjNumber"/></td>
 											<td>身份证号：</td>
 											<td><input type="text" value="${idCard }" id="idCard" name="idCard"/></td>
-											<td>指令发送状态</td>
+											<td>推送状态</td>
 											<td>
 												<select id="send_flag" name="send_flag">
 													<option value="${send_flag }">--请选择--</option>		
 													<option value="1">已发送</option>
-													<option value="0">未发送</option>
+													<option value="0">待发送</option>
 												</select>
 											</td>
 										</tr>
@@ -84,12 +84,12 @@
 													<option value="${community }">--请选择--</option>		
 												</select>
 											</td>
-											<td>指令执行状态</td>
+											<td>执行状态</td>
 											<td>
 												<select id="execute_flag" name="execute_flag">
 													<option value="${execute_flag }">--请选择--</option>		
-													<option value="null">执行成功</option>
-													<option value="1">执行失败</option>
+													<option value="1">执行成功</option>
+													<option value="0">执行失败</option>
 												</select>
 											</td>
 										</tr>

@@ -69,7 +69,7 @@
 			var architecture = $("#architecture");
 			architecture.empty();
 			architecture
-					.append("<tr> <th width='10%' style='text-align: center'>键位</th> <th width='20%' style='text-align: center'>服务类型</th> <th width='70%' style='text-align: center'>服务商</th> </tr>");
+					.append("<tr> <th width='10%' style='text-align: center'>键位</th> <th width='20%' style='text-align: center'>服务类型</th> <th width='40%' style='text-align: center'>服务商</th><th width='30%' style='text-align: center'>服务商电话</th> </tr>");
 			$.post(
 					"${pageContext.request.contextPath }/serviceSystem/serchArchitecture.shtml",
 					{
@@ -84,7 +84,7 @@
 											+ data[i].key
 											+ "</td><td>"
 											+ data[i].tname
-											+ "</td><td><input type='hidden' class='serviceId' name='"+data[i].key+"'value='"+data[i].sp_id+"' ><span>"+data[i].serviceName+"<span></td></tr>");
+											+ "</td><td><input type='hidden' class='serviceId' name='"+data[i].key+"'value='"+data[i].sp_id+"' ><span>"+data[i].serviceName+"<span></td><td>"+data[i].serviceTell+"</td></tr>");
 						}
 					});
 		}
@@ -96,7 +96,9 @@
 			initQueryForm();
 	    	queryTellType();
 	    });
-
+	    function hxBackClick(){
+        	location.href = "<%=request.getContextPath() %>/serviceSystem/initialize.shtml";
+        }
 
 	</script>
 

@@ -51,9 +51,9 @@ public class ServiceSystemlmpl extends
 	@Override
 	public List<Map<String, Object>> serchService(
 			ServiceProviderParameter parameter,SystemUser user) {
-		int serviceId = parameter.getServiceId();
-		if(serviceId == 23 || serviceId==24){
-			serviceId =11;
+		Long serviceId = parameter.getServiceId();
+		if(serviceId == 23L || serviceId==24L){
+			serviceId =11L;
 		}
 		String serchserviceId = "";
 		String serchserviceName = "";
@@ -74,7 +74,7 @@ public class ServiceSystemlmpl extends
 			serchserviceName = " and t.serviceName like '%"
 					+ parameter.getServiceName() + "%'";
 		}
-		if (parameter.getStreetId() != 0) {
+		if (parameter.getStreetId() != null && parameter.getStreetId() != 0) {
 			serchstreeId = " and t.serviceStreet_id like '%"
 					+ parameter.getStreetId() + "%'";
 		}else{
@@ -200,16 +200,22 @@ public class ServiceSystemlmpl extends
 		return map;
 	}
 
-	// 保存服务体系
+	/**
+	 * 保存服务体系
+	 * 政府:判断 ==>> 社区 用户 user_falg 话机类型(telltype_id)
+	 * @param parameter
+	 * @param user
+	 * @param rid
+	 */
 	@SuppressWarnings("deprecation")
 	public void pubSavrSys(ServiceSystemParameter parameter, SystemUser user,
 			Long rid) {
-		Sys_key entity = parameter.getEntity();
-		entity.setCreateTime(new Date());
+		Sys_key entity = parameter.getEntity();		//获取体系
+		entity.setCreateTime(new Date());	//设置时间
 		if (rid != null && rid != 0) {
-			entity.setCommunity_id(rid);
+			entity.setCommunity_id(rid);	//判断是否微社区体系
 		}
-		if("g".equals(user.getAccount_type()) && entity.getId()==null){		//添加
+		if("g".equals(user.getAccount_type())){		//政府
 			Long community_id = user.getRid();
 			Long stree_id = user.getParentid();
 			String regionSql = "select r.PARENTID from omp_region r where r.USE_FLAG=1 and r.id="+stree_id;
@@ -218,38 +224,35 @@ public class ServiceSystemlmpl extends
 			entity.setStreet_id(stree_id);
 			entity.setCommunity_id(community_id);
 		}
-		
-//		String sqlCheck = "select count(*) from sys_key s where s.user_falg=1 and s.uid="
-//				+ entity.getUid()
-//				+ "  and s.telltype_id= "
-//				+ parameter.getTelltype() + " and s.community_id =" + entity.getCommunity_id();
-//		int forInt = JdbcTemplate.queryForInt(sqlCheck);
-		if (entity.getId() != null) {
-//		if (forInt > 0) {
-//			String getIdSql = "select s.id from sys_key s where s.user_falg=1 and s.uid="
-//					+ entity.getUid()
-//					+ "  and s.telltype_id= "
-//					+ parameter.getTelltype() + " and s.community_id =" + rid;
-//			long id = JdbcTemplate.queryForLong(getIdSql);
-//			entity.setId(id);
+		String communitysql = "";
+		if(entity.getCommunity_id()!=null && !"g".equals(user.getAccount_type()) && !"ADMIN".equals(user.getAccount_type()) ){
+			communitysql = " and s.community_id =" + entity.getCommunity_id();
+		}
+		String sqlCheck = "select count(*) from sys_key s where s.user_falg=1 and s.uid="
+				+ entity.getUid()
+				+ "  and s.telltype_id= "
+				+ parameter.getTelltype() + communitysql;
+		int forInt = JdbcTemplate.queryForInt(sqlCheck);
+		//if (entity.getId() != null) {	
+		if (forInt > 0 && !"ADMIN".equals(user.getAccount_type()) ) {	//覆盖
+			String getIdSql = "select s.id from sys_key s where s.user_falg=1 and s.uid="
+					+ entity.getUid()
+					+ "  and s.telltype_id= "
+					+ parameter.getTelltype() +communitysql;
+			long id = JdbcTemplate.queryForLong(getIdSql);
+			entity.setId(id);
 			entity.setUpdateTime(new Date());
 		}
-		getGeneralService().saveOrUpdate(entity);
+		getGeneralService().saveOrUpdate(entity);		//保存或修改
 		Long sk_id = entity.getId();
 
 		Map<String, Long> mapKeys = Permissions.mapKeys(parameter);
 		List<Map<String, Object>> mList = getQueryarchitecture(user,
 				parameter.getTelltype());
-//		String delSql="DELETE FROM service_system   where skid=  "+sk_id;
-//		JdbcTemplate.update(delSql);
-		
 		
 		for (Map<String, Object> map : mList) {
 			New_Service_System ss = new New_Service_System();
 			Long sid = mapKeys.get(map.get("key"));		//服务商id
-//			if (sid == 0) {
-//				sid = null;
-//			}
 			ss.setSkid(sk_id);	//设置skId
 			ss.setSp_id(sid);	//设置服务商id
 			String key_sql = " select k.id from omp_key k where k.pyId ="
@@ -269,7 +272,6 @@ public class ServiceSystemlmpl extends
 			ss.setId(null);
 
 		}
-		//getGeneralService().saveOrUpdate(entity);
 		getGeneralService().clear();
 		entity.setId(null);
 	}
@@ -284,7 +286,7 @@ public class ServiceSystemlmpl extends
 	public List<Map<String, Object>> getupdateSys(Sys_key ss) {
 		SearchCriteriaBuilder<New_Service_System> searchCriteriaBuilder = new SearchCriteriaBuilder<New_Service_System>(
 				New_Service_System.class);
-		String sql = "select st.id ,k.`key` ,p.serviceName ,t.sp_id ,st.serviceName tname from service_system t LEFT JOIN omp_key k on t.key_state=k.id LEFT JOIN omp_service_type st on k.stId =st.id LEFT JOIN service_provider p on t.sp_id=p.id   where t.skid ="+ss.getId();
+		String sql = "select st.id ,k.`key` ,p.serviceName ,p.serviceTell,t.sp_id ,st.serviceName tname from service_system t LEFT JOIN omp_key k on t.key_state=k.id LEFT JOIN omp_service_type st on k.stId =st.id LEFT JOIN service_provider p on t.sp_id=p.id   where t.skid ="+ss.getId();
 		List<Map<String, Object>> list = JdbcTemplate.queryForList(sql);
 		return list;
 	}

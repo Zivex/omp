@@ -18,9 +18,9 @@ public class ServiceProviderParameter extends DataListParameter<ServiceProvider>
 	private String county;
 	private String street;
 	private String community;
-	private int serviceId;
+	private Long serviceId;
 	private String serviceName;
-	private int streetId;
+	private Long streetId;
 	private Long openRegions;
 	//是否政府
 	private Long g;
@@ -44,16 +44,16 @@ public class ServiceProviderParameter extends DataListParameter<ServiceProvider>
 	public void setSid(Long sid) {
 		this.sid = sid;
 	}
-	public int getServiceId() {
+	public Long getServiceId() {
 		return serviceId;
 	}
-	public void setServiceId(int serviceId) {
+	public void setServiceId(Long serviceId) {
 		this.serviceId = serviceId;
 	}
-	public int getStreetId() {
+	public Long getStreetId() {
 		return streetId;
 	}
-	public void setStreetId(int streetId) {
+	public void setStreetId(Long streetId) {
 		this.streetId = streetId;
 	}
 	public String getServiceName() {

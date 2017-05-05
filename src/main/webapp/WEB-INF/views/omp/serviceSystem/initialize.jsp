@@ -55,8 +55,7 @@
 				<div>
 					<div class="page-header">
 						<h1>
-							<i class="fa fa-user fa-fw"></i>服务体系<span id="backspan"><input type="button"
-								id="backButton" onclick="hxBackClick()" value="返回" /></span>
+							<i class="fa fa-user fa-fw"></i>服务体系
 						</h1>
 					</div>
 					<div class="header-underline"></div>
@@ -67,7 +66,7 @@
 						<c:if test="${sessionScope.eccomm_admin.id!=1 && ((sessionScope.eccomm_admin.account_type=='g' && sessionScope.eccomm_admin.leave==5) || sessionScope.eccomm_admin.account_type=='b' || sessionScope.eccomm_admin.account_type=='m' )}">
 							<a role="button" class="btn btn-default" href='#' onclick='addprivate()'>服务体系确认</a>
 						</c:if>
-						<a class="btn btn-primary btn-sm" target="view_window" href="<%=request.getContextPath() %>/resources/pdf/help01.pdf">
+						<a class="btn btn-primary btn-sm" target="view_window" href="<%=request.getContextPath() %>/resources/pdf/help02.pdf">
 							帮助</a>
 					</div>
 					<div class="header-underline"></div>

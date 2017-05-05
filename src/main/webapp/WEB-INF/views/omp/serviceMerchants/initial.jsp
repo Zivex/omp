@@ -213,7 +213,22 @@
 						$("#streetinit").val(rid); 
 						$("#streetinit").attr("disabled", true);
 					});
-			}
+			}if(lv==5){	//社区
+				$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionByPid.shtml",{id:pid},function(data){
+					var pid=data[0].PARENTID;
+					var sid=data[0].id;
+					$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",{id:pid},function(data){
+					$("#countyinit").val(pid); 
+					$("#countyinit").attr("disabled", true);
+							for(var i = 0;i<data.length;i++){
+								$("#streetinit").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
+							}
+							$("#streetinit").val(sid); 
+							$("#streetinit").attr("disabled", true);
+			                });
+			                
+		                });
+	                }
 		
 		</c:if>
 			

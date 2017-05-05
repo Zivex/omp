@@ -320,11 +320,15 @@
 				data : addForm,
 				success : function(result) {
 					alert(result);
-					window.location.reload();
+					hxBackClick();
 				}
 			});
 
 		}
+		
+		 function hxBackClick(){
+	        	location.href = "<%=request.getContextPath() %>/serviceSystem/initialize.shtml";
+	        }
 	</script>
 
 

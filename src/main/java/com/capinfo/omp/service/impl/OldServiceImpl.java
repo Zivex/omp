@@ -8,7 +8,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+
 import org.apache.poi.ss.usermodel.Workbook;
+import org.eclipse.jetty.util.ajax.JSON;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -21,6 +25,8 @@ import com.capinfo.framework.dao.impl.restriction.RestrictionExpression;
 import com.capinfo.framework.web.service.impl.CommonsDataOperationServiceImpl;
 import com.capinfo.omp.model.CardPerson;
 import com.capinfo.omp.model.Omp_Old_Info;
+import com.capinfo.omp.model.ServiceProvider;
+import com.capinfo.omp.parameter.Ksp_id;
 import com.capinfo.omp.parameter.OldParameter;
 import com.capinfo.omp.service.OldService;
 import com.capinfo.omp.utils.Page;
@@ -237,9 +243,16 @@ public class OldServiceImpl extends
 		// "SELECT I.*,R. NAME SNAM FROM OMP_OLD_INFO i, OMP_REGION r WHERE I.STATE = 1 AND I.HOUSEHOLD_COMMUNITY_ID = R.ID AND i.ID = "
 		// + id;
 		// List<Map<String, Object>> list = jdbcTemplate.queryForList(sql);
-		String sql = "SELECT I.*,o.keyPointMessage Kp, R.NAME SNAME FROM OMP_OLD_INFO i,OMP_REGION r,omp_old_order o WHERE I.STATE = 1 AND I.HOUSEHOLD_COMMUNITY_ID = R.ID AND o.oldId= i.ID AND i.ID = "
+		String sql = "SELECT I.*,o.k_and_sp_id ksp_id, R.NAME SNAME FROM OMP_OLD_INFO i,OMP_REGION r,omp_old_order o WHERE I.STATE = 1 AND I.HOUSEHOLD_COMMUNITY_ID = R.ID AND o.oldId= i.ID AND i.ID = "
 				+ id;
 		List<Map<String, Object>> list = jdbcTemplate.queryForList(sql);
+//		String sql = "SELECT I.*,o.keyPointMessage Kp, R.NAME SNAME FROM OMP_OLD_INFO i,OMP_REGION r,omp_old_order o WHERE I.STATE = 1 AND I.HOUSEHOLD_COMMUNITY_ID = R.ID AND o.oldId= i.ID AND i.ID = "
+//				+ id;
+//		List<Map<String, Object>> list = jdbcTemplate.queryForList(sql);
+		
+		
+		
+		
 		return list;
 	}
 
@@ -1720,51 +1733,35 @@ public class OldServiceImpl extends
 			}
 		}
 		String json = "";
+		String sjson = "";
 		json += "[{";
+		sjson += "[{";
 		for (int i = 1; i < 17; i++) {
 			String m = "M" + i;
+			String mm = "m" + i;
 			json += "\"" + m + "\":";
+			sjson += "\"" + mm + "\":";
 			for (Map<String, Object> map : alllist) {
 				if (map.get("key").equals(m)) {
 					String serviceTell = map.get("serviceTell") + "";
+					String sp_id = map.get("sp_id") + "";
 					json += "\"" + serviceTell + "\",";
+					sjson += "\"" + sp_id + "\",";
 				}
 			}
 		}
 		json = json.substring(0, json.length() - 1);
+		sjson = sjson.substring(0, sjson.length() - 1);
 		json += "}]";
+		sjson += "}]";
 
 		System.out.println(json);
 
 		String sql = "INSERT INTO omp_old_order ("
-				+ "oldId, phoneName, communityOrderId, keyPointMessage)"
+				+ "oldId, phoneName, communityOrderId, keyPointMessage,k_and_sp_id)"
 				+ "  select t.ID,t.TELTYPE,t.HOUSEHOLD_COMMUNITY_ID,'" + json
-				+ "' from omp_old_info t WHERE t.ID = " + old.getId();
+				+ "','"+sjson+"' from omp_old_info t WHERE t.ID = " + old.getId();
 		jdbcTemplate.update(sql);
-
-		// Long id = ss.getId();
-		//
-		//
-		// String sql = "";
-
-		// [{"M1":"82660886","M2":"96003","M3":"67287180","M4":"4008331212","M5":"4008221299","M6":"56328888","M7":"13691139445","M8":"68887325","M9":"88982461","M10":"68873023","M11":"8008100032","M12":"999","M13":"84925513","M14":"84931297","M15":"8008100032","M16":"8008100032"}]
-		// String json = "[{" + "\"M1\":\"" + ss.getM1() + "\"," + "\"M2\":\""
-		// + ss.getM2() + "\"," + "\"M3\":\"" + ss.getM3() + "\","
-		// + "\"M4\":\"" + ss.getM4() + "\"," + "\"M5\":\"" + ss.getM5()
-		// + "\"," + "\"M6\":\"" + ss.getM6() + "\"," + "\"M7\":\""
-		// + ss.getM7() + "\"," + "\"M8\":\"" + ss.getM8() + "\","
-		// + "\"M9\":\"" + ss.getM9() + "\"," + "\"M10\":\"" + ss.getM10()
-		// + "\"," + "\"M11\":\"" + ss.getM11() + "\"," + "\"M12\":\""
-		// + ss.getM12() + "\"," + "\"M13\":\"" + ss.getM13() + "\","
-		// + "\"M14\":\"" + ss.getM14() + "\"," + "\"M15\":\""
-		// + ss.getM15() + "\"," + "\"M16\":\"" + ss.getM16() + "\""
-		// + "}]";
-		// String sql = "INSERT INTO omp_old_order ("
-		// + "oldId, phoneName, communityOrderId, keyPointMessage)"
-		// + "  select t.ID,t.TELTYPE,t.HOUSEHOLD_COMMUNITY_ID,'" + json
-		// + "' from omp_old_info t WHERE t.ID = " + id;
-		// ;
-
 	}
 
 }

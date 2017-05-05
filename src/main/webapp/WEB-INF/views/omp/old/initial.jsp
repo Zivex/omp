@@ -68,8 +68,8 @@
 										<td>个性类型：</td>
 										<td><select id="isindividuation" name="isindividuation">
 												<option value="${isindividuation }">--请选择--</option>
-												<option value="0">有个性化</option>
-												<option value="1">无个性化</option>
+												<option value="1">有个性化</option>
+												<option value="0">无个性化</option>
 										</select></td>
 
 										<td>区域：</td>

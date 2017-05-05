@@ -174,7 +174,7 @@
 	        var sid = $ ("#sid").val ();
 	        var architecture = $ ("#architecture");
 	        architecture.empty ();
-	        architecture.append ("<tr> <th width='10%' style='text-align: center'>键位</th> <th width='20%' style='text-align: center'>服务类型</th> <th width='70%' style='text-align: center'>服务商</th> </tr>");
+	        architecture.append ("<tr> <th width='10%' style='text-align: center'>键位</th> <th width='20%' style='text-align: center'>服务类型</th> <th width='40%' style='text-align: center'>服务商</th><th width='30%' style='text-align: center'>服务商电话</th> </tr>");
 	        $.post (
              "${pageContext.request.contextPath }/serviceSystem/serchArchitecture.shtml",
              {
@@ -192,7 +192,7 @@
                                + "</td><td>"
                                + data[i].tname
                                + "</td><td><input type='hidden' class='serviceId' name='"+data[i].key+"'value='"+data[i].sp_id+"' ><span>"
-                               + data[i].serviceName + "<span></td></tr>");
+                               + data[i].serviceName + "<span></td><td>"+data[i].serviceTell+"</td></tr>");
               }
               architecture
                       .append ('<tr><td><a class="btn btn-default" href="#" onclick="updateSystem()" role="button">修改</a></td></tr>');
@@ -248,9 +248,11 @@
         {
 	        var spId = $ ('input[name="providers"]:checked').val ();
 	        var spName = $ ('input[name="providers"]:checked').parent ().text ();
+	        var sptell = $ ('input[name="providers"]:checked').parent ().next ().text();
 	        var td = $ ('input[name="typeId"]:checked').parent ().next ().next ();
 	        var sp = td.children ("span");
 	        sp.text (spName);
+	        td.next().text(sptell);
 	        td.children ("input.serviceId")[0].value = spId;
 	        var serviceList = $("#serviceList");
 			serviceList.empty();
@@ -267,7 +269,8 @@
 	            success : function (result)
 	            {
 		            alert (result);
-		            window.location.reload ();
+		            hxBackClick();
+		           // window.location.reload ();
 	            }
 	        });
 	        
@@ -280,6 +283,9 @@
 	        selectMenu ("o_sys");
 	        initQueryForm ();
         });
+        function hxBackClick(){
+        	location.href = "<%=request.getContextPath() %>/serviceSystem/initialize.shtml";
+        }
 	</script>
 
 
