@@ -10,6 +10,7 @@ public class OldParameter extends DataListParameter<Omp_Old_Info> {
 	private Class<Omp_Old_Info> entityClazz = Omp_Old_Info.class;
 	private String name;
 	private String idCard;
+	private String city_id;
 	private String zjNumber;
 	private String county;
 	private String street;
@@ -18,6 +19,16 @@ public class OldParameter extends DataListParameter<Omp_Old_Info> {
 	private String isindividuation;	//个性化
 	private String creationTime;
 	private Integer call_id;	//是否来显
+	
+	
+
+	public String getCity_id() {
+		return city_id;
+	}
+
+	public void setCity_id(String city_id) {
+		this.city_id = city_id;
+	}
 
 	public String getName() {
 		return name;

@@ -10,93 +10,133 @@
 	</div>
 </c:if>
 <div class="panel panel-default">
-	<form:form id="listForm" name="listForm" method="post" action='${queryForm }'>
-<%-- 		<form:hidden path="id" id="item_entity_id" /> --%>
-<%-- 		<form:hidden path="current" id="current" /> --%>
-		<input id="item_entity_id" type="hidden" name="id" value="">
-		<input id="currentPage" type="hidden" name="current" value="">
+	<div style="float: left; width: 50%;">
+		<form:form id="sService" name="listForm" method="post" action='${queryForm }'>
+		<input type="hidden" name="oid" id="oid" value="${hxUserID }">
 
-			<!-- tools -->
-			<!-- 		<div class="panel-heading"></div> -->
 			<table class="table table-hover table-middle" role="grid">
 				<thead>
 					<tr class="active">
-						<th width="25%">话机键位</th>
+						<th width="15%">话机键位</th>
 						<th width="25%">服务商名称</th>
-						<th >号码</th>
+						<th width="15%">服务商号码</th>
 					</tr>
 				</thead>
-				<tbody>
-					<c:forEach var="old" items="${sp}" varStatus="sta">
-						<tr>
-							<td>
-							   <c:if test="${old.key=='M1'}">养老驿站</c:if>
-							   <c:if test="${old.key=='M2'}">咨询投诉</c:if>
-							   <c:if test="${old.key=='M3'}">老年用具</c:if>
-							   <c:if test="${old.key=='M4'}">居家护理</c:if>
-							   <c:if test="${old.key=='M5'}">家电服务</c:if>
-							   <c:if test="${old.key=='M6'}">家政服务</c:if>
-							   <c:if test="${old.key=='M7'}">日用百货</c:if>
-							   <c:if test="${old.key=='M8'}">老年餐桌</c:if>
-							   <c:if test="${old.key=='M9'}">卫生站</c:if>
-							   <c:if test="${old.key=='M10'}">居委会</c:if>
-							   <c:if test="${old.key=='M11'}">社区广播</c:if>
-							   <c:if test="${old.key=='M12'}">急救</c:if>
-							   <c:if test="${old.key=='M13'}">中心号码</c:if>
-							   <c:if test="${old.key=='M14'}">----</c:if>
-							   <c:if test="${old.key=='M15'}">----</c:if>
-							   <c:if test="${old.key=='M16'}">----</c:if>
-							</td>
-							<td><input type="text" id="${old.key}" name="nametext" value="${old.sp.serviceName}"/></td>
-							<td><input type="text" id="${old.key}" name="nametext" value="${old.sp.serviceTell}"/></td>
-
-						</tr>
-					</c:forEach>
-				</tbody>
-
+				<c:forEach items="${sp }" var="sp">
+					<tr>
+						<td><input type='radio' name='typeId' value='${sp.id }'> ${sp.serviceName }</td>
+						<td><input type='hidden' class='serviceId' name='${sp.key }' value='${sp.service.id }'><span>${sp.service.serviceName }</span></td>
+						<td>${sp.service.serviceTell }</td>
+					</tr>
+				</c:forEach>
 				<tr>
-				<input type="hidden" id="useridInput"  value="${hxUserID}"/>
-				<td colspan="2"><input type="button" onclick="hxsubmit()" value="修改"/></td>
-			</tr>
+					<td colspan="2"><input type="button" onclick="hxsubmit()" value="修改" /></td>
+				</tr>
 			</table>
 
-	</form:form>
+		</form:form>
+	</div>
+	<div style="float: right; width: 40%;" id="providers">
+		<div>
+			<form id="providersForm" role="form">
+				<div class="form-group">
+					<label for="serviceName">名称</label> <input type="text" name="serviceName" class="form-control"
+						id="serviceName" placeholder="请输入服务商名称">
+				</div>
+				<a class="btn btn-default" href="#" onclick="serchService()" role="button">搜索</a> <a
+					class="btn btn-default" href="#" onclick="addService()" role="button">添加</a>
+			</form>
+		</div>
+		<br>
+		<div>
+			<form id="serviceListForm">
+				<table class="table table-bordered" id="serviceList">
 
+				</table>
+			</form>
+		</div>
+	</div>
 </div>
 <div>
 
 	<SCRIPT type="text/javascript">
-	function hxsubmit(){
-		var jsonObj = $("input[name='nametext']");
-		var isOK = 1;
-		var json = "[{";
-		for(var i=0;i<jsonObj.length;i++){
-			var myvalue = jsonObj.eq(i).attr("value");
-			var myid = jsonObj.eq(i).attr("id");
-			json = json + "\"" + myid + "\"" ;
-			json = json + ":\"" + myvalue + "\"" ;
+		function hxsubmit ()
+        {
+	        var addForm = $ ("#sService").serialize ();
+	        $.post ("${pageContext.request.contextPath }/old/oldMatch/uploadOldIndividuation.shtml", addForm, 
+       		function (data)
+	        {
+		        alert (data);
+	        });
+        }
 
-			if (myvalue == ""  || myvalue==undefined){
-				isOK = 0;
-				break;
-			}
-			if (i+1 < jsonObj.length){
-				json = json + ",";
-			}
-		};
-		json = json + "}]";
-		if (isOK == 0){
-			alert("请填写完整数据后提交");
-			return;
-		}
-		var id = $("#useridInput").val();
-		$.post("${pageContext.request.contextPath }/old/oldMatch/uploadOldIndividuation.shtml",
-				{id:id,json:json},
-			function(data){
-				alert(data);
-		});
-	}
-</SCRIPT>
+        //搜索服务商
+        function serchService ()
+        {
+	        var streetId = $ ("#street_id").val ();
+	        var serviceList = $ ("#serviceList");
+	        //服务区域
+	        serviceList.empty ();
+	        //话机类型
+	        var serviceId = $ ('input[name="typeId"]:checked').val ();
+	        
+	        //	var serviceId = $("#serviceType").val();
+	        
+	        if (typeof (serviceId) === "undefined")
+	        {
+		        alert ("请选择键位");
+		        return;
+	        }
+	        
+	        $
+	                .post (
+	                        "${pageContext.request.contextPath }/serviceSystem/serchService.shtml",
+	                        {
+	                            serviceId : serviceId,
+	                            streetId : streetId
+	                        },
+	                        function (data)
+	                        {
+		                        serviceList.empty ();
+		                        var idNum = 0;
+		                        serviceList
+		                                .append ("<tr> <th width='70%' style='text-align: center'>服务商名称</th> <th width='30%' style='text-align: center'>服务电话</th> </tr>");
+		                        
+		                        for (var i = 0; i < data.length; i++)
+		                        {
+			                        idNum++;
+			                        serviceList
+			                                .append ("<tr><td><input type='radio' name='providers' value='"+data[i].id+"'> "
+			                                        + data[i].serviceName
+			                                        + "</td><td>"
+			                                        + data[i].serviceTell
+			                                        + "</td></tr>");
+		                        }
+	                        });
+        }
+        //页面修改服务体系
+        function addService ()
+        {
+	        var serviceList = $ ("#serviceList");
+	        if ($ ('input[name="providers"]:checked').length > 0)
+	        {
+		        var spId = $ ('input[name="providers"]:checked').val ();
+		        var spName = $ ('input[name="providers"]:checked').parent ().text ();
+		        var sptell = $ ('input[name="providers"]:checked').parent ().next ().text ();
+		        var td = $ ('input[name="typeId"]:checked').parent ().next ()
+		        var sp = td.children ("span");
+		        sp.text (spName);
+		        td.next ().text (sptell);
+		        td.children ("input.serviceId")[0].value = spId;
+	        }
+	        else
+	        {
+		        alert ("请勾选务商");
+	        }
+	        serviceList.empty ();
+	        
+        }
+	</SCRIPT>
 </div>
 
 

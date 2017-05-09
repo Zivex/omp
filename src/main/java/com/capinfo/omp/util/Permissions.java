@@ -3,11 +3,16 @@ package com.capinfo.omp.util;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.springframework.jdbc.core.JdbcTemplate;
+
 import com.capinfo.common.model.SystemUser;
 import com.capinfo.framework.dao.SearchCriteriaBuilder;
 import com.capinfo.framework.dao.impl.restriction.RestrictionExpression;
 import com.capinfo.framework.service.GeneralService;
+import com.capinfo.omp.model.Omp_Old_Info;
 import com.capinfo.omp.parameter.ServiceSystemParameter;
+import com.capinfo.region.model.OmpRegion;
 
 /**
  * 用户查询权限
@@ -15,7 +20,7 @@ import com.capinfo.omp.parameter.ServiceSystemParameter;
  *
  */
 public class Permissions {
-
+	//封装键位
 	public static Map<String, Long> mapKeys(ServiceSystemParameter p){
 		 Map<String, Long> mapKey = new HashMap<String, Long>();
 			mapKey.put("M1", p.getM1());
@@ -36,67 +41,160 @@ public class Permissions {
 			mapKey.put("M16", p.getM16());
 			return mapKey;
 	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	public static SearchCriteriaBuilder checkPer(SystemUser user,SearchCriteriaBuilder searchCriteriaBuilder,GeneralService generalService){
-		if (user.getLeave() > 1) {
-			if("g".equals(user.getAccount_type())){
-				
-				
-				
-			String ids = "";
-			serchG(user, searchCriteriaBuilder, generalService, ids);
-			System.out.println(ids);
-			}else if("m".equals(user.getAccount_type()) || "b".equals(user.getAccount_type())){
-				String ji = "";
-				Integer uJi=0;
-				switch (user.getLeave()) {
-				case 2:
-					ji = "yiji";
-					break;
-				case 3:
-					ji = "erji";
-					break;
-				case 4:
-					ji = "sjji";
-					break;
-				case 5:
-					ji = "siji";
-					break;
-				}
-				searchCriteriaBuilder.addQueryCondition(ji,
-						RestrictionExpression.EQUALS_OP, ji);
-				}
+	
+	//查询市
+	public static List<OmpRegion> queryCounty(long id ,GeneralService g) {
+		SearchCriteriaBuilder<OmpRegion> searchCriteriaBuilder = new SearchCriteriaBuilder<OmpRegion>(OmpRegion.class);
+		String sql ="";
+		if(id==0L){
+			sql= " USE_FLAG=1 and LEVELID=2  ";
+		}else {
+			sql=" USE_FLAG=1 and PARENTID="+id;
 		}
-		List<SystemUser> userList = generalService.getObjects(searchCriteriaBuilder.build());
-		return searchCriteriaBuilder;
+		if (!"".equals(sql)) {
+			searchCriteriaBuilder.addAdditionalRestrictionSql(sql);
+		}
+		searchCriteriaBuilder.addOrderCondition("id", "ASC");
+		List<OmpRegion> list = g.getObjects(searchCriteriaBuilder.build());
+		return list;
 	}
-
-	//用户id查询用户(政府)
-	public static String serchG(SystemUser user,SearchCriteriaBuilder<?> sb,GeneralService generalService,String ids){
-		ids+=user.getRid()+",";
-		sb.addQueryCondition("parentid", RestrictionExpression.EQUALS_OP,user.getRid());
-		List<SystemUser> users = generalService.getObjects(sb.build());
-		for (SystemUser systemUser : users) {
-			if(users.size()==0){
-				break;
+	
+	
+	/**
+	 * 老人匹配指令
+	 * @param old
+	 * @param jdbcTemplate
+	 */
+	public static void addOmpOldOrderInfo(Omp_Old_Info old ,JdbcTemplate jdbcTemplate) {
+		List<Map<String, Object>> alllist = null;
+		String errormessage = "";
+		//查询用户设置的指令是否存在
+		String sssql = "select count(*) from sys_key ss where ss.tellType_id="
+				+ old.getTeltype() + " and ss.uid=" + old.getAgent_id()
+				+ " and  ss.user_falg=1;";
+		Long id = jdbcTemplate.queryForLong(sssql);
+		
+		if (id == 0) {	//不存在 查询老人所在公共服务体系
+			String sqlsp = "select ok.`key`, ss.key_state,sp.serviceName,sp.serviceTell from sys_key sk left JOIN service_system ss on ss.skid = sk.id LEFT JOIN service_provider sp on sp.id = ss.sp_id left join omp_key ok on ok.id=ss.key_state where sk.community_id="
+					+ old.getHousehold_community_id()
+					+ " and sk.telltype_id="
+					+ old.getTeltype();
+			alllist = jdbcTemplate.queryForList(sqlsp);
+			if (alllist.size() == 0) {
+				errormessage = "没有公共服务体系";
+				System.out.println(errormessage);
 			}
-			serchG(systemUser, sb,  generalService, ids);
+		} else {
+			String sidsql = "select ss.id from sys_key ss where ss.tellType_id="
+					+ old.getTeltype()
+					+ " and ss.uid="
+					+ old.getAgent_id()
+					+ " and  ss.user_falg=1;";
+			Long ssid = jdbcTemplate.queryForLong(sidsql);
+			String sql = "SELECT t.key_state,st.id stid, k.`key`, p.serviceName, p.serviceTell, t.sp_id, st.serviceName tname FROM service_system t LEFT JOIN omp_key k ON t.key_state = k.id LEFT JOIN omp_service_type st ON k.stId = st.id LEFT JOIN service_provider p ON t.sp_id = p.id where t.skid="
+					+ ssid;
+
+			List<Map<String, Object>> list = jdbcTemplate.queryForList(sql);
+
+			String sqlallss = "select k.id, k.`key`,st.serviceName from omp_key k INNER JOIN omp_phone_type t on k.pyId = t.id INNER JOIN omp_service_type st on st.id = k.stId where k.pyId="
+					+ old.getTeltype();
+
+			alllist = jdbcTemplate.queryForList(sqlallss);
+
+			for (Map<String, Object> mapAll : alllist) {
+				mapAll.put("sp_id", 0);
+				for (Map<String, Object> map : list) {
+					if (mapAll.get("key").equals(map.get("key"))) {
+						mapAll.put("serviceTell", map.get("serviceTell"));
+						mapAll.put("sp_id", map.get("sp_id"));
+					}
+				}
+			}
+			for (Map<String, Object> map : alllist) {
+				Integer spid = (Integer) map.get("sp_id");
+				if (spid == null || spid == 0) {
+					String sqlsp = "select ss.key_state,sp.serviceName,sp.serviceTell from sys_key sk left JOIN service_system ss on ss.skid = sk.id LEFT JOIN service_provider sp on sp.id = ss.sp_id where sk.community_id="
+							+ old.getHousehold_community_id()
+							+ " and sk.telltype_id="
+							+ old.getTeltype()
+							+ " and sk.uid=1 and ss.key_state=" + map.get("id");
+					List<Map<String, Object>> list2 = jdbcTemplate
+							.queryForList(sqlsp);
+					if (list2.size() == 0) {
+						map.put("serviceTell", "96003");
+					} else {
+						map.put("serviceTell", list2.get(0).get("serviceTell")); // json数据
+					}
+				}
+
+			}
 		}
-		return ids;
+		String json = "";
+		String sjson = "";
+		json += "[{";
+		sjson += "[{";
+		for (int i = 1; i < 17; i++) {
+			String m = "M" + i;
+			String mm = "m" + i;
+			json += "\"" + m + "\":";
+			sjson += "\"" + mm + "\":";
+			for (Map<String, Object> map : alllist) {
+				if (map.get("key").equals(m)) {
+					String serviceTell = map.get("serviceTell") + "";
+					String sp_id = map.get("sp_id") + "";
+					json += "\"" + serviceTell + "\",";
+					sjson += "\"" + sp_id + "\",";
+				}
+			}
+		}
+		json = json.substring(0, json.length() - 1);
+		sjson = sjson.substring(0, sjson.length() - 1);
+		json += "}]";
+		sjson += "}]";
+
+		System.out.println(json);
+
+		String sql = "INSERT INTO omp_old_order ("
+				+ "oldId, phoneName, communityOrderId, keyPointMessage,k_and_sp_id)"
+				+ "  select t.ID,t.TELTYPE,t.HOUSEHOLD_COMMUNITY_ID,'" + json
+				+ "','"+sjson+"' from omp_old_info t WHERE t.ID = " + old.getId();
+		jdbcTemplate.update(sql);
 	}
+
+
+/**
+ * 查询所拥有的服务体系
+ * @param user
+ * @param stId
+ * @return
+ */
+	public static List<Map<String, Object>> getQueryarchitecture(SystemUser user,
+			Long stId,JdbcTemplate jdbcTemplate) {
+		String conditions = "";
+		if ("m".equals(user.getAccount_type())
+				|| "b".equals(user.getAccount_type())) {
+			conditions += " and k.other=1";
+		} else if ("g".equals(user.getAccount_type())) {
+			conditions += " and k.government=1";
+		}
+
+		String sql = "select st.id, k.`key`,st.serviceName from omp_key k INNER JOIN omp_phone_type t on k.pyId = t.id INNER JOIN omp_service_type st on st.id = k.stId where k.pyId="
+				+ stId + conditions;
+		List<Map<String, Object>> list = jdbcTemplate.queryForList(sql);
+		return list;
+
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

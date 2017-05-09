@@ -14,7 +14,6 @@ import com.capinfo.omp.parameter.ServiceSystemParameter;
 
 public interface ServiceSystemService extends CommonsDataOperationService<Enterprise, EnterpriseParameter>  {
 
-	public List<Map<String, Object>> getQueryarchitecture(SystemUser user, Long stId);
 
 	public List<Map<String, Object>> serchService(ServiceProviderParameter parameter,SystemUser user);
 

@@ -2,6 +2,7 @@ package com.capinfo.omp.controller;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -19,6 +20,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.hibernate.id.IdentityGenerator.GetGeneratedKeysDelegate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
@@ -41,11 +43,13 @@ import com.capinfo.omp.parameter.CompositionParameter;
 import com.capinfo.omp.parameter.Ksp_id;
 import com.capinfo.omp.parameter.OldParameter;
 import com.capinfo.omp.service.OldService;
+import com.capinfo.omp.util.Permissions;
 import com.capinfo.omp.utils.JsonUtil;
 import com.capinfo.omp.utils.Page;
 import com.capinfo.omp.utils.excel.ExcelBuilder;
 import com.capinfo.omp.utils.excel.ExportUtils;
 import com.capinfo.omp.ws.client.ClientGetLandNumberService;
+import com.capinfo.region.model.OmpRegion;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -72,7 +76,6 @@ public class OldForController {
 	private GeneralService generalService;
 
 	@RequestMapping("/oldMatch/list.shtml")
-	
 	public ModelAndView list(@ModelAttribute("eccomm_admin") SystemUser user,
 			OldParameter parameter) {
 		ModelAndView mv = new ModelAndView("/omp/old/initial");
@@ -109,12 +112,12 @@ public class OldForController {
 
 	public void getList(ModelAndView mv, OldParameter parameter, SystemUser user) {
 
-
 		int count = oldService.getCount(parameter, user);
-		
+
 		// count = count == 0 ? 1 : count;
-		List<Omp_Old_Info> entities = oldService.getOldContextList(parameter, user);
-		
+		List<Omp_Old_Info> entities = oldService.getOldContextList(parameter,
+				user);
+
 		mv.addObject("dataList", entities);
 		mv.addObject("count", count);
 		mv.addObject("command", parameter);
@@ -157,22 +160,12 @@ public class OldForController {
 					enb++;
 				} else {
 					nb++;
-					// 通过座机号，身份证号判断是否存在老人 1大座机号已存在 2身份证号已存在 0不存在
 					int t = oldService.checkOldIsHave(ompOldInfo.getZjnumber(),
 							ompOldInfo.getCertificates_number());
-					// if (t == 3) {
-					// errorstr = errorstr + "第" + nb + "行:身份证号和大座机号重复 \n";
-					// enb++;
-					//
-					// } else
-					if (t == 1) {
+					if (t > 0) {
 						errorstr = errorstr + "第" + nb + "行:大座机号重复 \n ";
 						enb++;
 					}
-					// else if (t == 2) {
-					// errorstr = errorstr + "第" + nb + "行:身份证号重复 \n";
-					// enb++;
-					// }
 					if (enb == 0) {
 						linkNbr = ompOldInfo.getZjnumber();
 						// 判断
@@ -342,18 +335,6 @@ public class OldForController {
 			Map<String, Object> mapPreson = person.get(0);
 			mv.addObject("mapPreson", mapPreson);
 		}
-		//
-		//
-		//
-		// List<Map<String, Object>> list = oldService.getOldById(id);
-		// Map<String, Object> map = list.get(0);
-		// List<Map<String, Object>> person = oldService.getPerson(cardId);
-		// if (person.size() != 0) {
-		// Map<String, Object> mapPreson = person.get(0);
-		// mv.addObject("mapPreson", mapPreson);
-		// }
-		// Map Region = oldService.getRegionList(map);
-		// mv.addObject("Region", Region);
 		mv.addObject("detaMap", old);
 		return mv;
 	}
@@ -367,30 +348,31 @@ public class OldForController {
 	@SuppressWarnings("rawtypes")
 	@RequestMapping("/oldMatch/oldinfo.shtml")
 	@ResponseBody
-	public ModelAndView oldinfo(String oid,@ModelAttribute("eccomm_admin") SystemUser user) {
+	public ModelAndView oldinfo(String oid,
+			@ModelAttribute("eccomm_admin") SystemUser user) {
 		ModelAndView mv = new ModelAndView("/omp/old/oldInfo");
 		ArrayList arrayList = new ArrayList<>();
 		List<Map<String, Object>> list = oldService.getOldById1(oid);
 		// 判断是否老人已经设置指令了
-		List<Map<String,Object>> sp = new ArrayList<Map<String,Object>>();
+		List<Map<String, Object>> sp = new ArrayList<Map<String, Object>>();
 		Map<String, Object> map = list.get(0);
 		if (list.size() > 0 && list.get(0).get("ksp_id") != null) {
-			String ksp_idJsom = map.get("ksp_id")+"";
-			JSONArray json = JSONArray.fromObject(ksp_idJsom ); 
+			String ksp_idJsom = map.get("ksp_id") + "";
+			JSONArray json = JSONArray.fromObject(ksp_idJsom);
 			System.out.println(json.get(0));
-			JSONObject o=JSONObject.fromObject(json.get(0));
-			Ksp_id kd=(Ksp_id)JSONObject.toBean(o, Ksp_id.class);
+			JSONObject o = JSONObject.fromObject(json.get(0));
+			Ksp_id kd = (Ksp_id) JSONObject.toBean(o, Ksp_id.class);
 			System.out.println(kd);
 			sp = kd.getSp(generalService);
-			if(user.getId()>1){
+			if (user.getId() > 1) {
 				sp.remove(15);
 				sp.remove(14);
 				sp.remove(13);
 				sp.remove(12);
 				sp.remove(10);
 			}
-			mv.addObject("sp",sp);
-			
+			mv.addObject("sp", sp);
+
 		}
 
 		mv.addObject("arrayList", list);
@@ -408,57 +390,43 @@ public class OldForController {
 	 */
 	@RequestMapping("/oldMatch/ompKeyModify.shtml")
 	@ResponseBody
-	public ModelAndView ompKeyModify(String id, String typeid) {
+	public ModelAndView ompKeyModify(String oid, String typeid,
+			@ModelAttribute("eccomm_admin") SystemUser user) {
 		ModelAndView mv = new ModelAndView("/omp/old/ompKeyModify");
 		ArrayList arrayList = new ArrayList<>();
 		// List<Map<String,Object>> Region = oldService.getOldById(id);
 
 		List<Map<String, Object>> Infolist = oldService
-				.getOldKeyPointMessage(id);
-		List<Map<String, Object>> list = oldService.getOldById1(id);
-		
+				.getOldKeyPointMessage(oid);
+		List<Map<String, Object>> list = oldService.getOldById1(oid);
+
 		// 判断是否老人已经设置指令了
-		List<Map<String,Object>> sp = new ArrayList<Map<String,Object>>();
+		List<Map<String, Object>> sp = new ArrayList<Map<String, Object>>();
 		Map<String, Object> map = list.get(0);
 		if (list.size() > 0 && list.get(0).get("ksp_id") != null) {
-			String ksp_idJsom = map.get("ksp_id")+"";
-			JSONArray json = JSONArray.fromObject(ksp_idJsom ); 
+			String ksp_idJsom = map.get("ksp_id") + "";
+			JSONArray json = JSONArray.fromObject(ksp_idJsom);
 			System.out.println(json.get(0));
-			JSONObject o=JSONObject.fromObject(json.get(0));
-			Ksp_id kd=(Ksp_id)JSONObject.toBean(o, Ksp_id.class);
+			JSONObject o = JSONObject.fromObject(json.get(0));
+			Ksp_id kd = (Ksp_id) JSONObject.toBean(o, Ksp_id.class);
 			System.out.println(kd);
 			sp = kd.getSp(generalService);
-			mv.addObject("sp",sp);
-			
-		}
-		
-		
+			List<Map<String, Object>> ssNull = Permissions.getQueryarchitecture(
+					user, Long.parseLong(typeid), jdbcTemplate);
+			for (Map<String, Object> m1 : ssNull) {
+				
+				for (Map<String, Object> m2 : sp) {
+					if(m1.get("key").equals(m2.get("key"))){
+						m1.put("service", m2.get("sp"));
+					}
+				}
+			}
+			mv.addObject("sp", ssNull);
 
-		// 判断是否老人已经设置指令了
-//		if (list.size() > 0 && list.get(0).get("Kp") != null) {
-//			Map<String, Object> map = list.get(0);
-//			Map Region = oldService.getRegionList1(map);
-//			String kpLiString = (String) map.get("Kp");
-//			if (kpLiString != null && !"".equals(kpLiString)) {
-//				JSONObject jsonObject = JsonUtil.getJson(kpLiString);
-//				JSONArray json1 = JsonUtil.getJson1(jsonObject);
-//				if (json1.size() > 0) {
-//					for (int i = 0; i < json1.size(); i++) {
-//						JSONObject job = json1.getJSONObject(i); // 遍历
-//																	// jsonarray//
-//																	// 数组，把每一个对象转成//
-//																	// json 对象
-//						arrayList.add(job);
-//					}
-//				}
-//			}
-//
-//			mv.addObject("detaMap", arrayList);
-//			mv.addObject("hxUserID", id);
-//		}
+		}
 
 		mv.addObject("detaMap", arrayList);
-		mv.addObject("hxUserID", id);
+		mv.addObject("hxUserID", oid);
 		return mv;
 	}
 
@@ -467,18 +435,54 @@ public class OldForController {
 	 * 
 	 * @param id
 	 * @return
+	 * @throws IllegalAccessException 
+	 * @throws IllegalArgumentException 
 	 */
 	@RequestMapping("/oldMatch/uploadOldIndividuation.shtml")
 	@ResponseBody
-	public String uploadOldIndividuation(String id, String json) {
-		Boolean isUpdateBoolean = oldService.uploadOldIndividuation(id, json);
+	public String uploadOldIndividuation(String oid,Ksp_id ksp) throws IllegalArgumentException, IllegalAccessException {
+		System.out.println(ksp.toString());
+		List<Map<String, Object>> list = oldService.getOldById1(oid);
+		Map<String, Object> map = list.get(0);
+		String ksp_idJsom = map.get("ksp_id") + "";
+		JSONArray jsonOld = JSONArray.fromObject(ksp_idJsom);
+		JSONObject o = JSONObject.fromObject(jsonOld.get(0));
+		Ksp_id kd = (Ksp_id) JSONObject.toBean(o, Ksp_id.class);
+		  Class cls1 = ksp.getClass();  
+		  Class cls2 = kd.getClass();  
+	        Field[] fields1 = cls1.getDeclaredFields();  
+	        Field[] fields2 = cls2.getDeclaredFields();  
+	        for(int i=0; i<fields1.length; i++){  
+	            Field f1 = fields1[i];  
+	            Field f2 = fields2[i];  
+	            f1.setAccessible(true);  
+	            f2.setAccessible(true);  
+	            if(f1.get(ksp)==null){
+	            	f1.set(ksp, f2.get(kd));
+	            }
+	        }  
+	        System.out.println(ksp.toString());
+	        Boolean isUpdateBoolean = oldService.uploadOldIndividuation(oid, ksp.toString());
+	        List<Map<String, Object>> jsonMap = kd.getSp(generalService);
+	        String json = "";
+	        json += "[{";
+	        for (Map<String, Object> m: jsonMap) {
+				String key = m.get("key")+"";
+				ServiceProvider sp = (ServiceProvider) m.get("sp");
+				String serviceTell = "";
+				if(sp != null){
+					serviceTell = sp.getServiceTell();
+				}else{
+					serviceTell = "96003";
+				}
+				json += "\"" + key + "\":";
+				json += "\"" + serviceTell + "\",";
+			}
+			json = json.substring(0, json.length() - 1);
+			json += "}]";
+	        System.out.println(json);
 		if (isUpdateBoolean) {
-
 			return "修改成功！";
-		}
-		boolean newBl = oldService.addOmpOldOrderInfo(id, json);
-		if (newBl) {
-			return "添加成功！";
 		}
 		return "修改失败，请稍后尝试！";
 	}
@@ -491,11 +495,10 @@ public class OldForController {
 	 */
 	@SuppressWarnings("deprecation")
 	@RequestMapping("/oldMatch/updete.shtml")
-	public String updete(HttpServletRequest request, 
-			OldParameter parameter,
+	public String updete(HttpServletRequest request, OldParameter parameter,
 			@ModelAttribute("eccomm_admin") SystemUser user) {
 		Omp_Old_Info old = parameter.getEntity();
-		
+
 		String county = parameter.getCounty();
 		String street = parameter.getStreet();
 		String community = parameter.getCommunity();
@@ -543,6 +546,7 @@ public class OldForController {
 		List<Map<String, Object>> list = oldService.getRegionById(id);
 		return list;
 	}
+
 	/**
 	 * 查询政府单位所在区域
 	 * 
@@ -684,6 +688,57 @@ public class OldForController {
 		}
 		;
 
+	}
+
+	/**
+	 * 跳转添加老人页面
+	 * 
+	 * @param user
+	 * @param parameter
+	 * @return
+	 */
+	@RequestMapping("/oldMatch/oldToAdd.shtml")
+	@ResponseBody
+	public ModelAndView oldToAdd(
+			@ModelAttribute("eccomm_admin") SystemUser user,
+			OldParameter parameter) {
+		ModelAndView mv = new ModelAndView("/omp/old/oldAdd");
+		// 获取市
+		List<OmpRegion> citys = Permissions.queryCounty(0L, generalService);
+		// oldService.saveLogger("2", "老人信息表", "lixing", "1");
+		mv.addObject("command", parameter);
+		mv.addObject("citys", citys);
+		return mv;
+	}
+
+	/**
+	 * 录入老人
+	 * 
+	 * @param user
+	 * @param parameter
+	 * @return
+	 */
+	@RequestMapping("/oldMatch/oldAdd.shtml")
+	@ResponseBody
+	public String oldAdd(@ModelAttribute("eccomm_admin") SystemUser user,
+			OldParameter parameter) {
+		String errorstr = "";
+		Omp_Old_Info ompOldInfo = parameter.getEntity();
+		int t = oldService.checkOldIsHave(ompOldInfo.getZjnumber(),
+				ompOldInfo.getCertificates_number());
+		if (t > 0) {
+			errorstr = "大座机号重复 \n 添加失败";
+		} else {
+			errorstr = "添加成功";
+			String linkNbr = ompOldInfo.getZjnumber();
+			// 判断
+			String num = linkNbr.substring(0, 3);
+			if ("010".equals(num)) {
+				ompOldInfo.setZjnumber(linkNbr.substring(3));
+			}
+			oldService.addOld(ompOldInfo, user);
+		}
+		return errorstr;
 	}
 
 }

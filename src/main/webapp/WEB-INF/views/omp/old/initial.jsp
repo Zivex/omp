@@ -37,6 +37,8 @@
 					</div>
 					<div class="header-underline"></div>
 					<div id="displayDiv">
+					<a role="button" class="btn btn-primary"
+									onclick="addOldPerson()">老人录入</a>
 						<div class="operatorDiv">
 							<c:url var="queryForm" value="/old/oldMatch/listtoo.shtml" />
 							<form:form id="command" role="form" class="form-inline" action="${queryForm}" method="post">
@@ -226,7 +228,7 @@
 		}
 		function ompKeyModify(id,typeid){
 			$.post("${pageContext.request.contextPath}/old/oldMatch/ompKeyModify.shtml",
-					{id:id, typeid:typeid},
+					{oid:id, typeid:typeid},
 					function(data){
 				$("#displayDiv1").html(data);
 				$("#backButton").show();
@@ -342,7 +344,24 @@
 	                
 	                </c:if>
                 });
-        
+		
+		
+		function addOldPerson(id,typeid){
+			$.post("${pageContext.request.contextPath}/old/oldMatch/oldToAdd.shtml",
+					{},
+					function(data){
+						
+				$("#displayDiv1").html(data);
+				$("#backButton").show();
+				$("#displayDiv").hide();
+				$("#displayDiv1").show();
+			});
+		}
+		
+		
+		
+		
+		
         function hxBackClick ()
         {
 	        $ ("#displayDiv1").hide ();

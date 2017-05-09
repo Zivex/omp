@@ -75,7 +75,7 @@
 											<li><a href="###" onclick="deleteUser(${old.id},this);">删除</a></li>
 										</c:if>
 										<li><a onclick="see('${old.certificates_number}',${old.id})">查看</a></li>
-										<li><a onclick="ompKeyModify(${old.id} )">指令个性化</a></li>
+										<li><a onclick="ompKeyModify(${old.id},${old.teltype} )">指令个性化</a></li>
 									</ul>
 								</div>
 							</td>
@@ -107,7 +107,7 @@
 
 
 <!-- Script	-->
-<SCRIPT type="text/javascript">
+<script type="text/javascript">
 
 	/**
 	* 删除用户
@@ -145,4 +145,4 @@
 		$("#pageSizes").val(num.value);
 	}
 
-</SCRIPT>
+</script>

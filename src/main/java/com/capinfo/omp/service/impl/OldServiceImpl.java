@@ -29,6 +29,7 @@ import com.capinfo.omp.model.ServiceProvider;
 import com.capinfo.omp.parameter.Ksp_id;
 import com.capinfo.omp.parameter.OldParameter;
 import com.capinfo.omp.service.OldService;
+import com.capinfo.omp.util.Permissions;
 import com.capinfo.omp.utils.Page;
 import com.capinfo.omp.utils.excel.ColFooterCell;
 import com.capinfo.omp.utils.excel.ColHeaderCell;
@@ -86,7 +87,10 @@ public class OldServiceImpl extends
 		Long autoIncId = ompOldInfo.getId();
 
 		if (autoIncId > 0) {
-			addOmpOldOrderInfo(ompOldInfo);
+			
+			Permissions.addOmpOldOrderInfo(ompOldInfo, jdbcTemplate);
+			
+			//addOmpOldOrderInfo(ompOldInfo);
 			// addOldKeyInfo(ompOldInfo, autoIncId);
 		}
 
@@ -243,7 +247,7 @@ public class OldServiceImpl extends
 		// "SELECT I.*,R. NAME SNAM FROM OMP_OLD_INFO i, OMP_REGION r WHERE I.STATE = 1 AND I.HOUSEHOLD_COMMUNITY_ID = R.ID AND i.ID = "
 		// + id;
 		// List<Map<String, Object>> list = jdbcTemplate.queryForList(sql);
-		String sql = "SELECT I.*,o.k_and_sp_id ksp_id, R.NAME SNAME FROM OMP_OLD_INFO i,OMP_REGION r,omp_old_order o WHERE I.STATE = 1 AND I.HOUSEHOLD_COMMUNITY_ID = R.ID AND o.oldId= i.ID AND i.ID = "
+		String sql = "SELECT o.k_and_sp_id ksp_id, R.NAME SNAME FROM OMP_OLD_INFO i,OMP_REGION r,omp_old_order o WHERE I.STATE = 1 AND I.HOUSEHOLD_COMMUNITY_ID = R.ID AND o.oldId= i.ID AND i.ID = "
 				+ id;
 		List<Map<String, Object>> list = jdbcTemplate.queryForList(sql);
 //		String sql = "SELECT I.*,o.keyPointMessage Kp, R.NAME SNAME FROM OMP_OLD_INFO i,OMP_REGION r,omp_old_order o WHERE I.STATE = 1 AND I.HOUSEHOLD_COMMUNITY_ID = R.ID AND o.oldId= i.ID AND i.ID = "
@@ -383,13 +387,13 @@ public class OldServiceImpl extends
 	}
 
 	@Override
-	public Boolean uploadOldIndividuation(String id, String json) {
-		String sql = "update omp_old_order set keyPointMessage = '" + json
+	public Boolean uploadOldIndividuation(String id, String sjson) {
+		String sql = "update omp_old_order set k_and_sp_id = '" + sjson
 				+ "', send_flag = 2 ,execute_flag = 3  where oldId = " + id;
 		int update = jdbcTemplate.update(sql);
 		System.out.println("指令修改");
 		if (update > 0) {
-			setOldisIndividuation(id, 1);
+			setOldisIndividuation(id, 1); 	//指令个性化
 		}
 		return (update == 1);
 	}
@@ -1556,7 +1560,7 @@ public class OldServiceImpl extends
 			OldParameter parameter, SystemUser user) {
 		// 名字
 		searchCriteriaBuilder.addQueryCondition("name",
-				RestrictionExpression.EQUALS_OP, parameter.getName());
+				RestrictionExpression.LIKE_OP, parameter.getName());
 		searchCriteriaBuilder.addQueryCondition("certificates_number",
 				RestrictionExpression.EQUALS_OP, parameter.getIdCard());
 		searchCriteriaBuilder.addQueryCondition("zjnumber",
@@ -1669,99 +1673,5 @@ public class OldServiceImpl extends
 		return i;
 	}
 
-	// 匹配老人体系
-	@SuppressWarnings("deprecation")
-	public void addOmpOldOrderInfo(Omp_Old_Info old) {
-		List<Map<String, Object>> alllist = null;
-		String errormessage = "";
-		String sssql = "select count(*) from sys_key ss where ss.tellType_id="
-				+ old.getTeltype() + " and ss.uid=" + old.getAgent_id()
-				+ " and  ss.user_falg=1;";
-		Long id = jdbcTemplate.queryForLong(sssql);
-		if (id == 0) {
-			String sqlsp = "select ok.`key`, ss.key_state,sp.serviceName,sp.serviceTell from sys_key sk left JOIN service_system ss on ss.skid = sk.id LEFT JOIN service_provider sp on sp.id = ss.sp_id left join omp_key ok on ok.id=ss.key_state where sk.community_id="
-					+ old.getHousehold_community_id()
-					+ " and sk.telltype_id="
-					+ old.getTeltype();
-			alllist = jdbcTemplate.queryForList(sqlsp);
-			if (alllist.size() == 0) {
-				errormessage = "没有公共服务体系";
-			}
-		} else {
-			String sidsql = "select ss.id from sys_key ss where ss.tellType_id="
-					+ old.getTeltype()
-					+ " and ss.uid="
-					+ old.getAgent_id()
-					+ " and  ss.user_falg=1;";
-			Long ssid = jdbcTemplate.queryForLong(sidsql);
-			String sql = "SELECT t.key_state,st.id stid, k.`key`, p.serviceName, p.serviceTell, t.sp_id, st.serviceName tname FROM service_system t LEFT JOIN omp_key k ON t.key_state = k.id LEFT JOIN omp_service_type st ON k.stId = st.id LEFT JOIN service_provider p ON t.sp_id = p.id where t.skid="
-					+ ssid;
-
-			List<Map<String, Object>> list = jdbcTemplate.queryForList(sql);
-
-			String sqlallss = "select k.id, k.`key`,st.serviceName from omp_key k INNER JOIN omp_phone_type t on k.pyId = t.id INNER JOIN omp_service_type st on st.id = k.stId where k.pyId="
-					+ old.getTeltype();
-
-			alllist = jdbcTemplate.queryForList(sqlallss);
-
-			for (Map<String, Object> mapAll : alllist) {
-				mapAll.put("sp_id", 0);
-				for (Map<String, Object> map : list) {
-					if (mapAll.get("key").equals(map.get("key"))) {
-						mapAll.put("serviceTell", map.get("serviceTell"));
-						mapAll.put("sp_id", map.get("sp_id"));
-					}
-				}
-			}
-			for (Map<String, Object> map : alllist) {
-				Integer spid = (Integer) map.get("sp_id");
-				if (spid == null || spid == 0) {
-					String sqlsp = "select ss.key_state,sp.serviceName,sp.serviceTell from sys_key sk left JOIN service_system ss on ss.skid = sk.id LEFT JOIN service_provider sp on sp.id = ss.sp_id where sk.community_id="
-							+ old.getHousehold_community_id()
-							+ " and sk.telltype_id="
-							+ old.getTeltype()
-							+ " and sk.uid=1 and ss.key_state=" + map.get("id");
-					List<Map<String, Object>> list2 = jdbcTemplate
-							.queryForList(sqlsp);
-					if (list2.size() == 0) {
-						map.put("serviceTell", "96003");
-					} else {
-						map.put("serviceTell", list2.get(0).get("serviceTell")); // json数据
-					}
-				}
-
-			}
-		}
-		String json = "";
-		String sjson = "";
-		json += "[{";
-		sjson += "[{";
-		for (int i = 1; i < 17; i++) {
-			String m = "M" + i;
-			String mm = "m" + i;
-			json += "\"" + m + "\":";
-			sjson += "\"" + mm + "\":";
-			for (Map<String, Object> map : alllist) {
-				if (map.get("key").equals(m)) {
-					String serviceTell = map.get("serviceTell") + "";
-					String sp_id = map.get("sp_id") + "";
-					json += "\"" + serviceTell + "\",";
-					sjson += "\"" + sp_id + "\",";
-				}
-			}
-		}
-		json = json.substring(0, json.length() - 1);
-		sjson = sjson.substring(0, sjson.length() - 1);
-		json += "}]";
-		sjson += "}]";
-
-		System.out.println(json);
-
-		String sql = "INSERT INTO omp_old_order ("
-				+ "oldId, phoneName, communityOrderId, keyPointMessage,k_and_sp_id)"
-				+ "  select t.ID,t.TELTYPE,t.HOUSEHOLD_COMMUNITY_ID,'" + json
-				+ "','"+sjson+"' from omp_old_info t WHERE t.ID = " + old.getId();
-		jdbcTemplate.update(sql);
-	}
 
 }

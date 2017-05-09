@@ -26,7 +26,9 @@
 				<div>
 					<div class="page-header">
 						<h1>
-							<i class="fa fa-user fa-fw"></i>用户管理&nbsp;<a href='<c:url value="/admin/sys/user/initial.shtml"/>' role="button" class="btn btn-sm btn-default">返回</a>
+							<i class="fa fa-user fa-fw"></i>用户管理&nbsp;<a
+								href='<c:url value="/admin/sys/user/initial.shtml"/>' role="button"
+								class="btn btn-sm btn-default">返回</a>
 						</h1>
 					</div>
 					<div class="header-underline"></div>
@@ -38,86 +40,92 @@
 								<div class="form-group">
 									<label for="entity.name" class="col-md-2 control-label">名&emsp;&emsp;称: </label>
 									<div class="col-md-4">
-										<form:input path="entity.name" class="form-control" data-rule-required="true" data-rule-maxlength="100" data-rule-userName="true" placeholder="名称" />
+										<form:input path="entity.name" class="form-control" data-rule-required="true"
+											data-rule-maxlength="100" data-rule-userName="true" placeholder="名称" />
 									</div>
 								</div>
 								<div class="form-group">
 									<label for="entity.logonName" class="col-md-2 control-label">登&ensp;录&ensp;名: </label>
 									<div class="col-md-4">
-										<form:input path="entity.logonName" class="form-control" data-rule-required="true" data-rule-minlength="3" data-rule-maxlength="20" data-rule-logonName="true" placeholder="登录名为3-20个字符,可由英文、数字组成" />
+										<form:input path="entity.logonName" class="form-control" data-rule-required="true"
+											data-rule-minlength="3" data-rule-maxlength="20" data-rule-logonName="true"
+											placeholder="登录名为3-20个字符,可由英文、数字组成" />
 									</div>
 								</div>
 								<div class="form-group">
 									<label for="entity.password" class="col-md-2 control-label">密&emsp;&emsp;码: </label>
 									<div class="col-md-4">
-										<form:password path="entity.password" id="password" class="form-control" data-rule-required="true" data-rule-minlength="6" data-rule-maxlength="20" placeholder="密码为6-20个字符,可由英文、数字及符号组成" />
+										<form:password path="entity.password" id="password" class="form-control"
+											data-rule-required="true" data-rule-minlength="6" data-rule-maxlength="20"
+											placeholder="密码为6-20个字符,可由英文、数字及符号组成" />
 									</div>
 								</div>
 								<div class="form-group">
 									<label for="repassword" class="col-md-2 control-label">确认密码: </label>
 									<div class="col-md-4">
-										<input type="password" id="repassword" class="form-control" data-rule-required="true" data-rule-equalTo="#password" data-msg-equalTo="两次输入密码不一致" placeholder="确认密码" />
+										<input type="password" id="repassword" class="form-control" data-rule-required="true"
+											data-rule-equalTo="#password" data-msg-equalTo="两次输入密码不一致" placeholder="确认密码" />
 									</div>
 								</div>
 
 								<div class="form-group">
 									<label for="entity.roles" class="col-md-2 control-label">分配角色: </label>
 									<div class="col-md-4">
-										<form:select path="entity.roles" multiple="true" class="col-md-4 form-control">
+										<form:select path="entity.roles" multiple="true" class="col-md-4 form-control"
+											data-rule-required="true">
 											<form:options items="${roleList}" itemLabel="name" itemValue="id" />
 										</form:select>
 									</div>
 								</div>
-								<div class="form-group">
 									<label for=entity.display_all class="col-md-2 control-label">是否显示全部信息: </label>
-									<div class="form-inline">
-										<div class="col-md-4">
-											 <label >
-												<form:radiobutton path="entity.display_all" value="1"  />	是 </label>
-											 <label>
-								 				 <form:radiobutton path="entity.display_all" value="0"  />	否</label>
-										</div>
-									
-								  </div>
+								<div class="form-group">
+									<div class="col-md-4">
+										<label> <form:radiobutton path="entity.display_all" value="1"
+												data-rule-required="true" /> 是
+										</label> 
+										<label> <form:radiobutton path="entity.display_all" value="0" /> 否
+										</label>
+
+									</div>
 								</div>
 
 								<div class="form-group">
 									<c:if test="${sessionScope.eccomm_admin.account_type ==  'b'}">
 										<label class="col-md-2 control-label"> <form:radiobutton
 												path="entity.account_type" value="b"
-												onclick="addSystem(${sessionScope.eccomm_admin.id})" /> 银行
+												onclick="addSystem(${sessionScope.eccomm_admin.id})" data-rule-required="true" /> 银行
 										</label>
 									</c:if>
 									<c:if test="${sessionScope.eccomm_admin.account_type ==  'm'}">
 										<label class="col-md-2 control-label"> <form:radiobutton
 												path="entity.account_type" value="m"
-												onclick="addSystem(${sessionScope.eccomm_admin.id})" /> 商户
+												onclick="addSystem(${sessionScope.eccomm_admin.id})" data-rule-required="true" /> 商户
 										</label>
 									</c:if>
 									<c:if test="${sessionScope.eccomm_admin.logonName ==  'admin'}">
 										<label class="col-md-2 control-label"> <form:radiobutton
-												path="entity.account_type" value="g" onchange="addRegion()" />
+												path="entity.account_type" value="g" onchange="addRegion()" data-rule-required="true" />
 											政府
 										</label>
 										<label class="col-md-2 control-label"> <form:radiobutton
-												path="entity.account_type" value="b" onclick="addb('b')" />
-											银行
+												path="entity.account_type" value="b" onclick="addb('b')" /> 银行
 										</label>
 										<label class="col-md-2 control-label"> <form:radiobutton
-												path="entity.account_type" value="m" onclick="addm('m')" />
-											商户
+												path="entity.account_type" value="m" onclick="addm('m')" /> 商户
 										</label>
 									</c:if>
 								</div>
-								<div class="form-group" ><label class="selectt-inline" id="level"></label>
+								<div class="form-group">
+									<label class="selectt-inline" id="level"></label>
 
-							</div>
+								</div>
 							</form:form>
 							<div class="form-group">
 								<label for="name" class="col-md-2 control-label"></label>
 								<div class="col-md-4">
 									<button id="btn-submit" class="btn btn-primary" onclick='submitForm()'>提 交</button>
-									&emsp; <a role="button" class="btn btn-default" href='<c:url value="/admin/sys/user/initial.shtml"/>'>取消</a>
+									&emsp; <a role="button" class="btn btn-default"
+										href='<c:url value="/admin/sys/user/initial.shtml"/>'>取消</a>
 								</div>
 							</div>
 						</div>

@@ -7,27 +7,23 @@
 <link rel="stylesheet"
 	href="${pageContext.request.contextPath}/resources/easyUIjs/themes/default/easyui.css"
 	type="text/css"></link>
-<link rel="stylesheet"
-	href="${pageContext.request.contextPath}/resources/easyUIjs/themes/icon.css"
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/easyUIjs/themes/icon.css"
 	type="text/css"></link>
 <script type="text/javascript"
 	src="${pageContext.request.contextPath}/resources/easyUIjs/jquery-1.7.2.js"></script>
 <script type="text/javascript"
-	src="${pageContext.request.contextPath}/resources/easyUIjs/jquery.easyui.min.js"
-	rel="stylesheet"></script>
+	src="${pageContext.request.contextPath}/resources/easyUIjs/jquery.easyui.min.js" rel="stylesheet"></script>
 <script type="text/javascript"
 	src="${pageContext.request.contextPath}/resources/easyUIjs/locale/easyui-lang-zh_CN.js"
 	rel="stylesheet"></script>
-<script type="text/javascript"
-	src="${pageContext.request.contextPath}/resources/easyUIjs/sys.js"
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/easyUIjs/sys.js"
 	rel="stylesheet"></script>
 <script type="text/javascript">
-
 </script>
 
 <div class="panel panel-default">
 	<div class="container">
-		<form:form  name="listForm" method="post"
+		<form:form name="listForm" method="post"
 			action="${pageContext.request.contextPath}/enterprise/serviceMerchants/ServiceAddDo.shtml"
 			role="form">
 			<form:hidden path="entity.id" />
@@ -35,34 +31,31 @@
 				<caption>添加服务商</caption>
 				<tr>
 					<td width="25%">所属市</td>
-					<td><form:select id="city1" path="entity.city_id" onchange="udpCity()"
-							items="${cityS}" itemLabel="name" itemValue="id">
+					<td><form:select id="city1" path="entity.city_id" onchange="udpCity()" items="${cityS}"
+							itemLabel="name" itemValue="id">
 						</form:select></td>
 				</tr>
 				<tr>
 					<td width="25%">所属区县</td>
-					<td><form:select id="county1" onchange="udpCounty()"
-							path="entity.county_id" items="${countyS}" itemLabel="name"
-							itemValue="id"></form:select></td>
+					<td><form:select id="county1" onchange="udpCounty()" path="entity.county_id"
+							items="${countyS}" itemLabel="name" itemValue="id"></form:select></td>
 				</tr>
 				<tr>
 					<td width="25%">所属街道</td>
-					<td><form:select id="street1"  
-							path="entity.street_id" items="${streeS}" itemLabel="name"
+					<td><form:select id="street1" path="entity.street_id" items="${streeS}" itemLabel="name"
 							itemValue="id"></form:select></td>
 				</tr>
-				<tr>
-					<td width="25%">服务单位名称</td>
-					<td><form:input style="width:300px" path="entity.serviceName" data-rule-required="true" /></td>
-				</tr>
+					<tr>
+						<td width="25%">服务单位名称</td>
+						<td><form:input style="width:300px" path="entity.serviceName" /></td>
+					</tr>
 				<tr>
 					<td width="25%">营业执照名称</td>
 					<td><form:input style="width:300px" path="entity.charterName" /></td>
 				</tr>
 				<tr>
 					<td width="25%">营业执照编码</td>
-					<td><form:input style="width:300px"
-							path="entity.charterNumber" /></td>
+					<td><form:input style="width:300px" path="entity.charterNumber" /></td>
 				</tr>
 				<tr>
 					<td width="25%">服务电话</td>
@@ -70,14 +63,12 @@
 				</tr>
 				<tr>
 					<td width="25%">服务地址</td>
-					<td><form:input style="width:300px"
-							path="entity.serviceAddress" /></td>
+					<td><form:input style="width:300px" path="entity.serviceAddress" /></td>
 				</tr>
 				<tr>
 					<td width="25%">服务类型</td>
 					<td><form:select path="entity.serviceTypeId">
-							<form:options items="${typeList }" itemLabel="serviceName"
-								itemValue="id" />
+							<form:options items="${typeList }" itemLabel="serviceName" itemValue="id" />
 						</form:select></td>
 				</tr>
 				<tr>
@@ -94,16 +85,14 @@
 				</tr>
 				<tr>
 					<td width="25%">是否能刷养老卡</td>
-					<td><form:select path="entity.is_pensionCard"
-							id="is_pensionCard">
+					<td><form:select path="entity.is_pensionCard" id="is_pensionCard">
 							<form:option value="1">是</form:option>
 							<form:option value="0">否</form:option>
 						</form:select></td>
 				</tr>
 				<tr>
 					<td width="25%">是否能刷跨年</td>
-					<td><form:select path="entity.is_AcrossYears"
-							id="is_AcrossYears">
+					<td><form:select path="entity.is_AcrossYears" id="is_AcrossYears">
 							<form:option value="1">是</form:option>
 							<form:option value="0">否</form:option>
 						</form:select></td>
@@ -137,8 +126,7 @@
 				</tr>
 				<tr>
 					<td width="25%">服务内容</td>
-					<td><form:textarea style="width: 300px; height: 60px;" path="entity.serviceContent"/>
-				<tr>
+					<td><form:textarea style="width: 300px; height: 60px;" path="entity.serviceContent" /> <tr>
 					<td width="25%">折扣信息</td>
 					<td><form:select path="entity.discountInfo" id="discountInfo">
 							<form:option value="1">是</form:option>
@@ -162,8 +150,7 @@
 				</tr>
 				<tr>
 					<td colspan="2">
-						<a class="btn btn-default" href="#" class="btn btn-success"
-											onclick="submit()" >添加</a>
+						<a class="btn btn-default" href="#" class="btn btn-success" onclick="submit()">添加</a>
 						</td>
 					<td colspan="2"><input type="reset" class="btn btn-warning" /></td>
 				</tr>
@@ -229,6 +216,8 @@
 				});
 	}
 
+	
+	
 	function submit() {
 		  $.ajax({
 				cache : true,
@@ -246,4 +235,3 @@
 	}
 
 </script>
-

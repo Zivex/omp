@@ -19,6 +19,7 @@ import com.capinfo.omp.model.ServiceProvider;
 import com.capinfo.omp.parameter.EnterpriseParameter;
 import com.capinfo.omp.parameter.ServiceProviderParameter;
 import com.capinfo.omp.service.EnterpriseService;
+import com.capinfo.omp.util.Permissions;
 import com.capinfo.omp.utils.Page;
 import com.capinfo.region.model.OmpRegion;
 
@@ -185,19 +186,8 @@ public class EnterpriseServiceImpl extends
 
 	@Override
 	public List<OmpRegion> queryCounty(long id) {
-		SearchCriteriaBuilder<OmpRegion> searchCriteriaBuilder = new SearchCriteriaBuilder<OmpRegion>(OmpRegion.class);
-		String sql ="";
-		if(id==0L){
-			sql= " USE_FLAG=1 and LEVELID=2  ";
-		}else {
-			sql=" USE_FLAG=1 and PARENTID="+id;
-		}
-		if (!"".equals(sql)) {
-			searchCriteriaBuilder.addAdditionalRestrictionSql(sql);
-		}
-		searchCriteriaBuilder.addOrderCondition("id", "ASC");
-		List<OmpRegion> list = getGeneralService().getObjects(searchCriteriaBuilder.build());
-		return list;
+		List<OmpRegion> citys = Permissions.queryCounty(id, getGeneralService());
+		return citys;
 	}
 
 	@Override

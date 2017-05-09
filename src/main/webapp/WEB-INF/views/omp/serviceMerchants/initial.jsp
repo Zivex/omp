@@ -138,18 +138,6 @@
 			showDynamicModal(url);
 		}
 
-		$(function(){
-				$("#displayDiv1").hide();
-				$("#displayDiv").show();
-				$("#backButton").hide();
-			});
-
-		function hxBackClick(){
-
-			$("#displayDiv1").hide();
-			$("#displayDiv").show();
-			$("#backButton").hide();
-		};
 		/**
 		 *显示用户详细信息
 		 */
@@ -162,7 +150,6 @@
 			initalizeSiderBar();
 			selectMenu("o_serviceMerchants");
 			initQueryForm();
-			
 			$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",function(data){
 				for(var i = 0;i<data.length;i++){
 					$("#countyinit").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");

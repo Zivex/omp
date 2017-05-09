@@ -100,6 +100,7 @@
 			initalizeSiderBar();
 			selectMenu("m_adm_sys_user");
 			initQueryForm();
+			initialFormValidate('command');
 		});
 	</script>
 

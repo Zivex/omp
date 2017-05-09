@@ -3,14 +3,18 @@ package com.capinfo.omp.controller;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.annotation.Resource;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
+
 import com.capinfo.common.model.SystemUser;
 import com.capinfo.framework.service.GeneralService;
 import com.capinfo.omp.model.Omp_phone_type;
@@ -20,6 +24,7 @@ import com.capinfo.omp.parameter.ServiceProviderParameter;
 import com.capinfo.omp.parameter.ServiceSystemParameter;
 import com.capinfo.omp.service.EnterpriseService;
 import com.capinfo.omp.service.ServiceSystemService;
+import com.capinfo.omp.util.Permissions;
 import com.capinfo.region.model.OmpRegion;
 
 /**
@@ -40,6 +45,8 @@ public class ServiceSystemController {
 	private ServiceSystemService serviceSystem;
 	@Autowired
 	private EnterpriseService enterpriseService;
+	@Autowired
+	private JdbcTemplate jdbcTemplate;
 
 	/**
 	 * 服务体系管理首页
@@ -136,8 +143,8 @@ public class ServiceSystemController {
 	@ResponseBody
 	public List<Map<String, Object>> architecture(
 			@ModelAttribute("eccomm_admin") SystemUser user, Long stId) {
-		List<Map<String, Object>> list = serviceSystem.getQueryarchitecture(
-				user, stId);
+		List<Map<String, Object>> list = Permissions.getQueryarchitecture(
+				user, stId,jdbcTemplate);
 		return list;
 	}
 
