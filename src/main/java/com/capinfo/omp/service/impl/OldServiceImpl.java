@@ -387,8 +387,15 @@ public class OldServiceImpl extends
 	}
 
 	@Override
-	public Boolean uploadOldIndividuation(String id, String sjson) {
-		String sql = "update omp_old_order set k_and_sp_id = '" + sjson
+	public Boolean uploadOldIndividuation(String id, String sjson,int i) {
+		String k_and_sp_id = "k_and_sp_id";
+		if(i==2){
+			k_and_sp_id = "keyPointMessage";
+		}
+		
+		
+		
+		String sql = "update omp_old_order set "+k_and_sp_id+" = '" + sjson
 				+ "', send_flag = 2 ,execute_flag = 3  where oldId = " + id;
 		int update = jdbcTemplate.update(sql);
 		System.out.println("指令修改");

@@ -12,6 +12,7 @@ public class ClientGetVoiceDataService {
 
 	public ImKey svoice(String json) throws Exception {
 		String IP= PropertiesUtil.getStringByKey("WSIP");
+//		String IP = "124.65.158.2:9090";
 		String endpoint = "http://"+IP+"/PilotMS/GetVoiceDataServiceImplPort?wsdl";
 		String namespace="http://service.port.pilot.com/";
 

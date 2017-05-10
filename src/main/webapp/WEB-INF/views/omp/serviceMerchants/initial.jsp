@@ -71,6 +71,7 @@
 												<form:option value="1">未审核</form:option>
 												<form:option value="2">无效</form:option>
 												<form:option value="3">有效</form:option>
+												<form:option value="4">待审核</form:option>
 										</form:select></td>
 
 									</tr>

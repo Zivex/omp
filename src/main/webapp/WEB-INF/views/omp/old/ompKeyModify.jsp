@@ -67,6 +67,7 @@
        		function (data)
 	        {
 		        alert (data);
+		        location.href = "<%=request.getContextPath() %>/old/oldMatch/list.shtml";
 	        });
         }
 
@@ -88,8 +89,8 @@
 		        return;
 	        }
 	        
-	        $
-	                .post (
+	        
+	                $.post (
 	                        "${pageContext.request.contextPath }/serviceSystem/serchService.shtml",
 	                        {
 	                            serviceId : serviceId,
@@ -131,7 +132,7 @@
 	        }
 	        else
 	        {
-		        alert ("请勾选务商");
+		        alert ("请勾选服务商");
 	        }
 	        serviceList.empty ();
 	        

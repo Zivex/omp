@@ -6,22 +6,18 @@
 
 <c:if test="${not empty messages }">
 	<div class="alert alert-warning alert-dismissable">
-		<button type="button" class="close" data-dismiss="alert"
-			aria-hidden="true">&times;</button>
+		<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
 		${messages.message}
 	</div>
 </c:if>
 
 <div class="panel panel-default">
-	<form:form id="listForm" name="listForm" method="post"
-		action='${queryForm }'>
+	<form:form id="listForm" name="listForm" method="post" action='${queryForm }'>
 		<input id="item_entity_id" type="hidden" name="id" value="">
 		<input id="currentPage" type="hidden" name="current" value="">
 		<c:if test="${DataTotalCount>0}">
 			<c:if test="${old.logonName ne 'admin'}">
-				<button onclick="deleteAll('')">
-					删除
-				</button>
+				<button onclick="deleteAll('')">删除</button>
 			</c:if>
 			<table class="table table-hover table-middle" role="grid">
 				<thead>
@@ -46,9 +42,7 @@
 							<td>
 
 								<div class="btn-group">
-									<button type="button"
-										class="btn btn-default btn-sm dropdown-toggle"
-										data-toggle="dropdown">
+									<button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
 										操作 <span class="caret"></span>
 									</button>
 									<ul class="dropdown-menu" role="menu">
@@ -123,11 +117,12 @@
 	}
 	
 	function ordersend(vid){
+		alert(vid)
 			$.post("<%=request.getContextPath()%>/voice/voiceManage/goVoiceIds.shtml",
-					{vid:vid},function(){
-						window.location="<c:url value="/voice/voiceManage/initial.shtml?name=&idCard=&zjNumber=&county=&street=&community="/>";
+					{vid:vid},function(vid){
+						window.location="<%=request.getContextPath()%>/voice/voiceManage/initial.shtml?vid="+vid; 
 					}
-					);
+					);	
 	}
 	
 		/* 批量删除 */

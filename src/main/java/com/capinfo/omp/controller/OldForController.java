@@ -414,7 +414,6 @@ public class OldForController {
 			List<Map<String, Object>> ssNull = Permissions.getQueryarchitecture(
 					user, Long.parseLong(typeid), jdbcTemplate);
 			for (Map<String, Object> m1 : ssNull) {
-				
 				for (Map<String, Object> m2 : sp) {
 					if(m1.get("key").equals(m2.get("key"))){
 						m1.put("service", m2.get("sp"));
@@ -462,7 +461,7 @@ public class OldForController {
 	            }
 	        }  
 	        System.out.println(ksp.toString());
-	        Boolean isUpdateBoolean = oldService.uploadOldIndividuation(oid, ksp.toString());
+	        Boolean updateSjson = oldService.uploadOldIndividuation(oid, ksp.toString(),1);
 	        List<Map<String, Object>> jsonMap = kd.getSp(generalService);
 	        String json = "";
 	        json += "[{";
@@ -473,15 +472,28 @@ public class OldForController {
 				if(sp != null){
 					serviceTell = sp.getServiceTell();
 				}else{
-					serviceTell = "96003";
+					//固定号码
+					if("M11".equals(key)){
+						serviceTell = "8008100032";
+					}else if("M13".equals(key)){
+						serviceTell = "84925513";
+					}else if("M14".equals(key)){
+						serviceTell = "84931297";
+					}else if("M15".equals(key)){
+						serviceTell = "8008100032";
+					}else if("M16".equals(key)){
+						serviceTell = "8008100032";
+					}else{
+						serviceTell = "96003";
+					}
 				}
 				json += "\"" + key + "\":";
 				json += "\"" + serviceTell + "\",";
 			}
 			json = json.substring(0, json.length() - 1);
 			json += "}]";
-	        System.out.println(json);
-		if (isUpdateBoolean) {
+			 Boolean updateJson = oldService.uploadOldIndividuation(oid, json,2);
+		if (updateSjson && updateJson) {
 			return "修改成功！";
 		}
 		return "修改失败，请稍后尝试！";

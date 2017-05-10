@@ -43,6 +43,7 @@
 							<c:if test="${m.verify == 2 }"><td style="color: red;">无效</td></c:if>
 							<c:if test="${m.verify == 3 }"><td style="color: green;">有效</td></c:if>
 							<c:if test="${m.verify == 1 }"><td style="color: gray;">未审核</td></c:if>
+							<c:if test="${m.verify == 4 }"><td style="color: gray;">待审核</td></c:if>
 							<td style="text-align: center;">
 								<div class="btn-group">
 									<button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">

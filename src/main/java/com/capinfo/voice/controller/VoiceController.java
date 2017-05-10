@@ -29,6 +29,7 @@ import com.capinfo.framework.model.system.User;
 import com.capinfo.omp.model.Omp_Old_Info;
 import com.capinfo.omp.model.Omp_old_order;
 import com.capinfo.omp.parameter.UserInfoParameter;
+import com.capinfo.omp.parameter.VoiceParameter;
 import com.capinfo.omp.service.VoiceService;
 import com.capinfo.omp.utils.Page;
 import com.capinfo.omp.utils.PropertiesUtil;
@@ -47,41 +48,33 @@ public class VoiceController {
 	private JdbcTemplate jdbcTemplate;
 
 	@RequestMapping("/voiceManage/initial.shtml")
-	public ModelAndView initial(String current, String name, String idCard, String zjNumber, String county, String street, String community, String isGenerationOrder, String creationTime,@ModelAttribute("eccomm_admin") SystemUser user) {
+	public ModelAndView initial(VoiceParameter parameter,@ModelAttribute("eccomm_admin") SystemUser user) {
+		
+		
+		
+		
 		ModelAndView mv = new ModelAndView("/omp/voice/initial");
-		getList(mv, current, name, idCard, zjNumber, county, street, community,user);
+		getList(mv, parameter,user);
 		return mv;
 	}
 
 	@RequestMapping("/voiceManage/list.shtml")
-	public ModelAndView listt(String current, String name, String idCard, String zjNumber, String county, String street, String community,@ModelAttribute("eccomm_admin") SystemUser user) {
+	public ModelAndView listt(VoiceParameter parameter,@ModelAttribute("eccomm_admin") SystemUser user) {
 		ModelAndView mv = new ModelAndView("/omp/voice/list");
-		getList(mv, current, name, idCard, zjNumber, county, street, community,user);
+		getList(mv, parameter,user);
 		return mv;
 	}
 
-	public void getList(ModelAndView mv, String current, String name, String idCard, String zjNumber, String county, String street, String community,SystemUser user) {
-		if (StringUtils.isEmpty(current)) {
-			current = "1";
-		}
-		int count = voiceService.getCount(name, idCard, zjNumber, county, street, community,user);
-		//count = count == 0 ? 1 : count;
-		Page<Object> page = new Page<>(current, count, "10");
-		List<Omp_Old_Info> entities = voiceService.getOldContextList(page, name, idCard, zjNumber, county, street, community,user);
+	public void getList(ModelAndView mv, VoiceParameter parameter,SystemUser user) {
+		
+		int count = voiceService.getCount(parameter,user);
+		List<Omp_Old_Info> entities = voiceService.getOldContextList(parameter,user);
 		List<Map<String, Object>> enList = voiceService.getshell();
-
+		parameter.setTotalCount(count);
 		mv.addObject("enList", enList);
 		mv.addObject("dataList", entities);
-		mv.addObject("DataTotalCount", count);
-		mv.addObject("CurrentPieceNum", page.getCurrentPage());
-		mv.addObject("PerPieceSize", "10");
-		mv.addObject("name", name);
-		mv.addObject("idCard", idCard);
-		mv.addObject("zjNumber", zjNumber);
-		mv.addObject("county", county);
-		mv.addObject("street", street);
-		mv.addObject("community", community);
-
+		mv.addObject("command", parameter);
+		
 	}
 
 	@RequestMapping("/voiceManage/onUpload.shtml")
@@ -196,6 +189,7 @@ public class VoiceController {
 	 * 
 	 * return null; }
 	 */
+	
 	/**
 	 * 语音发送
 	 * @param vid
@@ -220,12 +214,35 @@ public class VoiceController {
 				for (String string : split) {
 					voiceService.toupdete(string);
 				}
-
+				
 				return "发送成功";
 			}
 			return "发送失败";
 		}
 		return null;
+	}
+	
+	
+	
+	/**
+	 * 按搜索条件发送语音
+	 * @param vid
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/voiceManage/allsend.shtml")
+	@ResponseBody
+	public String allsend(VoiceParameter parameter,@ModelAttribute("eccomm_admin") SystemUser user) throws Exception {
+		ModelAndView mv = new ModelAndView("/omp/voice/initial");
+		List<Omp_Old_Info> entities = voiceService.getOldContextList(parameter,user);
+		String ids = "";
+		for (Omp_Old_Info omp_Old_Info : entities) {
+			ids+=omp_Old_Info.getId()+",";
+		}
+		ids   = ids.substring(0,ids.length()-1);
+		System.out.println("全部发送 And id="+ids);
+		String string = sendVoice(ids, null, null,  user);
+		return string;
 	}
 
 	@RequestMapping("/voiceManage/listVoice.shtml")
@@ -318,11 +335,12 @@ public class VoiceController {
 	}
 
 	@RequestMapping("/voiceManage/goVoiceIds.shtml")
+	@ResponseBody
 	public String getVoiceInfos(HttpServletRequest request) {
 		String vid = request.getParameter("vid");
 		voiceService.uploadMiddle(vid);
-		return "redirect:/voice/voiceManage/initial.shtml?name=&idCard=&zjNumber=&county=&street=&community=";
-
+	//	return "redirect:/voice/voiceManage/initial.shtml?vid="+vid;
+		return vid;
 	}
 
 	@RequestMapping("/voiceManage/initial2.shtml")
@@ -372,7 +390,16 @@ public class VoiceController {
 	 */
 	@RequestMapping("/voiceManage/sendOrder.shtml")
 	@ResponseBody
-	public String sendVice(String ids, Date stime, Date etime,String sata,String oid, HttpServletRequest request,@ModelAttribute("eccomm_admin") SystemUser user) throws Exception {
+	public String sendVice(String ids, Date stime, Date etime,String sata, HttpServletRequest request,@ModelAttribute("eccomm_admin") SystemUser user) throws Exception {
+		System.out.println("发送语音");
+	
+		String string = sendVoice(ids, stime, etime,  user);
+		return string;
+	}
+	
+	
+	public String sendVoice(String ids, Date stime, Date etime,SystemUser user) throws Exception{
+		
 		String executeType = "1";
 		String executionTime = null;
 		String executionEndTime = null;
@@ -393,11 +420,7 @@ public class VoiceController {
 			SimpleDateFormat fromg = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");// 设置日期格式
 			executionEndTime = fromg.format(etime.getTime());
 		}
-		String username = user.getLogonName();
 		int i = 0;
-		
-		// String startTime = null;
-		// String endTime = null;
 		
 		ClientGetVoiceDataService vice = new ClientGetVoiceDataService();
 		ImKey imKey = null;
@@ -419,13 +442,10 @@ public class VoiceController {
 					//保存语音发送记录
 					voiceService.saveviceoder(id, mid, executeType, executionTime, executionEndTime, t,user);
 					//查询最大omp_voice_order.id
-					//String result = "";
 					String result = voiceService.resultVice();
 					String json = voiceService.sendvice(result, t);
 					imKey = vice.svoice(json);
 					System.out.println("语音发送返回数据"+imKey.getStatusCode()+","+imKey.getGenerateSerialNumber()+","+imKey.getExecutionTime()+","+imKey.getReturnType()+","+imKey.getErrorMessage());
-//					1,2017022409444964915,2017-02-24 09:44:49,2,
-					//imKey.setStatusCode(1+"");
 					String number = imKey.getGenerateSerialNumber();
 					if ("1".equals(imKey.getStatusCode())) {
 					//	if (false) {
@@ -463,8 +483,8 @@ public class VoiceController {
 
 		}
 		return "";
+		
 	}
-	
 	
 
 	/**
@@ -672,6 +692,7 @@ public class VoiceController {
 		return map;
 		
 	}
+	
 
 
 }

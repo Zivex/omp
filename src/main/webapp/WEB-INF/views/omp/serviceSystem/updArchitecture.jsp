@@ -41,7 +41,7 @@
 						<div style="float: left; width: 50%;">
 							<form id="architectureForm">
 								<input type="hidden" name="entity.id" id="sid" value="${ss.id }"> <input
-									type="hidden" name="entity.user_falg"  value="${ss.user_falg }"> <input
+									type="hidden" name="entity.user_falg" value="${ss.user_falg }"> <input
 									type="hidden" name="entity.county_id" value="${ss.county_id }"> <input
 									type="hidden" name="entity.street_id" id="street_id" value="${ss.street_id }"> <input
 									type="hidden" name="entity.community_id" value="${ss.community_id }"> <input
@@ -246,6 +246,12 @@
         }
         function addService ()
         {
+        	
+        	
+	        var serviceList = $("#serviceList");
+        	if ($ ('input[name="providers"]:checked').length > 0)
+	        {
+        	
 	        var spId = $ ('input[name="providers"]:checked').val ();
 	        var spName = $ ('input[name="providers"]:checked').parent ().text ();
 	        var sptell = $ ('input[name="providers"]:checked').parent ().next ().text();
@@ -254,8 +260,12 @@
 	        sp.text (spName);
 	        td.next().text(sptell);
 	        td.children ("input.serviceId")[0].value = spId;
-	        var serviceList = $("#serviceList");
-			serviceList.empty();
+	        }
+	        else
+	        {
+		        alert ("请勾选服务商");
+	        }
+	        serviceList.empty ();
         }
 
         function updateSystem ()

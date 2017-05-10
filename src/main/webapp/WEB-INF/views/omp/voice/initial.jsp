@@ -35,20 +35,9 @@
 						<div class="operatorDiv">
 							<c:url var="queryForm" value="/voice/voiceManage/list.shtml" />
 							<form:form id="command" role="form" class="form-inline" action="${queryForm}" method="post">
-							<input id="pageNo" name="current" type="hidden" value="1">
-							
-<!-- 								&nbsp; -->
-<!-- 									<a role="button" class="btn btn-primary" onclick="DeAuditInformation()">未生成指令</a> -->
-<!-- 								&nbsp; -->
-<!-- 								&nbsp; -->
-<!-- 									<a role="button" class="btn btn-primary" onclick="DeAuditInformation()">*已生成指令*</a> -->
-<!-- 								&nbsp; -->
-<!-- 								&nbsp; -->
-<!-- 									<a role="button" class="btn btn-primary" onclick="importInformation()">导入信息</a> -->
-<!-- 								&nbsp; -->
-<!-- 								&nbsp; -->
-<!-- 									<a role="button" class="btn btn-primary" onclick="oldInformationDisplay()">老人信息展示</a> -->
-<!-- 								&nbsp; -->
+							<input id="pageNo" name="currentPieceNum" type="hidden" value="1">
+								<input id="pageSizes" name="perPieceSize" type="hidden" value="10">
+							<input name="vid" type="hidden" value="${vid }">
 									<table class="table" >
 										<tr>
 											<td>姓名：</td>
@@ -84,15 +73,15 @@
 											<!-- <td>预约时间：<input type="text" value="" id="executionTime" name="executionTime" onclick="WdatePicker({isShowClear:false,readOnly:true,dateFmt:'yyyy-MM-dd HH:mm'})" /></td>
 											<td>预约结束时间：<input type="text" value="" id="executionEndTime" name="executionEndTime" onclick="WdatePicker({isShowClear:false,readOnly:true,dateFmt:'yyyy-MM-dd HH:mm'})" /></td>
 											 -->
-											<td><a class="btn btn-primary btn-lg" style="font-size:12px;padding:4px;" onclick="olorder()">市区发送发送</a></td>
+<!-- 											<td><a class="btn btn-primary btn-lg" style="font-size:12px;padding:4px;" onclick="olorder()">市区发送发送</a></td> -->
 											<td>
-											<a class="btn btn-primary btn-lg" style="font-size:12px;padding:4px;" onclick="ggid()">按社区发送</a>
+											<a class="btn btn-primary btn-lg" style="font-size:12px;padding:4px;" onclick="allsend()">全部发送</a>
 											<!-- <input onclick="ordersend()" type="button" value="指令发送"/> -->
 											
 											
 											
 											<a class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal" style="font-size:12px;padding:4px;">
-												指令发送
+												定时预约发送
 											</a>
 											<!-- 模态框（Modal） -->
 											<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
@@ -196,6 +185,43 @@
 						  
 
 			}
+		
+		//发送
+		 function allsend(){
+				
+						var name = $("#name").val();
+						var idCard = $("#idCard").val();
+						var zjNumber = $("#zjNumber").val();
+						var county = $("#county").val();
+						var street = $("#street").val();
+						var community = $("#community").val();
+						$.post("<%=request.getContextPath() %>/voice/voiceManage/allsend.shtml",
+								{
+									name:name,
+									idCard:idCard,
+									zjNumber:zjNumber,
+									county:county,
+									street:street,
+									community:community
+								},	
+								function(data){
+									alert(data);
+								});
+						
+						  
+
+			}
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		
 		$(document).ready(function() {
 			initalizeSiderBar();

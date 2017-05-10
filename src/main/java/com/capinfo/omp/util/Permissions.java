@@ -65,6 +65,7 @@ public class Permissions {
 	 * @param old
 	 * @param jdbcTemplate
 	 */
+	@SuppressWarnings("deprecation")
 	public static void addOmpOldOrderInfo(Omp_Old_Info old ,JdbcTemplate jdbcTemplate) {
 		List<Map<String, Object>> alllist = null;
 		String errormessage = "";
@@ -153,11 +154,20 @@ public class Permissions {
 		sjson += "}]";
 
 		System.out.println(json);
+		
+		String queryOrder="select t.id from omp_old_order t where t.oldId="+old.getId();
+		List<Map<String,Object>> list = jdbcTemplate.queryForList(queryOrder);
+		String sql = "";
+		if(list.size()>0){
+			String  oid = list.get(0).get("id")+"";
+			 sql = "update omp_old_order set keyPointMessage = '"+json+"' ,k_and_sp_id = '"+sjson+"' where id="+oid ;
+		}else{
+			 sql = "INSERT INTO omp_old_order ("
+					+ "oldId, phoneName, communityOrderId, keyPointMessage,k_and_sp_id)"
+					+ "  select t.ID,t.TELTYPE,t.HOUSEHOLD_COMMUNITY_ID,'" + json
+					+ "','"+sjson+"' from omp_old_info t WHERE t.ID = " + old.getId();
+		}
 
-		String sql = "INSERT INTO omp_old_order ("
-				+ "oldId, phoneName, communityOrderId, keyPointMessage,k_and_sp_id)"
-				+ "  select t.ID,t.TELTYPE,t.HOUSEHOLD_COMMUNITY_ID,'" + json
-				+ "','"+sjson+"' from omp_old_info t WHERE t.ID = " + old.getId();
 		jdbcTemplate.update(sql);
 	}
 

@@ -35,18 +35,6 @@
 							<c:url var="queryForm" value="/order/orderManage/list.shtml" />
 							<form:form id="command" role="form" class="form-inline" action="${queryForm}" method="post">
 							<input id="pageNo" name="current" type="hidden" value="1">
-<!-- 								&nbsp; -->
-<!-- 									<a role="button" class="btn btn-primary" onclick="DeAuditInformation()">未生成指令</a> -->
-<!-- 								&nbsp; -->
-<!-- 								&nbsp; -->
-<!-- 									<a role="button" class="btn btn-primary" onclick="DeAuditInformation()">*已生成指令*</a> -->
-<!-- 								&nbsp; -->
-<!-- 								&nbsp; -->
-<!-- 									<a role="button" class="btn btn-primary" onclick="importInformation()">导入信息</a> -->
-<!-- 								&nbsp; -->
-<!-- 								&nbsp; -->
-<!-- 									<a role="button" class="btn btn-primary" onclick="oldInformationDisplay()">老人信息展示</a> -->
-<!-- 								&nbsp; -->
 									<table class="table" >
 										<tr>
 											<td>姓名：</td>
@@ -100,7 +88,7 @@
 											<td><input class="btn btn-primary btn-sm" data-toggle="modal" data-target="#myModal" type="reset" value="重置"/></td>
 											<!-- <td><input onclick="appointmentsend()" type="button" value="预约发送"/></td> -->
 											<td><input class="btn btn-primary btn-sm" data-toggle="modal" data-target="#myModal" id="btn" onclick="sendMessage()" type="button"  value="指令发送"/></td>
-											<td><a href="<c:url value="/order/orderManage/ordercommunity.shtml"/>"><input class="btn btn-primary btn-sm" data-toggle="modal" data-target="#myModal" type="button" value="社区指令批量发送"></input></a></td>
+<%-- 											<td><a href="<c:url value="/order/orderManage/ordercommunity.shtml"/>"><input class="btn btn-primary btn-sm" data-toggle="modal" data-target="#myModal" type="button" value="社区指令批量发送"></input></a></td> --%>
 										</tr>
 									</table>
 							</form:form>

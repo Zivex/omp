@@ -13,6 +13,7 @@ import com.capinfo.omp.model.Omp_old_order;
 import com.capinfo.omp.model.Omp_voice_order;
 import com.capinfo.omp.parameter.OrderParameter;
 import com.capinfo.omp.parameter.UserInfoParameter;
+import com.capinfo.omp.parameter.VoiceParameter;
 import com.capinfo.omp.utils.Page;
 import com.capinfo.omp.ws.model.ImKey;
 
@@ -32,12 +33,9 @@ public interface VoiceService extends CommonsDataOperationService<Omp_voice_orde
 	 * 
 	 * @return
 	 */
-	List<Omp_Old_Info> getOldContextList(Page page, String name,
-			String idCard, String zjNumber, String county, String street,
-			String community,SystemUser user);
+	List<Omp_Old_Info> getOldContextList(VoiceParameter parameter,SystemUser user);
 
-	int getCount(String name, String idCard, String zjNumber, String county,
-			String street, String community,SystemUser user);
+	int getCount(VoiceParameter parameter,SystemUser user);
 
 	String sendOrder(String id);
 

@@ -676,6 +676,7 @@ public class EnterpriseController {
 	@ResponseBody
 	public String serviceupdateDo(ServiceProviderParameter parameter) {
 		//ModelAndView mv = new ModelAndView("/omp/serviceMerchants/serverupdate");
+		ServiceProvider serviceProvider = parameter.getEntity();
 		String r1 = "";
 		String r2 = "";
 		String r3 = "";
@@ -700,11 +701,17 @@ public class EnterpriseController {
 			r2 = uniq(r2);
 			r3 = uniq(r3);
 		}
+		if(true){
+			ServiceProvider sp = generalService.getObjectById(ServiceProvider.class, parameter.getEntity().getId());
+			if(!sp.getServiceTell().equals(parameter.getEntity().getServiceTell()) ){
+				serviceProvider.setVerify(4);
+			}
+			generalService.clear();
+		}
 		boolean b = enterpriseService.queryForTell(parameter.getEntity().getServiceTell(),parameter.getEntity().getId());
 		if(!b){
 			return "添加失败服务商电话已存在";
 		}
-		ServiceProvider serviceProvider = parameter.getEntity();
 		serviceProvider.setUpdateTime(new Date());
 		serviceProvider.setServiceCounty_id(r1);
 		serviceProvider.setServiceStreet_id(r2);

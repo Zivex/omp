@@ -129,6 +129,7 @@ public class ServiceProvider implements BaseEntity {
 	 * 1:未审核
 	 * 2:无效
 	 * 3:有效
+	 * 4:待审核
 	 */
 	private int verify;
 	/**

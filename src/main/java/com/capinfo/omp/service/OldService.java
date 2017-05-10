@@ -87,7 +87,7 @@ public interface OldService extends CommonsDataOperationService<Omp_Old_Info, Ol
 
 	List<Map<String, Object>> getOldMyPointMessage(String oid);
 
-	Boolean uploadOldIndividuation(String id, String json);
+	Boolean uploadOldIndividuation(String id, String json,int i);
 
 	Boolean addOmpOldOrderInfo(String id, String json);
 

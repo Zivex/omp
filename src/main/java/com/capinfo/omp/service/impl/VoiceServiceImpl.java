@@ -24,6 +24,7 @@ import com.capinfo.omp.model.Omp_old_order;
 import com.capinfo.omp.model.Omp_voice_order;
 import com.capinfo.omp.parameter.OldParameter;
 import com.capinfo.omp.parameter.UserInfoParameter;
+import com.capinfo.omp.parameter.VoiceParameter;
 import com.capinfo.omp.service.OldService;
 import com.capinfo.omp.service.VoiceService;
 import com.capinfo.omp.utils.Page;
@@ -41,35 +42,30 @@ public class VoiceServiceImpl extends
 	private OldService oldService;
 
 	@Override
-	public List<Omp_Old_Info> getOldContextList(Page page, String name,
-			String idCard, String zjNumber, String county, String street,
-			String community, SystemUser user) {
+	public List<Omp_Old_Info> getOldContextList(VoiceParameter p, SystemUser user) {
 		OldParameter parameter = new OldParameter();
-		parameter.setName(name);
-		parameter.setIdCard(idCard);
-		parameter.setZjNumber(zjNumber);
-		parameter.setCounty(county);
-		parameter.setStreet(street);
-		parameter.setCommunity(community);
-		parameter.setPerPieceSize(page.getPageSize());
-		parameter.setCurrentPieceNum(page.getCurrentPage());
+		parameter.setName(p.getName());
+		parameter.setIdCard(p.getIdCard());
+		parameter.setZjNumber(p.getZjNumber());
+		parameter.setCounty(p.getCounty());
+		parameter.setStreet(p.getStreet());
+		parameter.setCommunity(p.getCommunity());
+		parameter.setPerPieceSize(p.getPerPieceSize());
+		parameter.setCurrentPieceNum(p.getCurrentPieceNum());
 		
 		List<Omp_Old_Info> oldlist = oldService.getOldContextList(parameter, user);
-//		List<Omp_Old_Info> oldlist = oldService.getOldContextList(page, name,
-//				idCard, zjNumber, county, street, community, null, null, user);
 		return oldlist;
 	}
 
 	@Override
-	public int getCount(String name, String idCard, String zjNumber,
-			String county, String street, String community, SystemUser user) {
+	public int getCount(VoiceParameter p, SystemUser user) {
 		OldParameter parameter = new OldParameter();
-		parameter.setName(name);
-		parameter.setIdCard(idCard);
-		parameter.setZjNumber(zjNumber);
-		parameter.setCounty(county);
-		parameter.setStreet(street);
-		parameter.setCommunity(community);
+		parameter.setName(p.getName());
+		parameter.setIdCard(p.getIdCard());
+		parameter.setZjNumber(p.getZjNumber());
+		parameter.setCounty(p.getCounty());
+		parameter.setStreet(p.getStreet());
+		parameter.setCommunity(p.getCommunity());
 		
 		int count = oldService.getCount(parameter, user);
 		return count;

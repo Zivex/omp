@@ -15,7 +15,7 @@
 		action='${queryForm }'>
 		<input id="item_entity_id" type="hidden" name="id" value="">
 		<input id="currentPage" type="hidden" name="current" value="">
-		<c:if test="${DataTotalCount>0}">
+		<c:if test="${command.totalCount>0}">
 			<table class="table table-hover table-middle" role="grid">
 				<thead>
 					<tr class="active">
@@ -72,10 +72,10 @@
 		<table class="table table-pagination">
 			<thead>
 				<tr>
-					<td align="left">共<span class="text-danger"><strong>${DataTotalCount}</strong></span>条记录（每页<span
-						class="text-info"><strong>${PerPieceSize}</strong></span>条记录）&emsp;
-					</td>
-					<td align="right" height="28"><div id="result_page"></div></td>
+					<td align="left">共<span class="text-danger"><strong>${command.totalCount}</strong></span>条记录（每页<span
+							class="text-info"><strong>${command.perPieceSize}</strong></span>条记录）&emsp;
+						</td>
+						<td align="right" height="28"><div id="result_page"></div></td>
 				</tr>
 			</thead>
 		</table>
@@ -88,9 +88,9 @@
 <SCRIPT type="text/javascript">
 	$(document).ready(function() {
 		initListForm();
-		<c:if test="${DataTotalCount!=null&&DataTotalCount>0}">
-		initPagination(<c:out value="${DataTotalCount}"/>,<c:out value="${PerPieceSize}"/>,<c:out value="${CurrentPieceNum}"/>);
-		</c:if>
+		
+		<c:if test="${command.totalCount!=null&&command.totalCount>0}">
+		 initPagination(<c:out value="${command.totalCount}"/>,<c:out value="${command.perPieceSize}"/>,<c:out value="${command.currentPieceNum}"/>);		</c:if>
 	});
 
 	function check(){

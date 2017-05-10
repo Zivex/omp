@@ -41,16 +41,16 @@
 						<br>
 						<div style="float: left; width: 50%;">
 							<form id="architectureForm">
-							<div class="form-group">
-								<label for="telltype">话机类型</label> <select name="telltype" id="telltype"
-									onchange="queryTellType()">
-									<option value="0">--请选择--</option>
-									<c:forEach items="${tellList }" var="tell">
-										<option value="${tell.id }">${tell.phoneType }</option>
-									</c:forEach>
-								</select>
+								<div class="form-group">
+									<label for="telltype">话机类型</label> <select name="telltype" id="telltype"
+										onchange="queryTellType()">
+										<option value="0">--请选择--</option>
+										<c:forEach items="${tellList }" var="tell">
+											<option value="${tell.id }">${tell.phoneType }</option>
+										</c:forEach>
+									</select>
 									<p>如果您想使用自己指定的服务商，您需先在“服务商管理”中添加服务商，审核通过后即可匹配使用。</p>
-							</div>
+								</div>
 								<table class="table table-bordered" id="architecture">
 
 								</table>
@@ -66,44 +66,44 @@
 									</div>
 								</form>
 								<c:if test="${sessionScope.eccomm_admin.account_type !='g' }">
-								<div class="form-group">
-									<form class="form-inline" id="conditions">
-										<div class="form-group">
-											<label for="city">市</label> <select name="city" id="city" onchange="udpCity()">
-												<option value="0">--请选择--</option>
-												<c:forEach items="${cityS }" var="city">
-													<option value="${city.id }">${city.name }</option>
-												</c:forEach>
-											</select>
-										</div>
+									<div class="form-group">
+										<form class="form-inline" id="conditions">
+											<div class="form-group">
+												<label for="city">市</label> <select name="city" id="city" onchange="udpCity()">
+													<option value="0">--请选择--</option>
+													<c:forEach items="${cityS }" var="city">
+														<option value="${city.id }">${city.name }</option>
+													</c:forEach>
+												</select>
+											</div>
 
-										<div class="form-group">
-											<label for="county">区县</label> <select name="county" id="county" onchange="udpCounty()">
-												<option value="0">--请选择--</option>
+											<div class="form-group">
+												<label for="county">区县</label> <select name="county" id="county" onchange="udpCounty()">
+													<option value="0">--请选择--</option>
 
-											</select>
-										</div>
-
-
-										<div class="form-group">
-											<label for="street">街道</label> <select name="street" id="street" onchange="udpStreet()">
-												<option value="0">--请选择--</option>
-
-											</select>
-										</div>
+												</select>
+											</div>
 
 
-										<div class="form-group">
-											<label for="community">社区</label> <select name="community" id="community"
-												onchange="udpCommunity()">
-												<option value="0">--请选择--</option>
+											<div class="form-group">
+												<label for="street">街道</label> <select name="street" id="street" onchange="udpStreet()">
+													<option value="0">--请选择--</option>
 
-											</select>
-										</div>
+												</select>
+											</div>
 
 
-									</form>
-								</div>
+											<div class="form-group">
+												<label for="community">社区</label> <select name="community" id="community"
+													onchange="udpCommunity()">
+													<option value="0">--请选择--</option>
+
+												</select>
+											</div>
+
+
+										</form>
+									</div>
 								</c:if>
 								<a class="btn btn-default" href="#" onclick="serchService()" role="button">搜索</a> <a
 									class="btn btn-default" href="#" onclick="addService()" role="button">添加</a>
@@ -238,7 +238,7 @@
 			var tellId = $("#telltype").val();
 			var architecture = $("#architecture");
 			architecture.empty();
-			architecture.append("<tr> <th width='10%' style='text-align: center'>键位</th> <th width='20%' style='text-align: center'>服务类型</th> <th width='70%' style='text-align: center'>服务商</th> </tr>");
+			architecture.append("<tr> <th width='10%' style='text-align: center'>键位</th> <th width='20%' style='text-align: center'>服务类型</th> <th width='40%' style='text-align: center'>服务商</th><th width='30%' style='text-align: center'>服务商电话</th> </tr>");
 			$
 			.post(
 					"${pageContext.request.contextPath }/serviceSystem/queryarchitecture.shtml",
@@ -254,7 +254,7 @@
 											+ data[i].key
 											+ "</td><td>"
 											+ data[i].serviceName
-											+ "</td><td><input type='hidden' class='serviceId' name='"+data[i].key+"'value='0' ><span><span></td></tr>");
+											+ "</td><td><input type='hidden' class='serviceId' name='"+data[i].key+"'value='0' ><span><span></td><td></td><</tr>");
 						}
 						architecture
 								.append('<tr><td><a class="btn btn-default" href="#" onclick="addSystem()" role="button">确认</a></td><td colspan="2">您可直接点击确认，使用默认的服务体系。</td></tr>');
@@ -301,14 +301,23 @@
 					});
 		}
 		function addService() {
+	        var serviceList = $("#serviceList");
+			if ($ ('input[name="providers"]:checked').length > 0)
+	        {
 			var spId = $ ('input[name="providers"]:checked').val ();
 	        var spName = $ ('input[name="providers"]:checked').parent ().text ();
+	        var sptell = $ ('input[name="providers"]:checked').parent ().next ().text();
 	        var td = $ ('input[name="typeId"]:checked').parent ().next ().next ();
 	        var sp = td.children ("span");
 	        sp.text (spName);
+	        td.next().text(sptell);
 	        td.children ("input.serviceId")[0].value = spId;
-	        var serviceList = $("#serviceList");
-			serviceList.empty();
+	        }
+	        else
+	        {
+		        alert ("请勾选服务商");
+	        }
+	        serviceList.empty ();
 		}
 
 		function addSystem() {
@@ -327,8 +336,8 @@
 		}
 		
 		 function hxBackClick(){
-	        	location.href = "<%=request.getContextPath() %>/serviceSystem/initialize.shtml";
-	        }
+	        	location.href = "<%=request.getContextPath()%>/serviceSystem/initialize.shtml";
+        }
 	</script>
 
 
