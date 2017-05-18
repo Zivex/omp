@@ -13,9 +13,9 @@
 <div class="panel panel-default">
 	<form:form id="listForm" name="listForm" method="post"
 		action='${queryForm }'>
-		<input id="item_entity_id" type="hidden" name="id" value="">
-		<input id="currentPage" type="hidden" name="current" value="">
-		<c:if test="${DataTotalCount>0}">
+		<input id="pageNo" name="currentPieceNum" type="hidden" value="1">
+		<input id="pageSizes" name="perPieceSize" type="hidden" value="10">
+		<c:if test="${count>0}">
 			<table class="table table-hover table-middle" role="grid">
 				<thead>
 					<tr class="active">
@@ -27,7 +27,7 @@
 						<th width="10%">社区</th>
 						<th width="10%">推送状态</th>
 						<th width="10%">执行状态</th>
-						<th width="10%">执行时间</th>
+						<th width="20%">执行时间</th>
 						<th width="10%">操作</th>
 						<!-- 						<th width="10%">居住地址</th> -->
 						<!-- 						<th width="10%">录入员</th> -->
@@ -64,7 +64,7 @@
 <%-- 							<c:if test="${order.execute_flag== null}"> --%>
 <!-- 								<td style="color: red;">未返回</td> -->
 <%-- 							</c:if> --%>
-							<td>${order.startTime}</td>
+							<td><fmt:formatDate value="${order.startTime}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
 							<td>
 								<div class="btn-group">
 									<button type="button"
@@ -73,7 +73,8 @@
 										操作 <span class="caret"></span>
 									</button>
 									<ul class="dropdown-menu" role="menu">
-										<li><a onclick="toupd(${order.old.id})">重新发送</a></li>
+<%-- 										<li><a onclick="repeatVoice(${order.old.id},${order.voiceId })">重新发送</a></li> --%>
+										<li><a onclick="repeatVoice(${order.id})">重新发送</a></li>
 										<c:if test="${sys == 'admin'}">
 											<li><a href="###" onclick="deleteUser(${order.old.id},this);">删除</a></li>
 										</c:if>
@@ -91,10 +92,10 @@
 		<table class="table table-pagination">
 			<thead>
 				<tr>
-					<td align="left">共<span class="text-danger"><strong>${DataTotalCount}</strong></span>条记录（每页<span
-						class="text-info"><strong>${PerPieceSize}</strong></span>条记录）&emsp;
-					</td>
-					<td align="right" height="28"><div id="result_page"></div></td>
+					<td align="left">共<span class="text-danger"><strong>${count}</strong></span>条记录（每页<span
+							class="text-info"><strong>${command.perPieceSize}</strong></span>条记录）&emsp;
+						</td>
+						<td align="right" height="28"><div id="result_page"></div></td>
 				</tr>
 			</thead>
 		</table>
@@ -107,9 +108,9 @@
 <SCRIPT type="text/javascript">
 	$(document).ready(function() {
 		initListForm();
-		<c:if test="${DataTotalCount!=null&&DataTotalCount>0}">
-		initPagination(<c:out value="${DataTotalCount}"/>,<c:out value="${PerPieceSize}"/>,<c:out value="${CurrentPieceNum}"/>);
-		</c:if>
+		<c:if test="${count!=null&&count>0}">
+		 initPagination(<c:out value="${count}"/>,<c:out value="${command.perPieceSize}"/>,<c:out value="${command.currentPieceNum}"/>);		</c:if>
+
 	});
 
 	function check(){
@@ -130,10 +131,11 @@
 		}
 	}
 	//重新发送语音
-	function toupd(oid){
-		var sure=confirm("删除操作是不可逆的，确认删除该指令吗？");
+	function repeatVoice(orderId){
+		var sure=confirm("确认重新发送该条语音吗？");
 		if(sure){
-		$.post("<%=request.getContextPath() %>/voice/voiceManage/sendOrder.shtml",{oid:oid,stime:"",etime:"",sata:"repeat"},function(data){
+<%-- 		$.post("<%=request.getContextPath() %>/voice/voiceManage/sendOrder.shtml",{oid:oid,stime:"",etime:"",sata:"repeat",vid:vid},function(data){ --%>
+		$.post("<%=request.getContextPath() %>/voice/voiceManage/repeatVoice.shtml",{orderId:orderId},function(data){
 			alert(data);
 			location.reload();
 		});

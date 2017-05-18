@@ -57,9 +57,9 @@ public interface VoiceService extends CommonsDataOperationService<Omp_voice_orde
 	
 	String checkDeBatchSendInstructions();
 	
-	List<Omp_old_order> getOldList(Page page, String name, String idCard, String zjNumber, String county, String street, String community,String send_flag,String execute_flag, SystemUser user);
+	List<Omp_old_order> getOldList(VoiceParameter parameter, SystemUser user);
 
-	int getOlCount(String name, String idCard, String zjNumber, String county, String street, String community,String send_flag,String execute_flag, SystemUser user);
+	int getOlCount(VoiceParameter p, SystemUser user);
 	
 	void uploadMiddle(String id);
 	
@@ -88,12 +88,15 @@ public interface VoiceService extends CommonsDataOperationService<Omp_voice_orde
 	//删除声音
 	void deleteVoidByid(String vid);
 	void deleteVoidsByid(String vid);
-	//查询用户语音发送次数
-	Boolean queryCount(String ids);
+	
 
-	String numRest(String id);
+	String numRest(String id,SystemUser user);
 	//语音次数回滚
 	void rollback(String id, SystemUser user, String voiceSata);
 
 	UserInfoParameter getUserInfo(SystemUser user);
+
+	String repeatVoice(Long orderId, SystemUser user);
+	//查询用户语音发送次数
+	boolean queryCount(String ids, SystemUser user);
 }

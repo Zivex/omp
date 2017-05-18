@@ -42,7 +42,8 @@
 <script type="text/javascript"  src="<c:url value="/resources/js/jquery/validation/additional-methods.js"/>"></script> 
 <script type="text/javascript"  src="<c:url value="/resources/js/jquery/validation/messages_zh.js"/>"></script> 
 <script type="text/javascript"  src="<c:url value="/resources/My97DatePicker/WdatePicker.js"/>"></script> 
-
+<!-- 联动 -->
+<script type="text/javascript"  src="<c:url value="/resources/My97DatePicker/WdatePicker.js"/>"></script> 
 
 <link rel=stylesheet type=text/css href="<c:url value="/resources/bootstrap-fileinput/fileinput.min.css"/>" media="screen">
 <script type="text/javascript"  src="<c:url value="/resources/bootstrap-fileinput/fileinput.min.js"/>"></script> 

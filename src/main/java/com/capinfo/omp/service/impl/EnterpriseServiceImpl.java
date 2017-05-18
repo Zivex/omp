@@ -87,11 +87,11 @@ public class EnterpriseServiceImpl extends
 			psql = " and PARENTID = " + pid;
 		}
 		String checksql = "select count(*)from omp_region t where t.name = '"
-				+ city + "' and levelid=0" + i + psql + " and USE_FLAG = 1";
+				+ city + "' and levelid=" + i + psql + " and USE_FLAG = 1";
 		int check = jdbcTemplate.queryForInt(checksql);
 		if (check > 0) {
 			sql = "select t.id from omp_region t where t.name = '" + city
-					+ "' and levelid=0" + i + psql + " and USE_FLAG = 1";
+					+ "' and levelid=" + i + psql + " and USE_FLAG = 1";
 			id = jdbcTemplate.queryForLong(sql);
 		}
 		return String.valueOf(id);
@@ -114,7 +114,7 @@ public class EnterpriseServiceImpl extends
 		searchCriteriaBuilder.addQueryCondition("serviceTell", RestrictionExpression.EQUALS_OP, parameter.getEntity().getServiceTell());
 		searchCriteriaBuilder.addQueryCondition("contact", RestrictionExpression.EQUALS_OP, parameter.getEntity().getContact());
 		searchCriteriaBuilder.addQueryCondition("contactPhone", RestrictionExpression.EQUALS_OP, parameter.getEntity().getContactPhone());
-
+		searchCriteriaBuilder.addQueryCondition("serviceCity_id", RestrictionExpression.LIKE_OP, parameter.getCity());
 		searchCriteriaBuilder.addQueryCondition("serviceCounty_id", RestrictionExpression.LIKE_OP, parameter.getCounty());
 		searchCriteriaBuilder.addQueryCondition("serviceStreet_id", RestrictionExpression.LIKE_OP, parameter.getStreet());
 		searchCriteriaBuilder.addQueryCondition("serviceCommunity_id", RestrictionExpression.LIKE_OP, parameter.getCommunity());
@@ -207,12 +207,22 @@ public class EnterpriseServiceImpl extends
 	@Override
 	public boolean queryForTell(String serviceTell,Long id) {
 		String idsql ="";
-		if(id!=0L){
+		if(id !=null && id!=0L){
 			idsql = " and t.id <>"+id;
 		}
 		String sql = "select count(*) from service_provider t where t.serviceTell ='"+serviceTell+"'"+idsql;
 		int i = jdbcTemplate.queryForInt(sql);
 		return i>0?false:true;
+	}
+
+	@Override
+	public void mobsync(Long id) {
+		String sql = "SELECT o.id from omp_old_order o where o.k_and_sp_id like '%"+id+"%'";
+		List<Map<String, Object>> idList = jdbcTemplate.queryForList(sql);
+		for (Map<String, Object> map : idList) {
+			Long orderid = Long.parseLong(map.get("id")+"");
+			Permissions.mobsync(orderid, getGeneralService());
+		}
 	}
 
 }

@@ -39,7 +39,7 @@
 				<span style="color: red">*</span>
 			</div>
 			<div class="form-group">
-				<label for="entity.household_community_id" class="col-md-2 control-label">街道: </label>
+				<label for="entity.household_community_id" class="col-md-2 control-label">社区: </label>
 				<div class="col-md-4">
 					<form:select path="entity.household_community_id" data-rule-required="true"
 						class="form-control" id="communityOld">
@@ -178,6 +178,7 @@ function submit(){
 	      data: data,
 	      success: function(result){
 	       alert(result);
+	       location.href = "<%=request.getContextPath() %>/old/oldMatch/list.shtml";
 	      }
 	    });
 }

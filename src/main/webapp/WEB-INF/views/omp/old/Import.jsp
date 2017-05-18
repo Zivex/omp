@@ -45,18 +45,17 @@
 		} else {
 			var fileExtend = excelPath.substring(excelPath.lastIndexOf('.'))
 					.toLowerCase();
-			if (fileExtend == '.xls') {
 				document.getElementById('buttonDiv').style.display = 'block';
-			} else {
-				alert("文件格式需为'.xls'格式");
-				document.getElementById('buttonDiv').style.display = 'none';
-				return;
-			}
+// 			if (fileExtend == '.xls') {
+// 			} else {
+// 				alert("文件格式需为'.xls'格式");
+// 				document.getElementById('buttonDiv').style.display = 'none';
+// 				return;
+// 			}
 		}
 	}
 	function UpladFile() {
-		$("#empForm")
-				.ajaxSubmit(
+		$("#empForm").ajaxSubmit(
 						{
 							type : "POST",
 							url : '${pageContext.request.contextPath }/old/oldMatch/importInformation.shtml',

@@ -38,6 +38,8 @@ public interface EnterpriseService extends CommonsDataOperationService<Enterpris
 
 	boolean queryForTell(String serviceTell, Long id);
 
+	void mobsync(Long id);
+
 
 
 }

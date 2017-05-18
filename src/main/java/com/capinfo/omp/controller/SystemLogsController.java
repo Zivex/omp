@@ -209,6 +209,25 @@ public class SystemLogsController extends AuthenticationSuccessHandlerImpl {
 		
 		
 		List<Map<String, Object>> list = systemLogs.getKeyboardUpdateCount(county,street,community,otype,stimes,etimes,sata);
+		Long sumCount = 0L;
+		Long sumSuc = 0L;
+		Long sumFai = 0L;
+		Long sumListen= 0L;
+		Long noListen= 0L;
+		
+		for (Map<String, Object> map : list) {
+			sumCount +=(Long)map.get("count");
+			sumSuc +=(Long)map.get("suc");
+			sumFai +=(Long)map.get("fai");
+			sumListen +=(Long)map.get("listen");
+			noListen +=(Long)map.get("noListen");
+		}
+		
+		mv.addObject("sumSuc",sumSuc);
+		mv.addObject("sumFai",sumFai);
+		mv.addObject("sumListen",sumListen);
+		mv.addObject("noListen",noListen);
+		mv.addObject("sumCount",sumCount);
 		mv.addObject("keyCount",list);
 		mv.addObject("county", county);
 		mv.addObject("street", street);

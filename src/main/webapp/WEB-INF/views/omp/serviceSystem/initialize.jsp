@@ -67,7 +67,7 @@
 							<a role="button" class="btn btn-default" href='#' onclick='addprivate()'>服务体系确认</a>
 						</c:if>
 						<a class="btn btn-primary btn-sm" target="view_window" href="<%=request.getContextPath() %>/resources/pdf/help02.pdf">
-							帮助</a>
+							服务体系管理操作教程</a>
 					</div>
 					<div class="header-underline"></div>
 

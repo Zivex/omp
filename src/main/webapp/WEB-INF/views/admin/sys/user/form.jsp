@@ -182,9 +182,18 @@
 		//政府
 		//显示分级属性
 		function addRegion(){
-			
 			divshow.text("");// 清空数据
-			divshow.append('市 : <select id="shi" name="shi" class="{required:true}"> <option value="0">--请选择--</option> <option value="2">北京</option> </select> 区域： <select id="county" name="county"> <option value="${county }">--请选择--</option> </select> 街道： <select id="street" name="street"> <option value="${street }">--请选择--</option> </select> 社区： <select id="community" name="community"> <option value="${community }">--请选择--</option> </select>');
+			divshow.append('市 : <select id="shi" name="shi" class="{required:true}"> <option value="0">--请选择--</option>  </select> 区域： <select id="county" name="county"> <option value="${county }">--请选择--</option> </select> 街道： <select id="street" name="street"> <option value="${street }">--请选择--</option> </select> 社区： <select id="community" name="community"> <option value="${community }">--请选择--</option> </select>');
+				$.post("<%=request.getContextPath() %>/admin/sys/user/queryCity.shtml",{rid:0},function(data){
+					for(var i = 0;i<data.length;i++){
+						$("#shi").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
+					}
+				});
+			
+				
+			
+		
+			
 		$("#shi").change(function(){
 				$("#street option:not(:first)").remove();
 				$("#community option:not(:first)").remove();

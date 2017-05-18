@@ -17,7 +17,7 @@
 		<input id="currentPage" type="hidden" name="current" value="">
 		<c:if test="${DataTotalCount>0}">
 			<c:if test="${old.logonName ne 'admin'}">
-				<button onclick="deleteAll('')">删除</button>
+				<a class="btn btn-primary btn-sm" href="#" onclick="deleteAll('')">删除</a>
 			</c:if>
 			<table class="table table-hover table-middle" role="grid">
 				<thead>
@@ -49,7 +49,7 @@
 										<li><a onclick="seeContent(${vo.id})">查看内容</a></li>
 										<li><a onclick="ordersend(${vo.id})">发送</a></li>
 										<c:if test="${old.logonName ne 'admin'}">
-											<li><a onclick="deleteAll(${vo.id});">删除</a></li>
+											<li><a onclick="deleteVoice(${vo.id});">删除</a></li>
 										</c:if>
 									</ul>
 								</div>
@@ -88,24 +88,18 @@
 <!-- Script	-->
 <script type="text/javascript">
 	$(document).ready(function() {
-		initListForm();
 		<c:if test="${DataTotalCount!=null&&DataTotalCount>0}">
 		initPagination(<c:out value="${DataTotalCount}"/>,<c:out value="${PerPieceSize}"/>,<c:out value="${CurrentPieceNum}"/>);
 		</c:if>
 	});
 	
-		function deleteVoice(uid,tr){
+		function deleteVoice(uid){
 			var sure=confirm("删除操作是不可逆的，确认删除该指令吗？");
 			if(sure){
-				    $.ajax({url:"deleteAll.shtml?vid="+uid,success:function(result){
+				    $.ajax({url:"deleteAll.shtml?vids="+uid,success:function(result){
 				       alert(result);
-				       location.replace(document.referrer);
+				       window.location.reload();
 				    }});
-				
-			//	location.href = "/order/orderManage/delect.shtml?vid="+uid;
-		// 		$("#item_entity_id").val(uid);
-		// 		$("#listForm").attr("action", '<c:url value="/old/oldMatch/delete.shtml"/>');
-		// 		$("#listForm").submit();
 			}
 		}
 	
@@ -117,7 +111,6 @@
 	}
 	
 	function ordersend(vid){
-		alert(vid)
 			$.post("<%=request.getContextPath()%>/voice/voiceManage/goVoiceIds.shtml",
 					{vid:vid},function(vid){
 						window.location="<%=request.getContextPath()%>/voice/voiceManage/initial.shtml?vid="+vid; 
@@ -127,6 +120,7 @@
 	
 		/* 批量删除 */
 	function deleteAll(vid){
+			
 		if(vid==''){
 			// 判断是否至少选择一项
 			var checkedNum = $(".ids:checked").length;
@@ -142,7 +136,7 @@
 					vid=checkedList.toString();
 					
 				});
-		}}
+		}
 			
 				$.ajax({
 					type: "POST",
@@ -155,6 +149,7 @@
 						window.location.reload();
 					}
 				}); 
+			}
 			}
 	
 	

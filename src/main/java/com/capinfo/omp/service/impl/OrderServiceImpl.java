@@ -2,6 +2,7 @@ package com.capinfo.omp.service.impl;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -12,6 +13,7 @@ import net.sf.json.JSONObject;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.incrementer.HsqlMaxValueIncrementer;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -44,9 +46,7 @@ CommonsDataOperationServiceImpl<Omp_old_order, OrderParameter>  implements
 	private OldService oldService;
 
 	@Override
-	public int getOrderCount(String name, String idCard, String zjNumber,
-			String county, String street, String community, String send_flag,
-			String execute_flag,SystemUser user) {
+	public int getOrderCount(OrderParameter parameter,SystemUser user) {
 		// 查询用户区域
 		String rname = "";
 		if("g".equals(user.getAccount_type())){
@@ -84,29 +84,38 @@ CommonsDataOperationServiceImpl<Omp_old_order, OrderParameter>  implements
 				break;
 			}
 		}
-		if (!StringUtils.isEmpty(name)) {
-			name = " AND oldo.`NAME` LIKE '%" + name + "%'";
+		
+		String name = "";
+		String idCard = "";
+		String zjNumber = "";
+		String county = "";
+		String street = "";
+		String community = "";
+		String send_flag = "";
+		String execute_flag = "";
+		if (!StringUtils.isEmpty(parameter.getName())) {
+			name = " AND oldo.`NAME` LIKE '%" + parameter.getName() + "%'";
 		}
-		if (!StringUtils.isEmpty(idCard)) {
-			idCard = " AND oldo.idCard = '" + idCard + "'";
+		if (idCard != null &&!StringUtils.isEmpty(parameter.getIdCard())) {
+			idCard = " AND oldo.idCard = '" + parameter.getIdCard() + "'";
 		}
-		if (!StringUtils.isEmpty(zjNumber)) {
-			zjNumber = " AND oldo.ZJNUMBER = '" + zjNumber + "'";
+		if (!StringUtils.isEmpty(parameter.getZjNumber())) {
+			zjNumber = " AND oldo.ZJNUMBER = '" + parameter.getZjNumber() + "'";
 		}
-		if (!StringUtils.isEmpty(county)) {
-			county = " AND i.HOUSEHOLD_COUNTY_ID = '" + county + "'";
+		if (!StringUtils.isEmpty(parameter.getCounty())) {
+			county = " AND i.HOUSEHOLD_COUNTY_ID = '" + parameter.getCounty() + "'";
 		}
-		if (!StringUtils.isEmpty(street)) {
-			street = " AND i.HOUSEHOLD_STREET_ID = '" + street + "'";
+		if (!StringUtils.isEmpty(parameter.getStreet())) {
+			street = " AND i.HOUSEHOLD_STREET_ID = '" + parameter.getStreet() + "'";
 		}
-		if (!StringUtils.isEmpty(community)) {
-			community = " AND i.HOUSEHOLD_COMMUNITY_ID = '" + community + "'";
+		if (!StringUtils.isEmpty(parameter.getCommunity())) {
+			community = " AND i.HOUSEHOLD_COMMUNITY_ID = '" + parameter.getCommunity() + "'";
 		}
-		if (!StringUtils.isEmpty(send_flag)) {
-			send_flag = " AND oldo.send_flag = '" + send_flag + "'";
+		if (parameter.getSend_flag()!=null) {
+			send_flag = " AND oldo.send_flag = '" + parameter.getSend_flag() + "'";
 		}
-		if (!StringUtils.isEmpty(execute_flag)) {
-			execute_flag = " AND oldo.execute_flag = '" + execute_flag + "'";
+		if (parameter.getExecute_flag()!=null) {
+			execute_flag = " AND oldo.execute_flag = '" + parameter.getExecute_flag() + "'";
 		}
 		String sql = "SELECT count(oldo.id) FROM "
 				+ "(SELECT old.id,old.`NAME`,old.idcard,old.community,old.county,old.street,"
@@ -122,35 +131,33 @@ CommonsDataOperationServiceImpl<Omp_old_order, OrderParameter>  implements
 		return forInt;
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
-	public List<Omp_old_order> getOrderList(Page page, String name,
-			String idCard, String zjNumber, String county, String street,
-			String community, String send_flag, String execute_flag,SystemUser user) {
+	public Map<String , Object> getOrderList(OrderParameter p,SystemUser user) {
 		List<Omp_old_order> orderList = null;
 		OldParameter parameter = new OldParameter();
-		parameter.setName(name);
-		parameter.setIdCard(idCard);
-		parameter.setZjNumber(zjNumber);
-		parameter.setCounty(county);
-		parameter.setStreet(street);
-		parameter.setCommunity(community);
+		parameter.setName(p.getName());
+		parameter.setIdCard(p.getIdCard());
+		parameter.setZjNumber(p.getZjNumber());
+		parameter.setCity(p.getCity());
+		parameter.setCounty(p.getCounty());
+		parameter.setStreet(p.getStreet());
+		parameter.setCommunity(p.getCommunity());
 		parameter.setIsGenerationOrder("order");
-		parameter.setPerPieceSize(page.getPageSize());
-		parameter.setCurrentPieceNum(page.getCurrentPage());
-		
-		
-		
-//		List<Omp_Old_Info> oldList = oldService.getOldContextList(page, name, idCard, zjNumber, county, street, community, "order", null, user);
+		parameter.setPerPieceSize(p.getPerPieceSize());
+		parameter.setCurrentPieceNum(p.getCurrentPieceNum());
+		//int count = oldService.getCount(parameter, user);
 		List<Omp_Old_Info> oldList = oldService.getOldContextList(parameter, user);
+		
+		String ids = "";
 		if(oldList.size()>0){
 		SearchCriteriaBuilder<Omp_old_order> searchCriteriaBuilder = new SearchCriteriaBuilder<Omp_old_order>(
 				Omp_old_order.class);
 		
 		searchCriteriaBuilder.addQueryCondition("send_flag",
-				RestrictionExpression.EQUALS_OP, send_flag);
+				RestrictionExpression.EQUALS_OP, p.getSend_flag());
 		searchCriteriaBuilder.addQueryCondition("execute_flag",
-				RestrictionExpression.EQUALS_OP, execute_flag);
-		String ids = "";
+				RestrictionExpression.EQUALS_OP, p.getExecute_flag());
 		for (Omp_Old_Info old : oldList) {
 			ids+=old.getId()+",";
 		}
@@ -164,7 +171,52 @@ CommonsDataOperationServiceImpl<Omp_old_order, OrderParameter>  implements
 		orderList = getGeneralService().getObjects(
 				searchCriteriaBuilder.build());
 		}
-		return orderList;
+		Map<String , Object> map = new HashMap<String , Object>();
+		
+		String send_flag= "";
+		if(p.getSend_flag() != null){
+			send_flag += " and od.send_flag="+p.getSend_flag();
+		}
+		String execute_flag= "";
+		if(p.getExecute_flag()!= null){
+			execute_flag += " and od.execute_flag="+p.getExecute_flag();
+		}
+		String name = "";
+		if(p.getName()!= null && !p.getName().isEmpty()){
+			name += " and oi.`NAME`='"+p.getName()+"'";
+		}
+		String idCard = "";
+		if(p.getIdCard()!= null && !p.getIdCard().isEmpty()){
+			idCard += " and oi.CERTIFICATES_NUMBER="+p.getIdCard();
+		}
+		String zjNUmber = "";
+		if(p.getZjNumber()!= null && !p.getZjNumber().isEmpty()){
+			zjNUmber += " and oi.ZJNUMBER="+p.getZjNumber();
+		}
+		String city = "";
+		if(p.getCity()!= null  && !p.getCity().isEmpty()){
+			city += " and oi.HOUSEHOLD_CITY_ID="+p.getCity();
+		}
+		String country = "";
+		if(p.getCounty()!= null  && !p.getCounty().isEmpty()){
+			country += " and oi.HOUSEHOLD_COUNTY_ID="+p.getCounty();
+		}
+		String stree = "";
+		if(p.getStreet()!= null  && !p.getStreet().isEmpty()){
+			stree += " and oi.HOUSEHOLD_STREET_ID="+p.getStreet();
+		}
+		String community = "";
+		if(p.getCommunity()!= null  && !p.getCommunity().isEmpty()){
+			community += " and oi.HOUSEHOLD_COMMUNITY_ID="+p.getCommunity();
+		}
+		
+		String countSql = "select count(*) from omp_old_order od INNER JOIN omp_old_info oi on od.oldId=oi.ID where 1=1 and oi.call_id = 1 "+send_flag+execute_flag
+				+name+idCard+zjNUmber+city+country+stree+community+" and od.oldId in("+ids+")";
+		int count = jdbcTemplate.queryForInt(countSql);
+		
+		map.put("orderList", orderList);
+		map.put("count", count);
+		return map;
 	}
 
 	@Override
@@ -301,7 +353,7 @@ CommonsDataOperationServiceImpl<Omp_old_order, OrderParameter>  implements
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");// 设置日期格式
 		System.out.println(df.format(new Date()));// new Date()为获取当前系统时间
 		String date = df.format(new Date());
-		String sql = "insert into omp_order_number (oid,send_date,number,send_flag,returnType,operator) VALUES("
+		String sql = "insert into omp_order_number (oid,send_date,number,send_flag,returnType,agent_id) VALUES("
 				+ id
 				+ ",'"
 				+ date

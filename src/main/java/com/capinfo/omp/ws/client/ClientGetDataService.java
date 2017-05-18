@@ -16,6 +16,7 @@ public class ClientGetDataService {
 	
 	public ImKey sendOrder(String str) throws Exception {
 		String IP= PropertiesUtil.getStringByKey("WSIP");
+//		String IP = "124.65.158.2:9090";
 		String endpoint = "http://"+IP+"/PilotMS/GetDataServiceImplPort?wsdl";
 		String namespace="http://service.port.pilot.com/";
 

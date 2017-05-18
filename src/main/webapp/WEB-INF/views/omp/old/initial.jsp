@@ -65,16 +65,20 @@
 												<option value="1">是</option>
 												<option value="0">否</option>
 										</select></td>
-									</tr>
-									<tr>
 										<td>个性类型：</td>
 										<td><select id="isindividuation" name="isindividuation">
 												<option value="${isindividuation }">--请选择--</option>
 												<option value="1">有个性化</option>
 												<option value="0">无个性化</option>
 										</select></td>
+									</tr>
+									<tr>
 
-										<td>区域：</td>
+										<td>市级：</td>
+										<td><select id="city" name="city">
+												<option value="${city }">--请选择--</option>
+										</select></td>
+										<td>区县：</td>
 										<td><select id="county" name="county">
 												<option value="${county }">--请选择--</option>
 										</select></td>
@@ -93,6 +97,7 @@
 										<td><input class="btn btn-danger" type="reset" value="重置">
 										<td><a class="btn btn-default" href="#" onclick="importInformation()" role="button">导入</a>
 										<td><a class="btn btn-default" href="#" onclick="exportExcel()" role="button">导出</a>
+										<td><a class="btn btn-default" href="<%=request.getContextPath() %>/resources/pdf/old.xls"  role="button">导入模板下载</a>
 									</tr>
 								</table>
 							</form:form>
@@ -161,6 +166,7 @@
 			var creationTime = $("#creationTime").val();
 			var idCard = $("#idCard").val();
 			var zjNumber = $("#zjNumber").val();
+			var city = $("#city").val();
 			var county = $("#county").val();
 			var street = $("#street").val();
 			var community = $("#community").val();
@@ -172,6 +178,7 @@
 						name:name,
 						idCard:idCard,
 						zjNumber:zjNumber,
+						city:city,
 						county:county,
 						street:street,
 						community:community,
@@ -248,10 +255,27 @@
 			initalizeSiderBar();
 			selectMenu("o_old");
 			initQueryForm();
+			
+			//市
 			$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",function(data){
 				for(var i = 0;i<data.length;i++){
-					$("#county").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
+					$("#city").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
 				}
+			});
+			
+			
+			
+			
+			$("#city").change(function(){
+				$("#county option:not(:first)").remove();
+				$("#street option:not(:first)").remove();
+				$("#community option:not(:first)").remove();
+				var id = $("#city").val();
+				$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",{id:id},function(data){
+					for(var i = 0;i<data.length;i++){
+						$("#county").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
+					}
+				});
 			});
 			$("#county").change(function(){
 				$("#street option:not(:first)").remove();

@@ -113,7 +113,7 @@ public class SystemLogsImpl implements SystemLogs {
 		}
 		//总数
 		String rSql = " SELECT "+r+".id, "+r+".`NAME` name, count(n.id) count FROM omp_old_info i "+region+" LEFT JOIN omp_order_number n ON n.oid = i.ID AND "+sdate+" "+edate+" n.returntype = "+stat+" "+type+" WHERE 1 = 1 "+num+"  GROUP BY "+r+".id";
-		//成功
+		//执行成功
 		String success = " SELECT "+r+".id, "+r+".`NAME` name, count(n.id) count FROM omp_old_info i "+region+" LEFT JOIN omp_order_number n ON n.oid = i.ID "+sdate+" "+edate+" AND n.returntype = "+stat+" "+type+" and n.execute_flag = 1 WHERE 1 = 1   GROUP BY "+r+".id";
 	
 		
@@ -122,7 +122,7 @@ public class SystemLogsImpl implements SystemLogs {
 		
 		//已听取
 		
-		//失败
+		//执行失败
 		String fail = " SELECT "+r+".id, "+r+".`NAME` name, count(n.id) count FROM omp_old_info i "+region+" LEFT JOIN omp_order_number n ON n.oid = i.ID  "+sdate+" "+edate+"AND n.returntype = "+stat+" "+type+" and n.execute_flag = 0 WHERE 1 = 1  "+num+" GROUP BY "+r+".id";
 		
 		List<Map<String,Object>> queryForList = jdbcTemplate.queryForList(rSql);

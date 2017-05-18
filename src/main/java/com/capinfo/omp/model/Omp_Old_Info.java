@@ -32,6 +32,9 @@ public class Omp_Old_Info  implements BaseEntity {
 	private static final long serialVersionUID = 1L;
 	private Long id;
 
+	private String household_city_id;
+	private OmpRegion household_city;
+	
 	private String household_county_id;
 	private OmpRegion household_county;
 
@@ -87,6 +90,32 @@ public class Omp_Old_Info  implements BaseEntity {
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	@Column(name = "HOUSEHOLD_CITY_ID", length = 256)
+	public String getHousehold_city_id() {
+		return household_city_id;
+	}
+
+	public void setHousehold_city_id(String household_city_id) {
+		this.household_city_id = household_city_id;
+	}
+	@ManyToOne(targetEntity = OmpRegion.class, fetch = FetchType.LAZY)
+	@JoinColumn(name = "HOUSEHOLD_CITY_ID", insertable = false, updatable = false)
+	public OmpRegion getHousehold_city() {
+		return household_city;
+	}
+
+	public void setHousehold_city(OmpRegion household_city) {
+		this.household_city = household_city;
 	}
 
 	@Column(name = "household_county_id", length = 256)

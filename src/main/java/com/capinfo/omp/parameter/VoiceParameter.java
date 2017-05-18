@@ -13,6 +13,7 @@ public class VoiceParameter extends DataListParameter<Omp_voice_order> {
 	private String name;
 	private String idCard;
 	private String zjNumber;
+	private String city;
 	private String county;
 	private String street;
 	private String community;
@@ -22,6 +23,13 @@ public class VoiceParameter extends DataListParameter<Omp_voice_order> {
 	private String isindividuation;
 	private Long call_id;
 	private Long vid;
+	
+	public String getCity() {
+		return city;
+	}
+	public void setCity(String city) {
+		this.city = city;
+	}
 	public Omp_voice_order getEntity() {
 		return entity;
 	}

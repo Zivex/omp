@@ -65,11 +65,14 @@
 											class="form-control" id="serviceName" placeholder="请输入服务商名称">
 									</div>
 								</form>
-								<c:if test="${sessionScope.eccomm_admin.account_type !='g' }">
-									<div class="form-group">
+								
+								
+							</div>
+							<c:if test="${sessionScope.eccomm_admin.account_type !='g' }">
+									<div class="form-group" style="margin-top: 10px;">
 										<form class="form-inline" id="conditions">
 											<div class="form-group">
-												<label for="city">市</label> <select name="city" id="city" onchange="udpCity()">
+												<label for="city">市</label> <select name="city" id="city" class="form-control" onchange="udpCity()">
 													<option value="0">--请选择--</option>
 													<c:forEach items="${cityS }" var="city">
 														<option value="${city.id }">${city.name }</option>
@@ -78,7 +81,7 @@
 											</div>
 
 											<div class="form-group">
-												<label for="county">区县</label> <select name="county" id="county" onchange="udpCounty()">
+												<label for="county">区县</label> <select name="county" id="county"  class="form-control" onchange="udpCounty()">
 													<option value="0">--请选择--</option>
 
 												</select>
@@ -86,28 +89,15 @@
 
 
 											<div class="form-group">
-												<label for="street">街道</label> <select name="street" id="street" onchange="udpStreet()">
+												<label for="street">街道</label> <select name="street"  class="form-control" id="street">
 													<option value="0">--请选择--</option>
-
 												</select>
 											</div>
-
-
-											<div class="form-group">
-												<label for="community">社区</label> <select name="community" id="community"
-													onchange="udpCommunity()">
-													<option value="0">--请选择--</option>
-
-												</select>
-											</div>
-
-
 										</form>
 									</div>
 								</c:if>
 								<a class="btn btn-default" href="#" onclick="serchService()" role="button">搜索</a> <a
 									class="btn btn-default" href="#" onclick="addService()" role="button">添加</a>
-							</div>
 							<br>
 							<div>
 								<form id="serviceListForm">

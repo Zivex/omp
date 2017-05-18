@@ -13,6 +13,7 @@ public class OrderParameter extends DataListParameter<Omp_old_order> {
 	private String current;
 	private String idCard;
 	private String zjNumber;
+	private String city;
 	private String county;
 	private String street;
 	private String community;
@@ -20,6 +21,36 @@ public class OrderParameter extends DataListParameter<Omp_old_order> {
 	private String isindividuation;
 	private String creationTime;
 	private Integer call_id;
+	private Long execute_flag;
+	private Long send_flag;
+
+	
+	
+	
+	
+	public String getCity() {
+		return city;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
+	}
+
+	public Long getExecute_flag() {
+		return execute_flag;
+	}
+
+	public void setExecute_flag(Long execute_flag) {
+		this.execute_flag = execute_flag;
+	}
+
+	public Long getSend_flag() {
+		return send_flag;
+	}
+
+	public void setSend_flag(Long send_flag) {
+		this.send_flag = send_flag;
+	}
 
 	public String getName() {
 		return name;

@@ -22,6 +22,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.hibernate.id.IdentityGenerator.GetGeneratedKeysDelegate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,6 +42,7 @@ import com.capinfo.omp.model.ServiceType;
 import com.capinfo.omp.parameter.EnterpriseParameter;
 import com.capinfo.omp.parameter.ServiceProviderParameter;
 import com.capinfo.omp.service.EnterpriseService;
+import com.capinfo.omp.util.Permissions;
 import com.capinfo.region.model.OmpRegion;
 
 
@@ -174,13 +176,12 @@ public class EnterpriseController {
 		String num = "";
 		int rowNum = sheetAt0.getLastRowNum();
 		String pattern  ="\\s+";
-		for (int i = 1; i < rowNum +1 ; i++) {
+		for (int i = 2; i < rowNum +1 ; i++) {
 			srrorLine++;
 			Row row1 = sheetAt0.getRow(i);
 			// 所属市
 			String city = getCellValue(row1.getCell(0));
-			boolean isMatch = Pattern.matches(pattern, city);
-			if(isMatch){
+			if(city == null || city.isEmpty()){
 				break;
 			}
 
@@ -202,9 +203,9 @@ public class EnterpriseController {
 			// 服务区域描述
 			String addressDescribe = getCellValue(row1.getCell(8));
 
-			String serviceCounty = getCellValue(row1.getCell(9));
-			String serviceStreet = getCellValue(row1.getCell(10));
-			String serviceCommunity = getCellValue(row1.getCell(11));
+			String servicecity = getCellValue(row1.getCell(9));
+			String serviceCounty = getCellValue(row1.getCell(10));
+			String serviceStreet = getCellValue(row1.getCell(11));
 			// 渠道发展来源
 			// String channels = getCellValue(row1.getCell(12));
 			// 服务电话
@@ -276,30 +277,47 @@ public class EnterpriseController {
 			String streetId = enterpriseService.getRegionId(street, 4, countyId);
 			Long serviceTypeId = enterpriseService.getServiceTypeId(serviceType);
 
+			String servicecityId = "";
 			String serviceCountyId = "";
 			String serviceStreetId = "";
-			String serviceCommunityId = "";
-			if(!"".equals(serviceCounty) && serviceCounty != null){
-				serviceCountyId = enterpriseService.getRegionId(serviceCounty, 3, "0");
-				if("0".equals(serviceCountyId)){
+			if(!"".equals(servicecity) && servicecity != null){
+				servicecityId = enterpriseService.getRegionId(servicecity, 2, "0");
+				if("0".equals(servicecityId)){
 					count++;
-					errorstr+="第"+srrorLine+"行,服务区县不存在; \n";
+					errorstr+="第"+srrorLine+"行,服务市级不存在; \n";
 				}
-				if(!"".equals(serviceStreet) && serviceStreet != null){
-					serviceStreetId = enterpriseService.getRegionId(serviceStreet, 4, serviceCountyId);
-					if("0".equals(serviceStreetId)){
+				if(!"".equals(serviceCounty) && serviceCounty != null){
+					serviceCountyId = enterpriseService.getRegionId(serviceCounty, 3, servicecityId);
+					if("0".equals(serviceCountyId)){
 						count++;
-						errorstr+="第"+srrorLine+"行,服务街道不存在; \n";
+						errorstr+="第"+srrorLine+"行,服务区县不存在; \n";
 					}
-					if(!"".equals(serviceCommunity) && serviceCommunity != null){
-						serviceCommunityId = enterpriseService.getRegionId(serviceCommunity, 5, serviceStreetId);
-						if("0".equals(serviceCommunityId)){
+					if(!"".equals(serviceStreet) && serviceStreet != null){
+						serviceStreetId = enterpriseService.getRegionId(serviceStreet, 4, serviceCountyId);
+						if("0".equals(serviceStreetId)){
 							count++;
-							errorstr+="第"+srrorLine+"行,服务社区不存在; \n";
+							errorstr+="第"+srrorLine+"行,服务街道不存在; \n";
 						}
+						
 					}
 				}
 			}
+			
+//			if(!"".equals(serviceCounty) && serviceCounty != null){
+//				serviceCountyId = enterpriseService.getRegionId(serviceCounty, 3, "0");
+//				if("0".equals(serviceCountyId)){
+//					count++;
+//					errorstr+="第"+srrorLine+"行,服务区县不存在; \n";
+//				}
+//				if(!"".equals(serviceStreet) && serviceStreet != null){
+//					serviceStreetId = enterpriseService.getRegionId(serviceStreet, 4, serviceCountyId);
+//					if("0".equals(serviceStreetId)){
+//						count++;
+//						errorstr+="第"+srrorLine+"行,服务街道不存在; \n";
+//					}
+//					
+//				}
+//			}
 			//验证
 
 			if("".equals(city)){
@@ -388,9 +406,9 @@ public class EnterpriseController {
 			serviceProvider.setCity_id(Long.parseLong(cityId));
 			serviceProvider.setCounty_id(Long.parseLong(countyId));
 			serviceProvider.setStreet_id(Long.parseLong(streetId));
+			serviceProvider.setServiceCity_id(String.valueOf(servicecityId));
 			serviceProvider.setServiceCounty_id(String.valueOf(serviceCountyId));
 			serviceProvider.setServiceStreet_id(String.valueOf(serviceStreetId));
-			serviceProvider.setServiceCommunity_id(String.valueOf(serviceCommunityId));
 			serviceProvider.setAddressDescribe(addressDescribe);
 			serviceProvider.setAftermarketPerson(aftermarketPerson);
 			serviceProvider.setAftermarketPhone(aftermarketPhone);
@@ -412,8 +430,8 @@ public class EnterpriseController {
 			// serviceProvider.setServiceState(serviceState);
 
 			// 判断是否有区号
-			num = serviceTell.substring(0, 1);
-			if ("0".equals(num)) {
+			num = serviceTell.substring(0, 3);
+			if ("010".equals(num)) {
 				serviceProvider.setServiceTell(serviceTell.substring(3));
 			} else {
 				serviceProvider.setServiceTell(serviceTell);
@@ -488,7 +506,9 @@ public class EnterpriseController {
 		mv.addObject("command", parameter);
 		List<ServiceType> typeList = generalService.getAllObjects(ServiceType.class);
 		mv.addObject("typeList",typeList);
-		@SuppressWarnings("unchecked")
+		if("g".equals(user.getAccount_type())){
+			parameter.setG(1L);
+		}
 		Map<String, Object> map = enterpriseService.getMerchantsList(parameter,user);
 		mv.addObject("mList",map.get("list"));
 		mv.addObject("DataTotalCount",map.get("count"));
@@ -507,6 +527,9 @@ public class EnterpriseController {
 	public ModelAndView dicSortList(@ModelAttribute("eccomm_admin") SystemUser user,HttpServletRequest request,ServiceProviderParameter parameter) {
 		ModelAndView mv = new ModelAndView("/omp/serviceMerchants/list");
 	mv.addObject("command", parameter);
+	if("g".equals(user.getAccount_type())){
+		parameter.setG(1L);
+	}
 	List<ServiceType> typeList = generalService.getAllObjects(ServiceType.class);
 	mv.addObject("typeList",typeList);
 	@SuppressWarnings("unchecked")
@@ -706,6 +729,15 @@ public class EnterpriseController {
 			if(!sp.getServiceTell().equals(parameter.getEntity().getServiceTell()) ){
 				serviceProvider.setVerify(4);
 			}
+			//审核
+			if(sp.getVerify() != serviceProvider.getVerify()){
+				if(serviceProvider.getVerify()==3){	//通过审核同步指令
+					enterpriseService.mobsync(serviceProvider.getId());
+				}
+			}
+			
+			
+			
 			generalService.clear();
 		}
 		boolean b = enterpriseService.queryForTell(parameter.getEntity().getServiceTell(),parameter.getEntity().getId());

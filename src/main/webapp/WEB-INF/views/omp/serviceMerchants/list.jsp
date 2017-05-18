@@ -3,6 +3,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 
+
 <c:if test="${not empty messages }">
 	<div class="alert alert-warning alert-dismissable">
 		<button type="button" class="close" data-dismiss="alert"
@@ -15,7 +16,8 @@
 	${messageCount }
 	<form:form id="listForm" name="listForm" method="post"
 		action='${queryForm }'>
-		<c:if test="${DataTotalCount>0}">
+		<c:if test="${DataTotalCount>0 }">
+<!-- 		&& sessionScope.eccomm_admin.account_type != 'g' -->
 			<!-- tools -->
 			<!-- 		<div class="panel-heading"></div> -->
 			<table class="table table-hover table-middle " width="100%">
@@ -27,8 +29,9 @@
 						<th width="15%">服务类型</th>
 <!-- 						<th width="15%">服务区域</th> -->
 						<th width="10%">联系人</th>
-						<th width="15%">联系方式</th>
-						<th width="15%">审核状态</th>
+						<th width="10%">联系方式</th>
+						<th width="10%">审核状态</th>
+						<th width="18%">录入时间</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -44,6 +47,8 @@
 							<c:if test="${m.verify == 3 }"><td style="color: green;">有效</td></c:if>
 							<c:if test="${m.verify == 1 }"><td style="color: gray;">未审核</td></c:if>
 							<c:if test="${m.verify == 4 }"><td style="color: gray;">待审核</td></c:if>
+							<td><fmt:formatDate value="${m.createTime}" pattern="yyyy-MM-dd HH:mm:ss"/>
+							</td>
 							<td style="text-align: center;">
 								<div class="btn-group">
 									<button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
@@ -56,7 +61,7 @@
 										<c:when test="${sessionScope.eccomm_admin.id==1 }" >	
 											<li><a href="###" onclick="update(${m.id});">修改</a></li>
 										</c:when>
-										<c:when test="${sessionScope.eccomm_admin.account_type=='g' && (m.user.account_type =='g' || m.user.account_type == 'admin')   }" >
+										<c:when test="${sessionScope.eccomm_admin.account_type=='g' }" >
 											<li><a href="###" onclick="update(${m.id});">修改</a></li>
 										</c:when>
 										<c:when test="${sessionScope.eccomm_admin.account_type=='b' && m.user.account_type=='b'  }" >

@@ -17,7 +17,8 @@ public class ClientGetLandNumberService {
 	
 	
 	public static ImKey getZjnumber(String str) throws MalformedURLException, ServiceException{
-		String IP= PropertiesUtil.getStringByKey("WSIP");
+//		String IP= PropertiesUtil.getStringByKey("WSIP");
+		String IP = "124.65.158.2:9090";
 		String endpoint = "http://"+IP+"/PilotMS/GetLandNumberServiceImplPort?wsdl";
 		String namespace="http://service.port.pilot.com/";
 

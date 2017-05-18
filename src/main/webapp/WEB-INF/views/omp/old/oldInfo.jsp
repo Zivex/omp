@@ -6,54 +6,41 @@
 
 <div class="panel panel-default">
 	<form:form id="listForm" name="listForm" >
-		<input type="hidden" id="id" name="id" value="${detaMap.id }"/>
+		<input type="hidden" id="id" name="id" value="${old.id }"/>
 		<table class="table table-hover table-middle">
 			<tr>
-				<td  width="25%">姓名：</td><td>${detaMap.name }</td>
+				<td  width="25%">姓名：</td><td>${old.name }</td>
 			</tr>
 			<tr>
-				<td>区县：</td><td><select disabled="disabled" name="county" id="county">
-					<c:forEach items="${Region.county }" var="county">
-						<option value="${county.id }"<c:if test="${county.id==detaMap.household_county_id }">selected="selected"</c:if>>${county.name}</option>
-					</c:forEach>
-				</select></td>
+				<td>区县：</td>
+			<td>${old.household_county.name }</td>
 			</tr>
 			<tr>
-				<td>街道：</td><td><select disabled="disabled" name="street" id="street">
-						<c:forEach items="${Region.street }" var="street">
-							<option value="${street.id }"<c:if test="${street.id==detaMap.household_street_id }">selected="selected"</c:if>>${street.name}</option>
-						</c:forEach>
-				</select></td>
+				<td>街道：</td>
+			<td>${old.household_street.name }</td>
 			</tr>
 			<tr>
-				<td>社区：</td><td><select disabled="disabled" name="community" id="community">
-						<c:forEach items="${Region.community }" var="community">
-							<option value="${community.id }"<c:if test="${community.id==detaMap.household_community_id }">selected="selected"</c:if>>${community.name}</option>
-						</c:forEach>
-				</select></td>
+				<td>社区：</td>
+			<td>${old.household_community.name }</td>
 			</tr>
 			<tr>
-				<td>座机号：</td><td>${detaMap.zjnumber }</td>
+				<td>座机号：</td><td>${old.zjnumber }</td>
 			</tr>
 			<tr>
-				<td>手机号：</td><td>${detaMap.phone }</td>
+				<td>手机号：</td><td>${old.phone }</td>
 			</tr>
 			<tr>
-				<td>居住地址：</td><td>${detaMap.address }</td>
+				<td>居住地址：</td><td>${old.address }</td>
 			</tr>
 			<tr>
-				<td>紧急联系人：</td><td>${detaMap.emergencycontact }</td>
+				<td>紧急联系人：</td><td>${old.emergencycontact }</td>
 			</tr>
 			<tr>
-				<td>紧急联系人电话：</td><td>${detaMap.emergencycontacttle }</td>
+				<td>紧急联系人电话：</td><td>${old.emergencycontacttle }</td>
 			</tr>
 			<tr>
 				<td>话机类型：</td>
-				<td><select id="teltype" disabled="disabled" name="teltype">
-					<option value="居家型"<c:if test="${detaMap.teltype=='居家型' }">selected="selected"</c:if>>居家型</option>
-					<option value="农行型"<c:if test="${detaMap.teltype=='农行型' }">selected="selected"</c:if>>农行型</option>
-					<option value="失能型"<c:if test="${detaMap.teltype=='失能型' }">selected="selected"</c:if>>失能型</option>
-				</select></td>
+			<td>${old.phoneType.phoneType }</td>
 			</tr>
 		</table>
 

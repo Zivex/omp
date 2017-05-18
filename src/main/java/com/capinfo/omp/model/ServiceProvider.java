@@ -66,6 +66,8 @@ public class ServiceProvider implements BaseEntity {
 	//服务区域描述
 	private String addressDescribe;
 
+	private String serviceCity_id;
+	private OmpRegion serviceCity;
 	private String serviceCounty_id;
 	private OmpRegion serviceCounty;
 	private String serviceStreet_id;
@@ -177,10 +179,35 @@ public class ServiceProvider implements BaseEntity {
 		return city;
 	}
 
-
 	public void setCity(OmpRegion city) {
 		this.city = city;
 	}
+	
+	
+	
+	@Column(name = "serviceCity_id")
+
+	public String getServiceCity_id() {
+		return serviceCity_id;
+	}
+
+
+	public void setServiceCity_id(String serviceCity_id) {
+		this.serviceCity_id = serviceCity_id;
+	}
+
+	@ManyToOne(targetEntity = OmpRegion.class, fetch = FetchType.LAZY)
+	@JoinColumn(name = "serviceCity_id", insertable = false, updatable = false)
+	public OmpRegion getServiceCity() {
+		return serviceCity;
+	}
+
+
+	public void setServiceCity(OmpRegion serviceCity) {
+		this.serviceCity = serviceCity;
+	}
+
+	
 
 	@Column(name = "county_id")
 	public Long getCounty_id() {

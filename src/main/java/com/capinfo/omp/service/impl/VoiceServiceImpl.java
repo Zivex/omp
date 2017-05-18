@@ -1,7 +1,9 @@
 package com.capinfo.omp.service.impl;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Service;
 import com.capinfo.common.model.SystemUser;
 import com.capinfo.framework.dao.SearchCriteriaBuilder;
 import com.capinfo.framework.dao.impl.restriction.RestrictionExpression;
+import com.capinfo.framework.model.BaseEntity;
 import com.capinfo.framework.service.GeneralService;
 import com.capinfo.framework.web.service.impl.CommonsDataOperationServiceImpl;
 import com.capinfo.omp.model.Omp_Old_Info;
@@ -28,6 +31,7 @@ import com.capinfo.omp.parameter.VoiceParameter;
 import com.capinfo.omp.service.OldService;
 import com.capinfo.omp.service.VoiceService;
 import com.capinfo.omp.utils.Page;
+import com.capinfo.omp.ws.client.ClientGetVoiceDataService;
 import com.capinfo.omp.ws.model.ImKey;
 
 @Service
@@ -42,18 +46,22 @@ public class VoiceServiceImpl extends
 	private OldService oldService;
 
 	@Override
-	public List<Omp_Old_Info> getOldContextList(VoiceParameter p, SystemUser user) {
+	public List<Omp_Old_Info> getOldContextList(VoiceParameter p,
+			SystemUser user) {
 		OldParameter parameter = new OldParameter();
 		parameter.setName(p.getName());
 		parameter.setIdCard(p.getIdCard());
 		parameter.setZjNumber(p.getZjNumber());
+		parameter.setCity(p.getCity());
 		parameter.setCounty(p.getCounty());
 		parameter.setStreet(p.getStreet());
 		parameter.setCommunity(p.getCommunity());
 		parameter.setPerPieceSize(p.getPerPieceSize());
 		parameter.setCurrentPieceNum(p.getCurrentPieceNum());
-		
-		List<Omp_Old_Info> oldlist = oldService.getOldContextList(parameter, user);
+		parameter.setSource("voice");
+
+		List<Omp_Old_Info> oldlist = oldService.getOldContextList(parameter,
+				user);
 		return oldlist;
 	}
 
@@ -63,10 +71,11 @@ public class VoiceServiceImpl extends
 		parameter.setName(p.getName());
 		parameter.setIdCard(p.getIdCard());
 		parameter.setZjNumber(p.getZjNumber());
+		parameter.setCity(p.getCity());
 		parameter.setCounty(p.getCounty());
 		parameter.setStreet(p.getStreet());
 		parameter.setCommunity(p.getCommunity());
-		
+
 		int count = oldService.getCount(parameter, user);
 		return count;
 	}
@@ -195,36 +204,41 @@ public class VoiceServiceImpl extends
 	}
 
 	@Override
-	public List<Omp_old_order> getOldList(Page page, String name,
-			String idCard, String zjNumber, String county, String street,
-			String community, String send_flag, String execute_flag,
-			SystemUser user) {
+	public List<Omp_old_order> getOldList(VoiceParameter p, SystemUser user) {
 		List<Omp_old_order> orderList = null;
 		OldParameter parameter = new OldParameter();
-		parameter.setName(name);
-		parameter.setIdCard(idCard);
-		parameter.setZjNumber(zjNumber);
-		parameter.setCounty(county);
-		parameter.setStreet(street);
-		parameter.setCommunity(community);
-		parameter.setIsGenerationOrder("order");
-		parameter.setPerPieceSize(page.getPageSize());
-		parameter.setCurrentPieceNum(page.getCurrentPage());
-		
-		
-		
-//		List<Omp_Old_Info> oldList = oldService.getOldContextList(page, name,
-//				idCard, zjNumber, county, street, community, null, null, user);
-		List<Omp_Old_Info> oldList = oldService.getOldContextList(parameter, user);
+		parameter.setName(p.getName());
+		parameter.setIdCard(p.getIdCard());
+		parameter.setZjNumber(p.getZjNumber());
+		parameter.setCity(p.getCity());
+		parameter.setCounty(p.getCounty());
+		parameter.setStreet(p.getStreet());
+		parameter.setCommunity(p.getCommunity());
+//		parameter.setIsGenerationOrder("order");
+		parameter.setPerPieceSize(p.getPerPieceSize());
+		parameter.setCurrentPieceNum(p.getCurrentPieceNum());
+		parameter.setSource("voiceorder");	//语音指令
+
+		// List<Omp_Old_Info> oldList = oldService.getOldContextList(page, name,
+		// idCard, zjNumber, county, street, community, null, null, user);
+		List<Omp_Old_Info> oldList = oldService.getOldContextList(parameter,
+				user);
 
 		if (oldList.size() > 0) {
 			SearchCriteriaBuilder<Omp_voice_order> searchCriteriaBuilder = new SearchCriteriaBuilder<Omp_voice_order>(
 					Omp_voice_order.class);
 
 			searchCriteriaBuilder.addQueryCondition("send_flag",
-					RestrictionExpression.EQUALS_OP, send_flag);
+					RestrictionExpression.EQUALS_OP, p.getEntity()
+							.getSend_flag());
 			searchCriteriaBuilder.addQueryCondition("execute_flag",
-					RestrictionExpression.EQUALS_OP, execute_flag);
+					RestrictionExpression.EQUALS_OP, p.getEntity()
+							.getExecute_flag());
+
+			searchCriteriaBuilder.addLimitCondition(
+					(parameter.getCurrentPieceNum() - 1)
+							* parameter.getPerPieceSize(),
+					parameter.getPerPieceSize());
 
 			String sql = "";
 			String ids = "";
@@ -247,31 +261,32 @@ public class VoiceServiceImpl extends
 	}
 
 	@Override
-	public int getOlCount(String name, String idCard, String zjNumber,
-			String county, String street, String community, String send_flag,
-			String execute_flag, SystemUser user) {
+	public int getOlCount(VoiceParameter p, SystemUser user) {
 		int count = 0;
-		
+
 		OldParameter parameter = new OldParameter();
-		parameter.setName(name);
-		parameter.setIdCard(idCard);
-		parameter.setZjNumber(zjNumber);
-		parameter.setCounty(county);
-		parameter.setStreet(street);
-		parameter.setCommunity(community);
+		parameter.setName(p.getName());
+		parameter.setIdCard(p.getIdCard());
+		parameter.setZjNumber(p.getZjNumber());
+		parameter.setCity(p.getCity());
+		parameter.setCounty(p.getCounty());
+		parameter.setStreet(p.getStreet());
+		parameter.setCommunity(p.getCommunity());
 		parameter.setIsGenerationOrder("order");
-		
-		
-		List<Omp_Old_Info> oldList = oldService.getOldContextList(parameter, user);
+
+		List<Omp_Old_Info> oldList = oldService.getOldContextList(parameter,
+				user);
 
 		if (oldList.size() > 0) {
 			SearchCriteriaBuilder<Omp_voice_order> searchCriteriaBuilder = new SearchCriteriaBuilder<Omp_voice_order>(
 					Omp_voice_order.class);
 
 			searchCriteriaBuilder.addQueryCondition("send_flag",
-					RestrictionExpression.EQUALS_OP, send_flag);
+					RestrictionExpression.EQUALS_OP, p.getEntity()
+							.getSend_flag());
 			searchCriteriaBuilder.addQueryCondition("execute_flag",
-					RestrictionExpression.EQUALS_OP, execute_flag);
+					RestrictionExpression.EQUALS_OP, p.getEntity()
+							.getExecute_flag());
 
 			String sql = "";
 			String ids = "";
@@ -308,8 +323,6 @@ public class VoiceServiceImpl extends
 	@Override
 	public void saveviceoder(String id, String vid, String executeType,
 			String startTime, String endTime, String t, SystemUser user) {
-		String userName = SecurityContextHolder.getContext()
-				.getAuthentication().getName();
 
 		String sql = "INSERT into omp_voice_order(oldId,executeType,startTime,endTime,voiceFIleId,voiceFileAddress,number,agent_id) VALUES ("
 				+ id
@@ -322,7 +335,7 @@ public class VoiceServiceImpl extends
 				+ "','"
 				+ vid
 				+ "',(select i.voiceFileAddress from omp_voice_info i where id = "
-				+ vid + "),'" + t + "',"+user.getId()+")";
+				+ vid + "),'" + t + "'," + user.getId() + ")";
 		JdbcTemplate.update(sql);
 	}
 
@@ -405,10 +418,13 @@ public class VoiceServiceImpl extends
 				+ "',"
 				+ imKey.getStatusCode()
 				+ ",'"
-				+ imKey.getGenerateSerialNumber() + "','2'," + user.getId() + ")";
+				+ imKey.getGenerateSerialNumber()
+				+ "','2',"
+				+ user.getId()
+				+ ")";
 		// + "123" + "','2','" + username + "')";
-		oldService.saveLogger("5", "语音指令表", "" + user.getName() + "",
-				"" + imKey.getStatusCode() + "");
+		oldService.saveLogger("5", "语音指令表", "" + user.getName() + "", ""
+				+ imKey.getStatusCode() + "");
 		// "1");
 		JdbcTemplate.update(sql);
 	}
@@ -423,18 +439,23 @@ public class VoiceServiceImpl extends
 
 	@Override
 	public void deleteVoidsByid(String vid) {
-		String[] ids = vid.split(",");
-		for (String id : ids) {
-			String sql = "UPDATE omp_voice_info SET stat='0' WHERE (`ID`='"
-					+ id + "')";
-			JdbcTemplate.update(sql);
+		if (vid.contains(",")) {
+			String[] ids = vid.split(",");
+			System.out.println(ids.length);
+			for (String id : ids) {
+				String sql = "UPDATE omp_voice_info SET stat='0' WHERE (`ID`='"
+						+ id + "')";
+				JdbcTemplate.update(sql);
+			}
+		}else{
+			deleteVoidByid(vid);
 		}
 
 	}
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public Boolean queryCount(String ids) {
+	public boolean queryCount(String ids,SystemUser user) {
 		String userName = SecurityContextHolder.getContext()
 				.getAuthentication().getName();
 		String uName = "";
@@ -468,7 +489,7 @@ public class VoiceServiceImpl extends
 
 	@SuppressWarnings("deprecation")
 	@Override
-	public String numRest(String id) {
+	public String numRest(String id,SystemUser user) {
 		String sqlRest = "";
 		String count = "";
 		String userName = SecurityContextHolder.getContext()
@@ -514,7 +535,7 @@ public class VoiceServiceImpl extends
 				int i = Integer.parseInt(voiceSata);
 				i = i + 1;
 				sql = "update users o set o.num = " + i
-						+ " where 1=1 and o.id = " + user.getId() ;
+						+ " where 1=1 and o.id = " + user.getId();
 			}
 			JdbcTemplate.update(sql);
 		}
@@ -537,73 +558,136 @@ public class VoiceServiceImpl extends
 					+ user.getId();
 			Long voiceSendFail = JdbcTemplate.queryForLong(sql2);
 
-//			// 执行成功
-//			String sql3 = "select count(*) from omp_voice_order o where o.execute_flag = 1 and o.agent_id = '"
-//					+ user.getLogonName() + "'";
-//			int executeSuc = JdbcTemplate.queryForInt(sql3);
-//
-//			String sql4 = "select count(*) from omp_voice_order o where o.execute_flag = 0 and o.agent_id = '"
-//					+ user.getLogonName() + "'";
-//			int executeFail = JdbcTemplate.queryForInt(sql4);
-//
-//			// 未接听
-//			String sql5 = "select count(*) from omp_voice_order o where o.execute_flag = 3 and o.agent_id = '"
-//					+ user.getLogonName() + "'";
-//			int notAnswer = JdbcTemplate.queryForInt(sql5);
-//
-//			// 未返回
-//			String sql6 = "select count(*) from omp_voice_order o where o.execute_flag is null and o.agent_id = '"
-//					+ user.getLogonName() + "'";
-//			int notReturn = JdbcTemplate.queryForInt(sql6);
-			
+			// // 执行成功
+			String sql3 = "select count(*) from omp_voice_order o where o.execute_flag = 1 and o.agent_id = "
+					+ user.getId();
+			Long executeSuc = JdbcTemplate.queryForLong(sql3);
+			// 执行失败
+			String sql4 = "select count(*) from omp_voice_order o where o.execute_flag = 0 and o.agent_id = "
+					+ user.getId();
+			Long executeFail = JdbcTemplate.queryForLong(sql4);
+			//
+			// // 未接听
+			String sql5 = "select count(*) from omp_voice_order o where o.execute_flag = 3 and o.agent_id = "
+					+ user.getId();
+			Long notAnswer = JdbcTemplate.queryForLong(sql5);
+			//
+			// // 未返回
+			String sql6 = "select count(*) from omp_voice_order o where o.execute_flag is null and o.agent_id = "
+					+ user.getId();
+			Long notReturn = JdbcTemplate.queryForLong(sql6);
+
 			// 语音发送总次数
-			String sql8 = "select count(*) from omp_voice_order o where o.agent_id  = "+ user.getId();
+			String sql8 = "select count(*) from omp_voice_order o where o.agent_id  = "
+					+ user.getId();
 			Long voiceCount = JdbcTemplate.queryForLong(sql8);
 
-			
 			/**
 			 * 指令
 			 */
 
-			// 成功
-			String sql9 = "select count(*) from omp_order_number o where o.send_flag= 1  and o.agent_id="
+			// 发送成功
+			String sql9 = "select count(*) from omp_order_number o where o.returntype= 1 and o.send_flag= 1  and o.agent_id="
 					+ user.getId();
 			Long orderSuc = JdbcTemplate.queryForLong(sql9);
 
-			// 失败
-			String sq20 = "select count(*) from omp_order_number o where o.send_flag= 0  and o.agent_id="
+			// 发送失败
+			String sq20 = "select count(*) from omp_order_number o where o.returntype= 1 and o.send_flag= 0  and o.agent_id="
 					+ user.getId();
 			Long orderFail = JdbcTemplate.queryForLong(sq20);
+
+			// 执行成功
+			String sq22 = "select count(*) from omp_order_number o where o.returntype= 1 and o.execute_flag = 1  and o.agent_id="
+					+ user.getId();
+			Long orderexecuteSuc = JdbcTemplate.queryForLong(sq22);
+
+			// 执行失败
+			String sq23 = "select count(*) from omp_order_number o where o.returntype= 1 and o.execute_flag = 0  and o.agent_id="
+					+ user.getId();
+			Long orderexecuteFail = JdbcTemplate.queryForLong(sq23);
+
 			// 总数
-			String sq21 = "select count(*) from omp_order_number o where o.send_flag= 1  and o.agent_id="
+			String sq21 = "select count(*) from omp_order_number o where o.returntype= 1  and o.agent_id="
 					+ user.getId();
 			Long orderCount = JdbcTemplate.queryForLong(sq21);
-			
 
 			// 剩余发送次数
-			String sql7 = "select u.num from users u where u.id = "+user.getId();
+			String sql7 = "select u.num from users u where u.id = "
+					+ user.getId();
 			Long remainCount = JdbcTemplate.queryForLong(sql7);
-			
+
 			UserInfoParameter userInfo = new UserInfoParameter();
-//			userInfo.setExecuteFail(executeFail);
-//			userInfo.setExecuteSuc(executeSuc);
-//			userInfo.setNotAnswer(notAnswer);
-//			userInfo.setNotReturn(notReturn);
+			userInfo.setOrderexecuteSuc(orderexecuteSuc);
+			userInfo.setOrderexecuteFail(orderexecuteFail);
+			userInfo.setExecuteFail(executeFail);
+			userInfo.setExecuteSuc(executeSuc);
+			userInfo.setNotAnswer(notAnswer);
+			userInfo.setNotReturn(notReturn);
 			userInfo.setVoiceSendFail(voiceSendFail);
 			userInfo.setVoiceSendSuc(voiceSendSuc);
-			
+
 			userInfo.setOrderFail(orderFail);
 			userInfo.setOrderSuc(orderSuc);
-			
+
 			userInfo.setRemainCount(remainCount);
 			userInfo.setVoiceCount(voiceCount);
 			userInfo.setOrderCount(orderCount);
-			
+
 			return userInfo;
 
 		}
 
 		return null;
+	}
+
+	@Override
+	public String repeatVoice(Long orderId,SystemUser user) {
+		 
+		Omp_voice_order voice = getGeneralService().getObjectById(Omp_voice_order.class, orderId);
+		ClientGetVoiceDataService vice = new ClientGetVoiceDataService();
+		ImKey imKey = null;
+		if(!queryCount(String.valueOf(voice.getOldId()),user)){
+			return "您发送的语音条数已超出，请充值后再行发送，充值电话：褚-84933228";
+		}
+		//语音发送次数-1
+		String voiceSata = numRest(String.valueOf(voice.getOldId()),user);
+		
+		int x;// 定义两变量
+		Random ne = new Random();// 实例化一个random的对象ne
+		x = ne.nextInt(99999 - 10000 + 1) + 1000;// 为变量赋随机值10000-99999
+		String time = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+		String t = time + x;
+		//修改语音发送记录
+		Date date=new Date();
+		 Calendar calendar = new GregorianCalendar();
+		 calendar.setTime(date);
+		 calendar.add(Calendar.DAY_OF_MONTH, 1);
+		Date tomorrow=calendar.getTime();
+		voice.setStartTime(date);
+		voice.setEndTime(tomorrow);
+		voice.setNumber(Long.parseLong(t));
+		getGeneralService().saveOrUpdate(voice);
+		String json = sendvice(String.valueOf(voice.getId()), t);
+		try {
+			imKey = vice.svoice(json);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println("语音发送返回数据"+imKey.getStatusCode()+","+imKey.getGenerateSerialNumber()+","+imKey.getExecutionTime()+","+imKey.getReturnType()+","+imKey.getErrorMessage());
+		String number = imKey.getGenerateSerialNumber();
+		if ("1".equals(imKey.getStatusCode())) {
+			//成功	将记录添加到number表
+			resultVOrders(imKey, String.valueOf(voice.getOldId()), user);
+			toupdete(number);
+			upMessg(imKey, String.valueOf(voice.getOldId()));
+		}else{
+			//失败回滚
+			rollback(String.valueOf(voice.getOldId()),user,voiceSata);
+			return "发送失败 : /n "+imKey.getErrorMessage();
+			
+		}
+		return "发送成功";
 	}
 
 }

@@ -31,6 +31,10 @@
 			<form:hidden path="entity.signingDate" />
 			<form:hidden path="entity.createTime" />
 			<form:hidden path="entity.user_falg" />
+			<c:if test="${sessionScope.eccomm_admin.id!=1 }">
+				<form:hidden path="entity.user.name" />
+			</c:if>
+			
 			<table class="table table-hover table-middle">
 				<caption>服务商详情</caption>
 				<tr>
@@ -106,12 +110,14 @@
 						</td>
 					</tr>
 				</c:if>
+				<c:if test="${sessionScope.eccomm_admin.id==1 }">
 				<tr>
 					<td width="25%">渠道发展来源</td>
-					<td><form:input path="entity.user.name" disabled="true" /></td>
+					<td><form:input path="entity.user.name"  /></td>
 				</tr>
+				</c:if>
 				<tr>
-					<td width="25%">联系人</td>
+					<td width="25%">联系人${entity.user.name }</td>
 					<td><form:input path="entity.contact" /></td>
 				</tr>
 				<tr>
@@ -172,7 +178,17 @@
 				<c:if test="${sessionScope.eccomm_admin.id==1 }">
 					<tr>
 						<td width="25%">核实状态</td>
-						<td><form:select path="entity.verify" id="verify">
+						<td><form:select path="entity.verify" id="verify1" >
+								<form:option value="1">未审核</form:option>
+								<form:option value="2">无效</form:option>
+								<form:option value="3">有效</form:option>
+							</form:select></td>
+					</tr>
+				</c:if>
+				<c:if test="${sessionScope.eccomm_admin.id!=1 }">
+					<tr>
+						<td width="25%">核实状态</td>
+						<td><form:select path="entity.verify" id="verify2" disabled = "true">
 								<form:option value="1">未审核</form:option>
 								<form:option value="2">无效</form:option>
 								<form:option value="3">有效</form:option>
@@ -204,6 +220,7 @@
 			</table>
 		</form:form>
 	</div>
+	
 
 </div>
 <script>
@@ -216,6 +233,10 @@
 	function udpStreet() {
 		changStreet(street1, community1);
 	}
+
+	$(document).ready(function() {
+		
+	});
 
 	//修改街道
 	function changCounty(county1, street1, community1) {
@@ -259,17 +280,23 @@
 
 	function submit() {
 		var regionIds = "&regionIds="+getChecked();
+		var verify ="";
+		<c:if test="${sessionScope.eccomm_admin.id!=1 }">
+		verify = "&entity.verify="+$('#verify2').val();
+		</c:if>
+		
 		  $.ajax({
 				cache : true,
 				type : "POST",
 				url : '${pageContext.request.contextPath}/enterprise/serviceMerchants/ServiceupdateDo.shtml',
-				data : $('#listForm').serialize()+regionIds,// 你的formid
+				data : $('#listForm').serialize()+regionIds+verify,// 你的formid
 				async : false,
 				error : function(request) {
 					alert("Connection error");
 				},
 				success : function(data) {
 					alert(data);
+					location.href = "<%=request.getContextPath() %>/enterprise/initial.shtml";
 					//$("#commonLayout_appcreshi").parent().html(data);
 				}
 		});

@@ -46,13 +46,10 @@ public class VoiceController {
 
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
+	
 
 	@RequestMapping("/voiceManage/initial.shtml")
 	public ModelAndView initial(VoiceParameter parameter,@ModelAttribute("eccomm_admin") SystemUser user) {
-		
-		
-		
-		
 		ModelAndView mv = new ModelAndView("/omp/voice/initial");
 		getList(mv, parameter,user);
 		return mv;
@@ -344,45 +341,46 @@ public class VoiceController {
 	}
 
 	@RequestMapping("/voiceManage/initial2.shtml")
-	public ModelAndView initial2(String current, String name, String idCard, String zjNumber, String county, String street, String community, String send_flag, String execute_flag,@ModelAttribute("eccomm_admin") SystemUser user) {
+	public ModelAndView initial2(VoiceParameter parameter,@ModelAttribute("eccomm_admin") SystemUser user) {
 		ModelAndView mv = new ModelAndView("/omp/voice/initial2");
-		getList(mv, current, name, idCard, zjNumber, county, street, community, send_flag, execute_flag,user);
+		getList(mv, parameter,user,0L);
 		return mv;
 	}
 
 	@RequestMapping("/voiceManage/list2.shtml")
-	public ModelAndView listt2(String current, String name, String idCard, String zjNumber, String county, String street, String community, String send_flag, String execute_flag,@ModelAttribute("eccomm_admin") SystemUser user) {
+	public ModelAndView listt2(VoiceParameter parameter,@ModelAttribute("eccomm_admin") SystemUser user) {
 		ModelAndView mv = new ModelAndView("/omp/voice/list2");
-		getList(mv, current, name, idCard, zjNumber, county, street, community, send_flag, execute_flag,user);
+		getList(mv, parameter,user,1L);
 		return mv;
 	}
 
-	public void getList(ModelAndView mv, String current, String name, String idCard, String zjNumber, String county, String street, String community, String send_flag, String execute_flag,SystemUser user) {
-		if (StringUtils.isEmpty(current)) {
-			current = "1";
-		}
-		int count = voiceService.getOlCount(name, idCard, zjNumber, county, street, community, send_flag, execute_flag,user);
-		Page<Object> page = new Page<>(current, count, "10");
-		List<Omp_old_order> oldList = voiceService.getOldList(page, name,
-				idCard, zjNumber, county, street, community, send_flag,
-				execute_flag, user);
-		
+	public void getList(ModelAndView mv, VoiceParameter parameter,SystemUser user,Long l) {
+		int count = voiceService.getOlCount(parameter,user);
+		List<Omp_old_order> oldList = voiceService.getOldList(parameter, user);
 		mv.addObject("voiceOl", oldList);
-		mv.addObject("DataTotalCount", count);
-		mv.addObject("CurrentPieceNum", page.getCurrentPage());
+		mv.addObject("count", count);
+		mv.addObject("command", parameter);
 		mv.addObject("PerPieceSize", "10");
-		mv.addObject("name", name);
-		mv.addObject("idCard", idCard);
-		mv.addObject("zjNumber", zjNumber);
-		mv.addObject("county", county);
-		mv.addObject("street", street);
-		mv.addObject("community", community);
-		mv.addObject("execute_flag", execute_flag);
-		mv.addObject("send_flag", send_flag);
 	}
 
 	/**
-	 * 语音发送
+	 * 重新发送失败语音
+	 * @param ids
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/voiceManage/repeatVoice.shtml")
+	@ResponseBody
+	public String sendVice(Long orderId,@ModelAttribute("eccomm_admin") SystemUser user) throws Exception {
+		System.out.println("重新发送失败语音");
+		String result = voiceService.repeatVoice(orderId,user);
+		return result;
+	}
+	
+	
+	/**
+	 * 重新发送失败语音
 	 * @param ids
 	 * @param request
 	 * @return
@@ -390,12 +388,12 @@ public class VoiceController {
 	 */
 	@RequestMapping("/voiceManage/sendOrder.shtml")
 	@ResponseBody
-	public String sendVice(String ids, Date stime, Date etime,String sata, HttpServletRequest request,@ModelAttribute("eccomm_admin") SystemUser user) throws Exception {
-		System.out.println("发送语音");
-	
+		public String sendVice(String ids, Date stime, Date etime,String sata, HttpServletRequest request,@ModelAttribute("eccomm_admin") SystemUser user) throws Exception {
+		System.out.println("定时发送语音");
 		String string = sendVoice(ids, stime, etime,  user);
 		return string;
 	}
+	
 	
 	
 	public String sendVoice(String ids, Date stime, Date etime,SystemUser user) throws Exception{
@@ -427,13 +425,13 @@ public class VoiceController {
 		if (!StringUtils.isEmpty(executionTime)) {
 			String mid = voiceService.middle();// 语音ID
 			if (!StringUtils.isEmpty(ids)) {
-				if(!voiceService.queryCount(ids)){
+				if(!voiceService.queryCount(ids,user)){
 					return "您发送的语音条数已超出，请充值后再行发送，充值电话：褚-84933228";
 				}
 				String[] split = ids.split(",");
 				for (String id : split) {
 					//语音发送次数-1
-					String voiceSata = voiceService.numRest(id);
+					String voiceSata = voiceService.numRest(id,user);
 					int x;// 定义两变量
 					Random ne = new Random();// 实例化一个random的对象ne
 					x = ne.nextInt(99999 - 10000 + 1) + 1000;// 为变量赋随机值10000-99999

@@ -17,11 +17,9 @@ import com.capinfo.omp.ws.model.ImKey;
 @Service
 public interface OrderService extends CommonsDataOperationService<Omp_old_order, OrderParameter> {
 
-	int getOrderCount(String name, String idCard, String zjNumber, String county, String street, String community,
-			String send_flag, String execute_flag,SystemUser user);
+	int getOrderCount(OrderParameter parameter,SystemUser user);
 
-	List<Omp_old_order> getOrderList(Page page, String name, String idCard, String zjNumber, String county,
-			String street, String community, String send_flag, String execute_flag,SystemUser user);
+	Map<String , Object> getOrderList(OrderParameter p,SystemUser user);
 	
 	String sendOrder(String id);
 	

@@ -2,7 +2,9 @@ package com.capinfo.order.controller;
 
 import java.util.List;
 import java.util.Map;
+
 import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -11,11 +13,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
+
 import com.capinfo.common.model.SystemUser;
 import com.capinfo.omp.model.Omp_old_order;
+import com.capinfo.omp.parameter.OrderParameter;
 import com.capinfo.omp.service.OldService;
 import com.capinfo.omp.service.OrderService;
-import com.capinfo.omp.utils.Page;
 import com.capinfo.omp.ws.client.ClientGetDataService;
 import com.capinfo.omp.ws.model.ImKey;
 
@@ -31,46 +34,33 @@ public class OrderController {
 	private OldService oldService;
 
 	@RequestMapping("/orderManage/initial.shtml")
-	public ModelAndView initial(String current, String name, String idCard, String zjNumber, String county, String street, String community, String send_flag, String execute_flag,@ModelAttribute("eccomm_admin") SystemUser user) {
+	public ModelAndView initial(OrderParameter parameter,@ModelAttribute("eccomm_admin") SystemUser user) {
 		ModelAndView mv = new ModelAndView("/omp/order/initial");
 
-		getList(mv, current, name, idCard, zjNumber, county, street, community, send_flag, execute_flag,user);
+		getList(mv, parameter,user);
 		return mv;
 	}
 
 	@RequestMapping("/orderManage/list.shtml")
-	public ModelAndView listt(String current, String name, String idCard, String zjNumber, String county, String street, String community, String send_flag, String execute_flag,@ModelAttribute("eccomm_admin") SystemUser user) {
+	@ResponseBody
+	public ModelAndView listt(OrderParameter parameter,@ModelAttribute("eccomm_admin") SystemUser user) {
 		ModelAndView mv = new ModelAndView("/omp/order/list");
 		
-		getList(mv, current, name, idCard, zjNumber, county, street, community, send_flag, execute_flag,user);
+		getList(mv, parameter,user);
 		return mv;
 	}
 
-	public void getList(ModelAndView mv, String current, String name, String idCard, String zjNumber, String county, String street, String community, String send_flag, String execute_flag,SystemUser user) {
-		if (StringUtils.isEmpty(current)) {
-			current = "1";
-		}
+	public void getList(ModelAndView mv,OrderParameter parameter ,SystemUser user) {
 		
 		
-		int count = orderService.getOrderCount(name, idCard, zjNumber, county, street, community, send_flag, execute_flag,user);
-		//count = count == 0 ? 1 : count;
-		String pageSize = "10";
-		Page page = new Page<>(current, count, pageSize);
-		List<Omp_old_order> entities = orderService.getOrderList(page, name, idCard, zjNumber, county, street, community, send_flag, execute_flag,user);
 		
+		//int count = orderService.getOrderCount(parameter,user);
 		
-		mv.addObject("dataList", entities);
-		mv.addObject("DataTotalCount", count);
-		mv.addObject("CurrentPieceNum", page.getCurrentPage());
-		mv.addObject("PerPieceSize", "10");
-		mv.addObject("name", name);
-		mv.addObject("idCard", idCard);
-		mv.addObject("zjNumber", zjNumber);
-		mv.addObject("county", county);
-		mv.addObject("street", street);
-		mv.addObject("community", community);
-		mv.addObject("execute_flag", execute_flag);
-		mv.addObject("send_flag", send_flag);
+		Map<String, Object> map = orderService.getOrderList( parameter,user);
+		
+		mv.addObject("dataList", map.get("orderList"));
+		mv.addObject("count", map.get("count"));
+		mv.addObject("command", parameter);
 	}
 
 	/**
@@ -86,7 +76,6 @@ public class OrderController {
 		if(!orderService.queryCount(ids)){
 			return "您发送的指令条数已超出，请充值后再行发送，充值电话：褚-84933228";
 		}
-		String username = user.getLogonName();
 		int i = 0;
 		ClientGetDataService c = new ClientGetDataService();
 		if (!StringUtils.isEmpty(ids)) {
@@ -172,6 +161,9 @@ public class OrderController {
     	}
 		return mv;
 	}
+	
+	
+	
 	
 	
 	

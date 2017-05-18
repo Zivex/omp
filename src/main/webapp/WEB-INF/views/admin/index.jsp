@@ -36,38 +36,41 @@
 					</div>
 					<div class="header-underline"></div>
 					<div id="displayDiv">
-					<div class="table-responsive">
-						<table class="table table-bordered">
-							<tr>
-								<th colspan="6" ><h4 style="text-align: center;">用户信息</h4></th>
-							</tr>
-							<tr>
-								<td colspan="3" width="50%" style="text-align: center;" >剩余发送次数:</td>
-								<td colspan="3" width="50%">${userINfo.remainCount }</td>
-							</tr>
-							<tr>
-								<td colspan="3" style="text-align: center;" >指令键发送次数:</td>
-								<td colspan="3">${userINfo.orderCount }</td>
-							</tr>
-							<tr>
-								<td colspan="1" width="20%" style="text-align: right;" class="success">成功:</td>
-								<td colspan="2" class="success">${userINfo.orderSuc }</td>
-								<td colspan="1" style="text-align: right;" class="danger">失败:</td>
-								<td colspan="2" class="danger">${userINfo.orderFail }</td>
-							</tr>
-							<tr>
-								<td colspan="3" style="text-align: center;">语音累计发送次数:</td>
-								<td colspan="3">${userINfo.voiceCount }</td>
-							</tr>
-							<tr>
-								<td colspan="1" width="20%" style="text-align: right;" class="success">成功:</td>
-								<td colspan="2" class="success">${userINfo.voiceSendSuc }</td>
-								<td colspan="1" style="text-align: right;" class="danger">失败:</td>
-								<td colspan="2" class="danger">${userINfo.voiceSendFail }</td>
-							</tr>
-
-						</table>
-</div>
+						<div class="table-responsive">
+							<table class="table table-bordered">
+								<tr>
+									<th colspan="12"><h4 style="text-align: center;">用户信息</h4></th>
+								</tr>
+								<tr>
+									<td colspan="6" width="50%" style="text-align: center;">剩余发送次数:</td>
+									<td colspan="6" width="50%">${userINfo.remainCount }</td>
+								</tr>
+								<tr>
+									<td colspan="6" style="text-align: center;">指令键发送次数:</td>
+									<td colspan="6">${userINfo.orderCount }</td>
+								</tr>
+								<tr>
+									<td colspan="2" width="20%" style="text-align: right;" class="success">发送成功:</td>
+									<td colspan="4" class="success">${userINfo.orderexecuteSuc }</td>
+									<td colspan="2" style="text-align: right;" class="success">发送失败:</td>
+									<td colspan="4" class="danger"><a href="#" onclick="linkOrder()">${userINfo.orderexecuteFail }</a></td>
+								</tr>
+								<tr>
+									<td colspan="6" style="text-align: center;">语音累计发送次数:</td>
+									<td colspan="6">${userINfo.voiceCount }</td>
+								</tr>
+								<tr>
+									<td colspan="1" class="success">执行成功:</td>
+									<td colspan="2" class="success">${userINfo.executeSuc }</td>
+									<td colspan="1" class="success">执行失败:</td>
+									<td colspan="2" class="danger"> <a href="#" onclick="linkVoice()">${userINfo.executeFail }</a>  </td>
+									<td colspan="1" class="success">已听取:</td>
+									<td colspan="2" class="success">${userINfo.executeSuc - userINfo.notAnswer }</td>
+									<td colspan="1" class="success">未听取:</td>
+									<td colspan="2" class="danger">${userINfo.notAnswer }</td>
+								</tr>
+							</table>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -86,6 +89,12 @@
 			initalizeSiderBar();
 			selectMenu("m_home");
 		});
+		function linkOrder(){
+			location.href = "<%=request.getContextPath()%>/order/orderManage/initial.shtml?execute_flag=0";
+        }
+		function linkVoice(){
+			location.href = "<%=request.getContextPath()%>/voice/voiceManage/initial2.shtml?entity.execute_flag=0";
+        }
 	</script>
 
 

@@ -33,27 +33,26 @@
 				<div>
 					<div class="page-header">
 						<h1>
-							<i class="fa fa-user fa-fw"></i>服务商管理 <span id="backspan"><input
-								type="button" id="backButton" onclick="hxBackClick()" value="返回" /></span>
+							<i class="fa fa-user fa-fw"></i>服务商管理 <span id="backspan"></span>
 						</h1>
 					</div>
 					<div class="header-underline"></div>
 					<div id="displayDiv">
-						<div class="operatorDiv">
+						<div class="operatorDiv" id="querydiv">
 							<c:url var="queryForm" value="/enterprise/list.shtml" />
 							<form:form id="command" method="post"  action='${queryForm}' >
 							<input id="pageNo" name="current" type="hidden" value="1">
 							<input id="pageSizes" name="pageSize" type="hidden" value="10">
 							<input id="government" name="g" type="hidden" value="0">
-							<c:if test="${ sessionScope.eccomm_admin.account_type=='g'}">
-								<a role="button" class="btn btn-primary"
-									onclick="selectGSerivce()">市级服务商导入</a>
-									</c:if>
+<%-- 							<c:if test="${ sessionScope.eccomm_admin.account_type=='g'}"> --%>
+<!-- 								<a role="button" class="btn btn-primary" -->
+<!-- 									onclick="selectGSerivce()">市级服务商导入</a> -->
+<%-- 									</c:if> --%>
 								<a role="button" class="btn btn-primary"
 									onclick="importInformation()">批量导入</a>
 								<a role="button" class="btn btn-primary"
 									onclick="addService()">单个录入</a>
-								<table class="table">
+								<table class="table" >
 									<tr>
 										<td>服务商名称：</td>
 										<td><form:input path="entity.serviceName"  /></td>
@@ -81,28 +80,27 @@
 
 										<td>联系方式：</td>
 										<td><form:input path="entity.contactPhone"  /></td>
-										<td>服务区域：</td>
+										<td>服务市级：</td>
+										<td><select id="city" name="city">
+												<option value="${city }">--请选择--</option>
+										</select></td>
+										<td>服务区县：</td>
 											<td>
-												<select id="countyinit" name="county">
+												<select id="county" name="county">
 													<option value="${county }">--请选择--</option>		
 												</select>
 											</td>
 											<td>服务街道：</td>
 											<td>
-												<select id="streetinit" name="street">
+												<select id="street" name="street">
 													<option value="${street }">--请选择--</option>		
 												</select>
 											</td>
-<!-- 											<td>服务社区：</td> -->
-<!-- 											<td> -->
-<!-- 												<select id="communityinit" name="community"> -->
-<%-- 													<option value="${community }">--请选择--</option>		 --%>
-<!-- 												</select> -->
-<!-- 											</td> -->
 									</tr>
 									<tr>
-										<td><input  type="button" onclick="query()" value="查询"></td>
-										<td><input type="reset" /></td>
+										<td><input class="btn btn-default" type="button" onclick="query()" value="查询"></td>
+<!-- 										<td><input class="btn btn-default" type="reset" /></td> -->
+										<td><a class="btn btn-default" href="<%=request.getContextPath() %>/resources/pdf/ServiceProviders.xlsx"  role="button">批量导入模板下载</a>
 									</tr>
 								</table>
 							</form:form>
@@ -151,24 +149,35 @@
 			initalizeSiderBar();
 			selectMenu("o_serviceMerchants");
 			initQueryForm();
+			
 			$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",function(data){
 				for(var i = 0;i<data.length;i++){
-					$("#countyinit").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
-				}				
+					$("#city").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
+				}
 			});
-			$("#countyinit").change(function(){
-			//	$("#county").find("option:not(:first)").remove();
-				$("#streetinit").find("option:not(:first)").remove();
-				$("#communityinit").find("option:not(:first)").remove();
-				
-				
-				
-				var id = $("#countyinit").val();
-				
+			
+			
+			
+			
+			$("#city").change(function(){
+				$("#county option:not(:first)").remove();
+				$("#street option:not(:first)").remove();
+				$("#community option:not(:first)").remove();
+				var id = $("#city").val();
 				$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",{id:id},function(data){
 					for(var i = 0;i<data.length;i++){
-						$("#streetinit").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
-					}				
+						$("#county").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
+					}
+				});
+			});
+			$("#county").change(function(){
+				$("#street option:not(:first)").remove();
+				$("#community option:not(:first)").remove();
+				var id = $("#county").val();
+				$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",{id:id},function(data){
+					for(var i = 0;i<data.length;i++){
+						$("#street").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
+					}
 				});
 			});
 			
@@ -230,6 +239,7 @@
 			});
 		}
 		function addService(){
+			$("#querydiv").html("");
 			$.post("${pageContext.request.contextPath}/enterprise/serviceMerchants/ServiceAdd.shtml",
 					{},
 					function(data){
@@ -299,10 +309,10 @@
 		}
 		
 		
-		function selectGSerivce(){
-			$('#government').val(1);
-			query();
-		}
+// 		function selectGSerivce(){
+// 			$('#government').val(1);
+// 			query();
+// 		}
 		
 	</script>
 

@@ -11,6 +11,7 @@ import java.util.Map;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.eclipse.jetty.util.ajax.JSON;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +51,8 @@ public class OldServiceImpl extends
 	private JdbcTemplate jdbcTemplate;
 
 	@Override
-	public List<Omp_Old_Info> getOldContextList(OldParameter parameter, SystemUser user) {
+	public List<Omp_Old_Info> getOldContextList(OldParameter parameter,
+			SystemUser user) {
 
 		SearchCriteriaBuilder<Omp_Old_Info> searchCriteriaBuilder = new SearchCriteriaBuilder<Omp_Old_Info>(
 				Omp_Old_Info.class);
@@ -87,10 +89,10 @@ public class OldServiceImpl extends
 		Long autoIncId = ompOldInfo.getId();
 
 		if (autoIncId > 0) {
-			
+
 			Permissions.addOmpOldOrderInfo(ompOldInfo, jdbcTemplate);
-			
-			//addOmpOldOrderInfo(ompOldInfo);
+
+			// addOmpOldOrderInfo(ompOldInfo);
 			// addOldKeyInfo(ompOldInfo, autoIncId);
 		}
 
@@ -250,13 +252,11 @@ public class OldServiceImpl extends
 		String sql = "SELECT o.k_and_sp_id ksp_id, R.NAME SNAME FROM OMP_OLD_INFO i,OMP_REGION r,omp_old_order o WHERE I.STATE = 1 AND I.HOUSEHOLD_COMMUNITY_ID = R.ID AND o.oldId= i.ID AND i.ID = "
 				+ id;
 		List<Map<String, Object>> list = jdbcTemplate.queryForList(sql);
-//		String sql = "SELECT I.*,o.keyPointMessage Kp, R.NAME SNAME FROM OMP_OLD_INFO i,OMP_REGION r,omp_old_order o WHERE I.STATE = 1 AND I.HOUSEHOLD_COMMUNITY_ID = R.ID AND o.oldId= i.ID AND i.ID = "
-//				+ id;
-//		List<Map<String, Object>> list = jdbcTemplate.queryForList(sql);
-		
-		
-		
-		
+		// String sql =
+		// "SELECT I.*,o.keyPointMessage Kp, R.NAME SNAME FROM OMP_OLD_INFO i,OMP_REGION r,omp_old_order o WHERE I.STATE = 1 AND I.HOUSEHOLD_COMMUNITY_ID = R.ID AND o.oldId= i.ID AND i.ID = "
+		// + id;
+		// List<Map<String, Object>> list = jdbcTemplate.queryForList(sql);
+
 		return list;
 	}
 
@@ -301,8 +301,13 @@ public class OldServiceImpl extends
 
 	@Override
 	public List<Map<String, Object>> getRegionById(String county) {
-		String sql = "select r.id,r.name,r.PARENTID from Omp_Region r where r.USE_FLAG=1 and r.parentid = "
-				+ county;
+		String sql = "";
+		if (StringUtils.isEmpty(county)) {
+			sql = "select r.id,r.name,r.PARENTID from Omp_Region r where r.USE_FLAG=1 and r.LEVELID=2";
+		} else {
+			sql = "select r.id,r.name,r.PARENTID from Omp_Region r where r.USE_FLAG=1 and r.parentid = "
+					+ county;
+		}
 		List<Map<String, Object>> list = jdbcTemplate.queryForList(sql);
 		return list;
 	}
@@ -387,20 +392,18 @@ public class OldServiceImpl extends
 	}
 
 	@Override
-	public Boolean uploadOldIndividuation(String id, String sjson,int i) {
+	public Boolean uploadOldIndividuation(String id, String sjson, int i) {
 		String k_and_sp_id = "k_and_sp_id";
-		if(i==2){
+		if (i == 2) {
 			k_and_sp_id = "keyPointMessage";
 		}
-		
-		
-		
-		String sql = "update omp_old_order set "+k_and_sp_id+" = '" + sjson
+
+		String sql = "update omp_old_order set " + k_and_sp_id + " = '" + sjson
 				+ "', send_flag = 2 ,execute_flag = 3  where oldId = " + id;
 		int update = jdbcTemplate.update(sql);
 		System.out.println("指令修改");
 		if (update > 0) {
-			setOldisIndividuation(id, 1); 	//指令个性化
+			setOldisIndividuation(id, 1); // 指令个性化
 		}
 		return (update == 1);
 	}
@@ -1572,6 +1575,8 @@ public class OldServiceImpl extends
 				RestrictionExpression.EQUALS_OP, parameter.getIdCard());
 		searchCriteriaBuilder.addQueryCondition("zjnumber",
 				RestrictionExpression.EQUALS_OP, parameter.getZjNumber());
+		searchCriteriaBuilder.addQueryCondition("household_city_id",
+				RestrictionExpression.EQUALS_OP, parameter.getCity());
 		searchCriteriaBuilder.addQueryCondition("household_county_id",
 				RestrictionExpression.EQUALS_OP, parameter.getCounty());
 		searchCriteriaBuilder.addQueryCondition("household_street_id",
@@ -1581,13 +1586,18 @@ public class OldServiceImpl extends
 		searchCriteriaBuilder.addQueryCondition("call_id",
 				RestrictionExpression.EQUALS_OP, parameter.getCall_id());
 		String gSql = "";
+
+		/**
+		 * voiceorder 语音指令查询 voice 语音查询 order 指令查询
+		 */
+
 		if (!"order".equals(parameter.getIsGenerationOrder())) {
 			searchCriteriaBuilder.addQueryCondition("isGenerationOrder",
 					RestrictionExpression.EQUALS_OP,
 					parameter.getIsGenerationOrder());
 
-		} else if (user.getLeave() > 1) {
-			if ("g".equals(user.getAccount_type())) {
+		} else {
+			if (user.getLeave() > 1 && "g".equals(user.getAccount_type())) {
 				gSql = " this_.yiji is  NULL";
 			}
 			// searchCriteriaBuilder.addQueryCondition("agent_id",
@@ -1595,15 +1605,16 @@ public class OldServiceImpl extends
 			searchCriteriaBuilder.addQueryCondition("call_id",
 					RestrictionExpression.EQUALS_OP, 1);
 		}
-		searchCriteriaBuilder
-				.addQueryCondition("isindividuation",
-						RestrictionExpression.EQUALS_OP,
-						parameter.getIsindividuation());
+		if (parameter.getSource() == null || parameter.getSource().isEmpty()) {
+			searchCriteriaBuilder.addLimitCondition(
+					(parameter.getCurrentPieceNum() - 1)
+							* parameter.getPerPieceSize(),
+					parameter.getPerPieceSize());
+			searchCriteriaBuilder.addQueryCondition("isindividuation",
+					RestrictionExpression.EQUALS_OP,
+					parameter.getIsindividuation());
+		}
 
-		searchCriteriaBuilder.addLimitCondition(
-				(parameter.getCurrentPieceNum() - 1)
-						* parameter.getPerPieceSize(),
-				parameter.getPerPieceSize());
 		if (user.getLeave() > 1) {
 
 			if ("g".equals(user.getAccount_type())) {
@@ -1679,6 +1690,5 @@ public class OldServiceImpl extends
 		}
 		return i;
 	}
-
 
 }

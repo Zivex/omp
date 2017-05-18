@@ -16,6 +16,9 @@
 
 </head>
 <body>
+<form>
+<input type="hidden" id ="account" value="${sessionScope.eccomm_admin.account_type }">
+</form>
 	<!-- header -->
 	<%@ include file="/WEB-INF/views/layout/adm_head.jsp"%>
 	<!-- /header -->
@@ -61,11 +64,40 @@
 										<label for="serviceName">名称</label> <input type="text" name="serviceName"
 											class="form-control" id="serviceName" placeholder="请输入服务商名称">
 									</div>
-									<a class="btn btn-default" href="#" onclick="serchService()" role="button">搜索</a> <a
-										class="btn btn-default" href="#" onclick="addService()" role="button">添加</a>
 								</form>
 							</div>
-							<br>
+							<c:if test="${sessionScope.eccomm_admin.account_type !='g' }">
+								<div class="form-group" style="margin-top: 10px;">
+									<form class="form-inline" id="conditions">
+										<div class="form-group">
+											<label for="city">市</label> <select name="city" id="city" class="form-control"
+												onchange="udpCity()">
+												<option value="0">--请选择--</option>
+												<c:forEach items="${cityS }" var="city">
+													<option value="${city.id }">${city.name }</option>
+												</c:forEach>
+											</select>
+										</div>
+
+										<div class="form-group">
+											<label for="county">区县</label> <select name="county" id="county" class="form-control"
+												onchange="udpCounty()">
+												<option value="0">--请选择--</option>
+
+											</select>
+										</div>
+
+
+										<div class="form-group">
+											<label for="street">街道</label> <select name="street" class="form-control" id="street">
+												<option value="0">--请选择--</option>
+											</select>
+										</div>
+									</form>
+								</div>
+							</c:if>
+							<a class="btn btn-default" href="#" onclick="serchService()" role="button">搜索</a> <a
+								class="btn btn-default" href="#" onclick="addService()" role="button">添加</a> <br>
 							<div>
 								<form id="serviceListForm">
 									<table class="table table-bordered" id="serviceList">
@@ -100,10 +132,6 @@
         function udpCounty ()
         {
 	        changCounty (county1, street1, community1);
-        }
-        function udpStreet ()
-        {
-	        changStreet (street1, community1);
         }
 
         //修改市
@@ -148,24 +176,6 @@
 	        });
         }
 
-        //修改街道
-        function changStreet (street1, community1)
-        {
-	        var id = street1.val ();
-	        $.post ("${pageContext.request.contextPath }/old/oldMatch/getRegionById.shtml",
-	        {
-		        id : id
-	        }, function (data)
-	        {
-		        community1.empty ();
-		        community1.append ("<option value='0'>--请选择--</option>");
-		        for (var i = 0; i < data.length; i++)
-		        {
-			        community1.append ("<option value='"+data[i].id+"'>" + data[i].name + "</option>");
-		        }
-		        
-	        });
-        }
 
         //查询服务体系
         function queryTellType ()
@@ -182,20 +192,23 @@
              },
              function (data)
              {
-              var idNum = 0;
+              var account = $("#account").val();
               for (var i = 0; i < data.length; i++)
               {
-               idNum++;
-               architecture
-                       .append ("<tr><td><input type='radio' name='typeId' value='"+data[i].id+"'> "
+//             	  if(account=='g'){
+//             	  if(i==11 || i==12 || i==13 || i==14 || i==15 ){
+//             		  architecture.append("<input type='hidden' class='serviceId' name='"+data[i].key+"'value='"+data[i].sp_id+"' >");
+//             		  continue;
+//             	  }
+//               }
+               architecture.append ("<tr><td><input type='radio' name='typeId' value='"+data[i].id+"'> "
                                + data[i].key
                                + "</td><td>"
                                + data[i].tname
                                + "</td><td><input type='hidden' class='serviceId' name='"+data[i].key+"'value='"+data[i].sp_id+"' ><span>"
                                + data[i].serviceName + "<span></td><td>"+data[i].serviceTell+"</td></tr>");
               }
-              architecture
-                      .append ('<tr><td><a class="btn btn-default" href="#" onclick="updateSystem()" role="button">修改</a></td></tr>');
+              architecture.append ('<tr><td><a class="btn btn-default" href="#" onclick="updateSystem()" role="button">修改</a></td></tr>');
              });
         }
         //providers服务商
@@ -203,7 +216,7 @@
         //搜索服务商
         function serchService ()
         {
-        	var streetId = $ ("#street_id").val ();
+        	//var streetId = $ ("#street_id").val ();
 	        var serviceList = $ ("#serviceList");
 	        //服务区域
 	        serviceList.empty();
@@ -216,14 +229,19 @@
 				alert("请选择键位");
 				return ; 
 			}
-	        
-	        
-	        
+	        var street = $("#street").val();
+	        var serviceName = $("#serviceName").val();
+	        var city = $("#city").val();
+	        if(city != 0 && street == 0){
+	        	alert("请选择街道");
+	        	retun;
+	        }
 	        $.post (
             "${pageContext.request.contextPath }/serviceSystem/serchService.shtml",
             {
-             serviceId : serviceId,
-             streetId : streetId
+            	serviceId : serviceId,
+				serviceName : serviceName,
+				streetId : street
             },
             function (data)
             {

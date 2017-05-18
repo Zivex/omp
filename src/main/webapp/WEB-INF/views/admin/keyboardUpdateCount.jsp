@@ -34,6 +34,12 @@
       <td>${c.fai }</td>
     </tr>
   </c:forEach>
+  <tr>
+			<td>总计</td>
+			<td>${sumCount }</td>
+			<td>${sumSuc }</td>
+			<td>${sumFai }</td>
+			</tr>
   </tbody>
 </table>
 	

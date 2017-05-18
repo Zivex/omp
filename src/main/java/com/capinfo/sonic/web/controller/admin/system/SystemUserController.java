@@ -4,8 +4,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+
 import javax.validation.Valid;
+
 import net.sf.json.JSONObject;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomCollectionEditor;
@@ -21,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
+
 import com.capinfo.common.model.Role;
 import com.capinfo.common.model.SystemUser;
 import com.capinfo.common.security.authentication.AuthenticationSuccessHandlerImpl;
@@ -35,6 +39,7 @@ import com.capinfo.framework.service.GeneralService;
 import com.capinfo.framework.web.view.model.DataListViewModel;
 import com.capinfo.omp.model.Composition;
 import com.capinfo.omp.parameter.CompositionParameter;
+import com.capinfo.omp.util.Permissions;
 import com.capinfo.region.model.OmpRegion;
 
 @Controller
@@ -138,6 +143,8 @@ public class SystemUserController extends AuthenticationSuccessHandlerImpl {
 		} else {
 			nList = allRoles;
 		}
+		List<OmpRegion> citys = Permissions.queryCounty(0L, generalService);
+		mv.addObject("citys", citys);
 		mv.addObject("command", parameter);
 		mv.addObject("roleList", nList);
 		return mv;
@@ -579,6 +586,18 @@ public class SystemUserController extends AuthenticationSuccessHandlerImpl {
 	public List<Composition> selectComposition(@ModelAttribute("eccomm_admin") SystemUser user) {
 		List<Composition> compositionList = systemUserService.getCompositionList(user);
 		return compositionList;
+	}
+	/**
+	 * 市级区域
+	 * 
+	 * @param parameter
+	 * @return
+	 */
+	@RequestMapping(value = "queryCity.shtml")
+	@ResponseBody
+	public List<OmpRegion> queryCity(@ModelAttribute("eccomm_admin") SystemUser user,Long rid) {
+		List<OmpRegion> citys = Permissions.queryCounty(rid, generalService);
+		return citys;
 	}
 
 }

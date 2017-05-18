@@ -3,6 +3,7 @@ package com.capinfo.omp.controller;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Field;
+import java.net.MalformedURLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -12,6 +13,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.rpc.ServiceException;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -136,7 +138,7 @@ public class OldForController {
 	public String importInformation(HttpServletRequest request,
 			@RequestParam("excelFile") MultipartFile excelFile,
 			@ModelAttribute("eccomm_admin") SystemUser user) throws Exception {
-		System.out.println(excelFile);
+		System.out.println("老人信息导入");
 		String errorstr = "错误行数为: \n";
 		String linkNbr = "";
 		String num = "";
@@ -160,6 +162,12 @@ public class OldForController {
 					enb++;
 				} else {
 					nb++;
+					linkNbr = ompOldInfo.getZjnumber();
+					// 判断
+					num = linkNbr.substring(0, 3);
+					if ("010".equals(num)) {
+						ompOldInfo.setZjnumber(linkNbr.substring(3));
+					}
 					int t = oldService.checkOldIsHave(ompOldInfo.getZjnumber(),
 							ompOldInfo.getCertificates_number());
 					if (t > 0) {
@@ -167,32 +175,22 @@ public class OldForController {
 						enb++;
 					}
 					if (enb == 0) {
-						linkNbr = ompOldInfo.getZjnumber();
-						// 判断
-						num = linkNbr.substring(0, 3);
-						if ("010".equals(num)) {
-							ompOldInfo.setZjnumber(linkNbr.substring(3));
-						}
 						zjNumber = zjNumber + linkNbr.substring(3) + ",";
 						oldService.addOld(ompOldInfo, user);
 					}
 
 				}
 			}
-			zjNumber = zjNumber.substring(0, zjNumber.length() - 1) + "'}";
-			System.out.println("获得的座机号码：" + zjNumber);
-			// 调用webService接口发送信息
-			ClientGetLandNumberService.getZjnumber(zjNumber);
 			fis.close();
 			if (enb > 0) {
 				errorstr = errorstr + "  总共导入失败：" + enb + "个";
 			} else {
+				zjNumber = zjNumber.substring(0, zjNumber.length() - 1) + "'}";
+				System.out.println("获得的座机号码：" + zjNumber);
+				// 调用webService接口发送信息
+				ClientGetLandNumberService.getZjnumber(zjNumber);
 				return "1";
 			}
-
-			// mv.addObject("failure", map.get("failure"));
-			System.out.println(errorstr);
-			// mv.addObject("errorstr", errorstr);
 		}
 
 		return errorstr;
@@ -220,24 +218,31 @@ public class OldForController {
 		Row row3 = sheetAt0.getRow(3);
 		// 工作人员姓名
 		String workername = getCellValue(row3.getCell(1));
-		String workertel = row3.getCell(7).getStringCellValue();
+		String workertel = row3.getCell(8).getStringCellValue();
 		int rowNum = sheetAt0.getLastRowNum();
 		for (int i = 7; i < rowNum + 1; i++) {
 			Row row = sheetAt0.getRow(i);
-			String call_id = getCellValue(row.getCell(12));
-			String area = getCellValue(row.getCell(1));
-			String street = getCellValue(row.getCell(2));
-			String community = getCellValue(row.getCell(3));
-			String tel_type = getCellValue(row.getCell(10));
+			String number = getCellValue(row.getCell(0));
+			if(number.isEmpty() || number == null){
+				break;
+			}
+			String call_id = getCellValue(row.getCell(13));
+			String city = getCellValue(row.getCell(1));
+			String county = getCellValue(row.getCell(2));
+			String street = getCellValue(row.getCell(3));
+			String community = getCellValue(row.getCell(4));
+			String tel_type = getCellValue(row.getCell(11));
 
-			// 根据市区名称查询市区ID
-			String countyId = oldService.getIdByName(area, 3);
+			// 根据市区名称查询市级id
+			String cityId = oldService.getIdByName(city, 2);
+			// 根据市区名称查询区县ID
+			String countyId = oldService.getIdByName(county, 3);
 			// 根据街道名称查询街道ID
 			String streetId = oldService.getIdByName(street, 4);
 			// 根据社区名称查询社区ID
 			String communityId = oldService.getIdByName(community, 5);
 			// 查询社区编码
-			String comNUm = oldService.getIdByComCod(community, 5);
+			//String comNUm = oldService.getIdByComCod(community, 5);
 
 			int tel_num = oldService.getTel_type(tel_type);
 			Long callId = 0l;
@@ -245,22 +250,24 @@ public class OldForController {
 				callId = 1l;
 			}
 			Omp_Old_Info old_info = new Omp_Old_Info();
+			old_info.setHousehold_city_id(cityId);
 			old_info.setHousehold_county_id(countyId);
 			old_info.setHousehold_street_id(streetId);
 			old_info.setHousehold_community_id(communityId);
 			old_info.setWorkername(workername);
 			old_info.setWorkertel(workertel);
-			old_info.setName(getCellValue(row.getCell(4)));
-			old_info.setCertificates_number(getCellValue(row.getCell(5)));
-			old_info.setZjnumber(getCellValue(row.getCell(6)));
-			old_info.setPhone(getCellValue(row.getCell(7)));
-			old_info.setEmergencycontact(getCellValue(row.getCell(8)));
-			old_info.setEmergencycontacttle(getCellValue(row.getCell(9)));
+			old_info.setName(getCellValue(row.getCell(5)));
+			old_info.setCertificates_number(getCellValue(row.getCell(6)));
+			old_info.setZjnumber(getCellValue(row.getCell(7)));
+			old_info.setPhone(getCellValue(row.getCell(8)));
+			old_info.setEmergencycontact(getCellValue(row.getCell(9)));
+			old_info.setEmergencycontacttle(getCellValue(row.getCell(10)));
 			// 话机类型
 			old_info.setTeltype(String.valueOf(tel_num));
-			old_info.setAddress(getCellValue(row.getCell(11)));
+			old_info.setAddress(getCellValue(row.getCell(12)));
 			old_info.setCall_id(callId);
-			old_info.setAccount_type(acc + comNUm);
+//			old_info.setAccount_type(acc + comNUm);
+			old_info.setAccount_type(acc);
 			infos.add(old_info);
 
 		}
@@ -351,8 +358,8 @@ public class OldForController {
 	public ModelAndView oldinfo(String oid,
 			@ModelAttribute("eccomm_admin") SystemUser user) {
 		ModelAndView mv = new ModelAndView("/omp/old/oldInfo");
-		ArrayList arrayList = new ArrayList<>();
 		List<Map<String, Object>> list = oldService.getOldById1(oid);
+		Omp_Old_Info old = generalService.getObjectById(Omp_Old_Info.class, Long.parseLong(oid));
 		// 判断是否老人已经设置指令了
 		List<Map<String, Object>> sp = new ArrayList<Map<String, Object>>();
 		Map<String, Object> map = list.get(0);
@@ -375,6 +382,7 @@ public class OldForController {
 
 		}
 
+		mv.addObject("old", old);
 		mv.addObject("arrayList", list);
 		mv.addObject("detaMap", map);
 		Map Region = oldService.getRegionList1(map);
@@ -462,37 +470,40 @@ public class OldForController {
 	        }  
 	        System.out.println(ksp.toString());
 	        Boolean updateSjson = oldService.uploadOldIndividuation(oid, ksp.toString(),1);
-	        List<Map<String, Object>> jsonMap = kd.getSp(generalService);
-	        String json = "";
-	        json += "[{";
-	        for (Map<String, Object> m: jsonMap) {
-				String key = m.get("key")+"";
-				ServiceProvider sp = (ServiceProvider) m.get("sp");
-				String serviceTell = "";
-				if(sp != null){
-					serviceTell = sp.getServiceTell();
-				}else{
-					//固定号码
-					if("M11".equals(key)){
-						serviceTell = "8008100032";
-					}else if("M13".equals(key)){
-						serviceTell = "84925513";
-					}else if("M14".equals(key)){
-						serviceTell = "84931297";
-					}else if("M15".equals(key)){
-						serviceTell = "8008100032";
-					}else if("M16".equals(key)){
-						serviceTell = "8008100032";
-					}else{
-						serviceTell = "96003";
-					}
-				}
-				json += "\"" + key + "\":";
-				json += "\"" + serviceTell + "\",";
-			}
-			json = json.substring(0, json.length() - 1);
-			json += "}]";
-			 Boolean updateJson = oldService.uploadOldIndividuation(oid, json,2);
+	        Boolean updateJson = false;
+	        if(updateSjson){
+	        	List<Map<String, Object>> jsonMap = ksp.getSp(generalService);
+	        	String json = "";
+	        	json += "[{";
+	        	for (Map<String, Object> m: jsonMap) {
+	        		String key = m.get("key")+"";
+	        		ServiceProvider sp = (ServiceProvider) m.get("sp");
+	        		String serviceTell = "";
+	        		if(sp != null){
+	        			serviceTell = sp.getServiceTell();
+	        		}else{
+	        			//固定号码
+	        			if("M11".equals(key)){
+	        				serviceTell = "8008100032";
+	        			}else if("M13".equals(key)){
+	        				serviceTell = "84925513";
+	        			}else if("M14".equals(key)){
+	        				serviceTell = "84931297";
+	        			}else if("M15".equals(key)){
+	        				serviceTell = "8008100032";
+	        			}else if("M16".equals(key)){
+	        				serviceTell = "8008100032";
+	        			}else{
+	        				serviceTell = "96003";
+	        			}
+	        		}
+	        		json += "\"" + key + "\":";
+	        		json += "\"" + serviceTell + "\",";
+	        	}
+	        	json = json.substring(0, json.length() - 1);
+	        	json += "}]";
+	        	updateJson = oldService.uploadOldIndividuation(oid, json,2);
+	        }
 		if (updateSjson && updateJson) {
 			return "修改成功！";
 		}
@@ -552,9 +563,6 @@ public class OldForController {
 	@RequestMapping("/oldMatch/getRegionById.shtml")
 	@ResponseBody
 	public List<Map<String, Object>> getRegionById(String id) {
-		if (StringUtils.isEmpty(id)) {
-			id = "2";
-		}
 		List<Map<String, Object>> list = oldService.getRegionById(id);
 		return list;
 	}
@@ -729,25 +737,30 @@ public class OldForController {
 	 * @param user
 	 * @param parameter
 	 * @return
+	 * @throws ServiceException 
+	 * @throws MalformedURLException 
 	 */
 	@RequestMapping("/oldMatch/oldAdd.shtml")
 	@ResponseBody
 	public String oldAdd(@ModelAttribute("eccomm_admin") SystemUser user,
-			OldParameter parameter) {
+			OldParameter parameter) throws MalformedURLException, ServiceException {
 		String errorstr = "";
+		String zjNumber = "{'landLineNumber':'";// 导入成功后将座机号码同步到中航
 		Omp_Old_Info ompOldInfo = parameter.getEntity();
+		String linkNbr = ompOldInfo.getZjnumber();
+		// 判断
+		String num = linkNbr.substring(0, 3);
+		if ("010".equals(num)) {
+			ompOldInfo.setZjnumber(linkNbr.substring(3));
+		}
 		int t = oldService.checkOldIsHave(ompOldInfo.getZjnumber(),
 				ompOldInfo.getCertificates_number());
 		if (t > 0) {
 			errorstr = "大座机号重复 \n 添加失败";
 		} else {
 			errorstr = "添加成功";
-			String linkNbr = ompOldInfo.getZjnumber();
-			// 判断
-			String num = linkNbr.substring(0, 3);
-			if ("010".equals(num)) {
-				ompOldInfo.setZjnumber(linkNbr.substring(3));
-			}
+			zjNumber +=ompOldInfo.getZjnumber()+"'}";
+			ClientGetLandNumberService.getZjnumber(zjNumber);
 			oldService.addOld(ompOldInfo, user);
 		}
 		return errorstr;

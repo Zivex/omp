@@ -12,6 +12,7 @@ public class OldParameter extends DataListParameter<Omp_Old_Info> {
 	private String idCard;
 	private String city_id;
 	private String zjNumber;
+	private String city;
 	private String county;
 	private String street;
 	private String community;
@@ -19,8 +20,28 @@ public class OldParameter extends DataListParameter<Omp_Old_Info> {
 	private String isindividuation;	//个性化
 	private String creationTime;
 	private Integer call_id;	//是否来显
+	private String source;	//查询来源
 	
 	
+	
+	
+
+
+	public String getSource() {
+		return source;
+	}
+
+	public void setSource(String source) {
+		this.source = source;
+	}
+
+	public String getCity() {
+		return city;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
+	}
 
 	public String getCity_id() {
 		return city_id;

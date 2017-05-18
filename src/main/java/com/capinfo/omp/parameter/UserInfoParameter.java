@@ -28,6 +28,8 @@ public class UserInfoParameter extends DataListParameter<Omp_voice_order> {
 	
 	//发送总次数
 	private int sumCount;
+	private Long orderexecuteSuc;
+	private Long orderexecuteFail;
 	
 	
 	
@@ -35,6 +37,19 @@ public class UserInfoParameter extends DataListParameter<Omp_voice_order> {
 	private Long orderSuc;
 	private Long orderFail;
 	private Long voiceSendSuc;
+	
+	public Long getOrderexecuteSuc() {
+		return orderexecuteSuc;
+	}
+	public void setOrderexecuteSuc(Long orderexecuteSuc) {
+		this.orderexecuteSuc = orderexecuteSuc;
+	}
+	public Long getOrderexecuteFail() {
+		return orderexecuteFail;
+	}
+	public void setOrderexecuteFail(Long orderexecuteFail) {
+		this.orderexecuteFail = orderexecuteFail;
+	}
 	public Omp_voice_order getEntity() {
 		return entity;
 	}
