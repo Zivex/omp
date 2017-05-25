@@ -546,40 +546,38 @@ public class VoiceServiceImpl extends
 	@Override
 	public UserInfoParameter getUserInfo(SystemUser user) {
 		if (user != null) {
+			String agent_id = "";
+			if(user.getLeave()>1){
+				agent_id = "and o.agent_id = "+ user.getId();
+			}
 			/**
 			 * 语音
 			 */
 			// 发送成功
-			String sql1 = "select count(*) from omp_voice_order o where o.send_flag = 1 and o.agent_id = "
-					+ user.getId();
+			String sql1 = "select count(*) from omp_voice_order o inner join omp_old_info oi on o.oldId = oi.id  where o.send_flag = 1 "+agent_id;
 			Long voiceSendSuc = JdbcTemplate.queryForLong(sql1);
 			// 发送失败
-			String sql2 = "select count(*) from omp_voice_order o where o.send_flag = 0 and o.agent_id = "
-					+ user.getId();
+			String sql2 = "select count(*) from omp_voice_order o inner join omp_old_info oi on o.oldId = oi.id  where o.send_flag = 0 "+agent_id;
 			Long voiceSendFail = JdbcTemplate.queryForLong(sql2);
 
 			// // 执行成功
-			String sql3 = "select count(*) from omp_voice_order o where o.execute_flag = 1 and o.agent_id = "
-					+ user.getId();
+			String sql3 = "select count(*) from omp_voice_order o   where o.execute_flag = 1 "+agent_id;
+//			String sql3 = "select count(*) from omp_voice_order o inner join omp_old_info oi on o.oldId = oi.id  where o.execute_flag = 1 "+agent_id;
 			Long executeSuc = JdbcTemplate.queryForLong(sql3);
 			// 执行失败
-			String sql4 = "select count(*) from omp_voice_order o where o.execute_flag = 0 and o.agent_id = "
-					+ user.getId();
+			String sql4 = "select count(*) from omp_voice_order o inner join omp_old_info oi on o.oldId = oi.id  where o.execute_flag = 0 "+agent_id;
 			Long executeFail = JdbcTemplate.queryForLong(sql4);
 			//
 			// // 未接听
-			String sql5 = "select count(*) from omp_voice_order o where o.execute_flag = 3 and o.agent_id = "
-					+ user.getId();
+			String sql5 = "select count(*) from omp_voice_order o inner join omp_old_info oi on o.oldId = oi.id  where o.execute_flag = 3 "+agent_id;
 			Long notAnswer = JdbcTemplate.queryForLong(sql5);
 			//
 			// // 未返回
-			String sql6 = "select count(*) from omp_voice_order o where o.execute_flag is null and o.agent_id = "
-					+ user.getId();
+			String sql6 = "select count(*) from omp_voice_order o inner join omp_old_info oi on o.oldId = oi.id  where o.execute_flag is null "+agent_id;
 			Long notReturn = JdbcTemplate.queryForLong(sql6);
 
 			// 语音发送总次数
-			String sql8 = "select count(*) from omp_voice_order o where o.agent_id  = "
-					+ user.getId();
+			String sql8 = "select count(*) from omp_voice_order o where 1=1 "+agent_id;
 			Long voiceCount = JdbcTemplate.queryForLong(sql8);
 
 			/**
@@ -587,32 +585,30 @@ public class VoiceServiceImpl extends
 			 */
 
 			// 发送成功
-			String sql9 = "select count(*) from omp_order_number o where o.returntype= 1 and o.send_flag= 1  and o.agent_id="
-					+ user.getId();
+			String sql9 = "select count(*) from omp_order_number o inner join omp_old_info oi on o.oid = oi.id  where o.returntype= 1 and o.send_flag= 1  "+agent_id;
 			Long orderSuc = JdbcTemplate.queryForLong(sql9);
 
 			// 发送失败
-			String sq20 = "select count(*) from omp_order_number o where o.returntype= 1 and o.send_flag= 0  and o.agent_id="
-					+ user.getId();
+			String sq20 = "select count(*) from omp_order_number o inner join omp_old_info oi on o.oid = oi.id  where o.returntype= 1 and o.send_flag= 0  "+agent_id;
 			Long orderFail = JdbcTemplate.queryForLong(sq20);
 
 			// 执行成功
-			String sq22 = "select count(*) from omp_order_number o where o.returntype= 1 and o.execute_flag = 1  and o.agent_id="
-					+ user.getId();
+			String sq22 = "select count(*) from omp_order_number o   where o.returntype= 1 and o.execute_flag = 1  "+agent_id;
+//			String sq22 = "select count(*) from omp_order_number o inner join omp_old_info oi on o.oid = oi.id  where o.returntype= 1 and o.execute_flag = 1  "+agent_id;
+//			String sq22 = "select count(*) from omp_old_order o inner join omp_old_info oi on o.oldId = oi.id  where  o.execute_flag = 1  "+agent_id;
 			Long orderexecuteSuc = JdbcTemplate.queryForLong(sq22);
 
 			// 执行失败
-			String sq23 = "select count(*) from omp_order_number o where o.returntype= 1 and o.execute_flag = 0  and o.agent_id="
-					+ user.getId();
+//			String sq23 = "select count(*) from omp_order_number o inner join omp_old_info oi on o.oid = oi.id  where o.returntype= 1 and o.execute_flag = 0 "+agent_id;
+			String sq23 = "select count(*) from omp_old_order o inner join omp_old_info oi on o.oldId = oi.id  where  o.execute_flag = 0 "+agent_id;
 			Long orderexecuteFail = JdbcTemplate.queryForLong(sq23);
 
 			// 总数
-			String sq21 = "select count(*) from omp_order_number o where o.returntype= 1  and o.agent_id="
-					+ user.getId();
+			String sq21 = "select count(*) from omp_order_number o where o.returntype= 1  "+agent_id;
 			Long orderCount = JdbcTemplate.queryForLong(sq21);
 
 			// 剩余发送次数
-			String sql7 = "select u.num from users u where u.id = "
+			String sql7 = "select u.num from users u where 1=1 and u.id = "
 					+ user.getId();
 			Long remainCount = JdbcTemplate.queryForLong(sql7);
 

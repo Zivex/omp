@@ -1,5 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
@@ -8,23 +7,19 @@
 <div class="container-fluid">
 	<div class="row-fluid">
 		<div class="span12">
-			<form class="form-inline" method="post" enctype="multipart/form-data"
-				id="empForm"
+			<form class="form-inline" method="post" enctype="multipart/form-data" id="empForm"
 				action="${pageContext.request.contextPath }/old/oldMatch/importInformation.shtml">
 				<fieldset
 					style="width: 300px; height: 210px; background: #fff; position: absolute; left: 50%; top: 20%; margin-left: -150px; border-radius: 4px;">
-					<button type="button" class="close" data-dismiss="modal"
-						aria-hidden="true">&times;</button>
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 					<p
 						style="width: 80px; height: 40px; margin: 60px auto 30px; background: #ccc; text-align: center; line-height: 40px; position: relative; cursor: pointer; border-radius: 4px;">
-						选择文件 <input type="file" onmouseleave="importEmp()"
-							name="excelFile" id="excelFile"
+						选择文件 <input type="file" onmouseleave="importEmp()" name="excelFile" id="excelFile"
 							style="opacity: 0; position: absolute; left: 0; top: 0; width: 80px; height: 40px;">
 					</p>
 					<div id="buttonDiv" style="display: none">
 						<p style="margin-left: 108px;">
-							<a class="btn btn-default" href="#" onclick="UpladFile()"
-								role="button">导入</a>
+							<a class="btn btn-default" href="#" onclick="UpladFile()" role="button">导入</a>
 						</p>
 					</div>
 				</fieldset>

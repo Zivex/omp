@@ -515,18 +515,28 @@ public class OldForController {
 	 * 
 	 * @param id
 	 * @return
+	 * @throws ServiceException 
+	 * @throws MalformedURLException 
 	 */
 	@SuppressWarnings("deprecation")
 	@RequestMapping("/oldMatch/updete.shtml")
 	public String updete(HttpServletRequest request, OldParameter parameter,
-			@ModelAttribute("eccomm_admin") SystemUser user) {
+			@ModelAttribute("eccomm_admin") SystemUser user) throws MalformedURLException, ServiceException {
+		String zjNumber = "{'landLineNumber':'";// 导入成功后将座机号码同步到中航
 		Omp_Old_Info old = parameter.getEntity();
-
+		String zjnumberN = old.getZjnumber();
 		String county = parameter.getCounty();
 		String street = parameter.getStreet();
 		String community = parameter.getCommunity();
 		Omp_Old_Info newOld = oldService
 				.getOldById(String.valueOf(old.getId()));
+		if(!old.getZjnumber().equals(newOld.getZjnumber())){
+			String num = zjnumberN.substring(0, 3);
+			if ("010".equals(num)) {
+				zjnumberN = zjnumberN.substring(3);
+			}
+			newOld.setZjnumber(zjnumberN);
+		}
 		newOld.setName(old.getName());
 		newOld.setHousehold_county_id(county);
 		newOld.setHousehold_street_id(street);
@@ -538,8 +548,6 @@ public class OldForController {
 			long id = jdbcTemplate.queryForLong(sql);
 			newOld.setAgent_id(id);
 		}
-
-		newOld.setZjnumber(old.getZjnumber());
 		newOld.setPhone(old.getPhone());
 		newOld.setAddress(old.getAddress());
 		newOld.setEmergencycontact(old.getEmergencycontact());
@@ -551,6 +559,8 @@ public class OldForController {
 
 		newOld.setCall_id(old.getCall_id());
 		oldService.updOldById(newOld);
+		zjNumber +=zjnumberN+"'}";
+		ClientGetLandNumberService.getZjnumber(zjNumber);
 		return "redirect:/old/oldMatch/list.shtml?name=&idCard=&zjNumber=&county=&street=&community=&isGenerationOrder=&creationTime=";
 	}
 
@@ -577,7 +587,7 @@ public class OldForController {
 	@ResponseBody
 	public List<Map<String, Object>> getRegionByPid(String id) {
 		if (StringUtils.isEmpty(id)) {
-			id = "2";
+			id = "1";
 		}
 		List<Map<String, Object>> list = oldService.getRegionByPid(id);
 		return list;

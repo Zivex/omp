@@ -9,6 +9,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,6 +34,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.capinfo.omp.model.EasyUITree;
+import com.capinfo.omp.util.Permissions;
 import com.capinfo.omp.utils.JsonUtil;
 import com.capinfo.omp.utils.Page;
 import com.capinfo.region.service.OmpRegionService;
@@ -122,7 +125,7 @@ public class OmpRegionController {
 		}
 		int count = ompRegionService.getCount(county, street,community, isSend,creationTime);
 		count = count == 0?1:count;
-		Page page = new Page<>(current, count, "10");
+		Page<Object> page = new Page<>(current, count, "10");
 		List<Map<String, Object>> entities = ompRegionService.getStreetList(page,county,street,community,isSend,creationTime);
 		mv.addObject("dataList",entities);
 		mv.addObject("DataTotalCount",count);
@@ -669,7 +672,7 @@ public class OmpRegionController {
 		List<List> dataList = new ArrayList<List>();
 		List<Map<String, Object>> list = ompRegionService.getOrderByCommunity(id);
 		for (Map<String, Object> map : list) {
-			List list2 = mapTransitionList(map);
+			List<String> list2 = mapTransitionList(map);
 			dataList.add(list2);
 
 		}
@@ -682,19 +685,95 @@ public class OmpRegionController {
 
 
 	// map转换成lisy
-	public static List mapTransitionList(Map map) {
-		List list = new ArrayList();
+	public static List<String> mapTransitionList(Map map) {
+		List<String> list = new ArrayList<String>();
 		Iterator iter = map.entrySet().iterator(); // 获得map的Iterator
 		Set keySet = map.keySet();
 		for (Object object : keySet) {
 			if (map.get(object)==null) {
 				list.add("空");
 			}else {
-				list.add(map.get(object));
+				list.add((String) map.get(object));
 			}
 		}
 		return list;
 	}
+	
+		@RequestMapping("/treeLoad.shtml")
+		private void treeLoad(String id,HttpServletResponse response,String cityid,String sid) throws IOException {
+			response.setContentType("text/html;charset=utf-8");
+			List<Map<String,Object>> list = null;
+			String lv ="";
+			if(id==null && cityid!=null){
+//				int cid = ompRegionService.getObjregion(cityid);
+//				id=cid+"";
+				list = ompRegionService.getTreesById(cityid);
+				lv = "0";
+			}else{
+				list = ompRegionService.getTreesByParentId(id);
+				String levelid = list.get(0).get("levelid")+"";
+				Integer num = Integer.parseInt(levelid);
+				num = num-2;
+				lv=num+"";	// 区  3 ==> 1   4==>2
+			}
+			List<EasyUITree> eList = new ArrayList<EasyUITree>();
+            if(list.size()>0){
+            	for (int i = 0; i < list.size(); i++) {
+            		EasyUITree tree = new EasyUITree();
+            		tree.setId(list.get(i).get("id")+"");
+            		tree.setText(list.get(i).get("text")+"");
+            		int hasRegion = ompRegionService.hasRegion(list.get(i).get("id")+"",sid,lv); //查询是否存在
+            		if(hasRegion>0){
+            			tree.setChecked(true);	
+            		}
+            		EasyUITree e = new EasyUITree();
+					e.setId(list.get(i).get("id")+"");
+            		List<Map<String, Object>> cList = ompRegionService.countChildrens(e);
+                    if(cList.size() > 0){
+                    	tree.setState("closed");
+                    }
+                    eList.add(tree);
+				}
+            }
+            PrintWriter pw = response.getWriter();
+            pw.print(Permissions.getJson(eList));
+            pw.flush();
+            pw.close();
+		}
+		
+		@RequestMapping("/treeLoadUdp.shtml")
+		private void treeLoadUdp(String id,HttpServletResponse response,String cityid,String sid,String lv) throws IOException {
+			response.setContentType("text/html;charset=utf-8");
+			if(id==null && cityid!=null){
+				int cid = ompRegionService.getObjregion(cityid);
+				id=cid+"";
+			}
+			List<Map<String,Object>> list = ompRegionService.getTreesByParentId(id);
+			List<EasyUITree> eList = new ArrayList<EasyUITree>();
+			if(list.size()>0){
+				for (int i = 0; i < list.size(); i++) {
+					EasyUITree tree = new EasyUITree();
+					tree.setId(list.get(i).get("id")+"");
+					tree.setText(list.get(i).get("text")+"");
+					int hasRegion = ompRegionService.hasRegion(list.get(i).get("id")+"",sid,lv); //查询是否存在
+					if(hasRegion>0){
+						tree.setChecked(true);	
+					}
+					EasyUITree e = new EasyUITree();
+					e.setId(list.get(i).get("id")+"");
+					List<Map<String, Object>> cList = ompRegionService.countChildrens(e);
+                    if(cList.size() > 0){
+                    	tree.setState("closed");
+                    }
+					eList.add(tree);
+				}
+			}
+			PrintWriter pw = response.getWriter();
+			pw.print(Permissions.getJson(eList));
+			pw.flush();
+			pw.close();
+		}
+	
 
 }
 

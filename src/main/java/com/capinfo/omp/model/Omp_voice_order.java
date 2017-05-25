@@ -44,6 +44,7 @@ public class Omp_voice_order implements BaseEntity {
 	private Date startTime;
 	private Date endTime;
 	private Long voiceFIleId;
+	private Voice_info voice;
 	private String voiceFileAddress;
 	private Long send_flag;
 
@@ -199,6 +200,18 @@ public class Omp_voice_order implements BaseEntity {
 	public void setAgent_id(Long agent_id) {
 		this.agent_id = agent_id;
 	}
+
+	@ManyToOne(targetEntity = Voice_info.class, fetch = FetchType.LAZY)
+	@JoinColumn(name = "voiceFIleId", insertable = false, updatable = false)
+	public Voice_info getVoice() {
+		return voice;
+	}
+
+
+	public void setVoice(Voice_info voice) {
+		this.voice = voice;
+	}
+	
 	
 	
 

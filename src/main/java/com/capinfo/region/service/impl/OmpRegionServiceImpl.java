@@ -1,15 +1,19 @@
 package com.capinfo.region.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.id.IdentityGenerator.GetGeneratedKeysDelegate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
+import com.capinfo.omp.model.EasyUITree;
 import com.capinfo.omp.utils.Page;
 import com.capinfo.region.service.OmpRegionService;
+
 @Service
 public class OmpRegionServiceImpl implements OmpRegionService {
 
@@ -17,42 +21,48 @@ public class OmpRegionServiceImpl implements OmpRegionService {
 	private JdbcTemplate JdbcTemplate;
 
 	@Override
-	public List<Map<String,Object>> getOmpOldMatchSortList(String pid) {
-		String sql = "select id,name text,parentid pid from OMP_REGION r where r.levelid = "+pid;
-//		String sql = "select id,name text,parentid pid from OMP_REGION";
-		List<Map<String,Object>> queryForList = JdbcTemplate.queryForList(sql);
+	public List<Map<String, Object>> getOmpOldMatchSortList(String pid) {
+		String sql = "select id,name text,parentid pid from OMP_REGION r where r.levelid = "
+				+ pid;
+		// String sql = "select id,name text,parentid pid from OMP_REGION";
+		List<Map<String, Object>> queryForList = JdbcTemplate.queryForList(sql);
 		return queryForList;
 	}
 
 	@Override
-	public List<Map<String,Object>> getPro(String name, String serverType,String streetids) {
+	public List<Map<String, Object>> getPro(String name, String serverType,
+			String streetids) {
 		String regionSql = "";
-		if(!StringUtils.isEmpty(streetids)){
-			String sqlStreet = "select name from omp_region where id = '"+streetids+"'";
-			List<Map<String, Object>> region = JdbcTemplate.queryForList(sqlStreet);
+		if (!StringUtils.isEmpty(streetids)) {
+			String sqlStreet = "select name from omp_region where id = '"
+					+ streetids + "'";
+			List<Map<String, Object>> region = JdbcTemplate
+					.queryForList(sqlStreet);
 			String omp_region = (String) region.get(0).get("name");
-			if(omp_region != null){
-				regionSql = "and  SCOPE_DELIVERY = '"+omp_region+"'";
+			if (omp_region != null) {
+				regionSql = "and  SCOPE_DELIVERY = '" + omp_region + "'";
 			}
 		}
 		if (!StringUtils.isEmpty(name)) {
-			name = name.replace(" ","");
-			name = "and r.server_name like '%"+name+"%'";
+			name = name.replace(" ", "");
+			name = "and r.server_name like '%" + name + "%'";
 		}
 		if (!StringUtils.isEmpty(serverType)) {
-			serverType = serverType.replace(" ","");
-			serverType = "and r.SERVER_TYPE like '%"+serverType+"%'";
+			serverType = serverType.replace(" ", "");
+			serverType = "and r.SERVER_TYPE like '%" + serverType + "%'";
 		}
-		String sql = "select ID,SERVER_NAME,SERVER_TYPE,SERVER_TEL from SERVICE_PROVIDERS_NAVIGATION r where 1=1 "+name+serverType+regionSql;
+		String sql = "select ID,SERVER_NAME,SERVER_TYPE,SERVER_TEL from SERVICE_PROVIDERS_NAVIGATION r where 1=1 "
+				+ name + serverType + regionSql;
 		System.out.println(sql);
-		List<Map<String,Object>> List = JdbcTemplate.queryForList(sql);
+		List<Map<String, Object>> List = JdbcTemplate.queryForList(sql);
 		return List;
 	}
 
 	@Override
-	public List<Map<String,Object>> getSortList(String id) {
-		String sql = "select id,name text,parentid pid from OMP_REGION r where r.parentid = "+id;
-		List<Map<String,Object>> queryForList = JdbcTemplate.queryForList(sql);
+	public List<Map<String, Object>> getSortList(String id) {
+		String sql = "select id,name text,parentid pid from OMP_REGION r where r.parentid = "
+				+ id;
+		List<Map<String, Object>> queryForList = JdbcTemplate.queryForList(sql);
 		return queryForList;
 	}
 
@@ -60,39 +70,42 @@ public class OmpRegionServiceImpl implements OmpRegionService {
 	public List<Map<String, Object>> getOrder(String ptype) {
 		String sql = "SELECT k.id,s.serviceName sname,k.id kid,p.phoneType ptype,k.`KEY` "
 				+ "FROM omp_key k LEFT JOIN omp_service_type s ON k.stId = s.id "
-				+ "LEFT JOIN omp_phone_type p ON k.pyId = p.id where k.pyId = "+ptype;
-		List<Map<String,Object>> queryForList = JdbcTemplate.queryForList(sql);
+				+ "LEFT JOIN omp_phone_type p ON k.pyId = p.id where k.pyId = "
+				+ ptype;
+		List<Map<String, Object>> queryForList = JdbcTemplate.queryForList(sql);
 		return queryForList;
 
 	}
 
 	@Override
 	public List<Map<String, Object>> gerRegionById(String id) {
-		String sql = "select id,name text,parentid pid,jjtype,sntype,nstype,jjtypename,sntypename,nstypename from OMP_REGION r where r.id = "+id;
-		List<Map<String,Object>> queryForList = JdbcTemplate.queryForList(sql);
+		String sql = "select id,name text,parentid pid,jjtype,sntype,nstype,jjtypename,sntypename,nstypename from OMP_REGION r where r.id = "
+				+ id;
+		List<Map<String, Object>> queryForList = JdbcTemplate.queryForList(sql);
 		return queryForList;
 	}
-
 
 	@Override
 	public List<Map<String, Object>> getServiceType() {
 		String sql = "SELECT * FROM omp_service_typeImp";
-		List<Map<String,Object>> list = JdbcTemplate.queryForList(sql);
+		List<Map<String, Object>> list = JdbcTemplate.queryForList(sql);
 		return list;
 	}
 
-
 	@Override
-	public void saveSqOrder(String comid, String ptype, String kid, String showid, String shownumber) {
+	public void saveSqOrder(String comid, String ptype, String kid,
+			String showid, String shownumber) {
 		String sql = null;
 		if ("on".equals(showid)) {
-				sql = "INSERT INTO omp_community_order"
-						+ "(communityID,phoneTYPE,keyId,serviceProviderNumber)VALUES"
-						+ "('"+comid+"','"+ptype+"','"+kid+"','"+shownumber+"')";
-		}else {
+			sql = "INSERT INTO omp_community_order"
+					+ "(communityID,phoneTYPE,keyId,serviceProviderNumber)VALUES"
+					+ "('" + comid + "','" + ptype + "','" + kid + "','"
+					+ shownumber + "')";
+		} else {
 			sql = "INSERT INTO omp_community_order"
 					+ "(communityID,phoneTYPE,keyId,serviceProviderId,serviceProviderNumber)VALUES"
-					+ "('"+comid+"','"+ptype+"','"+kid+"','"+showid+"','"+shownumber+"')";
+					+ "('" + comid + "','" + ptype + "','" + kid + "','"
+					+ showid + "','" + shownumber + "')";
 		}
 		JdbcTemplate.update(sql);
 	}
@@ -101,116 +114,115 @@ public class OmpRegionServiceImpl implements OmpRegionService {
 	public boolean isSqOrder(String comid, String ptype, String kid) {
 		// TODO Auto-generated method stub
 		String sql = "SELECT count(*) FROM omp_community_order o "
-				+ "where o.keyId = '"+kid+"' AND o.phoneTYPE = '"+ptype+"' AND o.communityID = '"+comid+"'";
+				+ "where o.keyId = '" + kid + "' AND o.phoneTYPE = '" + ptype
+				+ "' AND o.communityID = '" + comid + "'";
 		int i = JdbcTemplate.queryForInt(sql);
-		return i>0;
+		return i > 0;
 	}
 
 	@Override
-	public void updSqOrder(String comid, String ptype, String kid, String showid, String shownumber) {
+	public void updSqOrder(String comid, String ptype, String kid,
+			String showid, String shownumber) {
 		String sql = null;
 		if ("on".equals(showid)) {
-				sql = "UPDATE omp_community_order "
-						+ "SET serviceProviderNumber='"+shownumber+"' "
-						+ "WHERE keyId='"+kid+"' AND phoneTYPE='"+ptype+"' AND communityID='"+comid+"'";
-		}else {
-			sql = "UPDATE omp_community_order "
-					+ "SET serviceProviderId='"+showid+"', serviceProviderNumber='"+shownumber+"' "
-					+ "WHERE keyId='"+kid+"' AND phoneTYPE='"+ptype+"' AND communityID='"+comid+"'";
+			sql = "UPDATE omp_community_order " + "SET serviceProviderNumber='"
+					+ shownumber + "' " + "WHERE keyId='" + kid
+					+ "' AND phoneTYPE='" + ptype + "' AND communityID='"
+					+ comid + "'";
+		} else {
+			sql = "UPDATE omp_community_order " + "SET serviceProviderId='"
+					+ showid + "', serviceProviderNumber='" + shownumber + "' "
+					+ "WHERE keyId='" + kid + "' AND phoneTYPE='" + ptype
+					+ "' AND communityID='" + comid + "'";
 		}
 		JdbcTemplate.update(sql);
 	}
 
 	@Override
-	public void updateOrder1(String shequId,String zhiling,String jsonName) {
+	public void updateOrder1(String shequId, String zhiling, String jsonName) {
 		String sql = null;
-		sql = "UPDATE omp_region "
-				+ "SET JJTYPE='"+zhiling+"', JJTYPENAME='"+jsonName+"'"
-				+ "WHERE id="+shequId;
+		sql = "UPDATE omp_region " + "SET JJTYPE='" + zhiling
+				+ "', JJTYPENAME='" + jsonName + "'" + "WHERE id=" + shequId;
 		JdbcTemplate.update(sql);
 	}
 
 	@Override
-	public void updateOrder2(String shequId,String zhiling,String jsonName) {
+	public void updateOrder2(String shequId, String zhiling, String jsonName) {
 		String sql = null;
-		sql = "UPDATE omp_region "
-				+ "SET SNTYPE='"+zhiling+"', JJTYPENAME='"+jsonName+"'"
-				+ "WHERE id="+shequId;
+		sql = "UPDATE omp_region " + "SET SNTYPE='" + zhiling
+				+ "', JJTYPENAME='" + jsonName + "'" + "WHERE id=" + shequId;
 		JdbcTemplate.update(sql);
 	}
 
 	@Override
-	public void updateOrder3(String shequId,String zhiling,String jsonName) {
+	public void updateOrder3(String shequId, String zhiling, String jsonName) {
 		String sql = null;
-		sql = "UPDATE omp_region "
-				+ "SET NSTYPE='"+zhiling+"', JJTYPENAME='"+jsonName+"'"
-				+ "WHERE id="+shequId;
-		JdbcTemplate.update(sql);
-	}
-
-
-	@Override
-	public void updateOrderSId1(String streetId,String zhiling) {
-		String sql = null;
-		sql = "UPDATE omp_region "
-				+ "SET JJTYPE='"+zhiling+"'"
-				+ "WHERE parentid="+streetId+ " or id="+streetId;
+		sql = "UPDATE omp_region " + "SET NSTYPE='" + zhiling
+				+ "', JJTYPENAME='" + jsonName + "'" + "WHERE id=" + shequId;
 		JdbcTemplate.update(sql);
 	}
 
 	@Override
-	public void updateOrderSId2(String streetId,String zhiling) {
+	public void updateOrderSId1(String streetId, String zhiling) {
 		String sql = null;
-		sql = "UPDATE omp_region "
-				+ "SET SNTYPE='"+zhiling+"'"
-				+ "WHERE parentid="+streetId+ " or id="+streetId;
+		sql = "UPDATE omp_region " + "SET JJTYPE='" + zhiling + "'"
+				+ "WHERE parentid=" + streetId + " or id=" + streetId;
 		JdbcTemplate.update(sql);
 	}
 
 	@Override
-	public void updateOrderSId3(String streetId,String zhiling) {
+	public void updateOrderSId2(String streetId, String zhiling) {
 		String sql = null;
-		sql = "UPDATE omp_region "
-				+ "SET NSTYPE='"+zhiling+"'"
-				+ "WHERE parentid="+streetId+ " or id="+streetId;
-	JdbcTemplate.update(sql);
-	}
-
-	@Override
-	public void updateOrderSIdNew1(String streetId,String zhiling,String fuwuName) {
-		String sql = null;
-		sql = "UPDATE omp_region "
-				+ "SET JJTYPE='"+zhiling+"'"
-				+",JJTYPENAME='"+fuwuName+"'"
-				+ "WHERE parentid="+streetId+ " or id="+streetId;
+		sql = "UPDATE omp_region " + "SET SNTYPE='" + zhiling + "'"
+				+ "WHERE parentid=" + streetId + " or id=" + streetId;
 		JdbcTemplate.update(sql);
 	}
 
 	@Override
-	public void updateOrderSIdNew2(String streetId,String zhiling,String fuwuName) {
+	public void updateOrderSId3(String streetId, String zhiling) {
 		String sql = null;
-		sql = "UPDATE omp_region "
-				+ "SET SNTYPE='"+zhiling+"'"
-				+",SNTYPENAME='"+fuwuName+"'"
-				+ "WHERE parentid="+streetId+ " or id="+streetId;
+		sql = "UPDATE omp_region " + "SET NSTYPE='" + zhiling + "'"
+				+ "WHERE parentid=" + streetId + " or id=" + streetId;
 		JdbcTemplate.update(sql);
 	}
 
 	@Override
-	public void updateOrderSIdNew3(String streetId,String zhiling,String fuwuName) {
+	public void updateOrderSIdNew1(String streetId, String zhiling,
+			String fuwuName) {
 		String sql = null;
-		sql = "UPDATE omp_region "
-				+ "SET NSTYPE='"+zhiling+"'"
-				+",NSTYPENAME='"+fuwuName+"'"
-				+ "WHERE parentid="+streetId+ " or id="+streetId;
+		sql = "UPDATE omp_region " + "SET JJTYPE='" + zhiling + "'"
+				+ ",JJTYPENAME='" + fuwuName + "'" + "WHERE parentid="
+				+ streetId + " or id=" + streetId;
 		JdbcTemplate.update(sql);
 	}
-	//根据社区ID更新键位信息
+
+	@Override
+	public void updateOrderSIdNew2(String streetId, String zhiling,
+			String fuwuName) {
+		String sql = null;
+		sql = "UPDATE omp_region " + "SET SNTYPE='" + zhiling + "'"
+				+ ",SNTYPENAME='" + fuwuName + "'" + "WHERE parentid="
+				+ streetId + " or id=" + streetId;
+		JdbcTemplate.update(sql);
+	}
+
+	@Override
+	public void updateOrderSIdNew3(String streetId, String zhiling,
+			String fuwuName) {
+		String sql = null;
+		sql = "UPDATE omp_region " + "SET NSTYPE='" + zhiling + "'"
+				+ ",NSTYPENAME='" + fuwuName + "'" + "WHERE parentid="
+				+ streetId + " or id=" + streetId;
+		JdbcTemplate.update(sql);
+	}
+
+	// 根据社区ID更新键位信息
 	@Override
 	public List<Map<String, Object>> getOrderByCommunity(String id) {
 		// TODO Auto-generated method stub
-		String sql = "SELECT c.id,p.phoneType, k.`key`,	s.serviceName,  pn.SERVER_NAME, c.serviceProviderNumber FROM	omp_key k LEFT JOIN	omp_community_order c on c.keyId = k.id LEFT JOIN	service_providers_navigation pn ON c.serviceProviderId = pn.ID LEFT JOIN omp_phone_type p ON k.pyId = p.id LEFT JOIN omp_service_type s ON k.stId = s.id WHERE c.communityID = "+id;
-		List<Map<String,Object>> list = JdbcTemplate.queryForList(sql);
+		String sql = "SELECT c.id,p.phoneType, k.`key`,	s.serviceName,  pn.SERVER_NAME, c.serviceProviderNumber FROM	omp_key k LEFT JOIN	omp_community_order c on c.keyId = k.id LEFT JOIN	service_providers_navigation pn ON c.serviceProviderId = pn.ID LEFT JOIN omp_phone_type p ON k.pyId = p.id LEFT JOIN omp_service_type s ON k.stId = s.id WHERE c.communityID = "
+				+ id;
+		List<Map<String, Object>> list = JdbcTemplate.queryForList(sql);
 
 		return list;
 	}
@@ -218,91 +230,176 @@ public class OmpRegionServiceImpl implements OmpRegionService {
 	@Override
 	public String gerRegion(String id) {
 		// TODO Auto-generated method stub
-		String sql = "SELECT rr.`NAME` r1name,r1.r2name,r1.r3name,rr.JJTYPE jjtype,rr.SNTYPE sntype,rr.NSTYPE nstype FROM omp_region rr,(SELECT r2.`NAME` r2name,r2.PARENTID r1id,r3.r3name FROM omp_region r2,(SELECT r.`NAME` r3name,r.PARENTID FROM omp_region r WHERE r.ID = "+id+") r3 WHERE r2.ID = r3.PARENTID) r1 WHERE r1.r1id = rr.id";
+		String sql = "SELECT rr.`NAME` r1name,r1.r2name,r1.r3name,rr.JJTYPE jjtype,rr.SNTYPE sntype,rr.NSTYPE nstype FROM omp_region rr,(SELECT r2.`NAME` r2name,r2.PARENTID r1id,r3.r3name FROM omp_region r2,(SELECT r.`NAME` r3name,r.PARENTID FROM omp_region r WHERE r.ID = "
+				+ id
+				+ ") r3 WHERE r2.ID = r3.PARENTID) r1 WHERE r1.r1id = rr.id";
 		Map<String, Object> map = JdbcTemplate.queryForMap(sql);
-		String region = "北京市"+map.get("r1name").toString()+map.get("r2name").toString()+map.get("r3name").toString();
+		String region = "北京市" + map.get("r1name").toString()
+				+ map.get("r2name").toString() + map.get("r3name").toString();
 		return region;
 	}
 
 	@Override
-	public List<Map<String,Object>> getStreetList(Page page, String county, String street,String community, String isSend,
-			String creationTime) {
+	public List<Map<String, Object>> getStreetList(Page page, String county,
+			String street, String community, String isSend, String creationTime) {
 
 		if (!StringUtils.isEmpty(county)) {
-			county = " AND r2.`PARENTID` = '"+county+"'";
+			county = " AND r2.`PARENTID` = '" + county + "'";
 		}
 
 		if (!StringUtils.isEmpty(street)) {
-			street = " AND r1.`PARENTID` = '"+street+"'";
+			street = " AND r1.`PARENTID` = '" + street + "'";
 		}
 
 		if (!StringUtils.isEmpty(community)) {
-			community = " AND r1.id = '"+community+"'";
+			community = " AND r1.id = '" + community + "'";
 		}
 
 		if (!StringUtils.isEmpty(creationTime)) {
-			creationTime = " AND r1.CREATEDATE like '%"+creationTime+"%'";
+			creationTime = " AND r1.CREATEDATE like '%" + creationTime + "%'";
 		}
 		String sql = "SELECT r1.`ID` id, r3.`NAME` city,r2.`NAME` street,r1.`NAME` shequ,r1.`CREATEDATE` time,r1.`CREATORID` creater,r1.`JJTYPE` jjType,r1.`SNTYPE` snType,r1.`NSTYPE` nsType from omp_region r1,omp_region r2,omp_region r3 "
-				+ "where r1.LEVELID=5 and r1.PARENTID=r2.id and r2.PARENTID=r3.id"+street+county+street+community+" LIMIT "+(page.getCurrentPage()-1)*page.getPageSize()+", "+page.getPageSize();
+				+ "where r1.LEVELID=5 and r1.PARENTID=r2.id and r2.PARENTID=r3.id"
+				+ street
+				+ county
+				+ street
+				+ community
+				+ " LIMIT "
+				+ (page.getCurrentPage() - 1)
+				* page.getPageSize()
+				+ ", "
+				+ page.getPageSize();
 
-		if (!StringUtils.isEmpty(isSend)&&isSend.equals("0")) {//未发送的
+		if (!StringUtils.isEmpty(isSend) && isSend.equals("0")) {// 未发送的
 			sql = "SELECT r1.`ID` id, r3.`NAME` city,r2.`NAME` street,r1.`NAME` shequ,r1.`CREATEDATE` time,r1.`CREATORID` creater,r1.`JJTYPE` jjType,r1.`SNTYPE` snType,r1.`NSTYPE` nsType from omp_region r1,omp_region r2,omp_region r3 "
-					+ "where r1.LEVELID=5 and r1.PARENTID=r2.id and r2.PARENTID=r3.id AND r1.`JJTYPE` is NULL AND r1.snType is NULL AND r1.nsType is NULL"+street+county+street+community+" LIMIT "+(page.getCurrentPage()-1)*page.getPageSize()+", "+page.getPageSize();
+					+ "where r1.LEVELID=5 and r1.PARENTID=r2.id and r2.PARENTID=r3.id AND r1.`JJTYPE` is NULL AND r1.snType is NULL AND r1.nsType is NULL"
+					+ street
+					+ county
+					+ street
+					+ community
+					+ " LIMIT "
+					+ (page.getCurrentPage() - 1)
+					* page.getPageSize()
+					+ ", "
+					+ page.getPageSize();
 		}
-		if (!StringUtils.isEmpty(isSend)&&isSend.equals("1")) {//已发送的
+		if (!StringUtils.isEmpty(isSend) && isSend.equals("1")) {// 已发送的
 			sql = "SELECT r1.`ID` id, r3.`NAME` city,r2.`NAME` street,r1.`NAME` shequ,r1.`CREATEDATE` time,r1.`CREATORID` creater,r1.`JJTYPE` jjType,r1.`SNTYPE` snType,r1.`NSTYPE` nsType from omp_region r1,omp_region r2,omp_region r3 "
-					+ "where r1.LEVELID=5 and r1.PARENTID=r2.id and r2.PARENTID=r3.id AND (r1.`JJTYPE` is not NULL or r1.snType is NOT NULL or r1.nsType is not NULL)"+street+county+street+community+" LIMIT "+(page.getCurrentPage()-1)*page.getPageSize()+", "+page.getPageSize();
+					+ "where r1.LEVELID=5 and r1.PARENTID=r2.id and r2.PARENTID=r3.id AND (r1.`JJTYPE` is not NULL or r1.snType is NOT NULL or r1.nsType is not NULL)"
+					+ street
+					+ county
+					+ street
+					+ community
+					+ " LIMIT "
+					+ (page.getCurrentPage() - 1)
+					* page.getPageSize()
+					+ ", "
+					+ page.getPageSize();
 		}
 
-		List<Map<String,Object>> queryForList = JdbcTemplate.queryForList(sql);
+		List<Map<String, Object>> queryForList = JdbcTemplate.queryForList(sql);
 		return queryForList;
 	}
 
-
 	@Override
-	public int getCount(String county, String street,String community, String isSend,
-			String creationTime) {
+	public int getCount(String county, String street, String community,
+			String isSend, String creationTime) {
 
 		if (!StringUtils.isEmpty(county)) {
-			county = " AND r2.`PARENTID` = '"+county+"'";
+			county = " AND r2.`PARENTID` = '" + county + "'";
 		}
 
 		if (!StringUtils.isEmpty(street)) {
-			street = " AND r1.`PARENTID` = '"+street+"'";
+			street = " AND r1.`PARENTID` = '" + street + "'";
 		}
 
 		if (!StringUtils.isEmpty(community)) {
-			community = " AND r1.id = '"+community+"'";
+			community = " AND r1.id = '" + community + "'";
 		}
 
 		if (!StringUtils.isEmpty(creationTime)) {
-			creationTime = " AND r1.CREATEDATE like '%"+creationTime+"%'";
+			creationTime = " AND r1.CREATEDATE like '%" + creationTime + "%'";
 		}
 		String sql = "SELECT count(r1.`ID`)  from omp_region r1,omp_region r2,omp_region r3 "
-				+ "where r1.LEVELID=5 and r1.PARENTID=r2.id and r2.PARENTID=r3.id"+street+county+street+community;
+				+ "where r1.LEVELID=5 and r1.PARENTID=r2.id and r2.PARENTID=r3.id"
+				+ street + county + street + community;
 
-		if (!StringUtils.isEmpty(isSend)&&isSend.equals("0")) {//未发送的
+		if (!StringUtils.isEmpty(isSend) && isSend.equals("0")) {// 未发送的
 			sql = "SELECT count(r1.`ID`) from omp_region r1,omp_region r2,omp_region r3 "
-					+ "where r1.LEVELID=5 and r1.PARENTID=r2.id and r2.PARENTID=r3.id AND r1.`JJTYPE` is NULL AND r1.snType is NULL AND r1.nsType is NULL"+street+county+street+community;
+					+ "where r1.LEVELID=5 and r1.PARENTID=r2.id and r2.PARENTID=r3.id AND r1.`JJTYPE` is NULL AND r1.snType is NULL AND r1.nsType is NULL"
+					+ street + county + street + community;
 		}
-		if (!StringUtils.isEmpty(isSend)&&isSend.equals("1")) {//已发送的
+		if (!StringUtils.isEmpty(isSend) && isSend.equals("1")) {// 已发送的
 			sql = "SELECT count(r1.`ID`) from omp_region r1,omp_region r2,omp_region r3 "
-					+ "where r1.LEVELID=5 and r1.PARENTID=r2.id and r2.PARENTID=r3.id AND (r1.`JJTYPE` is not NULL or r1.snType is NOT NULL or r1.nsType is not NULL)"+street+county+street+community;
+					+ "where r1.LEVELID=5 and r1.PARENTID=r2.id and r2.PARENTID=r3.id AND (r1.`JJTYPE` is not NULL or r1.snType is NOT NULL or r1.nsType is not NULL)"
+					+ street + county + street + community;
 		}
 
 		int maxRows = JdbcTemplate.queryForInt(sql);
 		return maxRows;
 	}
-
-
 
 	@Override
 	public int login(String user, String pass) {
-		String sql = "SELECT count(i.ID) FROM	users i WHERE i.USER_NAME="+user+" and i.PASSWORD="+pass;
+		String sql = "SELECT count(i.ID) FROM	users i WHERE i.USER_NAME="
+				+ user + " and i.PASSWORD=" + pass;
 		int maxRows = JdbcTemplate.queryForInt(sql);
 		return maxRows;
 	}
 
+	// 动态加载树
+	public List<Map<String, Object>> getTreesByParentId(String id) {
+		if (id == null || "".equals(id)) {
+			id = "1";
+		}
+		String sql = "select o.id id,o.PARENTID pid,o.`NAME` text,o.levelid  from omp_region o where o.USE_FLAG= 1 and o.levelid <5 and o.PARENTID="
+				+ id;
+		List<Map<String, Object>> list = JdbcTemplate.queryForList(sql);
+		return list;
+	}
+
+	// 子节点数量
+	public List<Map<String, Object>> countChildrens(EasyUITree et) {
+		if (et.getId() == null || "".equals(et.getId())) {
+			et.setId("1");
+		}
+		List<EasyUITree> tList = et.getChildren();
+		String sql = "select o.id id,o.PARENTID pid,o.`NAME` from omp_region o where o.levelid <5 and  o.PARENTID=" + et.getId();
+		List<Map<String, Object>> list = JdbcTemplate.queryForList(sql);
+		return list;
+	}
+
+	@Override
+	public int getObjregion(String id) {
+		String sql = "select o.PARENTID from omp_region o where o.id=" + id;
+		int count = JdbcTemplate.queryForInt(sql);
+		return count;
+	}
+
+	@Override
+	public int hasRegion(String rid, String sid,String lv) {
+//		rid +=",";
+		String lvsql = "";
+		if("0".equals(lv)){
+			lvsql=" and s.serviceCity_id like '%" + rid+ "%'";
+		}else if("1".equals(lv)){
+			lvsql=" and s.serviceCounty_id like '%" + rid+ "%'";
+		}else if("2".equals(lv)){
+			lvsql=" and s.serviceStreet_id like '%" + rid+ "%'";
+		}
+		String sql = "select count(*) from service_provider s where 1=1 and  s.id="+ sid + lvsql;
+		int count = JdbcTemplate.queryForInt(sql);
+		return count;
+	}
+
+	@Override
+	public List<Map<String, Object>> getTreesById(String id) {
+		if (id == null || "".equals(id)) {
+			id="1";
+		}
+		String sql = "select o.id id,o.PARENTID pid,o.`NAME` text from omp_region o where o.id=" + id;
+		List<Map<String, Object>> list = JdbcTemplate.queryForList(sql);
+		return list;	
+	}
 
 }

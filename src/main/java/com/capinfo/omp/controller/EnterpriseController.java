@@ -21,6 +21,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.hibernate.id.IdentityGenerator.GetGeneratedKeysDelegate;
+import org.hibernate.loader.custom.Return;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
@@ -62,6 +63,8 @@ public class EnterpriseController {
 	private GeneralService generalService;
 	@Autowired
 	private EnterpriseService enterpriseService;
+	@Autowired
+	private JdbcTemplate jdbcTemplate;
 
 
 	//资源页面
@@ -120,7 +123,7 @@ public class EnterpriseController {
 	public String importServiceProvider(HttpServletRequest request, @RequestParam("excelFile") MultipartFile excelFile, @ModelAttribute("eccomm_admin") SystemUser user) throws Exception {
 		String errorstr = "";
 		Map<String, Object> map = null;
-		int error = 0;
+//		int error = 0;
 		int errorCount = 0;
 		if (excelFile != null && !"".equals(excelFile)) {
 			InputStream fis = excelFile.getInputStream();
@@ -129,18 +132,18 @@ public class EnterpriseController {
 			if(c<1){
 				List<ServiceProvider> list = (List<ServiceProvider>) map.get("infos");
 				for (ServiceProvider serviceProvider : list) {
-					error++;
+//					error++;
 					// 保存服务商
 					serviceProvider.setChannels(user.getId());
 					serviceProvider.setCreateTime(new Date());
 					serviceProvider.setUser_falg(1);
-					boolean b = enterpriseService.queryForTell(serviceProvider.getServiceTell(),0L);
-					if(!b){
-						errorCount++;
-						errorstr+="第"+error+"行,服务电话已存在; \n";
-					}else{
+					//boolean b = enterpriseService.queryForTell(serviceProvider.getServiceTell(),0L);
+					//if(!b){
+					//	errorCount++;
+					//	errorstr+="第"+error+"行,服务电话已存在; \n";
+					//}else{
 						generalService.saveOrUpdate(serviceProvider);
-					}
+					//}
 				}
 				if(errorCount>0){
 					return errorstr;
@@ -591,7 +594,8 @@ public class EnterpriseController {
 		ModelAndView mv = new ModelAndView("/omp/serviceMerchants/serverupdate");
 		Long o_mark = parameter.getOpenRegions();
 		ServiceProvider serviceProvider = generalService.getObjectById(ServiceProvider.class, sid);
-		String serviceCommunity_id = serviceProvider.getServiceCommunity_id();
+//		String serviceCommunity_id = serviceProvider.getServiceCommunity_id();
+		String serviceCity_id = serviceProvider.getServiceCity_id();
 		String serviceCounty_id = serviceProvider.getServiceCounty_id();
 		String serviceStreet_id = serviceProvider.getServiceStreet_id();
 		List<ServiceType> typeList = generalService.getAllObjects(ServiceType.class);
@@ -603,6 +607,7 @@ public class EnterpriseController {
 		String[] countys = serviceCounty_id.split(",");
 		String[] streets = serviceStreet_id.split(",");
 //		String[] communitys = serviceCommunity_id.split(",");
+		
 		for (String string : countys) {
 			if(!"".equals(string)){
 				for (Map<String, Object> map : countyAllList) {
@@ -698,31 +703,39 @@ public class EnterpriseController {
 	@RequestMapping("/serviceMerchants/ServiceupdateDo.shtml")
 	@ResponseBody
 	public String serviceupdateDo(ServiceProviderParameter parameter) {
-		//ModelAndView mv = new ModelAndView("/omp/serviceMerchants/serverupdate");
 		ServiceProvider serviceProvider = parameter.getEntity();
-		String r1 = "";
-		String r2 = "";
-		String r3 = "";
+		String r0 = "";		//市级
+		String r1 = "";		//区县
+		String r2 = "";		//街道
 		String[] regions = parameter.getRegionIds().split(",");
 		if(regions.length>0){
 			for (String id : regions) {
-				OmpRegion entity = generalService.getObjectById(OmpRegion.class, Long.parseLong(id));
-				if(entity.getLevelid()==3){
-					r1+=entity.getId()+",";
+				OmpRegion or = generalService.getObjectById(OmpRegion.class, Long.parseLong(id));
+				if(or.getLevelid()==2){		//市级
+					r0 = isContains(r0, or.getId()+",");
+					r1 = Permissions.getRegionChildrenId(or.getId(),jdbcTemplate,r1);
+					String[] r1s = r1.split(",");
+					if(r1s.length>0){
+						for (String tR1 : r1s) {
+							r2=Permissions.getRegionChildrenId(Long.parseLong(tR1),jdbcTemplate,r2);
+						}
+					}
 					
-				}else if (entity.getLevelid()==4) {
-					r2+=entity.getId()+",";
-					r1+=entity.getParentid()+",";
-				}else if (entity.getLevelid()==5) {
-					r3+=entity.getId()+",";
-					r2+=entity.getParentid()+",";
-					OmpRegion entityP = generalService.getObjectById(OmpRegion.class, entity.getParentid());
-					r1+=entityP.getParentid()+",";
+				}
+				if(or.getLevelid()==3){		//区县
+					r0 = isContains(r0, or.getParentid()+",");
+					r1 = isContains(r1, or.getId()+",");
+					r2 = Permissions.getRegionChildrenId(or.getId(),jdbcTemplate,r2);
+				}else if (or.getLevelid()==4) {		//街道
+					OmpRegion o = generalService.getObjectById(OmpRegion.class, or.getParentid());
+					r0 = isContains(r0, o.getParentid()+",");
+					r2 = isContains(r2, or.getId()+",");
+					r1 = isContains(r1, or.getParentid()+",");
 				}
 			}
+			r0 = uniq(r0);
 			r1 = uniq(r1);
 			r2 = uniq(r2);
-			r3 = uniq(r3);
 		}
 		if(true){
 			ServiceProvider sp = generalService.getObjectById(ServiceProvider.class, parameter.getEntity().getId());
@@ -735,21 +748,18 @@ public class EnterpriseController {
 					enterpriseService.mobsync(serviceProvider.getId());
 				}
 			}
-			
-			
-			
 			generalService.clear();
 		}
-		boolean b = enterpriseService.queryForTell(parameter.getEntity().getServiceTell(),parameter.getEntity().getId());
-		if(!b){
-			return "添加失败服务商电话已存在";
-		}
+	//	boolean b = enterpriseService.queryForTell(parameter.getEntity().getServiceTell(),parameter.getEntity().getId());
+//		if(!b){
+//			return "添加失败服务商电话已存在";
+//		}
 		serviceProvider.setUpdateTime(new Date());
 		serviceProvider.setServiceCounty_id(r1);
 		serviceProvider.setServiceStreet_id(r2);
-		serviceProvider.setServiceCommunity_id(r3);
+		serviceProvider.setServiceCity_id(r0);
 		generalService.saveOrUpdate(serviceProvider);
-		return "成功";
+		return "修改成功";
 	}
 
 	public String uniq(String r){
@@ -794,6 +804,41 @@ public class EnterpriseController {
 	@ResponseBody
 	public String serviceAddDo(ServiceProviderParameter parameter,@ModelAttribute("eccomm_admin") SystemUser user) {
 		ServiceProvider entity = parameter.getEntity();
+		String r0 = "";		//市级
+		String r1 = "";		//区县
+		String r2 = "";		//街道
+		//String r3 = "";
+		String[] regions = parameter.getRegionIds().split(",");
+		if(regions.length>0){
+			for (String id : regions) {
+				OmpRegion or = generalService.getObjectById(OmpRegion.class, Long.parseLong(id));
+				if(or.getLevelid()==2){		//市级
+//					r0+=or.getId()+",";
+					r0 = isContains(r0, or.getId()+",");
+					r1 = Permissions.getRegionChildrenId(or.getId(),jdbcTemplate,r1);
+					String[] r1s = r1.split(",");
+					if(r1s.length>0){
+						for (String tR1 : r1s) {
+							r2=Permissions.getRegionChildrenId(Long.parseLong(tR1),jdbcTemplate,r2);
+						}
+					}
+					
+				}
+				if(or.getLevelid()==3){		//区县
+					r0 = isContains(r0, or.getParentid()+",");
+					r1 = isContains(r1, or.getId()+",");
+					r2 = Permissions.getRegionChildrenId(or.getId(),jdbcTemplate,r2);
+				}else if (or.getLevelid()==4) {		//街道
+					OmpRegion o = generalService.getObjectById(OmpRegion.class, or.getParentid());
+					r0 = isContains(r0, o.getParentid()+",");
+					r2 = isContains(r2, or.getId()+",");
+					r1 = isContains(r1, or.getParentid()+",");
+				}
+			}
+			r0 = uniq(r0);
+			r1 = uniq(r1);
+			r2 = uniq(r2);
+		}
 		//设置发展渠道来源
 		String serviceTell = entity.getServiceTell();
 		Long id = entity.getId();
@@ -801,14 +846,28 @@ public class EnterpriseController {
 		if(!b){
 			return "该服务电话已存在";
 		}
-
+		entity.setUser_falg(1);
+		entity.setServiceCity_id(r0);
+		entity.setServiceCounty_id(r1);
+		entity.setServiceStreet_id(r2);
 		entity.setChannels(user.getId());
 		entity.setCreateTime(new Date());
+		entity.setSigningDate(new Date());
+		entity.setVerify(1);
 		generalService.saveOrUpdate(entity);
 		return "添加成功";
 	}
 
+	/**
+	 * 判断是否包含
+	 * 
+	 */
 
-
+	public String isContains(String ids,String id){
+		if(ids.indexOf(id)<0){
+			ids+=id;
+		}
+		return ids;
+	}
 
 }

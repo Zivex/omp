@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
+import com.capinfo.omp.model.EasyUITree;
 import com.capinfo.omp.utils.Page;
 import com.capinfo.region.model.OmpRegion;
 
@@ -23,7 +24,10 @@ public interface OmpRegionService{
 
 	public List<Map<String, Object>> gerRegionById(String id);
 
-
+	public List<Map<String, Object>> getTreesByParentId(String id);
+	
+	public List<Map<String, Object>> countChildrens(EasyUITree e);
+	
 	public void saveSqOrder(String comid, String ptype, String kid, String showid, String shownumber);
 
 	public boolean isSqOrder(String comid, String ptype, String kid);
@@ -61,6 +65,12 @@ public interface OmpRegionService{
 
 	List<Map<String, Object>> getPro(String name, String serverType,
 			String streetids);
+
+	public int getObjregion(String a);
+
+	public int hasRegion(String string, String sid, String lv);
+
+	public List<Map<String, Object>> getTreesById(String id);
 
 
 

@@ -195,12 +195,15 @@
               var account = $("#account").val();
               for (var i = 0; i < data.length; i++)
               {
-//             	  if(account=='g'){
-//             	  if(i==11 || i==12 || i==13 || i==14 || i==15 ){
-//             		  architecture.append("<input type='hidden' class='serviceId' name='"+data[i].key+"'value='"+data[i].sp_id+"' >");
-//             		  continue;
-//             	  }
-//               }
+            	  if(account=='g'){
+             	  if(i==10 || i==12 || i==13 || i==14 || i==15 ){
+            		  continue;
+             	  }
+               }else if(account=='b' || account=='m'){
+            	   if(i==8 || i==9 ||i==10 || i==12 || i==13 || i==14 || i==15 ){
+             		  continue;
+              	  }
+          	  }
                architecture.append ("<tr><td><input type='radio' name='typeId' value='"+data[i].id+"'> "
                                + data[i].key
                                + "</td><td>"

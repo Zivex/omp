@@ -3,11 +3,25 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 
+<link rel="stylesheet"
+	href="${pageContext.request.contextPath}/resources/easyUIjs/themes/default/easyui.css"
+	type="text/css"></link>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/easyUIjs/themes/icon.css"
+	type="text/css"></link>
+<!-- <script type="text/javascript" -->
+<%-- 	src="${pageContext.request.contextPath}/resources/easyUIjs/jquery-1.7.2.js"></script> --%>
+<script type="text/javascript"
+	src="${pageContext.request.contextPath}/resources/easyUIjs/jquery.easyui.min.js" rel="stylesheet"></script>
+<script type="text/javascript"
+	src="${pageContext.request.contextPath}/resources/easyUIjs/locale/easyui-lang-zh_CN.js"
+	rel="stylesheet"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/easyUIjs/sys.js"
+	rel="stylesheet"></script>
 
 <div class="panel panel-default">
 	<div class="container">
 		<c:url var="save" value="/old/oldMatch/oldAdd.shtml" />
-		<form:form id="command1" method="post" action='${save}' class="form-horizontal" role="form">
+		<form:form  method="post" action='${save}' class="form-horizontal" role="form">
 			<div class="form-group">
 				<label for="city_id" class="col-md-2 control-label">所属市: </label>
 				<div class="col-md-4">
@@ -95,6 +109,15 @@
 				</div>
 				<span style="color: red">*</span>
 			</div>
+			<!-- 			服务区域 -->
+			<div class="form-group">
+				<%-- 				<ul class="easyui-tree" data-options="url:'${pageContext.request.contextPath }/admin/omp/ompRegion/treeLoad.shtml'"></ul> --%>
+				<label for="entity.teltype" class="col-md-2 control-label">服务区域: </label>
+				<div class="col-md-4">
+					<ul id="tt3"></ul>
+				</div>
+			</div>
+
 			<div class="form-group">
 				<label for="entity.address" class="col-md-2 control-label">联系人: </label>
 				<div class="col-md-4">
@@ -105,7 +128,7 @@
 			<div class="form-group">
 				<label for="entity.address" class="col-md-2 control-label">联系人手机号: </label>
 				<div class="col-md-4">
-					<form:input path="entity.contactPhone" data-rule-required="true" class="form-control"  />
+					<form:input path="entity.contactPhone" data-rule-required="true" class="form-control" />
 				</div>
 				<span style="color: red">*</span>
 			</div>
@@ -171,7 +194,8 @@
 			<div class="form-group">
 				<label for="entity.address" class="col-md-2 control-label">服务内容: </label>
 				<div class="col-md-4">
-					<form:textarea style="width: 300px; height: 60px;" path="entity.serviceContent" data-rule-required="true" class="form-control" />
+					<form:textarea style="width: 300px; height: 60px;" path="entity.serviceContent"
+						data-rule-required="true" class="form-control" />
 				</div>
 				<span style="color: red">*</span>
 			</div>
@@ -238,13 +262,43 @@
 
 
 <script>
-	var city1 = $ ("#city1");
+	function loadTree()
+    {
+		var cityid = $('#city1').val();
+	    $ ('#tt3').tree (
+	    {
+	        url : '${pageContext.request.contextPath }/admin/omp/ompRegion/treeLoad.shtml?cityid='+cityid,
+	        lines : false,
+	        checkbox : true,
+	        onlyLeafCheck: true,
+	        onLoadSuccess : function (node, data)
+	        {
+		        console.info (node);
+		        console.info (data);
+		        var t = $ (this);
+		        if (data)
+		        {
+			        $ (data).each (function (index, d)
+			        {
+				        //                         if (this.state == 'closed') {
+				        //                         	alert(this.state)
+				        //                             t.tree('expandAll');
+				        //                         }
+			        });
+		        }
+	        }
+	    });
+	    
+    };
+    
+    var city1 = $ ("#city1");
     var county1 = $ ("#county1");
     var street1 = $ ("#street1");
     var community1 = $ ("#community1");
     function udpCity ()
     {
 	    changCity (city1, county1, street1);
+	    loadTree();
     }
     function udpCounty ()
     {
@@ -295,17 +349,36 @@
 	    });
     }
 
+	function getChecked(){
+		var nodes = $('#tt3').tree('getChecked');
+		if(nodes.length==0){
+			alert("请选择服务区域");
+			return ;
+		}
+		
+	    var s = '';
+	    for(var i=0; i<nodes.length; i++){
+	        if (s != '') s += ',';
+	        s += nodes[i].id;
+	    }
+	    return s;
+	}
+    
+    
+    
     function submit ()
     {
-    	if (!$("#command1").valid()) {
-            return;
-         }
+    	var regionIds = "&regionIds="+getChecked();
+	    if (!$ ("#command").valid ())
+	    {
+		    return;
+	    }
 	    $.ajax (
 	    {
 	        cache : true,
 	        type : "POST",
 	        url : '${pageContext.request.contextPath}/enterprise/serviceMerchants/ServiceAddDo.shtml',
-	        data : $ ('#command').serialize (),// 你的formid
+	        data : $ ('#command').serialize ()+regionIds,// 你的formid
 	        async : false,
 	        error : function (request)
 	        {
@@ -314,6 +387,8 @@
 	        success : function (data)
 	        {
 		        alert (data);
+				location.href = "<%=request.getContextPath() %>/enterprise/initial.shtml";
+
 	        }
 	    });
     }

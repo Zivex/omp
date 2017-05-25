@@ -10,6 +10,30 @@
 		${messages.message}
 	</div>
 </c:if>
+<div class="modal fade" tabindex="-1" id="voiceContent" role="dialog">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title" id="voiceContent">语音内容</h4>
+				</div>
+				<div class="modal-body">
+					<div class="form-group">
+						<p class="small" id="vn"></p>
+						<p class="small" id="vt"></p>
+						<p class="small" id="vc"></p>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+							<button type="button" onclick="openUpload();" class="btn btn-primary">提交更改</button>
+						</div>
+					</div>
+				</div>
+				<!-- /.modal-content -->
+			</div>
+			<!-- /.modal -->
+		</div>
+	</div>
+
 <div class="panel panel-default">
 	<form:form id="listForm" name="listForm" method="post"
 		action='${queryForm }'>
@@ -19,15 +43,18 @@
 			<table class="table table-hover table-middle" role="grid">
 				<thead>
 					<tr class="active">
-						<th width="5%"><input type="checkbox" onclick="check()" /></th>
+						<th width="2%"><input type="checkbox" onclick="check()" /></th>
+						
+						<th width="8%">语音名称</th>
 						<th width="5%">姓名</th>
-						<th width="10%">座机号</th>
-						<th width="5%">区域</th>
+						<th width=6%">座机号</th>
+						<th width="5%">市级</th>
+						<th width="5%">区县</th>
 						<th width="5%">街道</th>
 						<th width="10%">社区</th>
 						<th width="10%">推送状态</th>
 						<th width="10%">执行状态</th>
-						<th width="20%">执行时间</th>
+						<th width="10%">执行时间</th>
 						<th width="10%">操作</th>
 						<!-- 						<th width="10%">居住地址</th> -->
 						<!-- 						<th width="10%">录入员</th> -->
@@ -39,6 +66,7 @@
 						<tr>
 
 							<td><input type="checkbox" class="ids" value="${order.old.id}" /></td>
+							<td>${order.voice.voiceName}</td>
 							<td>
 <!-- 							<a id="viewItem" href="###" -->
 <%-- 								onclick="showDetails(${order.old.id});"> --%>
@@ -46,6 +74,7 @@
 <!-- 								</a> -->
 								</td>
 							<td>${order.old.zjnumber}</td>
+							<td>${order.old.household_city.name}</td>
 										<td>${order.old.household_county.name}</td>
 							<td>${order.old.household_street.name}</td>
 							<td>${order.old.household_community.name}</td>
@@ -74,6 +103,7 @@
 									</button>
 									<ul class="dropdown-menu" role="menu">
 <%-- 										<li><a onclick="repeatVoice(${order.old.id},${order.voiceId })">重新发送</a></li> --%>
+										<li><a onclick="seeContent(${order.voice.id})">查看</a></li>
 										<li><a onclick="repeatVoice(${order.id})">重新发送</a></li>
 										<c:if test="${sys == 'admin'}">
 											<li><a href="###" onclick="deleteUser(${order.old.id},this);">删除</a></li>
@@ -142,4 +172,12 @@
 		}
 
 	}
+		function seeContent(vid){
+			 $.ajax({url:"seeContent.shtml?vid="+vid,success:function(result){
+			       $('#vc').text("语音内容:"+result.content);
+			       $('#vt').text("创建时间:"+result.voiceTime);
+			       $('#vn').text("语音名:"+result.voiceName);
+				$('#voiceContent').modal("show");
+			    }});
+		}
 </SCRIPT>

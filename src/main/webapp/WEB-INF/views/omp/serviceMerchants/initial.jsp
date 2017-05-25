@@ -58,7 +58,15 @@
 										<td><form:input path="entity.serviceName"  /></td>
 										<td>服务商电话：</td>
 										<td><form:input path="entity.serviceTell"  /></td>
-										<td>服务类型：</td>
+										<td>联系人：</td>
+										<td><form:input path="entity.contact"  /></td>
+
+										<td>联系方式：</td>
+										<td><form:input path="entity.contactPhone"  /></td>
+										
+									</tr>
+									<tr>
+									<td>服务类型：</td>
 										<td><form:select path="entity.serviceTypeId">
 												<form:option value="0">--请选择--</form:option>
 												<form:options items="${typeList }" itemLabel="serviceName"
@@ -72,30 +80,24 @@
 												<form:option value="3">有效</form:option>
 												<form:option value="4">待审核</form:option>
 										</form:select></td>
-
 									</tr>
+								</table>
+							</form:form>
+							<form:form id="commandR" role="form" class="form-inline" action="${queryForm}" method="post">
+							<table class="table table-striped">
 									<tr>
-										<td>联系人：</td>
-										<td><form:input path="entity.contact"  /></td>
-
-										<td>联系方式：</td>
-										<td><form:input path="entity.contactPhone"  /></td>
 										<td>服务市级：</td>
 										<td><select id="city" name="city">
 												<option value="${city }">--请选择--</option>
 										</select></td>
 										<td>服务区县：</td>
-											<td>
-												<select id="county" name="county">
-													<option value="${county }">--请选择--</option>		
-												</select>
-											</td>
-											<td>服务街道：</td>
-											<td>
-												<select id="street" name="street">
-													<option value="${street }">--请选择--</option>		
-												</select>
-											</td>
+										<td><select id="county" name="county">
+												<option value="${county }">--请选择--</option>
+										</select></td>
+										<td >服务街道：</td>
+										<td ><select id="street" name="street">
+												<option value="${street }">--请选择--</option>
+										</select></td>
 									</tr>
 									<tr>
 										<td><input class="btn btn-default" type="button" onclick="query()" value="查询"></td>
@@ -104,6 +106,8 @@
 									</tr>
 								</table>
 							</form:form>
+							
+							
 						</div>
 						<hr>
 						<div id="borad" style="display: none">
@@ -150,15 +154,17 @@
 			selectMenu("o_serviceMerchants");
 			initQueryForm();
 			
-			$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",function(data){
-				for(var i = 0;i<data.length;i++){
-					$("#city").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
-				}
-			});
-			
-			
-			
-			
+			//市
+			$.ajax({  
+			    type : "post",  
+			    url : "<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",  
+			    async : false,//取消异步  
+			    success : function(data){  
+			    	for(var i = 0;i<data.length;i++){
+						$("#city").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
+					}
+			    }  
+			});  
 			$("#city").change(function(){
 				$("#county option:not(:first)").remove();
 				$("#street option:not(:first)").remove();
@@ -180,54 +186,108 @@
 					}
 				});
 			});
-			
-			
+			$("#street").change(function(){
+				$("#community option:not(:first)").remove();
+				var id = $("#street").val();
+				$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",{id : id},function(data) {
+						for (var i = 0; i < data.length; i++) {
+							$("#community").append("<option value='"+data[i].id+"'>"+ data[i].name+ "</option>");
+						}
+					});
+				});
 			<c:if test="${sessionScope.eccomm_admin.account_type=='g' }">
-			flag=1;
 			var lv = "${eccomm_admin.leave}";
 			var rid = "${eccomm_admin.rid}";
 			var pid = "${eccomm_admin.parentid}";
 			if(lv==2){	//北京
-				flag=0;
+				$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",{id:rid},function(data){
+					$("#city").val(rid); 
+					$("#city").attr("disabled", true);
+					for(var i = 0;i<data.length;i++){
+						$("#county").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
+					}
+				});
 			}
 			if(lv==3){	//区
-				$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",{id:rid},function(data){
-				$("#countyinit").val(rid); 
-				$("#countyinit").attr("disabled", true);
+				$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",{id:pid},function(data){
+					$("#city").val(pid); 
+					$("#city").attr("disabled", true);
 					for(var i = 0;i<data.length;i++){
-						$("#streetinit").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
-					}				
+						$("#county").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
+					}
+					$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",{id:rid},function(data){
+						$("#county").val(rid); 
+						$("#county").attr("disabled", true);
+							for(var i = 0;i<data.length;i++){
+								$("#street").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
+							}				
+						});
 				});
-				
 			}
 			if(lv==4){	//街道
-				$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",{id:pid},function(data){
-					$("#countyinit").val(pid); 
-					$("#countyinit").attr("disabled", true);
-						for(var i = 0;i<data.length;i++){
-							$("#streetinit").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
-						}
-						$("#streetinit").val(rid); 
-						$("#streetinit").attr("disabled", true);
-					});
-			}if(lv==5){	//社区
 				$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionByPid.shtml",{id:pid},function(data){
-					var pid=data[0].PARENTID;
-					var sid=data[0].id;
-					$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",{id:pid},function(data){
-					$("#countyinit").val(pid); 
-					$("#countyinit").attr("disabled", true);
+					var cityid=data[0].PARENTID; //市级
+					$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",{id:cityid},function(data){
+						$("#city").val(cityid); 
+						$("#city").attr("disabled", true);
+						for(var i = 0;i<data.length;i++){
+							$("#county").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
+						}
+					});
+				$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",{id:pid},function(data){
+					$("#county").val(pid); 
+					$("#county").attr("disabled", true);
+						for(var i = 0;i<data.length;i++){
+							$("#street").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
+						}
+						$("#street").val(rid); 
+						$("#street").attr("disabled", true);
+						$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",{id:rid},function(data){
 							for(var i = 0;i<data.length;i++){
-								$("#streetinit").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
+								$("#community").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
 							}
-							$("#streetinit").val(sid); 
-							$("#streetinit").attr("disabled", true);
+						});
+					});
+				});
+			}
+			if(lv==5){	//社区
+				$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionByPid.shtml",{id:pid},function(data){
+					var cid=data[0].PARENTID; //区县
+					var sid=data[0].id;	//街道
+					var cityid=data[0].rid;//市级
+					$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",{id:cityid},function(data){
+						$("#city").val(cityid); 
+						$("#city").attr("disabled", true);
+						for(var i = 0;i<data.length;i++){
+							$("#county").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
+						}
+					});
+					$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",{id:cid},function(data){
+ 					$("#county").val(cid); 
+					$("#county").attr("disabled", true);
+							for(var i = 0;i<data.length;i++){
+								$("#street").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
+							}
+							$("#street").val(sid); 
+							$("#street").attr("disabled", true);
+							$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",
+				                {
+					                id : sid
+				                }, function (data)
+				                {
+// 					                for (var i = 0; i < data.length; i++)
+// 					                {
+// 						                $ ("#community").append (
+// 						                        "<option value='"+data[i].id+"'>" + data[i].name + "</option>");
+// 					                }
+// 					                $ ("#community").val (rid);
+// 					                $ ("#community").attr ("disabled", true);
+					                
+				                });
 			                });
-			                
 		                });
 	                }
-		
-		</c:if>
+	                </c:if>
 			
 		});
 
@@ -297,7 +357,7 @@
 					cache : true,
 					type : "POST",
 					url : '${queryForm}',
-					data : $('#command').serialize(),// 你的formid
+					data : $('#command').serialize()+"&"+$("#commandR").serialize(),// 你的formid
 					async : false,
 					error : function(request) {
 						alert("Connection error");

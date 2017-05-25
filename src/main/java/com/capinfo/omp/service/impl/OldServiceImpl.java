@@ -314,7 +314,7 @@ public class OldServiceImpl extends
 
 	@Override
 	public List<Map<String, Object>> getRegionByPid(String county) {
-		String sql = "select r.id,r.name,r.PARENTID from Omp_Region r where r.USE_FLAG=1 and r.id = "
+		String sql = "select r.id,r.name,r.PARENTID,rr.PARENTID rid from Omp_Region r inner join Omp_Region rr on r.PARENTID = rr.id where r.USE_FLAG=1 and r.id = "
 				+ county;
 		List<Map<String, Object>> list = jdbcTemplate.queryForList(sql);
 		return list;

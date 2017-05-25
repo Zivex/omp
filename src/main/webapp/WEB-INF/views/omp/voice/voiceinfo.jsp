@@ -25,6 +25,7 @@
 						<th width="3%"><input type="checkbox" onclick="check()" /></th>
 						<th width="10%">语音名</th>
 						<th width="10%">语音创建时间</th>
+<!-- 						<th width="10%">语音内容</th> -->
 						<th width="10%">语音备注</th>
 						<th width="10%">操作</th>
 					</tr>
@@ -38,6 +39,7 @@
 							<td><input type="checkbox" class="ids" value="${vo.id}" /></td>
 							<td>${vo.n}</td>
 							<td>${vo.t}</td>
+<%-- 								<td>${vo.content}</td> --%>
 							<td>${vo.r}</td>
 							<td>
 

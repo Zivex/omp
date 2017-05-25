@@ -34,6 +34,7 @@
 					 	<td>${vo.n}</td>
 					 	<td>${vo.t}</td>
 					 	<td>${vo.r}</td>
+					 
 <!-- 					 	<td> -->
 <!-- 								<div class="btn-group"> -->
 <!-- 									<button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown"> -->

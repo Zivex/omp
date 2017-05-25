@@ -59,6 +59,10 @@
 												<option value="3">未听取</option>
 										</select></td>
 									</tr>
+								</table>
+							</form:form>
+							<form:form id="commandR" role="form" class="form-inline" action="${queryForm}" method="post">
+								<table class="table table-striped">
 									<tr>
 										<td>市级：</td>
 										<td><select id="city" name="city">
@@ -80,6 +84,7 @@
 								</table>
 							</form:form>
 							<a class="btn btn-default" href="#" onclick="quety()" role="button">查询</a>
+							<td><a class="btn btn-default" href="#" onclick="formReset()" role="button">重置</a>
 						</div>
 						<hr>
 						<div id="borad" style="display: none">
@@ -122,7 +127,7 @@
 		 *指令查询
 		 */
 		 function quety() {
-			 	$.post("<%=request.getContextPath() %>/voice/voiceManage/list2.shtml", $("#command").serialize(), function(data) {
+			 	$.post("<%=request.getContextPath() %>/voice/voiceManage/list2.shtml", $("#command").serialize()+"&"+$("#commandR").serialize(), function(data) {
 			 		$("#resultDiv").html(data);
 			 	});
 			 }
@@ -131,125 +136,145 @@
 			initalizeSiderBar();
 			selectMenu("o_voice1");
 			initQueryForm();
-			$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",function(data){
-				for(var i = 0;i<data.length;i++){
-					$("#city").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
-				}
-			});
-			
-			
-			$("#city").change(function() {
+			//市
+			$.ajax({  
+			    type : "post",  
+			    url : "<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",  
+			    async : false,//取消异步  
+			    success : function(data){  
+			    	for(var i = 0;i<data.length;i++){
+						$("#city").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
+					}
+			    }  
+			});  
+			$("#city").change(function(){
 				$("#county option:not(:first)").remove();
 				$("#street option:not(:first)").remove();
 				$("#community option:not(:first)").remove();
 				var id = $("#city").val();
-				$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml", {
-					id: id
-				}, function(data) {
-					for (var i = 0; i < data.length; i++) {
-						$("#county").append("<option value='" + data[i].id + "'>" + data[i].name + "</option>");
+				$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",{id:id},function(data){
+					for(var i = 0;i<data.length;i++){
+						$("#county").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
 					}
 				});
 			});
-			$("#county").change(function() {
+			$("#county").change(function(){
 				$("#street option:not(:first)").remove();
 				$("#community option:not(:first)").remove();
 				var id = $("#county").val();
-				$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml", {
-					id: id
-				}, function(data) {
-					for (var i = 0; i < data.length; i++) {
-						$("#street").append("<option value='" + data[i].id + "'>" + data[i].name + "</option>");
+				$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",{id:id},function(data){
+					for(var i = 0;i<data.length;i++){
+						$("#street").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
 					}
 				});
 			});
-
-			$("#street").change(function() {
+			$("#street").change(function(){
 				$("#community option:not(:first)").remove();
 				var id = $("#street").val();
-				$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml", {
-					id: id
-				}, function(data) {
-					for (var i = 0; i < data.length; i++) {
-						$("#community").append("<option value='" + data[i].id + "'>" + data[i].name + "</option>");
-					}
+				$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",{id : id},function(data) {
+						for (var i = 0; i < data.length; i++) {
+							$("#community").append("<option value='"+data[i].id+"'>"+ data[i].name+ "</option>");
+						}
+					});
 				});
-			});
 			<c:if test="${sessionScope.eccomm_admin.account_type=='g' }">
-			flag = 1;
 			var lv = "${eccomm_admin.leave}";
 			var rid = "${eccomm_admin.rid}";
 			var pid = "${eccomm_admin.parentid}";
-			if (lv == 2) { //北京
-				flag = 0;
-			}
-			if (lv == 3) { //区
-				$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml", {
-					id: rid
-				}, function(data) {
-					$("#county").val(rid);
-					$("#county").attr("disabled", true);
-					for (var i = 0; i < data.length; i++) {
-						$("#street").append("<option value='" + data[i].id + "'>" + data[i].name + "</option>");
+			if(lv==2){	//北京
+				$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",{id:rid},function(data){
+					$("#city").val(rid); 
+					$("#city").attr("disabled", true);
+					for(var i = 0;i<data.length;i++){
+						$("#county").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
 					}
 				});
-
 			}
-			if (lv == 4) { //街道
-				$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml", {
-					id: pid
-				}, function(data) {
-					$("#county").val(pid);
-					$("#county").attr("disabled", true);
-					for (var i = 0; i < data.length; i++) {
-						$("#street").append("<option value='" + data[i].id + "'>" + data[i].name + "</option>");
+			if(lv==3){	//区
+				$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",{id:pid},function(data){
+					$("#city").val(pid); 
+					$("#city").attr("disabled", true);
+					for(var i = 0;i<data.length;i++){
+						$("#county").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
 					}
-					$("#street").val(rid);
-					$("#street").attr("disabled", true);
-					$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml", {
-						id: rid
-					}, function(data) {
-						for (var i = 0; i < data.length; i++) {
-							$("#community").append("<option value='" + data[i].id + "'>" + data[i].name + "</option>");
-						}
-
-					});
-				});
-			}
-			if (lv == 5) { //社区
-				$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionByPid.shtml", {
-					id: pid
-				}, function(data) {
-					var pid = data[0].PARENTID;
-					var sid = data[0].id;
-
-					$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml", {
-						id: pid
-					}, function(data) {
-						$("#county").val(pid);
+					$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",{id:rid},function(data){
+						$("#county").val(rid); 
 						$("#county").attr("disabled", true);
-						for (var i = 0; i < data.length; i++) {
-							$("#street").append("<option value='" + data[i].id + "'>" + data[i].name + "</option>");
+							for(var i = 0;i<data.length;i++){
+								$("#street").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
+							}				
+						});
+				});
+			}
+			if(lv==4){	//街道
+				$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionByPid.shtml",{id:pid},function(data){
+					var cityid=data[0].PARENTID; //市级
+					$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",{id:cityid},function(data){
+						$("#city").val(cityid); 
+						$("#city").attr("disabled", true);
+						for(var i = 0;i<data.length;i++){
+							$("#county").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
 						}
-						$("#street").val(sid);
+					});
+				$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",{id:pid},function(data){
+					$("#county").val(pid); 
+					$("#county").attr("disabled", true);
+						for(var i = 0;i<data.length;i++){
+							$("#street").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
+						}
+						$("#street").val(rid); 
 						$("#street").attr("disabled", true);
-						$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml", {
-							id: sid
-						}, function(data) {
-							for (var i = 0; i < data.length; i++) {
-								$("#community").append("<option value='" + data[i].id + "'>" + data[i].name + "</option>");
+						$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",{id:rid},function(data){
+							for(var i = 0;i<data.length;i++){
+								$("#community").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
 							}
-							$("#community").val(rid);
-							$("#community").attr("disabled", true);
-
 						});
 					});
-
 				});
 			}
-		
-		</c:if>
+			if(lv==5){	//社区
+				$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionByPid.shtml",{id:pid},function(data){
+					var cid=data[0].PARENTID; //区县
+					var sid=data[0].id;	//街道
+					var cityid=data[0].rid;//市级
+					$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",{id:cityid},function(data){
+						$("#city").val(cityid); 
+						$("#city").attr("disabled", true);
+						for(var i = 0;i<data.length;i++){
+							$("#county").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
+						}
+					});
+					$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",{id:cid},function(data){
+ 					$("#county").val(cid); 
+					$("#county").attr("disabled", true);
+							for(var i = 0;i<data.length;i++){
+								$("#street").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
+							}
+							$("#street").val(sid); 
+							$("#street").attr("disabled", true);
+							$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",
+				                {
+					                id : sid
+				                }, function (data)
+				                {
+					                for (var i = 0; i < data.length; i++)
+					                {
+						                $ ("#community").append (
+						                        "<option value='"+data[i].id+"'>" + data[i].name + "</option>");
+					                }
+					                $ ("#community").val (rid);
+					                $ ("#community").attr ("disabled", true);
+					                
+				                });
+			                });
+		                });
+	                }
+	                </c:if>
 		});
+		  function formReset()
+	        {
+	        	document.getElementById("command").reset();
+	        }
 	</script>
 
 

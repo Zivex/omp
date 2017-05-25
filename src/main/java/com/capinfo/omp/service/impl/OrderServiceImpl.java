@@ -153,6 +153,24 @@ CommonsDataOperationServiceImpl<Omp_old_order, OrderParameter>  implements
 		if(oldList.size()>0){
 		SearchCriteriaBuilder<Omp_old_order> searchCriteriaBuilder = new SearchCriteriaBuilder<Omp_old_order>(
 				Omp_old_order.class);
+		searchCriteriaBuilder.addQueryCondition("Omp_Old_Info.zjNumber",
+				RestrictionExpression.EQUALS_OP, p.getZjNumber());
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		
 		searchCriteriaBuilder.addQueryCondition("send_flag",
 				RestrictionExpression.EQUALS_OP, p.getSend_flag());
@@ -209,10 +227,13 @@ CommonsDataOperationServiceImpl<Omp_old_order, OrderParameter>  implements
 		if(p.getCommunity()!= null  && !p.getCommunity().isEmpty()){
 			community += " and oi.HOUSEHOLD_COMMUNITY_ID="+p.getCommunity();
 		}
-		
-		String countSql = "select count(*) from omp_old_order od INNER JOIN omp_old_info oi on od.oldId=oi.ID where 1=1 and oi.call_id = 1 "+send_flag+execute_flag
-				+name+idCard+zjNUmber+city+country+stree+community+" and od.oldId in("+ids+")";
-		int count = jdbcTemplate.queryForInt(countSql);
+		String countSql = "";
+		int count =0;
+		if(!ids.isEmpty()){
+			 countSql = "select count(*) from omp_old_order od INNER JOIN omp_old_info oi on od.oldId=oi.ID where 1=1 and oi.call_id = 1 "+send_flag+execute_flag
+					+name+idCard+zjNUmber+city+country+stree+community+" and od.oldId in("+ids+")";
+			 count = jdbcTemplate.queryForInt(countSql);
+		}
 		
 		map.put("orderList", orderList);
 		map.put("count", count);

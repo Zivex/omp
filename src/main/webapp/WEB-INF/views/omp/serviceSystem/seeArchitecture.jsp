@@ -16,6 +16,9 @@
 
 </head>
 <body>
+<form>
+<input type="hidden" id ="account" value="${sessionScope.eccomm_admin.account_type }">
+</form>
 	<!-- header -->
 	<%@ include file="/WEB-INF/views/layout/adm_head.jsp"%>
 	<!-- /header -->
@@ -77,7 +80,17 @@
 					},
 					function(data) {
 						var idNum = 0;
+						  var account = $("#account").val();
 						for (var i = 0; i < data.length; i++) {
+							if(account=='g'){
+				             	  if(i==10 || i==12 || i==13 || i==14 || i==15 ){
+				            		  continue;
+				             	  }
+				               }else if(account=='b' || account=='m'){
+				            	   if(i==8 || i==9 ||i==10 || i==12 || i==13 || i==14 || i==15 ){
+				             		  continue;
+				              	  }
+				          	  }
 							idNum++;
 							architecture
 									.append("<tr><td>"

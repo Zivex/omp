@@ -27,20 +27,20 @@
 		<form:form id="listForm" name="listForm" method="post"
 			action="${pageContext.request.contextPath}/enterprise/serviceMerchants/ServiceupdateDo.shtml"
 			role="form">
-			<form:hidden id="sid" path="entity.id" />
+			<form:hidden path="entity.id" />
 			<form:hidden path="entity.signingDate" />
 			<form:hidden path="entity.createTime" />
 			<form:hidden path="entity.user_falg" />
 			<c:if test="${sessionScope.eccomm_admin.id!=1 }">
 				<form:hidden path="entity.user.name" />
 			</c:if>
-
+			
 			<table class="table table-hover table-middle">
 				<caption>服务商详情</caption>
 				<tr>
 					<td width="25%">所属市</td>
 					<td><form:select id="city1" path="entity.city_id" items="${cityS}" itemLabel="name"
-							itemValue="id" onchange="udpCity()"></form:select></td>
+							itemValue="id"></form:select></td>
 				</tr>
 				<tr>
 					<td width="25%">所属区县</td>
@@ -82,15 +82,39 @@
 					<td width="25%">服务区域描述</td>
 					<td><form:input path="entity.addressDescribe" /></td>
 				</tr>
-				<tr>
-					<td width="25%">服务区域</td>
-					<td><ul id="tt3"></ul></td>
-				</tr>
-				<c:if test="${sessionScope.eccomm_admin.id==1 }">
+				<c:if test="${openRegions==1 }">
 					<tr>
-						<td width="25%">渠道发展来源</td>
-						<td><form:input path="entity.user.name" /></td>
+						<td width="25%">服务区域</td>
+						<td>
+							<ul id="tree" class="easyui-tree" data-options="lines:true" checkbox="true">
+								<c:forEach items="${countyList }" var="item">
+									<li id="${item.id}" state="closed" <c:if test="${item.checked == 1}">checked</c:if>><span>${item.name }</span>
+										<ul id="${item.id}">
+											<c:forEach items="${streetList }" var="street">
+												<c:if test="${item.id==street.pid }">
+													<li id="${street.id}" <c:if test="${street.checked == 1}">checked</c:if> state="closed"><span>${street.name }</span>
+														<ul id="${street.id}">
+<%-- 															<c:forEach items="${communityList }" var="community"> --%>
+<%-- 																<c:if test="${street.id==community.pid }"> --%>
+<%-- 																	<li id="${community.id}" <c:if test="${community.checked == 1}">checked</c:if> --%>
+<%-- 																		state="closed"><span>${community.name }</span> --%>
+<%-- 																</c:if> --%>
+<%-- 															</c:forEach> --%>
+														</ul></li>
+												</c:if>
+											</c:forEach>
+										</ul></li>
+								</c:forEach>
+							</ul>
+							<ul id="ss"></ul>
+						</td>
 					</tr>
+				</c:if>
+				<c:if test="${sessionScope.eccomm_admin.id==1 }">
+				<tr>
+					<td width="25%">渠道发展来源</td>
+					<td><form:input path="entity.user.name"  /></td>
+				</tr>
 				</c:if>
 				<tr>
 					<td width="25%">联系人${entity.user.name }</td>
@@ -154,7 +178,7 @@
 				<c:if test="${sessionScope.eccomm_admin.id==1 }">
 					<tr>
 						<td width="25%">核实状态</td>
-						<td><form:select path="entity.verify" id="verify1">
+						<td><form:select path="entity.verify" id="verify1" >
 								<form:option value="1">未审核</form:option>
 								<form:option value="2">无效</form:option>
 								<form:option value="3">有效</form:option>
@@ -164,7 +188,7 @@
 				<c:if test="${sessionScope.eccomm_admin.id!=1 }">
 					<tr>
 						<td width="25%">核实状态</td>
-						<td><form:select path="entity.verify" id="verify2" disabled="true">
+						<td><form:select path="entity.verify" id="verify2" disabled = "true">
 								<form:option value="1">未审核</form:option>
 								<form:option value="2">无效</form:option>
 								<form:option value="3">有效</form:option>
@@ -189,56 +213,31 @@
 				<tr>
 					<td colspan="2"><a class="btn btn-default" href="#" class="btn btn-success"
 						onclick="submit()">修改</a></td>
-					<!-- 					<td colspan="2"><input type="reset" class="btn btn-warning" /></td> -->
+<!-- 					<td colspan="2"><input type="reset" class="btn btn-warning" /></td> -->
 				</tr>
 
 
 			</table>
 		</form:form>
 	</div>
-
+	
 
 </div>
 <script>
-var city1 = $ ("#city1");
 	var county1 = $("#county1");
 	var street1 = $("#street1");
 	var community1 = $("#community1");
-	function udpCity ()
-	{
-	    changCity (city1, county1, street1);
-	    loadTree();
-    }
 	function udpCounty() {
 		changCounty(county1, street1, community1);
 	}
 	function udpStreet() {
 		changStreet(street1, community1);
 	}
+
 	$(document).ready(function() {
-		$("#querydiv").empty();
+		
 	});
-	//修改市
-    function changCity (city1, county1, street1)
-    {
-	    county1.empty ();
-	    street1.empty ();
-	    street1.append ("<option>请选择</option>");
-	    var id = city1.val ();
-	    $.post ("${pageContext.request.contextPath }/old/oldMatch/getRegionById.shtml",
-	    {
-		    id : id
-	    }, function (data)
-	    {
-		    county1.empty ();
-		    county1.append ("<option>请选择</option>");
-		    for (var i = 0; i < data.length; i++)
-		    {
-			    county1.append ("<option value='"+data[i].id+"'>" + data[i].name + "</option>");
-		    }
-		    
-	    });
-    }
+
 	//修改街道
 	function changCounty(county1, street1, community1) {
 		community1.empty();
@@ -281,7 +280,6 @@ var city1 = $ ("#city1");
 
 	function submit() {
 		var regionIds = "&regionIds="+getChecked();
-		alert(regionIds)
 		var verify ="";
 		<c:if test="${sessionScope.eccomm_admin.id!=1 }">
 		verify = "&entity.verify="+$('#verify2').val();
@@ -298,7 +296,7 @@ var city1 = $ ("#city1");
 				},
 				success : function(data) {
 					alert(data);
-					location.href = "<%=request.getContextPath()%>/enterprise/initial.shtml";
+					location.href = "<%=request.getContextPath() %>/enterprise/initial.shtml";
 					//$("#commonLayout_appcreshi").parent().html(data);
 				}
 		});
@@ -306,7 +304,9 @@ var city1 = $ ("#city1");
 
 
 	function getChecked(){
-		var nodes = $('#tt3').tree('getChecked');
+// 		var lv = $('#tree').treegrid('getLevel',4);
+// 		alert(lv );
+		var nodes = $('#tree').tree('getChecked');
 	    var s = '';
 	    for(var i=0; i<nodes.length; i++){
 	        if (s != '') s += ',';
@@ -314,25 +314,6 @@ var city1 = $ ("#city1");
 	    }
 	    return s;
 	}
-	
-	function loadTree()
-    {
-		var cityid = $('#city1').val();
-		var sid = $('#sid').val();
-		  $ ('#tt3').tree ({    
-		        url : '${pageContext.request.contextPath }/admin/omp/ompRegion/treeLoad.shtml?sid='+sid+'&cityid='+cityid,
-		        lines : false,
-		        checkbox : true,     
-		        onLoadSuccess : function (node, data)
-		        {
-		        }
-		    });
-    };
-    
-    
-	$(document).ready(function() {
-		loadTree();
-		});
 
 
 </script>
