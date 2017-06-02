@@ -4,6 +4,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 
 <div class="navbar navbar-default navbar-fixed-top" role="navigation">
 	<div class="container-fluid">
@@ -35,6 +36,8 @@
 	</div>
 </div>
 
+
+
 <!-- modal -->
 <div class="modal fade modal-primary" id="modal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true"></div>
 <!-- /.modal -->
@@ -45,7 +48,6 @@
 		var url = '<c:url value="/admin/sys/user/change_password_form.shtml"/>';
 		showDynamicModal(url);
 	}
-	
 	
 </script>
 

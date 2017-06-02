@@ -61,7 +61,8 @@ margin-left:30% !important;
 		<div class="modal-footer">
 			<button id="btn-dismiss" type="button" class="btn btn-default" data-dismiss="modal">返回</button>
 			<c:if test="${false eq posted}">
-				<input id="btn-submit" type="submit" class="btn btn-primary" value="提 交">
+<!-- 				<input id="btn-submit" type="submit" class="btn btn-primary" value="提 交"> -->
+				<input id="btn-submit" type="button" class="btn btn-primary" onclick="changePassword();" value="提 交">
 			</c:if>
 			<button id="btn-sure"  type="button" class="btn btn-success" onclick="closeDynamicModal();" style="display:none" >确定</button>
 		</div>
@@ -154,4 +155,48 @@ margin-left:30% !important;
 		initForm();
 		
 	});
+	//20170527
+	//张旭
+	function changePassword(){
+		$('#passcommand').validate({
+			highlight : function(element) {  
+                $(element).closest('.form-group').addClass('has-error');  
+            },  
+            success : function(label) {  
+                label.closest('.form-group').removeClass('has-error');  
+                label.remove();  
+            },  
+            errorPlacement : function(error, element) {
+				error.addClass("text-danger control-label");
+				if (element.is(":radio")) {
+					error.appendTo(element.parent().next().next());
+				} else if (element.is(":checkbox")) {
+					error.appendTo(element.next());
+				} else {
+					error.appendTo(element.parent());
+				}
+			}
+		});
+		 $.ajax({
+			 type : "post",  
+		      url: "<%=request.getContextPath() %>/admin/sys/user/change_password.shtml",
+		      data: $('#passcommand').serialize(),
+		      success: function(responseText, statusText, xhr, $form){
+		    	  $(".modal-dialog").unmask();
+		  		var suc = responseText.success;
+		  		var type = responseText.type;
+		  		$("#formDiv").hide();
+		  		//
+		  		$("#dialog-alert").addClass('alert-' + type);
+		  		$("#dialog-alert").html(responseText.message);
+		   		$("#dialog-alert").show();
+		   		//
+		   		$("#btn-submit").hide();
+		   		/* $("#btn-dismiss").hide(); */
+		   		$("#btn-sure").show();
+		      }
+		    });
+		
+	}
+	
 </SCRIPT>

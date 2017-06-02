@@ -12,9 +12,21 @@ public class EasyUITree implements Serializable {
 	private String pid;
 	private Boolean checked = false;
 	private String state = "open";
+	private Long attributes = 0L;
+	
+	
 
 	private List<EasyUITree> children;
 
+	
+
+	public Long getAttributes() {
+		return attributes;
+	}
+
+	public void setAttributes(Long attributes) {
+		this.attributes = attributes;
+	}
 
 	public String getPid() {
 		return pid;

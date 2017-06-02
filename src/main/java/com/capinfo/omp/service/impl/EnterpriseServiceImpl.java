@@ -225,4 +225,11 @@ public class EnterpriseServiceImpl extends
 		}
 	}
 
+	@Override
+	public boolean deleteService(Long spid) {
+		String sql = "update  service_provider set user_falg=0 where id="+spid;
+		int i = jdbcTemplate.update(sql);
+		return i>0?false:true;
+	}
+
 }

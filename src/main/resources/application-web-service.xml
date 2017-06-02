@@ -50,6 +50,11 @@
 	<bean id="roleService" parent="commonsDataOperationService"
 		class="com.capinfo.common.web.service.impl.RoleServiceImpl">
 	</bean>
+	
+	<!-- 区域管理 -->
+	<bean id="regionManageService" parent="commonsDataOperationService"
+		class="com.capinfo.common.web.service.impl.RegionManageServiceImpl">
+	</bean>
 
 	<!-- 资源管理 -->
 	<bean id="resourceService" parent="commonsDataOperationService"

@@ -86,8 +86,6 @@ public class OrderController {
 				String json = orderService.sendOrder(id);
 				ImKey imKey = c.sendOrder(json);
 				if ("1".equals(imKey.getStatusCode())) {
-//				ImKey imKey = new ImKey();
-//					if (true) {
 					orderService.resultOrder(imKey, id,user);
 					i++;
 				}else{

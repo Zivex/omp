@@ -25,6 +25,8 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.password.StandardPasswordEncoder;
 import org.springframework.util.Assert;
 
 /**
@@ -35,6 +37,7 @@ import org.springframework.util.Assert;
  * @author Rob Winch
  */
 public class SecurityDaoAuthenticationProvider extends DaoAuthenticationProvider {
+	
 
 	/**
 	 * 重写org.springframework.security.authentication.dao.
@@ -59,8 +62,14 @@ public class SecurityDaoAuthenticationProvider extends DaoAuthenticationProvider
 
 			try {
 				user = retrieveUser(username, (UsernamePasswordAuthenticationToken) authentication);
+//				String pass = authentication.getCredentials().toString();
+//				PasswordEncoder encoder=new StandardPasswordEncoder();
+//				boolean b = encoder.matches(pass, user.getPassword());
+				
+				
 				
 				if (!authentication.getCredentials().toString().equals(user.getPassword())) {
+//				if (!b) {
 					throw new BadCredentialsException(messages.getMessage("AbstractUserDetailsAuthenticationProvider.badCredentials", "Bad credentials"));
 				}
 			} catch (UsernameNotFoundException notFound) {

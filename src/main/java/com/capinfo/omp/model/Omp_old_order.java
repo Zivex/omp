@@ -48,6 +48,7 @@ public class Omp_old_order implements BaseEntity {
 	
 	private String k_and_sp_id;
 	
+	private Long agent_id;
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -160,6 +161,18 @@ public class Omp_old_order implements BaseEntity {
 	public void setK_and_sp_id(String k_and_sp_id) {
 		this.k_and_sp_id = k_and_sp_id;
 	}
+
+	@Column(name = "agent_id")
+	public Long getAgent_id() {
+		return agent_id;
+	}
+
+
+	public void setAgent_id(Long agent_id) {
+		this.agent_id = agent_id;
+	}
+	
+	
 	
 	
 

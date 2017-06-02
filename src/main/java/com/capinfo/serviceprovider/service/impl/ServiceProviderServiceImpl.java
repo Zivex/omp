@@ -151,7 +151,7 @@ return count;
 
 	@Override
 	public void deleteService(String id) {
-		String sql = "delete from service_providers_navigation where id="+id;
+		String sql = "update  service_provider set user_falg = 0 where id="+id;
 		jdbcTemplate.update(sql);
 	}
 }

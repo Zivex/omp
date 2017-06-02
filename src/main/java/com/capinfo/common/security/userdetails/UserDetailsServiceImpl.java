@@ -9,6 +9,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.jdbc.JdbcDaoImpl;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.password.StandardPasswordEncoder;
 
 import com.capinfo.common.security.SecurityUser;
 
@@ -33,8 +35,12 @@ public class UserDetailsServiceImpl extends JdbcDaoImpl {
 	protected List<UserDetails> loadUsersByUsername(String username) {
 		return getJdbcTemplate().query(getUsersByUsernameQuery(), new String[] { username }, new RowMapper<UserDetails>() {
 			public UserDetails mapRow(ResultSet rs, int rowNum) throws SQLException {
+//				PasswordEncoder encoder=new StandardPasswordEncoder();
+				
 				String username = rs.getString(1);
 				String password = rs.getString(2);
+//				密码加密
+//				String pass=encoder.encode(password);
 				boolean enabled = rs.getBoolean(3);
 				Long userId = rs.getLong(4);
 				String alias = rs.getString(5);

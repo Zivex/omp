@@ -709,7 +709,7 @@ public class OldForController {
 					"Content-Disposition",
 					"attachment;filename=\""
 							+ ExportUtils.getExportFileName(request, "老人信息"
-									+ DateUtils.currentDateTime()) + ".xlsx");
+									+ DateUtils.currentDateTime()+ ".xlsx"));
 			ExcelBuilder exportExcel = oldService.exportExcel(parameter, user);
 			exportExcel.writeToStream(stream);
 			stream.close();

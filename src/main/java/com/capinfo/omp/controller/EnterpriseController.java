@@ -794,6 +794,29 @@ public class EnterpriseController {
 		mv.addObject("cityS", cityS);
 		return mv;
 	}
+	
+	
+	
+	/**
+	 * 服务商添加
+	 * @param id
+	 * @return
+	 */
+	@RequestMapping("/serviceMerchants/deleteService.shtml")
+	@ResponseBody
+	public String deleteService(Long spid) {
+		String result="";
+		ModelAndView mv = new ModelAndView("/omp/serviceMerchants/serverAdd");
+		boolean b = enterpriseService.deleteService(spid);
+		if(b){
+			result="删除成功";
+		}else{
+			result="删除失败";
+		}
+		return result;
+	}
+	
+	
 
 	/**
 	 * 服务商保存

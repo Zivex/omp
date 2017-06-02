@@ -29,7 +29,7 @@
 						<th width="7%" style="text-align: center;">区县</th>
 						<th width="5%" style="text-align: center;">街道</th>
 						<th width="12%" style="text-align: center;">社区</th>
-<!-- 						<th width="10%" style="text-align: center;">编号</th> -->
+						<!-- 						<th width="10%" style="text-align: center;">编号</th> -->
 						<th width="6%" style="text-align: center;">话机类型</th>
 						<th width="13%" style="text-align: center;">所属账户</th>
 						<th width="7%" style="text-align: center;">来电显示</th>
@@ -48,7 +48,7 @@
 							<td style="text-align: center;">${old.household_county.name}</td>
 							<td style="text-align: center;">${old.household_street.name}</td>
 							<td style="text-align: center;">${old.household_community.name}</td>
-<%-- 							<td style="text-align: center;">${old.account_type}</td> --%>
+							<%-- 							<td style="text-align: center;">${old.account_type}</td> --%>
 							<td style="text-align: center;">${old.phoneType.phoneType}</td>
 							<td style="text-align: center;">${old.user.name}</td>
 							<c:if test="${old.call_id == 1}">
@@ -126,7 +126,8 @@
 	$(document).ready(function() {
 		initListForm();
 		<c:if test="${count!=null&&count>0}">
-		 initPagination(<c:out value="${count}"/>,<c:out value="${command.perPieceSize}"/>,<c:out value="${command.currentPieceNum}"/>);		</c:if>
+		 initPagination(<c:out value="${count}"/>,<c:out value="${command.perPieceSize}"/>,<c:out value="${command.currentPieceNum}"/>);		
+		 </c:if>
 	});
 
 	function check(){

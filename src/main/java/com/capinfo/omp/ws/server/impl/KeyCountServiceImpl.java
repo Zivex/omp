@@ -18,30 +18,28 @@ public class KeyCountServiceImpl implements KeyCountService {
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 
-
 	@Override
 	public String KeyCout(String KeyCount) {
 		int result = 0;
-		int number = 0;
+//		int number = 0;
 		String msg = "";
 		String newJson = KeyCount.replaceAll("'", "\"");
 		Gson gson = new Gson();
 		KeyCount kCount = gson.fromJson(newJson, KeyCount.class);
 		List<CountMessge> list = kCount.getCountMessge();
 		try {
-
-			String sql = "INSERT into OMP_KEYMAPPING_STATISTICAL (landLineNumber,keyPointMessage,keyPointCount,daysCount,commitTime) VALUES (?,?,?,?,?)";
-			number = Integer.valueOf(kCount.getLandLineNumber());
-
+			String sql = "INSERT into OMP_KEYMAPPING_STATISTICAL (landLineNumber,keyPointMessage,keyPointCount,daysCount,commitTime,phoneDisplay) VALUES (?,?,?,?,?,?)";
+//			number = Integer.valueOf(kCount.getLandLineNumber());
 			for (int i = 0; i < list.size(); i++) {
 				CountMessge countMessge = list.get(i);
+//				System.out.println("INSERT into OMP_KEYMAPPING_STATISTICAL (landLineNumber,keyPointMessage,keyPointCount,daysCount,commitTime,phoneDisplay) VALUES ("+kCount.getLandLineNumber()+","+countMessge.getKeyPointMessage()+","+countMessge.getKeyPointCount()+","+kCount.getDaysCount()+","+kCount.getCommitTime()+","+kCount.getPhoneDisplay()+")");
 				jdbcTemplate
 						.update(sql,
 								new Object[] { kCount.getLandLineNumber(),
 										countMessge.getKeyPointMessage(),
 										countMessge.getKeyPointCount(),
 										kCount.getDaysCount(),
-										kCount.getCommitTime() });
+										kCount.getCommitTime(),kCount.getPhoneDisplay() });
 			}
 			result = 1;
 		} catch (Exception e) {
@@ -60,5 +58,4 @@ public class KeyCountServiceImpl implements KeyCountService {
 		return jsonArr.toString();
 
 	}
-
 }

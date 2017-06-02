@@ -138,9 +138,9 @@ public class SystemUserServiceImpl extends CommonsDataOperationServiceImpl<Syste
 	public boolean resetPassword(SystemUserParameter parameter) {
 		try {
 			SystemUser user = (SystemUser) getGeneralService().getObjectById(parameter.getEntityClazz(), parameter.getEntity().getId());
-			//String encodePass = passwordEncoder.encode("123456");
-			//user.setPassword(encodePass);
-			user.setPassword("123456");
+			String encodePass = passwordEncoder.encode("123456");
+			user.setPassword(encodePass);
+//			user.setPassword("123456");
 			getGeneralService().merge(user);
 			return true;
 		} catch (Exception ex) {
@@ -163,8 +163,9 @@ public class SystemUserServiceImpl extends CommonsDataOperationServiceImpl<Syste
 		try {
 			String password = parameter.getEntity().getPassword();
 			SystemUser user = (SystemUser) getGeneralService().getObjectById(parameter.getEntityClazz(), parameter.getEntity().getId());
-			String encodePass = passwordEncoder.encode(password);
-			user.setPassword(encodePass);
+			//String encodePass = passwordEncoder.encode(password);
+//			user.setPassword(encodePass);
+			user.setPassword(password);
 			getGeneralService().merge(user);
 			return true;
 		} catch (Exception ex) {
@@ -201,7 +202,12 @@ public class SystemUserServiceImpl extends CommonsDataOperationServiceImpl<Syste
 		SystemUser user = (SystemUser) getGeneralService().getObjectById(parameter.getEntityClazz(), parameter.getEntity().getId());
 		String oldRawPassword = parameter.getOldPassword();
 		String olEencodedPassword = user.getPassword();
-		return passwordEncoder.matches(oldRawPassword, olEencodedPassword);
+		if(oldRawPassword.equals(olEencodedPassword)){
+			return true;
+		}else{
+			return false;
+		}
+//		return passwordEncoder.matches(oldRawPassword, olEencodedPassword);
 	}
 
 	@Override

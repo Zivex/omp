@@ -725,6 +725,7 @@ public class OmpRegionController {
             		int hasRegion = ompRegionService.hasRegion(list.get(i).get("id")+"",sid,lv); //查询是否存在
             		if(hasRegion>0){
             			tree.setChecked(true);	
+            			tree.setAttributes(1L);
             		}
             		EasyUITree e = new EasyUITree();
 					e.setId(list.get(i).get("id")+"");

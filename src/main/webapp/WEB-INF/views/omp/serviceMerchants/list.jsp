@@ -6,18 +6,16 @@
 
 <c:if test="${not empty messages }">
 	<div class="alert alert-warning alert-dismissable">
-		<button type="button" class="close" data-dismiss="alert"
-			aria-hidden="true">&times;</button>
+		<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
 		${messages.message}
 	</div>
 
 </c:if>
 <div class="panel panel-default">
 	${messageCount }
-	<form:form id="listForm" name="listForm" method="post"
-		action='${queryForm }'>
+	<form:form id="listForm" name="listForm" method="post" action='${queryForm }'>
 		<c:if test="${DataTotalCount>0 }">
-<!-- 		&& sessionScope.eccomm_admin.account_type != 'g' -->
+			<!-- 		&& sessionScope.eccomm_admin.account_type != 'g' -->
 			<!-- tools -->
 			<!-- 		<div class="panel-heading"></div> -->
 			<table class="table table-hover table-middle " width="100%">
@@ -27,7 +25,7 @@
 						<th width="20%">服务商名称</th>
 						<th width="10%">服务电话</th>
 						<th width="15%">服务类型</th>
-<!-- 						<th width="15%">服务区域</th> -->
+						<!-- 						<th width="15%">服务区域</th> -->
 						<th width="10%">联系人</th>
 						<th width="10%">联系方式</th>
 						<th width="10%">审核状态</th>
@@ -35,7 +33,7 @@
 					</tr>
 				</thead>
 				<tbody>
-					<c:forEach var="m" items="${mList}" >
+					<c:forEach var="m" items="${mList}">
 						<tr>
 							<td>${m.id}</td>
 							<td>${m.serviceName}</td>
@@ -43,12 +41,19 @@
 							<td>${m.serviceType.serviceName}</td>
 							<td>${m.contact}</td>
 							<td>${m.contactPhone}</td>
-							<c:if test="${m.verify == 2 }"><td style="color: red;">无效</td></c:if>
-							<c:if test="${m.verify == 3 }"><td style="color: green;">有效</td></c:if>
-							<c:if test="${m.verify == 1 }"><td style="color: gray;">未审核</td></c:if>
-							<c:if test="${m.verify == 4 }"><td style="color: gray;">待审核</td></c:if>
-							<td><fmt:formatDate value="${m.createTime}" pattern="yyyy-MM-dd HH:mm:ss"/>
-							</td>
+							<c:if test="${m.verify == 2 }">
+								<td style="color: red;">无效</td>
+							</c:if>
+							<c:if test="${m.verify == 3 }">
+								<td style="color: green;">有效</td>
+							</c:if>
+							<c:if test="${m.verify == 1 }">
+								<td style="color: gray;">未审核</td>
+							</c:if>
+							<c:if test="${m.verify == 4 }">
+								<td style="color: gray;">待审核</td>
+							</c:if>
+							<td><fmt:formatDate value="${m.createTime}" pattern="yyyy-MM-dd HH:mm:ss" /></td>
 							<td style="text-align: center;">
 								<div class="btn-group">
 									<button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
@@ -56,18 +61,20 @@
 									</button>
 									<ul class="dropdown-menu" role="menu">
 										<li><a onclick="see(${m.id})">查看详情 </a></li>
-<%-- 											<li><a href="###" onclick="deleteService(${item.id},this);">删除</a></li> --%>
-									<c:choose>
-										<c:when test="${sessionScope.eccomm_admin.id==1 }" >	
-											<li><a href="###" onclick="update(${m.id});">修改</a></li>
-										</c:when>
-										<c:when test="${sessionScope.eccomm_admin.account_type=='g' }" >
-											<li><a href="###" onclick="update(${m.id});">修改</a></li>
-										</c:when>
-										<c:when test="${sessionScope.eccomm_admin.account_type=='b' && m.user.account_type=='b'  }" >
-											<li><a href="###" onclick="update(${m.id});">修改</a></li>
-										</c:when>
-									</c:choose>
+										<%-- 											<li><a href="###" onclick="deleteService(${item.id},this);">删除</a></li> --%>
+										<c:choose>
+											<c:when test="${sessionScope.eccomm_admin.id==1 }">
+												<li><a href="###" onclick="update(${m.id});">修改</a></li>
+												<li><a href="###" onclick="deleteService(${m.id});">删除</a></li>
+											</c:when>
+											<c:when test="${sessionScope.eccomm_admin.account_type=='g' }">
+												<li><a href="###" onclick="update(${m.id});">修改</a></li>
+											</c:when>
+											<c:when
+												test="${sessionScope.eccomm_admin.account_type=='b' && m.user.account_type=='b'  }">
+												<li><a href="###" onclick="update(${m.id});">修改</a></li>
+											</c:when>
+										</c:choose>
 									</ul>
 								</div>
 							</td>
@@ -119,17 +126,15 @@ function serverPro(id){
 /**
 * 删除服务商
 */
-function deleteService(uid,tr){
+function deleteService(spid){
 	var sure=confirm("删除操作是不可逆的，确认删除该信息吗？");
 	if(sure){
-
-		location.href = "deleteService.shtml?id="+uid;
-		alert("删除成功！");
-		location.replace()
-		//window.location.href="${pageContext.request.contextPath}/old/oldMatch/list.shtml?name=&idCard=&zjNumber=&county=&street=&community=&isGenerationOrder=&isindividuation=";
-// 		$("#item_entity_id").val(uid);
-// 		$("#listForm").attr("action", '<c:url value="/old/oldMatch/delete.shtml"/>');
-// 		$("#listForm").submit();
+	$.post("${pageContext.request.contextPath}/enterprise/serviceMerchants/deleteService.shtml",
+			{spid:spid},
+			function(data){
+				alert("删除成功！");
+				window.location.reload ();
+	});
 	}
 }
 

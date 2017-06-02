@@ -146,41 +146,22 @@ CommonsDataOperationServiceImpl<Omp_old_order, OrderParameter>  implements
 		parameter.setIsGenerationOrder("order");
 		parameter.setPerPieceSize(p.getPerPieceSize());
 		parameter.setCurrentPieceNum(p.getCurrentPieceNum());
-		//int count = oldService.getCount(parameter, user);
 		List<Omp_Old_Info> oldList = oldService.getOldContextList(parameter, user);
 		
 		String ids = "";
 		if(oldList.size()>0){
 		SearchCriteriaBuilder<Omp_old_order> searchCriteriaBuilder = new SearchCriteriaBuilder<Omp_old_order>(
 				Omp_old_order.class);
-		searchCriteriaBuilder.addQueryCondition("Omp_Old_Info.zjNumber",
-				RestrictionExpression.EQUALS_OP, p.getZjNumber());
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
 		searchCriteriaBuilder.addQueryCondition("send_flag",
 				RestrictionExpression.EQUALS_OP, p.getSend_flag());
+//		searchCriteriaBuilder.addQueryCondition("agent_id",
+//				RestrictionExpression.EQUALS_OP, user.getId());
 		searchCriteriaBuilder.addQueryCondition("execute_flag",
 				RestrictionExpression.EQUALS_OP, p.getExecute_flag());
 		for (Omp_Old_Info old : oldList) {
 			ids+=old.getId()+",";
 		}
 		ids = ids.substring(0,ids.length() - 1);
-		System.out.println(ids);
 		String sql = "";
 		 sql +=" oldId In ("+ids+")";
 		if (!"".equals(sql)) {
@@ -226,6 +207,10 @@ CommonsDataOperationServiceImpl<Omp_old_order, OrderParameter>  implements
 		String community = "";
 		if(p.getCommunity()!= null  && !p.getCommunity().isEmpty()){
 			community += " and oi.HOUSEHOLD_COMMUNITY_ID="+p.getCommunity();
+		}
+		String agent_id = "";
+		if(user.getLeave()>1){
+			agent_id += " and od.agent_id="+user.getId();
 		}
 		String countSql = "";
 		int count =0;
@@ -468,16 +453,16 @@ CommonsDataOperationServiceImpl<Omp_old_order, OrderParameter>  implements
 	}
 
 	@Override
-	public void rollback(String id, SystemUser user, String voiceSata) {
-		if (voiceSata != null) {
+	public void rollback(String id, SystemUser user, String orderSata) {
+		if (orderSata != null) {
 			String sql = "";
-			if ("old".equals(voiceSata)) {
+			if ("old".equals(orderSata)) {
 				// 老人
 				sql = "update omp_old_info o set o.ordernum = 1 where o.id in ("
 						+ id + ") ";
 			} else {
 				// 客户
-				int i = Integer.parseInt(voiceSata);
+				int i = Integer.parseInt(orderSata);
 				i = i + 1;
 				sql = "update users o set o.num = " + i
 						+ " where 1=1 and o.id = "+user.getId();

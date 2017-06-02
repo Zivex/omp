@@ -10,6 +10,18 @@ public class KeyCount {
 	private String daysCount;
 
 	private String commitTime;
+	
+	private String phoneDisplay;
+	
+	
+
+	public String getPhoneDisplay() {
+		return phoneDisplay;
+	}
+
+	public void setPhoneDisplay(String phoneDisplay) {
+		this.phoneDisplay = phoneDisplay;
+	}
 
 	public void setLandLineNumber(String landLineNumber) {
 		this.landLineNumber = landLineNumber;

@@ -13,6 +13,7 @@ import net.sf.json.JSONObject;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.eclipse.jetty.util.ajax.JSON;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -816,42 +817,25 @@ public class OldServiceImpl extends
 	/**
 	 * 导出
 	 */
+	@SuppressWarnings("deprecation")
 	@Override
 	public ExcelBuilder exportExcel(OldParameter parameter, SystemUser user) {
 		List<CardPerson> cardPersontList = new ArrayList<CardPerson>();
 
-		// SearchCriteriaBuilder<Omp_Old_Info> searchCriteriaBuilder = super
-		// .getSearchCriteriaBuilder(parameter);
-		// // 名字
-		// searchCriteriaBuilder.addQueryCondition("name",
-		// RestrictionExpression.EQUALS_OP, parameter.getName());
-		// searchCriteriaBuilder.addQueryCondition("certificates_number",
-		// RestrictionExpression.EQUALS_OP, parameter.getIdCard());
-		// searchCriteriaBuilder.addQueryCondition("zjnumber",
-		// RestrictionExpression.EQUALS_OP, parameter.getZjNumber());
-		// searchCriteriaBuilder.addQueryCondition("household_county_id",
-		// RestrictionExpression.EQUALS_OP, parameter.getCounty());
-		// searchCriteriaBuilder.addQueryCondition("household_street_id",
-		// RestrictionExpression.EQUALS_OP, parameter.getStreet());
-		// searchCriteriaBuilder.addQueryCondition("household_community_id",
-		// RestrictionExpression.EQUALS_OP, parameter.getCommunity());
-		// searchCriteriaBuilder.addQueryCondition("isGenerationOrder",
-		// RestrictionExpression.EQUALS_OP,
-		// parameter.getIsGenerationOrder());
-		// searchCriteriaBuilder
-		// .addQueryCondition("isindividuation",
-		// RestrictionExpression.EQUALS_OP,
-		// parameter.getIsindividuation());
 
 		List<Omp_Old_Info> oldPersonlist = getOldContextList(parameter, user);
 
-		// List<Omp_Old_Info> oldPersonlist = getGeneralService().getObjects(
-		// searchCriteriaBuilder.build());
 		if (user.getDisplay_all() == 1) {
 			for (Omp_Old_Info old : oldPersonlist) {
-				CardPerson person = getGeneralService().getObjectById(
-						CardPerson.class, old.getId());
-				cardPersontList.add(person);
+				String sql = "select COUNT(*) from card_person c where c.id="+old.getId();
+				int count = jdbcTemplate.queryForInt(sql);
+				if(count>0){
+					CardPerson person = getGeneralService().getObjectById(
+							CardPerson.class, old.getId());
+					if(person.getName()!=null && !person.getName().isEmpty() ){
+						cardPersontList.add(person);
+					}
+				}
 			}
 		}
 

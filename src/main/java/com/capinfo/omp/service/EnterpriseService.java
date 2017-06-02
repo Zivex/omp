@@ -40,6 +40,8 @@ public interface EnterpriseService extends CommonsDataOperationService<Enterpris
 
 	void mobsync(Long id);
 
+	boolean deleteService(Long spid);
+
 
 
 }

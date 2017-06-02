@@ -281,7 +281,6 @@ var city1 = $ ("#city1");
 
 	function submit() {
 		var regionIds = "&regionIds="+getChecked();
-		alert(regionIds)
 		var verify ="";
 		<c:if test="${sessionScope.eccomm_admin.id!=1 }">
 		verify = "&entity.verify="+$('#verify2').val();
@@ -319,12 +318,20 @@ var city1 = $ ("#city1");
     {
 		var cityid = $('#city1').val();
 		var sid = $('#sid').val();
+		
 		  $ ('#tt3').tree ({    
 		        url : '${pageContext.request.contextPath }/admin/omp/ompRegion/treeLoad.shtml?sid='+sid+'&cityid='+cityid,
 		        lines : false,
 		        checkbox : true,     
 		        onLoadSuccess : function (node, data)
 		        {
+		        	 $ (data).each (function (index, d)
+		 			        {
+                              if (this.attributes == 1) {
+                            	  $('#tt3').tree('expand', d.target); 
+                              }
+		 			        });
+		        	
 		        }
 		    });
     };

@@ -177,8 +177,8 @@ public class SystemUserController extends AuthenticationSuccessHandlerImpl {
 				messages.setMessage("登录名已存在,添加用户失败！");
 			} else {
 				String pass = parameter.getEntity().getPassword();
-				// parameter.getEntity().setPassword(passwordEncoder.encode(pass));
-				parameter.getEntity().setPassword(pass);
+				 parameter.getEntity().setPassword(passwordEncoder.encode(pass));
+//				parameter.getEntity().setPassword(pass);
 				// 判断用户类型
 				String account_type = parameter.getEntity().getAccount_type();
 				// 政府
@@ -211,15 +211,15 @@ public class SystemUserController extends AuthenticationSuccessHandlerImpl {
 						}
 					}
 					boolean b = false;
-					if ("" != r) {
-						b = systemUserService.validationMechanism(Long.parseLong(r), "g");
-					}
-					if (b) {
-						messages.setSuccess(false);
-						messages.setMessage("此机构存在,添加用户失败！");
-						JSONObject json = JSONObject.fromObject(messages);
-						return json;
-					}
+//					if ("" != r) {
+//						b = systemUserService.validationMechanism(Long.parseLong(r), "g");
+//					}
+//					if (b) {
+//						messages.setSuccess(false);
+//						messages.setMessage("此机构存在,添加用户失败！");
+//						JSONObject json = JSONObject.fromObject(messages);
+//						return json;
+//					}
 					OmpRegion region = systemUserService.getbiRegoinid(Long.parseLong(r));
 					entity.setLeave(leave);
 					Long id = region.getId();
@@ -259,15 +259,7 @@ public class SystemUserController extends AuthenticationSuccessHandlerImpl {
 					}
 
 					boolean b = false;
-					if (null != j) {
-						b = systemUserService.validationMechanism(j, "other");
-					}
-					if (b) {
-						messages.setSuccess(false);
-						messages.setMessage("此机构存在,添加用户失败！");
-						JSONObject json = JSONObject.fromObject(messages);
-						return json;
-					}
+//					 
 
 					entity.setYiji(parameter.getYiji());
 					entity.setErji(parameter.getErji());

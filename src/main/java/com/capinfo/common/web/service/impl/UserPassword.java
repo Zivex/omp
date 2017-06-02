@@ -10,6 +10,9 @@ public class UserPassword {
 		String pass=encoder.encode("123456");
 		System.out.println(pass);
 		
+		boolean b = encoder.matches("123456", "123456");
+		
+		System.out.println(b);
 	}
 
 }

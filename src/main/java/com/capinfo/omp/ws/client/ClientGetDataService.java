@@ -42,7 +42,7 @@ public class ClientGetDataService {
 		Gson gson =new Gson();
 		ImKey imk = gson.fromJson(gg, ImKey.class);
 //		System.out.println(imk.getStatusCode());
-//		System.out.println(imk.getErrorMessage());
+		System.out.println(imk.getErrorMessage());
 //		System.out.println(imk.getGenerateSerialNumber());
 		return imk;
 	}

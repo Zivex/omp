@@ -27,8 +27,8 @@ public class OmpRegion implements BaseEntity {
 
 	private Long levelid;
 
-	private String createdate;
-	private String updatedate;
+	private Date createdate;
+	private Date updatedate;
 
 	private Long parentid;
 
@@ -65,23 +65,23 @@ public class OmpRegion implements BaseEntity {
 		this.levelid = levelid;
 	}
 
-	//@Temporal(TemporalType.TIMESTAMP)
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "CREATEDATE")
-	public String getCreatedate() {
+	public Date getCreatedate() {
 		return createdate;
 	}
 
-	public void setCreatedate(String createdate) {
+	public void setCreatedate(Date createdate) {
 		this.createdate = createdate;
 	}
 
-	//@Temporal(TemporalType.TIMESTAMP)
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "UPDATETIME")
-	public String getUpdatedate() {
+	public Date getUpdatedate() {
 		return updatedate;
 	}
 
-	public void setUpdatedate(String updatedate) {
+	public void setUpdatedate(Date updatedate) {
 		this.updatedate = updatedate;
 	}
 

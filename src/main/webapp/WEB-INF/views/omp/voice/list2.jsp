@@ -23,8 +23,8 @@
 						<p class="small" id="vt"></p>
 						<p class="small" id="vc"></p>
 						<div class="modal-footer">
-							<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-							<button type="button" onclick="openUpload();" class="btn btn-primary">提交更改</button>
+							<button type="button" class="btn btn-primary" data-dismiss="modal">关闭</button>
+<!-- 							<button type="button" onclick="openUpload();" class="btn btn-primary">提交更改</button> -->
 						</div>
 					</div>
 				</div>

@@ -1,7 +1,6 @@
 package com.capinfo.omp.model;
 
 import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -13,8 +12,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-
-import com.capinfo.assistant.platform.ws.card.model.CardPersonMessageBack;
 import com.capinfo.common.model.SystemUser;
 import com.capinfo.framework.model.BaseEntity;
 import com.capinfo.region.model.OmpRegion;

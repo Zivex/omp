@@ -63,7 +63,7 @@
 							   <c:if test="${old.key=='M4'}">居家护理</c:if>
 							   <c:if test="${old.key=='M5'}">家电服务</c:if>
 							   <c:if test="${old.key=='M6'}">家政服务</c:if>
-							   <c:if test="${old.key=='M7'}">日用百货</c:if>
+							   <c:if test="${old.key=='M7'}">社区便利</c:if>
 							   <c:if test="${old.key=='M8'}">老年餐桌</c:if>
 							   <c:if test="${old.key=='M9'}">卫生站</c:if>
 							   <c:if test="${old.key=='M10'}">居委会</c:if>

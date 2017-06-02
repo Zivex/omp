@@ -190,11 +190,11 @@ public class ServiceProviderController {
      * @return
      */
 	@RequestMapping("deleteService.shtml")
-	public ModelAndView deleteService(String id) {
-		ModelAndView mv = new ModelAndView("redirect:/admin/omp/ServiceProvider/list.shtml");
+	public void deleteService(String id) {
+		//ModelAndView mv = new ModelAndView("redirect:/admin/omp/ServiceProvider/list.shtml");
 		ompOldMatchService.deleteService(id);
 	//	ModelAndView mv = new ModelAndView("/omp/serviceProvider/Import");
-		return mv;
+	///	return mv;
 	}
 
 
