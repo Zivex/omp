@@ -380,7 +380,7 @@ public class VoiceController {
 	
 	
 	/**
-	 * 重新发送失败语音
+	 * 定时发送语音
 	 * @param ids
 	 * @param request
 	 * @return

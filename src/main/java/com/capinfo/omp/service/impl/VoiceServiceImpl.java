@@ -518,7 +518,7 @@ public class VoiceServiceImpl extends
 			JdbcTemplate.update(sqlRest);
 			// sata = 2;
 			// 用户
-			return Integer.toBinaryString(i);
+			return i+"";
 		}
 	}
 

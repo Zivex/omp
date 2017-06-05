@@ -45,7 +45,7 @@ public interface OrderService extends CommonsDataOperationService<Omp_old_order,
     
     public Boolean queryCount(String ids);
     
-    public String numRest(String id);
+    public String numRest(String id, SystemUser user);
 
 	void rollback(String id, SystemUser user, String orderSata);
     

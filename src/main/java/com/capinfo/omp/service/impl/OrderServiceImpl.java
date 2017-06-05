@@ -418,19 +418,15 @@ CommonsDataOperationServiceImpl<Omp_old_order, OrderParameter>  implements
 
 	}
 	
-	@Override
-	public String numRest(String id) {
+	public String numRest(String id, SystemUser user) {
 		String sqlRest = "";
 		String count = "";
-		String userName = SecurityContextHolder.getContext()
-				.getAuthentication().getName();
 		String uName = "";
-		if ("admin".equals(userName)) {
+		if (user.getLeave() < 1) {
 			return null;
 		} else {
-			uName = " AND o.user_name  =  '" + userName + "'";
+			uName = " AND o.id  = "+user.getId();
 		}
-
 		count = "select sum(o.ordernum) from omp_old_info o where o.id = " + id;
 		int int1 = jdbcTemplate.queryForInt(count);
 		if (1 == int1) {
@@ -448,7 +444,7 @@ CommonsDataOperationServiceImpl<Omp_old_order, OrderParameter>  implements
 			jdbcTemplate.update(sqlRest);
 			// sata = 2;
 			// 用户
-			return Integer.toBinaryString(i);
+			return i+"";
 		}
 	}
 

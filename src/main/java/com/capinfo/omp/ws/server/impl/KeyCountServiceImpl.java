@@ -40,6 +40,16 @@ public class KeyCountServiceImpl implements KeyCountService {
 										countMessge.getKeyPointCount(),
 										kCount.getDaysCount(),
 										kCount.getCommitTime(),kCount.getPhoneDisplay() });
+				String zjNumber = kCount.getLandLineNumber();
+				System.out.println("大座机号码为"+zjNumber);
+				if("01".equals(kCount.getPhoneDisplay())){		//同步来电显示到老人表
+					String updateSql = "update omp_old_info set call_id = 1 where ZJNUMBER ='"+zjNumber+"'";
+					jdbcTemplate.update(updateSql);
+				}else if("00".equals(kCount.getPhoneDisplay())){
+					String updateSql = "update omp_old_info set call_id = 0 where ZJNUMBER ='"+zjNumber+"'";
+					jdbcTemplate.update(updateSql);
+					
+				}
 			}
 			result = 1;
 		} catch (Exception e) {

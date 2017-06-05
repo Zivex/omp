@@ -82,7 +82,7 @@ public class OrderController {
 			String[] split = ids.split(",");
 			for (String id : split) {
 				//语音发送次数-1
-				String orderSata = orderService.numRest(id);
+				String orderSata = orderService.numRest(id,user);
 				String json = orderService.sendOrder(id);
 				ImKey imKey = c.sendOrder(json);
 				if ("1".equals(imKey.getStatusCode())) {
