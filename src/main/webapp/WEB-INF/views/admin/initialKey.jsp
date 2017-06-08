@@ -26,7 +26,7 @@
 				<div>
 					<div class="page-header">
 						<h1>
-							<i class="fa fa-user fa-fw"></i>报表管理
+							<i class="fa fa-user fa-fw"></i>快捷键修改次数统计
 						</h1>
 					</div>
 					<div class="header-underline"></div>
@@ -34,52 +34,85 @@
 						<div class="operatorDiv">
 							<c:url var="queryForm" value="/syslog/ReportFrom/queryKeyboard.shtml" />
 							<form:form id="command" role="form" class="form-inline" action="${queryForm}" method="post">
-							<input id="pageNo" name="current" type="hidden" value="1">
-<!-- 								&nbsp; -->
-<!-- 									<a role="button" class="btn btn-primary" onclick="DeAuditInformation()">未生成指令</a> -->
-<!-- 								&nbsp; -->
-<!-- 								&nbsp; -->
-<!-- 									<a role="button" class="btn btn-primary" onclick="DeAuditInformation()">*已生成指令*</a> -->
-<!-- 								&nbsp; -->
-								<table class="table" >
-										<tr>
-											<td>区域：</td>
-											<td>
-												<select id="county" name="county">
-													<option value="${county }">--请选择--</option>		
-												</select>
-											</td>
-											<td>街道：</td>
-											<td>
-												<select id="street" name="street">
-													<option value="${street }">--请选择--</option>		
-												</select>
-											</td>
-											<td>社区：</td>
-											<td>
-												<select id="community" name="community">
-													<option value="${community }">--请选择--</option>		
-												</select>
-											</td>
-											<td>
-											开始时间：<input type="text" value="" id="stime" name="stime" onclick="WdatePicker({isShowClear:false,readOnly:true,dateFmt:'yyyy-MM-dd HH:mm:ss'})" />
-											结束时间：<input type="text" value="" id="etime" name="etime" onclick="WdatePicker({isShowClear:false,readOnly:true,dateFmt:'yyyy-MM-dd HH:mm:ss'})" />
-											</td>
-										</tr>
-										<tr>
-											<td>座机类型：</td>
-											<td>
-												<select id="otype" name="otype">
-												  <option value="">--请选择--</option>	
-												  <option value ="1">居家型</option>
-												  <option value ="2">失能型</option>
-												  <option value="3">农商型</option> 
-												</select> 
-											</td>
-											<td><button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#myModal" onclick="quety()">查询</button></td>
-											<td><input class="btn btn-primary btn-sm" data-toggle="modal" data-target="#myModal" type="reset" value="重置"/></td>
-										</tr>
-									</table>
+								<input id="pageNo" name="current" type="hidden" value="1">
+								<!-- 								&nbsp; -->
+								<!-- 									<a role="button" class="btn btn-primary" onclick="DeAuditInformation()">未生成指令</a> -->
+								<!-- 								&nbsp; -->
+								<!-- 								&nbsp; -->
+								<!-- 									<a role="button" class="btn btn-primary" onclick="DeAuditInformation()">*已生成指令*</a> -->
+								<!-- 								&nbsp; -->
+								<table class="table">
+									<tr>
+										<!-- 											<td>区域：</td> -->
+										<!-- 											<td> -->
+										<!-- 												<select id="county" name="county"> -->
+										<%-- 													<option value="${county }">--请选择--</option>		 --%>
+										<!-- 												</select> -->
+										<!-- 											</td> -->
+										<!-- 											<td>街道：</td> -->
+										<!-- 											<td> -->
+										<!-- 												<select id="street" name="street"> -->
+										<%-- 													<option value="${street }">--请选择--</option>		 --%>
+										<!-- 												</select> -->
+										<!-- 											</td> -->
+										<!-- 											<td>社区：</td> -->
+										<!-- 											<td> -->
+										<!-- 												<select id="community" name="community"> -->
+										<%-- 													<option value="${community }">--请选择--</option>		 --%>
+										<!-- 												</select> -->
+										<!-- 											</td> -->
+										<td>
+										<td>开始时间：</td>
+										<td><input type="text" value="" id="stime" name="stime"
+											onclick="WdatePicker({isShowClear:false,readOnly:true,dateFmt:'yyyy-MM-dd HH:mm:ss'})" />
+										</td>
+										<td>结束时间：</td>
+										<td><input type="text" value="" id="etime" name="etime"
+											onclick="WdatePicker({isShowClear:false,readOnly:true,dateFmt:'yyyy-MM-dd HH:mm:ss'})" />
+										</td>
+
+
+										<td>座机类型：</td>
+										<td><select id="otype" name="otype">
+												<option value="">--请选择--</option>
+												<option value="1">居家型</option>
+												<option value="2">失能型</option>
+												<option value="3">农商型</option>
+										</select></td>
+									</tr>
+									<!-- 										<tr> -->
+									<!-- 											<td><button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#myModal" onclick="quety()">查询</button></td> -->
+									<!-- 											<td><input class="btn btn-primary btn-sm" data-toggle="modal" data-target="#myModal" type="reset" value="重置"/></td> -->
+									<!-- 										</tr> -->
+								</table>
+							</form:form>
+							<form:form id="commandR" role="form" class="form-inline" action="${queryForm}" method="post">
+								<table class="table table-striped">
+									<tr>
+										<td>市级：</td>
+										<td><select id="city" name="city">
+												<option value="${city }">--请选择--</option>
+										</select></td>
+										<td>区县：</td>
+										<td><select id="county" name="county">
+												<option value="${county }">--请选择--</option>
+										</select></td>
+										<td>街道：</td>
+										<td><select id="street" name="street">
+												<option value="${street }">--请选择--</option>
+										</select></td>
+										<td>社区：</td>
+										<td><select id="community" name="community">
+												<option value="${community }">--请选择--</option>
+										</select></td>
+
+									</tr>
+									<tr>
+										<td><button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#myModal"
+												onclick="quety()">查询</button></td>
+										<td><a class="btn btn-default" href="#" onclick="formReset()" role="button">重置</a></td>
+									</tr>
+								</table>
 							</form:form>
 						</div>
 						<hr>
@@ -124,48 +157,60 @@
 			initalizeSiderBar();
 			selectMenu("o_keyboard");
 			initQueryForm();
-			$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",function(data){
-				for(var i = 0;i<data.length;i++){
-					$("#county").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
-				}				
+			//市
+			$.ajax({  
+			    type : "post",  
+			    url : "<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",  
+			    async : false,//取消异步  
+			    success : function(data){  
+			    	for(var i = 0;i<data.length;i++){
+						$("#city").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
+					}
+			    }  
+			});  
+			$("#city").change(function(){
+				$("#county option:not(:first)").remove();
+				$("#street option:not(:first)").remove();
+				$("#community option:not(:first)").remove();
+				var id = $("#city").val();
+				$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",{id:id},function(data){
+					for(var i = 0;i<data.length;i++){
+						$("#county").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
+					}
+				});
 			});
 			$("#county").change(function(){
-				$("#street").find("option:not(:first)").remove();
-				$("#community").find("option:not(:first)").remove();
-				
-				
-				
+				$("#street option:not(:first)").remove();
+				$("#community option:not(:first)").remove();
 				var id = $("#county").val();
-				
 				$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",{id:id},function(data){
 					for(var i = 0;i<data.length;i++){
 						$("#street").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
-					}				
+					}
 				});
 			});
-			
 			$("#street").change(function(){
-				$("#community").find("option:not(:first)").remove();
+				$("#community option:not(:first)").remove();
 				var id = $("#street").val();
-				$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",{id:id},function(data){
-					for(var i = 0;i<data.length;i++){
-						$("#community").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
-					}				
+				$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",{id : id},function(data) {
+						for (var i = 0; i < data.length; i++) {
+							$("#community").append("<option value='"+data[i].id+"'>"+ data[i].name+ "</option>");
+						}
+					});
 				});
-			});
-		});
-		
-		
-		
-		function quety(){
-			var county = $("#county").val();
-			var street = $("#street").val();
-			var community = $("#community").val();
-			var otype = $("#otype").val();
-			var stime = $("#stime").val();
-			var etime = $("#etime").val();
-			$.post("<%=request.getContextPath() %>/syslog/ReportFrom/list.shtml",
-					{
+        });
+        
+        function quety ()
+        {
+	        var city = $ ("#city").val ();
+	        var county = $ ("#county").val ();
+	        var street = $ ("#street").val ();
+	        var community = $ ("#community").val ();
+	        var otype = $ ("#otype").val ();
+	        var stime = $ ("#stime").val ();
+	        var etime = $ ("#etime").val ();
+	        $.post ("<%=request.getContextPath() %>/syslog/ReportFrom/list.shtml",{
+	        	city:city,
 						county:county,
 						street:street,
 						community:community,
@@ -175,7 +220,10 @@
 					});
 			
 		}
-		
+        function formReset ()
+        {
+	        document.getElementById ("command").reset ();
+        }
 	</script>
 
 

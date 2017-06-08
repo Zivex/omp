@@ -28,7 +28,7 @@
 				<div>
 					<div class="page-header">
 						<h1>
-							<i class="fa fa-user fa-fw"></i>语音指令批量管理
+							<i class="fa fa-user fa-fw"></i>语音发送管理
 						</h1>
 					</div>
 					<div class="header-underline"></div>
@@ -47,7 +47,6 @@
 										<td><input type="text" value="${zjNumber }" id="zjNumber" name="zjNumber" /></td>
 										<td>身份证号：</td>
 										<td><input type="text" value="${idCard }" id="idCard" name="idCard" /></td>
-
 									</tr>
 								</table>
 							</form:form>
@@ -78,12 +77,12 @@
 										<!-- 											<td><a class="btn btn-primary btn-lg" style="font-size:12px;padding:4px;" onclick="olorder()">市区发送发送</a></td> -->
 										<td><a class="btn btn-primary btn-lg" style="font-size: 12px; padding: 4px;"
 											onclick="allsend()">全部发送</a> <!-- <input onclick="ordersend()" type="button" value="指令发送"/> -->
-
-
-
-											<a class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal"
-											style="font-size: 12px; padding: 4px;"> 定时预约发送 </a> <!-- 模态框（Modal） -->
-											<div class="modal fade" id="myModal" tabindex="-1" role="dialog"
+<!-- 											<a class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal" -->
+<!-- 											style="font-size: 12px; padding: 4px;"> 定时预约发送 </a>  -->
+											<a class="btn btn-primary btn-lg" onclick="selectTime()"
+											style="font-size: 12px; padding: 4px;"> 定时预约发送 </a> 
+											<!-- 模态框（Modal） -->
+											<div class="modal fade" id="sTime" tabindex="-1" role="dialog"
 												aria-labelledby="myModalLabel" aria-hidden="false">
 												<div class="modal-dialog" style="diplay: none;">
 													<div class="modal-content">
@@ -158,11 +157,12 @@
 		 *指令查询
 		 */
 		 function quety(){
-						$.post("<%=request.getContextPath() %>/voice/voiceManage/list.shtml",
-								$("#command").serialize()+"&"+$("#commandR"),	
-								function(data){
-									$("#resultDiv").html(data);
-								});
+			
+			$.post("<%=request.getContextPath() %>/voice/voiceManage/list.shtml",
+					$("#command").serialize()+"&"+$("#commandR"),	
+					function(data){
+						$("#resultDiv").html(data);
+					});
 						
 						  
 
@@ -170,26 +170,16 @@
 		
 		//发送
 		 function allsend(){
-						$.post("<%=request.getContextPath() %>/voice/voiceManage/allsend.shtml",
-								$("#command").serialize()+"&"+$("#commandR"),
-								function(data){
-									alert(data);
-								});
-						
+			
+			$.post("<%=request.getContextPath() %>/voice/voiceManage/allsend.shtml",
+					$("#command").serialize()+"&"+$("#commandR"),
+					function(data){
+						alert(data);
+					});
+			
 						  
 
 			}
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
 		
 		$(document).ready(function() {
 			initalizeSiderBar();
@@ -337,10 +327,10 @@
 		function ordersend(){
 			var stime = $("#executionTime").val();
 			var etime = $("#executionEndTime").val();
-			var sure=confirm("确认要发送指令吗？");
 			var ids = $(".ids:checkbox:checked").map(function(){
 				return $(this).val();
 			}).get().join();
+			var sure=confirm("确认要发送指令吗？");
 			if(sure){
 				$.post("<%=request.getContextPath() %>/voice/voiceManage/sendOrder.shtml",{ids:ids,stime:stime,etime:etime},function(data){
 					alert(data);
@@ -349,6 +339,17 @@
 			}
 			
 		}
+		function selectTime (){
+			var ids = $(".ids:checkbox:checked").map(function(){
+				return $(this).val();
+			}).get().join();
+			if(ids == ""){
+				alert("请选择老人");
+				return ;
+			}
+			$('#sTime').modal("show");
+		}
+		
 		
 		
 // 		function olorder(){

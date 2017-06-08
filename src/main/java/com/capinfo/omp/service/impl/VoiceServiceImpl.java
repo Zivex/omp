@@ -572,9 +572,9 @@ public class VoiceServiceImpl extends
 			String sql5 = "select count(*) from omp_voice_order o inner join omp_old_info oi on o.oldId = oi.id  where o.execute_flag = 3 "+agent_id;
 			Long notAnswer = JdbcTemplate.queryForLong(sql5);
 			//
-			// // 未返回
-			String sql6 = "select count(*) from omp_voice_order o inner join omp_old_info oi on o.oldId = oi.id  where o.execute_flag is null "+agent_id;
-			Long notReturn = JdbcTemplate.queryForLong(sql6);
+			 // 未返回
+//			String sql6 = "select count(*) from omp_voice_order o inner join omp_old_info oi on o.oldId = oi.id  where o.execute_flag is null "+agent_id;
+//			Long notReturn = JdbcTemplate.queryForLong(sql6);
 
 			// 语音发送总次数
 			String sql8 = "select count(*) from omp_voice_order o where 1=1 "+agent_id;
@@ -585,22 +585,22 @@ public class VoiceServiceImpl extends
 			 */
 
 			// 发送成功
-			String sql9 = "select count(*) from omp_order_number o inner join omp_old_info oi on o.oid = oi.id  where o.returntype= 1 and o.send_flag= 1  "+agent_id;
-			Long orderSuc = JdbcTemplate.queryForLong(sql9);
+//			String sql9 = "select count(*) from omp_order_number o inner join omp_old_info oi on o.oid = oi.id  where o.returntype= 1 and o.send_flag= 1  "+agent_id;
+//			Long orderSuc = JdbcTemplate.queryForLong(sql9);
 
 			// 发送失败
-			String sq20 = "select count(*) from omp_order_number o inner join omp_old_info oi on o.oid = oi.id  where o.returntype= 1 and o.send_flag= 0  "+agent_id;
-			Long orderFail = JdbcTemplate.queryForLong(sq20);
+//			String sq20 = "select count(*) from omp_order_number o inner join omp_old_info oi on o.oid = oi.id  where o.returntype= 1 and o.send_flag= 0  "+agent_id;
+//			Long orderFail = JdbcTemplate.queryForLong(sq20);
 
 			// 执行成功
-			String sq22 = "select count(*) from omp_order_number o   where o.returntype= 1 and o.execute_flag = 1  "+agent_id;
 //			String sq22 = "select count(*) from omp_order_number o inner join omp_old_info oi on o.oid = oi.id  where o.returntype= 1 and o.execute_flag = 1  "+agent_id;
 //			String sq22 = "select count(*) from omp_old_order o inner join omp_old_info oi on o.oldId = oi.id  where  o.execute_flag = 1  "+agent_id;
+			String sq22 = "select count(*) from omp_order_number o   where o.returntype= 1 and o.execute_flag = 1  "+agent_id;
 			Long orderexecuteSuc = JdbcTemplate.queryForLong(sq22);
 
 			// 执行失败
 //			String sq23 = "select count(*) from omp_order_number o inner join omp_old_info oi on o.oid = oi.id  where o.returntype= 1 and o.execute_flag = 0 "+agent_id;
-			String sq23 = "select count(*) from omp_old_order o inner join omp_old_info oi on o.oldId = oi.id  where  o.execute_flag = 0 "+agent_id;
+			String sq23 = "select count(*) from omp_old_order o inner join omp_old_info oi on o.oldId = oi.id  where o.send_flag = 1 and  o.execute_flag = 0 "+agent_id;
 			Long orderexecuteFail = JdbcTemplate.queryForLong(sq23);
 
 			// 总数
@@ -618,12 +618,12 @@ public class VoiceServiceImpl extends
 			userInfo.setExecuteFail(executeFail);
 			userInfo.setExecuteSuc(executeSuc);
 			userInfo.setNotAnswer(notAnswer);
-			userInfo.setNotReturn(notReturn);
+//			userInfo.setNotReturn(notReturn);
 			userInfo.setVoiceSendFail(voiceSendFail);
 			userInfo.setVoiceSendSuc(voiceSendSuc);
 
-			userInfo.setOrderFail(orderFail);
-			userInfo.setOrderSuc(orderSuc);
+//			userInfo.setOrderFail(orderFail);
+//			userInfo.setOrderSuc(orderSuc);
 
 			userInfo.setRemainCount(remainCount);
 			userInfo.setVoiceCount(voiceCount);

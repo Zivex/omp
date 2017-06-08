@@ -10,6 +10,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import com.capinfo.common.model.SystemUser;
+import com.capinfo.omp.parameter.StaParameter;
 import com.capinfo.omp.service.SystemLogs;
 
 @Service
@@ -26,10 +27,10 @@ public class SystemLogsImpl implements SystemLogs {
 	}
 
 	@Override
-	public List<Map<String, Object>> getlistCount(String county, String street, String community, String otype, String stimes, String etimes,SystemUser user) {
+	public List<Map<String, Object>> getlistCount(StaParameter p,SystemUser user) {
 		String querySql = "";
 
-		String resutSql = getSql(county, street, community, otype, stimes, etimes, querySql,user);
+		String resutSql = getSql(p, querySql,user);
 		
 //		String sql = "SELECT k.keyPointMessage 'key',SUM(k.keyPointCount) AS nbr,r1.`NAME` community,r2.`NAME` county,r3.`NAME` street FROM omp_old_info i,omp_keymapping_statistical k,omp_region r1,omp_region r2,omp_region r3 WHERE k.landLineNumber = i.ZJNUMBER AND i.HOUSEHOLD_COMMUNITY_ID = r1.ID AND i.HOUSEHOLD_COUNTY_ID = r2.ID AND i.HOUSEHOLD_STREET_ID = r3.ID "
 //				+ county
@@ -40,7 +41,7 @@ public class SystemLogsImpl implements SystemLogs {
 //				+ etimes
 //				+ " GROUP BY k.keyPointMessage ORDER BY k.id";
 		//String sql = "SELECT t.serviceName sname, FORMAT(SUM(s.keyPointCount),0) count FROM omp_keymapping_statistical s INNER JOIN omp_old_info i ON s.landLineNumber = i.ZJNUMBER INNER JOIN omp_key k ON k.`key` = s.keyPointMessage INNER JOIN omp_service_type t on t.id = k.stId WHERE  1=1" + resutSql + " and k.pyId=i.TELTYPE GROUP BY s.keyPointMessage";
-		String sql = "SELECT t.serviceName sname, CAST(SUM(s.keyPointCount) as decimal)  count FROM omp_keymapping_statistical s INNER JOIN omp_old_info i ON s.landLineNumber = i.ZJNUMBER INNER JOIN omp_key k ON k.`key` = s.keyPointMessage INNER JOIN omp_service_type t on t.id = k.stId WHERE  1=1" + resutSql + " and k.pyId=i.TELTYPE GROUP BY s.keyPointMessage";
+		String sql = "SELECT t.serviceName sname, CAST(SUM(s.keyPointCount) as decimal)  count FROM omp_keymapping_statistical s INNER JOIN omp_old_info i ON s.landLineNumber = i.ZJNUMBER INNER JOIN omp_key k ON k.`key` = s.keyPointMessage INNER JOIN omp_service_type t on t.id = k.stId WHERE  1=1" + resutSql + " and k.pyId=i.TELTYPE GROUP BY t.id";
 		List<Map<String, Object>> showList = jdbcTemplate.queryForList(sql);
 		return showList;
 	}
@@ -142,25 +143,28 @@ public class SystemLogsImpl implements SystemLogs {
 	
 	
 	
-	private String getSql(String county, String street, String community, String otype, String stimes, String etimes, String querySql,SystemUser user) {
-		if (county != null && !StringUtils.isEmpty(county)) {
-			querySql+= " AND I.HOUSEHOLD_COUNTY_ID = '" + county + "'";
+	private String getSql(StaParameter p, String querySql,SystemUser user) {
+		if (p.getCity() != null && !StringUtils.isEmpty(p.getCity())) {
+			querySql+= " AND I.HOUSEHOLD_CITY_ID = '" + p.getCity() + "'";
 		}
-		if (street != null && !StringUtils.isEmpty(street)) {
-			querySql+= " AND I.HOUSEHOLD_STREET_ID = '" + street + "'";
+		if (p.getCounty() != null && !StringUtils.isEmpty(p.getCounty())) {
+			querySql+= " AND I.HOUSEHOLD_COUNTY_ID = '" + p.getCounty() + "'";
 		}
-		if (community != null && !StringUtils.isEmpty(community)) {
-			querySql+= "  AND I.HOUSEHOLD_COMMUNITY_ID = '" + community + "'";
+		if (p.getStreet() != null && !StringUtils.isEmpty(p.getStreet())) {
+			querySql+= " AND I.HOUSEHOLD_STREET_ID = '" + p.getStreet() + "'";
+		}
+		if (p.getCommunity() != null && !StringUtils.isEmpty(p.getCommunity())) {
+			querySql+= "  AND I.HOUSEHOLD_COMMUNITY_ID = '" + p.getCommunity() + "'";
 
 		}
-		if (otype != null && !StringUtils.isEmpty(otype)) {
-			querySql+= " AND I.TELTYPE = '" + otype + "'";
+		if (p.getOtype() != null && ! StringUtils.isEmpty(p.getOtype())) {
+			querySql+= " AND I.TELTYPE = '" + p.getOtype() + "'";
 		}
-		if (stimes != null && !StringUtils.isEmpty(stimes)) {
-			querySql+= " AND s.commitTime > '" + stimes + "'";
+		if (p.getStime() != null && ! StringUtils.isEmpty(p.getStime())) {
+			querySql+= " AND s.commitTime > '" + p.getStime() + "'";
 		}
-		if (etimes != null && !StringUtils.isEmpty(etimes)) {
-			querySql+= " AND s.commitTime <= '" + etimes + "'";
+		if (p.getEtime() != null && ! StringUtils.isEmpty(p.getEtime())) {
+			querySql+= " AND s.commitTime <= '" + p.getEtime() + "'";
 		}
 		if (user.getId()!=1) {
 			if("g".equals(user.getAccount_type()) && user.getLeave()<5){

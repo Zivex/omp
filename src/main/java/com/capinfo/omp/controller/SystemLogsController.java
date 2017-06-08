@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -17,6 +18,7 @@ import com.capinfo.common.model.SystemUser;
 import com.capinfo.common.security.Constants;
 import com.capinfo.common.security.authentication.AuthenticationSuccessHandlerImpl;
 import com.capinfo.common.web.service.SystemUserService;
+import com.capinfo.omp.parameter.StaParameter;
 import com.capinfo.omp.service.SystemLogs;
 import com.capinfo.omp.utils.Page;
 
@@ -52,9 +54,10 @@ public class SystemLogsController extends AuthenticationSuccessHandlerImpl {
 	 */
 	
 	@RequestMapping("/ReportFrom/list.shtml")
-	public ModelAndView list(String county, String street, String community,String otype,Date stime,Date etime,@ModelAttribute(Constants.ADMIN_ATTRIBUTE_KEY) SystemUser user) {
+	@ResponseBody
+	public ModelAndView list(StaParameter p,@ModelAttribute(Constants.ADMIN_ATTRIBUTE_KEY) SystemUser user) {
 		ModelAndView mv = new ModelAndView("/admin/list");
-		listget(mv, county, street, community, otype, stime, etime,user);
+		listget(mv, p,user);
 		return mv;
 	}
 	/**
@@ -68,9 +71,9 @@ public class SystemLogsController extends AuthenticationSuccessHandlerImpl {
 	 * @return
 	 */
 	@RequestMapping("/ReportFrom/initial.shtml")
-	public ModelAndView initial(String county, String street, String community,String otype,Date stime,Date etime,@ModelAttribute(Constants.ADMIN_ATTRIBUTE_KEY) SystemUser user) {
+	public ModelAndView initial(StaParameter p,@ModelAttribute(Constants.ADMIN_ATTRIBUTE_KEY) SystemUser user) {
 		ModelAndView mv = new ModelAndView("/admin/initial");
-		listget(mv, county, street, community, otype, stime, etime,user);
+		listget(mv, p,user);
 		return mv;
 	}
 	/**
@@ -156,24 +159,24 @@ public class SystemLogsController extends AuthenticationSuccessHandlerImpl {
 		return mv;
 	}
 	
-	public void listget(ModelAndView mv,String county, String street, String community,String otype,Date stime,Date etime, SystemUser user) {
-		SimpleDateFormat fromg = new SimpleDateFormat("yyyy-MM-dd");// 设置日期格式
-		String stimes = "";
-		String etimes = "";
-		if (stime==null) {
-			stimes = "";
-		}else {
-			stimes = fromg.format(stime.getTime());
-		}
-		if (etime==null) {
-			etimes = "";
-		}else {
-			etimes = fromg.format(etime.getTime());
-		}
+	public void listget(ModelAndView mv,StaParameter p, SystemUser user) {
+//		SimpleDateFormat fromg = new SimpleDateFormat("yyyy-MM-dd");// 设置日期格式
+//		String stimes = "";
+//		String etimes = "";
+//		if (stime==null) {
+//			stimes = "";
+//		}else {
+//			stimes = fromg.format(stime.getTime());
+//		}
+//		if (etime==null) {
+//			etimes = "";
+//		}else {
+//			etimes = fromg.format(etime.getTime());
+//		}
+//		
+//		
 		
-		
-		
-		List<Map<String, Object>> showcout = systemLogs.getlistCount(county, street, community, otype, stimes, etimes,user);
+		List<Map<String, Object>> showcout = systemLogs.getlistCount(p,user);
 		Double sum = 0.0;
 		for (Map<String, Object> map : showcout) {
 			Double c = Double.parseDouble(map.get("count")+"");
@@ -181,13 +184,14 @@ public class SystemLogsController extends AuthenticationSuccessHandlerImpl {
 		}
 		long round = Math.round(sum);
 		mv.addObject("showcout",showcout);
+		
 		mv.addObject("sum",round);
-		mv.addObject("county", county);
-		mv.addObject("street", street);
-		mv.addObject("community", community);
-		mv.addObject("otype", otype);
-		mv.addObject("stimes", stimes);
-		mv.addObject("etimes", etimes);
+//		mv.addObject("county", county);
+//		mv.addObject("street", street);
+//		mv.addObject("community", community);
+//		mv.addObject("otype", otype);
+//		mv.addObject("stimes", stimes);
+//		mv.addObject("etimes", etimes);
 	}
 	
 	

@@ -26,38 +26,24 @@
 				<div>
 					<div class="page-header">
 						<h1>
-							<i class="fa fa-user fa-fw"></i>语音发送次数统计
+							<i class="fa fa-user fa-fw"></i>呼叫服务统计
 						</h1>
 					</div>
 					<div class="header-underline"></div>
 					<div id="displayDiv">
 						<div class="operatorDiv">
-							<c:url var="queryForm" value="/syslog/ReportFrom/VoiceCount.shtml" />
+							<c:url var="queryForm" value="/syslog/ReportFrom/list.shtml" />
 							<form:form id="command" role="form" class="form-inline" action="${queryForm}" method="post">
 								<input id="pageNo" name="current" type="hidden" value="1">
 								<table class="table">
+
 									<tr>
-										<!-- 											<td>区域：</td> -->
-										<!-- 											<td> -->
-										<!-- 												<select id="county" name="county"> -->
-										<%-- 													<option value="${county }">--请选择--</option>		 --%>
-										<!-- 												</select> -->
-										<!-- 											</td> -->
-										<!-- 											<td>街道：</td> -->
-										<!-- 											<td> -->
-										<!-- 												<select id="street" name="street"> -->
-										<%-- 													<option value="${street }">--请选择--</option>		 --%>
-										<!-- 												</select> -->
-										<!-- 											</td> -->
-										<!-- 											<td>社区：</td> -->
-										<!-- 											<td> -->
-										<!-- 												<select id="community" name="community"> -->
-										<%-- 													<option value="${community }">--请选择--</option>		 --%>
-										<!-- 												</select> -->
-										<!-- 											</td> -->
-										<td>开始时间：<input type="text" value="" id="stime" name="stime"
+										<td>开始时间：</td>
+										<td><input type="text" value="" id="stime" name="stime"
 											onclick="WdatePicker({isShowClear:false,readOnly:true,dateFmt:'yyyy-MM-dd HH:mm:ss'})" />
-											结束时间：<input type="text" value="" id="etime" name="etime"
+										</td>
+										<td>结束时间：</td>
+										<td><input type="text" value="" id="etime" name="etime"
 											onclick="WdatePicker({isShowClear:false,readOnly:true,dateFmt:'yyyy-MM-dd HH:mm:ss'})" />
 										</td>
 										<td>座机类型：</td>
@@ -67,10 +53,7 @@
 												<option value="2">失能型</option>
 												<option value="3">农商型</option>
 										</select></td>
-									</tr>
-									<tr>
-										<!-- 											<td><button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#myModal" onclick="quety()">查询</button></td> -->
-										<!-- 											<td><input class="btn btn-primary btn-sm" data-toggle="modal" data-target="#myModal" type="reset" value="重置"/></td> -->
+
 									</tr>
 								</table>
 							</form:form>
@@ -108,7 +91,7 @@
 							<div id="message" class="alert"></div>
 						</div>
 						<div id="resultDiv">
-							<%@ include file="/WEB-INF/views/admin/sendVoce.jsp"%>
+							<%@ include file="/WEB-INF/views/admin/list.jsp"%>
 						</div>
 					</div>
 				</div>
@@ -121,6 +104,8 @@
 	<!--footer-->
 	<%@ include file="/WEB-INF/views/layout/adm_foot.jsp"%>
 	<!--/footer-->
+
+
 
 	<!-- Script	-->
 	<script type="text/javascript">
@@ -143,8 +128,9 @@
 		
 		$(document).ready(function() {
 			initalizeSiderBar();
-			selectMenu("o_voice");
+			selectMenu("o_wordbooks");
 			initQueryForm();
+			
 			//市
 			$.ajax({  
 			    type : "post",  
@@ -186,21 +172,113 @@
 						}
 					});
 				});
+			<c:if test="${sessionScope.eccomm_admin.account_type=='g' }">
+			var lv = "${eccomm_admin.leave}";
+			var rid = "${eccomm_admin.rid}";
+			var pid = "${eccomm_admin.parentid}";
+			if(lv==2){	//北京
+				$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",{id:rid},function(data){
+					$("#city").val(rid); 
+					$("#city").attr("disabled", true);
+					for(var i = 0;i<data.length;i++){
+						$("#county").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
+					}
+				});
+			}
+			if(lv==3){	//区
+				$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",{id:pid},function(data){
+					$("#city").val(pid); 
+					$("#city").attr("disabled", true);
+					for(var i = 0;i<data.length;i++){
+						$("#county").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
+					}
+					$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",{id:rid},function(data){
+						$("#county").val(rid); 
+						$("#county").attr("disabled", true);
+							for(var i = 0;i<data.length;i++){
+								$("#street").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
+							}				
+						});
+				});
+			}
+			if(lv==4){	//街道
+				$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionByPid.shtml",{id:pid},function(data){
+					var cityid=data[0].PARENTID; //市级
+					$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",{id:cityid},function(data){
+						$("#city").val(cityid); 
+						$("#city").attr("disabled", true);
+						for(var i = 0;i<data.length;i++){
+							$("#county").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
+						}
+					});
+				$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",{id:pid},function(data){
+					$("#county").val(pid); 
+					$("#county").attr("disabled", true);
+						for(var i = 0;i<data.length;i++){
+							$("#street").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
+						}
+						$("#street").val(rid); 
+						$("#street").attr("disabled", true);
+						$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",{id:rid},function(data){
+							for(var i = 0;i<data.length;i++){
+								$("#community").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
+							}
+						});
+					});
+				});
+			}
+			if(lv==5){	//社区
+				$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionByPid.shtml",{id:pid},function(data){
+					var cid=data[0].PARENTID; //区县
+					var sid=data[0].id;	//街道
+					var cityid=data[0].rid;//市级
+					$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",{id:cityid},function(data){
+						$("#city").val(cityid); 
+						$("#city").attr("disabled", true);
+						for(var i = 0;i<data.length;i++){
+							$("#county").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
+						}
+					});
+					$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",{id:cid},function(data){
+ 					$("#county").val(cid); 
+					$("#county").attr("disabled", true);
+							for(var i = 0;i<data.length;i++){
+								$("#street").append("<option value='"+data[i].id+"'>"+data[i].name+"</option>");
+							}
+							$("#street").val(sid); 
+							$("#street").attr("disabled", true);
+							$.post("<%=request.getContextPath() %>/old/oldMatch/getRegionById.shtml",
+				                {
+					                id : sid
+				                }, function (data)
+				                {
+					                for (var i = 0; i < data.length; i++)
+					                {
+						                $ ("#community").append (
+						                        "<option value='"+data[i].id+"'>" + data[i].name + "</option>");
+					                }
+					                $ ("#community").val (rid);
+					                $ ("#community").attr ("disabled", true);
+					                
+				                });
+			                });
+		                });
+	                }
+	                </c:if>
+			
 		});
 		
-		
-		
 		function quety(){
-			 var city = $ ("#city").val ();
-		        var county = $ ("#county").val ();
-		        var street = $ ("#street").val ();
-		        var community = $ ("#community").val ();
-		        var otype = $ ("#otype").val ();
-		        var stime = $ ("#stime").val ();
-		        var etime = $ ("#etime").val ();
-		        $.post ("<%=request.getContextPath() %>/syslog/ReportFrom/list.shtml",
+			var city = $("#city").val();
+			var county = $("#county").val();
+			var street = $("#street").val();
+			var community = $("#community").val();
+			var otype = $("#otype").val();
+			var stime = $("#stime").val();
+			var etime = $("#etime").val();
+			$.post("<%=request.getContextPath() %>/syslog/ReportFrom/list.shtml",
 	        {
-	            city : city,
+				city:city,
 	            county : county,
 	            street : street,
 	            community : community,
